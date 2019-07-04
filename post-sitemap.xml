@@ -8,6 +8,22 @@
     </url>
 
     <url>
+        <loc>https://www.4async.com/2014/03/2014-03-13-python-base64-encode-utf-8error/</loc>
+        <lastmod>2019-07-04T03:29:24.759Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/03/2014-03-09-python-profile-using-cprofile/</loc>
+        <lastmod>2019-07-04T03:29:19.382Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://www.4async.com/2018/12/2018-12-25-scm-security/</loc>
         <lastmod>2019-07-04T03:25:25.631Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -114,14 +130,6 @@
     <url>
         <loc>https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</loc>
         <lastmod>2019-07-04T03:20:39.105Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2019/07/2014-03-09-python-profile-using-cprofile/</loc>
-        <lastmod>2019-07-04T03:20:39.104Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -456,7 +464,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/</loc>
+        <loc>https://www.4async.com/2014/03/2014-02-18-benchmark-python-2/</loc>
         <lastmod>2019-07-04T03:20:39.065Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -464,7 +472,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/03/2014-02-18-benchmark-python-2/</loc>
+        <loc>https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/</loc>
         <lastmod>2019-07-04T03:20:39.065Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -474,14 +482,6 @@
     <url>
         <loc>https://www.4async.com/2014/08/2014-08-13-diagnostics-ios-tweak-based-on-mobile-substrate/</loc>
         <lastmod>2019-07-04T03:20:39.064Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2019/07/2014-03-13-python-base64-encode-utf-8error/</loc>
-        <lastmod>2019-07-04T03:20:39.062Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -586,14 +586,6 @@
     <url>
         <loc>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</loc>
         <lastmod>2019-07-04T03:20:39.047Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2019/04/2019-04-02-go-executable-size-visualization-with-d3/</loc>
-        <lastmod>2019-07-04T03:20:39.046Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

@@ -316,486 +316,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-01-beego-tips/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/04/2014-04-01-beego-tips/" class="post-title-link" itemprop="url">Beego 的几个小 Tips</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2014-04-01 18:46:51" itemprop="dateCreated datePublished" datetime="2014-04-01T18:46:51+08:00">2014-04-01</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Beego 框架不错，个人比较喜欢，关键是还有一些开发工具很实用，封装了很多实现，不需要自己做很多工作，在不考虑效率的前提下，都是可以接受的范畴。</p>
-<h2 id="自定义错误页面"><a href="#自定义错误页面" class="headerlink" title="自定义错误页面"></a>自定义错误页面</h2><p>Beego 默认自己带了一些错误页面，在 error.go 文件中进行了定义。以 404 为例：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// show <span class="number">404</span> notfound error.</span><br><span class="line">func NotFound(rw http.ResponseWriter, r *http.Request) &#123;t, _ := template.New(<span class="string">"beegoerrortemp"</span>).Parse(errtpl)</span><br><span class="line">	data := make(map[string]interface&#123;&#125;)</span><br><span class="line">	data[<span class="string">"Title"</span>] = <span class="string">"Page Not Found"</span></span><br><span class="line">	data[<span class="string">"Content"</span>] = template.HTML(<span class="string">"&lt;br&gt;The page you have requested has flown the coop."</span>+<span class="string">"&lt;br&gt;Perhaps you are here because:"</span>+<span class="string">"&lt;br&gt;&lt;br&gt;&lt;ul&gt;"</span> +</span><br><span class="line">		<span class="string">"&lt;br&gt;The page has moved"</span>+<span class="string">"&lt;br&gt;The page no longer exists"</span>+<span class="string">"&lt;br&gt;You were looking for your puppy and got lost"</span>+<span class="string">"&lt;br&gt;You like 404 pages"</span>+<span class="string">"&lt;/ul&gt;"</span>)</span><br><span class="line">	data[<span class="string">"BeegoVersion"</span>] = VERSION</span><br><span class="line">	//rw.WriteHeader(http.StatusNotFound)</span><br><span class="line">	t.Execute(rw, data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其实自己做一个修改也很容易：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func page_not_found(rw http.ResponseWriter, r *http.Request)&#123;t,_:= template.New(<span class="string">"404.html"</span>).ParseFiles(beego.ViewsPath+<span class="string">"/404.html"</span>)</span><br><span class="line">    data :=make(map[string]interface&#123;&#125;)</span><br><span class="line">    data[<span class="string">"content"</span>] = <span class="string">"page not found"</span></span><br><span class="line">    t.Execute(rw, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;beego.Errorhandler(<span class="string">"404"</span>,page_not_found)</span><br><span class="line">    beego.Router(<span class="string">"/"</span>, &amp;controllers.MainController&#123;&#125;)</span><br><span class="line">    beego.Run()&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Server-字段的修改"><a href="#Server-字段的修改" class="headerlink" title="Server 字段的修改"></a>Server 字段的修改</h2><p>HTTP 返回头中的 Server 总是显示的是 BeegoServer，太不专业了，定义在 config.go 文件中：</p>
-<pre><code>BeegoServerName = &quot;beegoServer&quot;</code></pre><p>我最初是 fork 了一个 repo 改，后来发现，只需要在 app.conf 文件中定义一下就可以了：</p>
-<pre><code>BeegoServerName = ACGSOSERVER</code></pre><p>这样 Server 这个字段就更改掉了，其他的属性也可以用这种方式定义掉。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/03/2014-03-28-python-distribute-building-part-one/" class="post-title-link" itemprop="url">Python 分发包制作（一）</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2014-03-28 11:33:51" itemprop="dateCreated datePublished" datetime="2014-03-28T11:33:51+08:00">2014-03-28</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>之前我在 <a href="http://www.acgso.com/2013/09/python-development-devops-usage/" target="_blank" rel="noopener">Python 开发实践</a> 中曾经提到过通过 python distribute 实现包分发。但是一直没有机会研究如何实现 (没错…)，今天就粗略的通过一个例子简单描述一下一个包的制作：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># setup.py</span></span><br><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> setuptools <span class="keyword">import</span> setup, find_packages</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="comment"># 兼容旧版本 setuptools</span></span><br><span class="line">extra = &#123;&#125;</span><br><span class="line"><span class="keyword">if</span> sys.version_info &gt;= (<span class="number">3</span>,):</span><br><span class="line">    extra[<span class="string">'use_2to3'</span>] = <span class="literal">True</span></span><br><span class="line">    extra[<span class="string">'convert_2to3_doctests'</span>] = [<span class="string">'src/your/module/README.txt'</span>]</span><br><span class="line">    extra[<span class="string">'use_2to3_fixers'</span>] = [<span class="string">'your.fixers'</span>]</span><br><span class="line"></span><br><span class="line">setup(</span><br><span class="line">    <span class="comment"># 包名称</span></span><br><span class="line">    name=<span class="string">'your.module'</span>,</span><br><span class="line">    <span class="comment"># 版本号</span></span><br><span class="line">    version = <span class="string">'1.0'</span>,</span><br><span class="line">    <span class="comment"># 包描述</span></span><br><span class="line">    description=<span class="string">'This is your awesome module'</span>,</span><br><span class="line">    <span class="comment"># 作者名称</span></span><br><span class="line">    author=<span class="string">'You'</span>,</span><br><span class="line">    <span class="comment"># 作者 URL</span></span><br><span class="line">    author_email=<span class="string">'your@email'</span>,</span><br><span class="line">    <span class="comment"># 如果有需要</span></span><br><span class="line">    license = <span class="string">"PSF"</span>,</span><br><span class="line">    <span class="comment"># 如果有需要</span></span><br><span class="line">    url = <span class="string">""</span>,</span><br><span class="line">    <span class="comment"># 依赖包</span></span><br><span class="line">    install_requires=[],</span><br><span class="line">    <span class="comment"># 源代码目录</span></span><br><span class="line">    package_dir = &#123;<span class="string">''</span>:<span class="string">'src'</span>&#125;,</span><br><span class="line">    <span class="comment"># 包文件</span></span><br><span class="line">    packages = find_packages(),</span><br><span class="line">    <span class="comment"># 包含其他必须文件，前面是文件夹，后面是扩展名，将会按此格式排列文件</span></span><br><span class="line">    package_data = &#123;<span class="comment"># include them:'': ['*.txt', '*.rst'],</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment"># 单元测试</span></span><br><span class="line">    test_suite = <span class="string">'your.module.tests'</span>,</span><br><span class="line">    **extra</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>在 setuptools &gt;= 0.7 的版本上，distribute 的功能已经被整合进入 Setuptools，例子也是适合于 0.7 以上版本的配置。上面这个例子适用于纯 Python 的包，很多时候我们需要做一些对 Python 的性能提升 (比如动态库 binding)，怎么做呢？这是下一篇文要写的了…</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-23-golang-rsa/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/03/2014-03-23-golang-rsa/" class="post-title-link" itemprop="url">Golang 的 RSA 公私钥方法实现</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2014-03-23 20:25:52" itemprop="dateCreated datePublished" datetime="2014-03-23T20:25:52+08:00">2014-03-23</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>话不多说，自己看吧，比较明白。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"crypto"</span></span><br><span class="line">    <span class="string">"crypto/rand"</span></span><br><span class="line">    <span class="string">"crypto/rsa"</span></span><br><span class="line">    <span class="string">"crypto/sha256"</span></span><br><span class="line">    <span class="string">"crypto/x509"</span></span><br><span class="line">    <span class="string">"encoding/base64"</span></span><br><span class="line">    <span class="string">"encoding/pem"</span></span><br><span class="line">    <span class="string">"errors"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;signer, err := loadPrivateKey(<span class="string">"private.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"signer is damaged: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    toSign := <span class="string">"date: Thu, 05 Jan 2012 21:31:40 GMT"</span></span><br><span class="line"></span><br><span class="line">    signed, err := signer.Sign([]byte(toSign))</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line">    sig := base64.StdEncoding.EncodeToString(signed)</span><br><span class="line">    fmt.Printf(<span class="string">"Signature: %v\n"</span>, sig)</span><br><span class="line"></span><br><span class="line">    parser, perr := loadPublicKey(<span class="string">"public.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> perr != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    err = parser.Unsign([]byte(toSign), signed)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"Unsign error: %v\n"</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPublicKey(path string) (Unsigner, error) &#123;<span class="keyword">return</span> parsePublicKey([]byte(`-----BEGIN PUBLIC KEY-----</span><br><span class="line">MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCFENGw33yGihy92pDjZQhl0C3</span><br><span class="line"><span class="number">6</span>rPJj+CvfSC8+q28hxA161QFNUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span></span><br><span class="line">Z4UMR7EOcpfdUE9Hf3m/hs+FUR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJw</span><br><span class="line">oYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">-----END PUBLIC KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePublicKey(pemBytes []byte) (Unsigner, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"PUBLIC KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKIXPublicKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> newUnsignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPrivateKey(path string) (Signer, error) &#123;<span class="keyword">return</span> parsePrivateKey([]byte(`-----BEGIN RSA PRIVATE KEY-----</span><br><span class="line">MIICXgIBAAKBgQDCFENGw33yGihy92pDjZQhl0C36rPJj+CvfSC8+q28hxA161QF</span><br><span class="line">NUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span>Z4UMR7EOcpfdUE9Hf3m/hs+F</span><br><span class="line">UR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJwoYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">AoGBAJR8ZkCUvx5kzv+utdl7T5MnordT1TvoXXJGXK7ZZ+UuvMNUCdN2QPc4sBiA</span><br><span class="line">QWvLw1cSKt5DsKZ8UETpYPy8pPYnnDEz2dDYiaew9+xEpubyeW2oH4Zx71wqBtOK</span><br><span class="line">kqwrXa/pzdpiucRRjk6vE6YY7EBBs/g7uanVpGibOVAEsqH1AkEA7DkjVH28WDUg</span><br><span class="line">f1nqvfn2Kj6CT7nIcE3jGJsZZ7zlZmBmHFDONMLUrXR/Zm3pR5m0tCmBqa5RK95u</span><br><span class="line"><span class="number">412j</span>t1dPIwJBANJT3v8pnkth48bQo/fKel6uEYyboRtA5/uHuHkZ6FQF7OUkGogc</span><br><span class="line">mSJluOdc5t6hI1VsLn0QZEjQZMEOWr+wKSMCQQCC4kXJEsHAve77oP6HtG/IiEn7</span><br><span class="line">kpyUXRNvFsDE0czpJJBvL/aRFUJxuRK91jhjC68sA7NsKMGg5OXb5I5Jj36xAkEA</span><br><span class="line">gIT7aFOYBFwGgQAQkWNKLvySgKbAZRTeLBacpHMuQdl1DfdntvAyqpAZ0lY0RKmW</span><br><span class="line">G6aFKaqQfOXKCyWoUiVknQJAXrlgySFci/<span class="number">2</span>ueKlIE1QqIiLSZ8V8OlpFLRnb1pzI</span><br><span class="line"><span class="number">7</span>U1yQXnTAEFYM560yJlzUpOb1V4cScGd365tiSMvxLOvTA==</span><br><span class="line">-----END RSA PRIVATE KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePrivateKey(pemBytes []byte) (Signer, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"RSA PRIVATE KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKCS1PrivateKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> newSignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Signer interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Sign(data []byte) ([]byte, error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Unsigner interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Unsign(data[]byte, sig []byte) error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newSignerFromKey(k interface&#123;&#125;) (Signer, error) &#123;</span><br><span class="line">    var sshKey Signer</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PrivateKey:</span><br><span class="line">        sshKey = &amp;rsaPrivateKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newUnsignerFromKey(k interface&#123;&#125;) (Unsigner, error) &#123;</span><br><span class="line">    var sshKey Unsigner</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PublicKey:</span><br><span class="line">        sshKey = &amp;rsaPublicKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type rsaPublicKey struct &#123;*rsa.PublicKey&#125;</span><br><span class="line"></span><br><span class="line">type rsaPrivateKey struct &#123;*rsa.PrivateKey&#125;</span><br><span class="line"></span><br><span class="line">// Sign signs data <span class="keyword">with</span> rsa-sha256</span><br><span class="line">func (r *rsaPrivateKey) Sign(data []byte) ([]byte, error) &#123;h := sha256.New()</span><br><span class="line">    h.Write(data)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.SignPKCS1v15(rand.Reader, r.PrivateKey, crypto.SHA256, d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Unsign verifies the message using a rsa-sha256 signature</span><br><span class="line">func (r *rsaPublicKey) Unsign(message []byte, sig []byte) error &#123;h := sha256.New()</span><br><span class="line">    h.Write(message)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.VerifyPKCS1v15(r.PublicKey, crypto.SHA256, d, sig)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-23-python-celery-queue-first-step/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -909,6 +429,357 @@
 <p>然后写一下前段处理模块：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> task <span class="keyword">import</span> upload_file</span><br><span class="line"></span><br><span class="line">result = upload_file.delay(url, fh)  <span class="comment"># 延迟执行</span></span><br><span class="line"><span class="keyword">print</span> result.ready()  <span class="comment"># 获取运行状态</span></span><br><span class="line"><span class="keyword">print</span> result.get(timeout=<span class="number">10</span>)  <span class="comment"># 获取运行结果</span></span><br></pre></td></tr></table></figure>
 
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-13-python-base64-encode-utf-8error/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/03/2014-03-13-python-base64-encode-utf-8error/" class="post-title-link" itemprop="url">Python 中文 UTF-8 编码 base64 报错</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-03-13 21:50:29" itemprop="dateCreated datePublished" datetime="2014-03-13T21:50:29+08:00">2014-03-13</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:29:24" itemprop="dateModified" datetime="2019-07-04T11:29:24+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>第一次用 python encode utf-8 的中文，结果发现了一个蛋疼的问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">base64.b64encode(<span class="string">u' 你好世界 '</span>)</span><br><span class="line"></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">    File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    File <span class="string">"/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/base64.py"</span>, line <span class="number">53</span>, <span class="keyword">in</span> b64encode</span><br><span class="line">        encoded = binascii.b2a_base64(s)[:<span class="number">-1</span>]</span><br><span class="line">UnicodeEncodeError: <span class="string">'ascii'</span> codec can<span class="string">'t encode characters in position 0-3: ordinal not in range(128)</span></span><br></pre></td></tr></table></figure>
+
+<p>这个问题在 <a href="http://bugs.python.org/issue4329" target="_blank" rel="noopener">2008 年就提出来过</a>，这个 Base64 的这个库的实现是按照 RFC 3548 实现的，仅按照 byte 和 ascii 字符，所以会出现这个问题。如果修复这个问题的话，就是把 unicode 字符换成 byte 就可以正常了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">_str = <span class="string">u"你好世界"</span></span><br><span class="line">encoded = base64.b64encode(_str.encode(<span class="string">'utf-8'</span>))</span><br><span class="line"><span class="keyword">print</span> encoded</span><br><span class="line"><span class="keyword">print</span> base64.b64decode(encoded).decode(<span class="string">'utf-8'</span>)</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-09-python-profile-using-cprofile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/03/2014-03-09-python-profile-using-cprofile/" class="post-title-link" itemprop="url">利用 cProfile 进行 Python 程序性能调优</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-03-09 23:04:00" itemprop="dateCreated datePublished" datetime="2014-03-09T23:04:00+08:00">2014-03-09</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:29:19" itemprop="dateModified" datetime="2019-07-04T11:29:19+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是 C 语言扩展的实现。</p>
+<p>官方文档页面：<a href="http://docs.python.org/2/library/profile.html#module-cProfile" target="_blank" rel="noopener">http://docs.python.org/2/library/profile.html#module-cProfile</a>。</p>
+<p>先从一个例子开始：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delay</span><span class="params">()</span>:</span></span><br><span class="line">    time.sleep(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    delay()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"123"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>使用下面这个命令就可以快速诊断：</p>
+<pre><code>python -m cProfile profile_run.py</code></pre><p>输出如下：</p>
+<pre><code>     5 function calls in 10.002 seconds
+
+Ordered by: standard name
+
+ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    1    0.002    0.002   10.002   10.002 profile_run.py:11(main)
+    1    0.000    0.000   10.002   10.002 profile_run.py:4(&lt;module&gt;)
+    1    0.000    0.000   10.000   10.000 profile_run.py:7(delay)  &lt;-- 调用者这里
+    1    0.000    0.000    0.000    0.000 {method&apos;disable&apos;of&apos;_lsprof.Profiler&apos;objects}
+    1   10.000   10.000   10.000   10.000 {time.sleep}   &lt;--- 元凶在这里</code></pre><p>如果想输出到文件，添加一个 - o 参数即可：</p>
+<pre><code>python -m cProfile -o profile_output profile_run.py</code></pre><p>若想按照某列排序，则可以添加这个参数：</p>
+<pre><code>python -m cProfile -o profile_output -s tottime profile_run.py</code></pre><p>那么等等，这个结果文件如何识别呢：</p>
+<p>ncalls: 这个函数被调用的次数</p>
+<p>tottime：函数的具体执行时间，不包含其他函数消耗的时间</p>
+<p>percall：每次调用的消耗（包含其他函数消耗和不包含的时间）</p>
+<p>cumtime：程序消耗的总时间</p>
+<p>然后看一个实际的成果看一下结果如何，具体的诊断数据：</p>
+<p>![cProfile Result](<a href="http://ww3.sinaimg.cn/large/69e37fdbgw1ee9sd2f44tj20hs0dkjuv.jpg&quot;cProfile" target="_blank" rel="noopener">http://ww3.sinaimg.cn/large/69e37fdbgw1ee9sd2f44tj20hs0dkjuv.jpg&quot;cProfile</a> Result”)</p>
+<p>发现最慢的执行模块是 not_operation 这个函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_operation</span><span class="params">(operand, dictionary, pfile)</span>:</span></span><br><span class="line">    <span class="string">"""Performs the operation `NOT operand`."""</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of all the documents (sorted)</span></span><br><span class="line">    all_docs = dictionary.all_docs()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of the documents matching `operand` (sorted)</span></span><br><span class="line">    results = get_results(operand, dictionary, pfile, force_list=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [doc <span class="keyword">for</span> doc <span class="keyword">in</span> all_docs <span class="keyword">if</span> doc <span class="keyword">not</span> <span class="keyword">in</span> results]</span><br></pre></td></tr></table></figure>
+
+<p>接下来是怎么修复了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># the fix.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_operation</span><span class="params">(operand, dictionary, pfile)</span>:</span></span><br><span class="line">    <span class="string">"""Performs the operation `NOT operand`."""</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of all the documents (sorted)</span></span><br><span class="line">    all_docs = dictionary.all_docs()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of the documents matching `operand` (sorted)</span></span><br><span class="line">    results = get_results(operand, dictionary, pfile, force_list=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list_a_and_not_list_b(all_docs, results)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list_a_and_not_list_b</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="string">"""Returns `a AND NOT b`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Both a and b are expected to be sorted lists.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    """</span>results = []</span><br><span class="line">    idx_a = <span class="number">0</span></span><br><span class="line">    idx_b = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> idx_a &lt;len(a) <span class="keyword">and</span> idx_b &lt;len(b):</span><br><span class="line">        <span class="keyword">if</span> a[idx_a] &lt;b[idx_b]:</span><br><span class="line">            results.append(a[idx_a])</span><br><span class="line">            idx_a += <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> b[idx_b] &lt;a[idx_a]:</span><br><span class="line">            idx_b += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            idx_a += <span class="number">1</span></span><br><span class="line">            idx_b += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> idx_a &lt;len(a):</span><br><span class="line">        results.append(a[idx_a])</span><br><span class="line">        idx_a += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>对了，说起来，上面图片查看工具是 cprofilev，是针对 cProfile 的查看工具，使用命令安装：</p>
+<pre><code>pip install bottle cprofilev
+
+cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问题，你如果想解决，可以自己看一下:)</p>
 
           
         
@@ -1998,6 +1869,168 @@ def tearDown(self):
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-12-something-details/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/01/2014-01-12-something-details/" class="post-title-link" itemprop="url">今天学到的几件事</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-01-12 00:20:00" itemprop="dateCreated datePublished" datetime="2014-01-12T00:20:00+08:00">2014-01-12</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="权限的那点事儿"><a href="#权限的那点事儿" class="headerlink" title="权限的那点事儿"></a>权限的那点事儿</h2><p>检查程序问题，除了配置文件有没有错以外，还需要检查一下权限什么的原因。除了用户组以外，还需要关注文件描述的配置。两个命令分别是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chown</span><br><span class="line">chmod</span><br></pre></td></tr></table></figure>
+
+<p>多留点心眼总没坏处</p>
+<h2 id="ldconfig-的问题"><a href="#ldconfig-的问题" class="headerlink" title="ldconfig 的问题"></a>ldconfig 的问题</h2><p>经常会编译一些常用的库文件供其他的文件使用。比如 luajit，今天安装完成之后，编译了一个依赖的程序，但是执行程序却发现提示对应的 so 文件无法找到。</p>
+<p>后来我灵机一动，虽然 so 文件在 ldcache 中了，但是重新使用 ldconfig 命令就重新 recache 一下就行了。</p>
+<p>看来不见得所有的都那么靠谱就是了。之前编译 zmap 也遇到了这个问题，一直很奇怪 json 库的 so 文件在 ldconf 文件中，为什么执行 zmap 却提示无法找到，看来也是相同的原因了。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2046,7 +2079,7 @@ def tearDown(self):
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-count">76</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

@@ -3,6 +3,13 @@
 
 
     <url>
+        <loc>https://www.4async.com/tags/Python/</loc>
+        <lastmod>2019-07-04T03:29:24.759Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>https://www.4async.com/tags/Others/</loc>
         <lastmod>2019-07-04T03:25:25.631Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -54,13 +61,6 @@
     <url>
         <loc>https://www.4async.com/tags/Docker/</loc>
         <lastmod>2019-07-04T03:20:39.117Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Python/</loc>
-        <lastmod>2019-07-04T03:20:39.116Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

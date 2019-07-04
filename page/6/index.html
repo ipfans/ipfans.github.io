@@ -316,566 +316,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/06/2014-06-01-try-docker-with-coreos/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/06/2014-06-01-try-docker-with-coreos/" class="post-title-link" itemprop="url">初识 Docker</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2014-06-10 11:52:15" itemprop="dateCreated datePublished" datetime="2014-06-10T11:52:15+08:00">2014-06-10</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Docker 是一个最近非常风行的轻量级应用容器。如果不知道的同学自行搜索去吧，这里不在赘述了。针对于 Docker，有个初创公司推出了适用于 Docker 专用的 Linux：CoreOS。一个号称系统运行内存只占用 161MB 的精简系统。这个 CoreOS 只提供了 Docker 需要的必须环境和管理功能，因此很轻量级，非常适合批量部署和我们这种用来研究学习目的的。</p>
-<p>值得一提的是里面的管理工具也是由 Golang 开发的，提供 json api 接口，有兴趣的话可以自行查看源代码。</p>
-<h2 id="安装必须软件"><a href="#安装必须软件" class="headerlink" title="安装必须软件"></a>安装必须软件</h2><p>必须软件需要 Vargrant 和 VirtualBox。Vargrant 可以当作是一个虚拟机和镜像管理器，VirtualBox 我就不用说了吧。安装下载就不说立刻，下载安装地址见下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://www.vagrantup.com/downloads.html</span><br><span class="line">https://www.virtualbox.org/wiki/Downloads</span><br></pre></td></tr></table></figure>
-
-<h2 id="CoreOS-配置"><a href="#CoreOS-配置" class="headerlink" title="CoreOS 配置"></a>CoreOS 配置</h2><p>CoreOS 的 Vargrant 脚本可以在 <a href="https://github.com/coreos/coreos-vagrant/" target="_blank" rel="noopener">https://github.com/coreos/coreos-vagrant/</a> 找到，下载下来的方法很简单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/coreos/coreos-vagrant/</span><br><span class="line">cd coreos-vagrant</span><br></pre></td></tr></table></figure>
-
-<p>然后执行命令直接开启虚拟机了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant up</span><br></pre></td></tr></table></figure>
-
-<p>如果第一次执行，会下载 CoreOS 的镜像，站点在国外，难免会慢一点，不过也没啥关系，稍微等一下吧，如果出现问题了，就重新执行一下。</p>
-<p>如果出现下面错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">You specified a box version constraint with a direct box file</span><br><span class="line">path. Box version constraints only work with boxes from Vagrant</span><br><span class="line">Cloud or a custom box host. Please remove the version constraint</span><br><span class="line">and try again.</span><br></pre></td></tr></table></figure>
-
-<p>注释掉 Vagrantfile 文件中的 config.vm.box_version 这行。</p>
-<p>执行完成上面的指令之后，CoreOS 就运行了，同时你也注意到有一些关于 ssh 的信息。这个时候怎么登陆到 CoreOS 呢？</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant ssh</span><br></pre></td></tr></table></figure>
-
-<p>然后就登录到了 CoreOS 系统了。</p>
-<p>如果你有代理想要下载加速，也是可以的，在命令行中执行 (Windows)：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set all_proxy=socks5://127.0.0.1:1080</span><br></pre></td></tr></table></figure>
-
-<h2 id="Docker-试用"><a href="#Docker-试用" class="headerlink" title="Docker 试用"></a>Docker 试用</h2><p>先来一个简单的 hello world：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run ubuntu /bin/echo hello world</span><br></pre></td></tr></table></figure>
-
-<p>嗯，据说国内以后会有源，不过现在还没有，所以镜像又得从国外下载，又是一个漫长的等待…. 经过一天一夜的下载，我的 repo 终于下载成功了….</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">core@core-01 / $ docker run ubuntu /bin/echo hello world</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
-
-<p>这样就表示一个 docker 模版安装成功了。不过这还早，怎么利用 docker 部署 python 应用呢？</p>
-<p>首先是创建一个 Docker 容器：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -i -t -p 80:80 ubuntu /bin/bash</span><br></pre></td></tr></table></figure>
-
-<p>执行完成之后，你不仅会创建一个容器，并且会登录到这个容器内了。这样就可以当作一个简单的系统来应用了。退出容器的方法是按快捷键 CTRL+P 和 CTRL+Q。列举运行的 docker 可以使用 sudo docker ps 命令，然后 docker attach [id] 方式进入容器。</p>
-<p>根据之前提到的内容，我们现在可以执行 coreos 里面没有的命令了，比如说 apt-get:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get upgrade</span><br></pre></td></tr></table></figure>
-
-<p>接下来是安装必须的工具了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get install -y tar git curl nano wget dialog net-tools vim build-essential zlib1g-dev</span><br><span class="line">apt-get install -y python python-dev python-setuptools python-pip libxml2-dev libxslt-dev libffi-dev</span><br></pre></td></tr></table></figure>
-
-<p>接下来安装一些 python 依赖库：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install cython gevent flask falcon sqlalchemy lxml cffi somplejson</span><br><span class="line">pip install --allow-external mysql-connector-python mysql-connector-python</span><br></pre></td></tr></table></figure>
-
-<p>下面就是开发一些的东西啦，每个人都不同，这里就不多说了。docker 自动化部署之类的东西就放在下个日志来讲好了。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/05/2014-05-30-quick-Identify-python-object-struct/" class="post-title-link" itemprop="url">快速确认 Python 对象结构</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2014-05-30 00:10:15" itemprop="dateCreated datePublished" datetime="2014-05-30T00:10:15+08:00">2014-05-30</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>好吧，这个问题确实比较蛋疼的一个问题，也是最近经常遇到的问题。具体的原因是这样的，最近使用了一个开源的库实现功能，实现方法是使用的回调方式。这样就出现了一个问题，回调过来的对象是什么格式的我并不知道具体细节。有人说，看看文档不就行了么，问题是这个项目他就没个详细文档。其实读代码也是可以解决这个问题的，但是实际上这是一个时间的工作，并且很容易会把自己也绕进去。那怎么办呢？别急，往下看。</p>
-<ol>
-<li>直接 dir 输出属性</li>
-</ol>
-<hr>
-<p>这个很简单了，直接 print dir(对象名) 就可以打印对象的属性名称了。不过这个得来回测试一下，不能一次性把所有的想要的都能得到。</p>
-<ol start="2">
-<li>利用 pdb 快速定位</li>
-</ol>
-<hr>
-<p>pdb 是官方库中的 Python Debugger，使用方法也比较简单：在 Python 代码中 import pdb 库，然后在指定的位置添加一句：pdb.set_trace()。以我的代码为例，我需要了解 msg 的结构：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StickyMaster</span><span class="params">(controller.Master)</span>:</span></span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">handle_request</span><span class="params">(self, msg)</span>:</span></span><br><span class="line">        pdb.set_trace()</span><br><span class="line">        ......</span><br></pre></td></tr></table></figure>
-
-<p>然后正常执行这个程序，在执行到这句时，得到如下结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">✗ python pdbtest.py</span><br><span class="line">......</span><br><span class="line">&gt; pdbtest.py(63)handle_request()</span><br><span class="line">-&gt; if allow_check(msg) is False:</span><br><span class="line">(Pdb)</span><br></pre></td></tr></table></figure>
-
-<p>是不是看起来很像 gdb 一类的工具？这个时候输入命令查看对象了，输入 h 可以查看帮助：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) h</span><br><span class="line"></span><br><span class="line">Documented commands (type help &lt;topic&gt;):</span><br><span class="line">========================================</span><br><span class="line">EOF    bt         cont      enable  jump  pp       run      unt</span><br><span class="line">a      c          continue  exit    l     q        s        until</span><br><span class="line">alias  cl         d         h       list  quit     step     up</span><br><span class="line">args   clear      debug     help    n     r        tbreak   w</span><br><span class="line">b      commands   disable   ignore  next  restart  u        whatis</span><br><span class="line">break  condition  down      j       p     return   unalias  where</span><br><span class="line"></span><br><span class="line">Miscellaneous help topics:</span><br><span class="line">==========================</span><br><span class="line">exec  pdb</span><br><span class="line"></span><br><span class="line">Undocumented commands:</span><br><span class="line">======================</span><br><span class="line">retval  rv</span><br></pre></td></tr></table></figure>
-
-<p>接下来查看下当前变量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) a</span><br><span class="line">self = &lt;__main__.StickyMaster instance at 0x107884128&gt;</span><br><span class="line">msg = &lt;libmproxy.flow.Request instance at 0x1080d5680&gt;</span><br></pre></td></tr></table></figure>
-
-<p>然后直接 dir 一下这个变量的属性名称，这个时候的好处是方便进行查看属性值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) dir(msg)</span><br><span class="line">[&apos;__doc__&apos;, &apos;__eq__&apos;, &apos;__hash__&apos;, &apos;__init__&apos;, &apos;__module__&apos;, &apos;_assemble&apos;, &apos;_assemble_head&apos;, &apos;_from_state&apos;, &apos;_get_state&apos;, &apos;_load_state&apos;, &apos;_set_replay&apos;, &apos;anticache&apos;, &apos;anticomp&apos;, &apos;client_conn&apos;, &apos;close&apos;, &apos;constrain_encoding&apos;, &apos;content&apos;, &apos;copy&apos;, &apos;decode&apos;, &apos;encode&apos;, &apos;get_content_type&apos;, &apos;get_cookies&apos;, &apos;get_decoded_content&apos;, &apos;get_form_urlencoded&apos;, &apos;get_header_size&apos;, &apos;get_path_components&apos;, &apos;get_query&apos;, &apos;get_transmitted_size&apos;, &apos;get_url&apos;, &apos;headers&apos;, &apos;host&apos;, &apos;httpversion&apos;, &apos;ip&apos;, &apos;is_live&apos;, &apos;is_replay&apos;, &apos;method&apos;, &apos;path&apos;, &apos;port&apos;, &apos;replace&apos;, &apos;reply&apos;, &apos;rfile&apos;, &apos;scheme&apos;, &apos;set_form_urlencoded&apos;, &apos;set_live&apos;, &apos;set_path_components&apos;, &apos;set_query&apos;, &apos;set_url&apos;, &apos;size&apos;, &apos;ssl_setup_timestamp&apos;, &apos;stickyauth&apos;, &apos;stickycookie&apos;, &apos;tcp_setup_timestamp&apos;, &apos;timestamp_end&apos;, &apos;timestamp_start&apos;, &apos;wfile&apos;]</span><br><span class="line">(Pdb) msg.path</span><br><span class="line">&apos;/&apos;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>借助工具直接确定</li>
-</ol>
-<hr>
-<p>这里我使用的是 WingIDE，很简单方便。首先下个断点，然后运行下程序，结果如下图：</p>
-<p><img src="http://ww1.sinaimg.cn/large/69e37fdbgw1egvlg1ocxqj20g7065myb.jpg" alt="WingIDE"></p>
-<p>就是这么简单！</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-20-build-zbar-on-linux/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/05/2014-05-20-build-zbar-on-linux/" class="post-title-link" itemprop="url">Linux 系统上的 zbar 编译安装</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2014-05-20 15:33:35" itemprop="dateCreated datePublished" datetime="2014-05-20T15:33:35+08:00">2014-05-20</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>因为系统不方便使用包升级，因此使用的源码方式安装，坑基本上都踩过了，做一下记录吧。</p>
-<p>zbar 的安装依赖于 ImageMagick，ImageMagick 则依赖于 jpeg 提供 jpeg 图片支持，因此安装顺序为反序安装。</p>
-<h2 id="安装-jpeg-库"><a href="#安装-jpeg-库" class="headerlink" title="安装 jpeg 库"></a>安装 jpeg 库</h2><p>这个安装比较简单，没什么坑来的。先到 <a href="http://www.imagemagick.org/download/delegates/" target="_blank" rel="noopener">http://www.imagemagick.org/download/delegates/</a> 下载 jpeg 的库，比如我用的是 jpegsrc.v9a.tar.gz，执行下列执行进行安装：</p>
-<pre><code>/.configure
-make &amp;&amp; make install</code></pre><h2 id="安装-ImageMagick"><a href="#安装-ImageMagick" class="headerlink" title="安装 ImageMagick"></a>安装 ImageMagick</h2><p>这个安装稍微麻烦一点，还是差不多开始的：</p>
-<pre><code>./configure
-make &amp;&amp; make install</code></pre><p>下面是需要配置一些参数，否则 zbar 安装会不成功：</p>
-<pre><code>export MAGICK_CFLAGS=&quot;/usr/local/include/ImageMagick-6/&quot;
-export MAGICK_LIBS=&quot;/usr/local/lib/libMagickWand-6.Q16.so&quot;</code></pre><h2 id="安装-zbar"><a href="#安装-zbar" class="headerlink" title="安装 zbar"></a>安装 zbar</h2><p>接下来编译 zbar 了，这个之前配置好了会方便一点，同时禁用一些不用的功能：</p>
-<pre><code>./configure --enable-shared --without-gtk --without-qt --without-python CPPFLAGS=-I/usr/local/include/ImageMagick-6
-make &amp;&amp; make install</code></pre><p>接下来添加 ldconfig 文件让 libzbar.so 生效。</p>
-<pre><code>ldconfig</code></pre><h2 id="测试安装"><a href="#测试安装" class="headerlink" title="测试安装"></a>测试安装</h2><p>测试一下 zbar 是否安装成功：</p>
-<pre><code>wget http://i1.hexunimg.cn/2012-03-13/139256375.jpg 
-/usr/local/bin/zbarimg 139256375.jpg
-QR-Code:http://www.baidu.com
-QR-Code:http://apk.hiapk.com/m/downloads?id=com.qq.reader&amp;vcode=11
-QR-Code:http://apk.hiapk.com/m/downloads?id=cn.ibuka.manga.ui&amp;vcode=16843778
-QR-Code:http://apk.hiapk.com/m/downloads?id=com.kugou.android&amp;vcode=4120
-QR-Code:http://apk.hiapk.com/m/downloads?id=com.kandian.vodapp4pad7in&amp;vcode=7
-scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-17-speed-python-code-with-cython/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2073,6 +1513,486 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-01-beego-tips/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/04/2014-04-01-beego-tips/" class="post-title-link" itemprop="url">Beego 的几个小 Tips</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-04-01 18:46:51" itemprop="dateCreated datePublished" datetime="2014-04-01T18:46:51+08:00">2014-04-01</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Beego 框架不错，个人比较喜欢，关键是还有一些开发工具很实用，封装了很多实现，不需要自己做很多工作，在不考虑效率的前提下，都是可以接受的范畴。</p>
+<h2 id="自定义错误页面"><a href="#自定义错误页面" class="headerlink" title="自定义错误页面"></a>自定义错误页面</h2><p>Beego 默认自己带了一些错误页面，在 error.go 文件中进行了定义。以 404 为例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// show <span class="number">404</span> notfound error.</span><br><span class="line">func NotFound(rw http.ResponseWriter, r *http.Request) &#123;t, _ := template.New(<span class="string">"beegoerrortemp"</span>).Parse(errtpl)</span><br><span class="line">	data := make(map[string]interface&#123;&#125;)</span><br><span class="line">	data[<span class="string">"Title"</span>] = <span class="string">"Page Not Found"</span></span><br><span class="line">	data[<span class="string">"Content"</span>] = template.HTML(<span class="string">"&lt;br&gt;The page you have requested has flown the coop."</span>+<span class="string">"&lt;br&gt;Perhaps you are here because:"</span>+<span class="string">"&lt;br&gt;&lt;br&gt;&lt;ul&gt;"</span> +</span><br><span class="line">		<span class="string">"&lt;br&gt;The page has moved"</span>+<span class="string">"&lt;br&gt;The page no longer exists"</span>+<span class="string">"&lt;br&gt;You were looking for your puppy and got lost"</span>+<span class="string">"&lt;br&gt;You like 404 pages"</span>+<span class="string">"&lt;/ul&gt;"</span>)</span><br><span class="line">	data[<span class="string">"BeegoVersion"</span>] = VERSION</span><br><span class="line">	//rw.WriteHeader(http.StatusNotFound)</span><br><span class="line">	t.Execute(rw, data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实自己做一个修改也很容易：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func page_not_found(rw http.ResponseWriter, r *http.Request)&#123;t,_:= template.New(<span class="string">"404.html"</span>).ParseFiles(beego.ViewsPath+<span class="string">"/404.html"</span>)</span><br><span class="line">    data :=make(map[string]interface&#123;&#125;)</span><br><span class="line">    data[<span class="string">"content"</span>] = <span class="string">"page not found"</span></span><br><span class="line">    t.Execute(rw, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;beego.Errorhandler(<span class="string">"404"</span>,page_not_found)</span><br><span class="line">    beego.Router(<span class="string">"/"</span>, &amp;controllers.MainController&#123;&#125;)</span><br><span class="line">    beego.Run()&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Server-字段的修改"><a href="#Server-字段的修改" class="headerlink" title="Server 字段的修改"></a>Server 字段的修改</h2><p>HTTP 返回头中的 Server 总是显示的是 BeegoServer，太不专业了，定义在 config.go 文件中：</p>
+<pre><code>BeegoServerName = &quot;beegoServer&quot;</code></pre><p>我最初是 fork 了一个 repo 改，后来发现，只需要在 app.conf 文件中定义一下就可以了：</p>
+<pre><code>BeegoServerName = ACGSOSERVER</code></pre><p>这样 Server 这个字段就更改掉了，其他的属性也可以用这种方式定义掉。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/03/2014-03-28-python-distribute-building-part-one/" class="post-title-link" itemprop="url">Python 分发包制作（一）</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-03-28 11:33:51" itemprop="dateCreated datePublished" datetime="2014-03-28T11:33:51+08:00">2014-03-28</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>之前我在 <a href="http://www.acgso.com/2013/09/python-development-devops-usage/" target="_blank" rel="noopener">Python 开发实践</a> 中曾经提到过通过 python distribute 实现包分发。但是一直没有机会研究如何实现 (没错…)，今天就粗略的通过一个例子简单描述一下一个包的制作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># setup.py</span></span><br><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> setuptools <span class="keyword">import</span> setup, find_packages</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="comment"># 兼容旧版本 setuptools</span></span><br><span class="line">extra = &#123;&#125;</span><br><span class="line"><span class="keyword">if</span> sys.version_info &gt;= (<span class="number">3</span>,):</span><br><span class="line">    extra[<span class="string">'use_2to3'</span>] = <span class="literal">True</span></span><br><span class="line">    extra[<span class="string">'convert_2to3_doctests'</span>] = [<span class="string">'src/your/module/README.txt'</span>]</span><br><span class="line">    extra[<span class="string">'use_2to3_fixers'</span>] = [<span class="string">'your.fixers'</span>]</span><br><span class="line"></span><br><span class="line">setup(</span><br><span class="line">    <span class="comment"># 包名称</span></span><br><span class="line">    name=<span class="string">'your.module'</span>,</span><br><span class="line">    <span class="comment"># 版本号</span></span><br><span class="line">    version = <span class="string">'1.0'</span>,</span><br><span class="line">    <span class="comment"># 包描述</span></span><br><span class="line">    description=<span class="string">'This is your awesome module'</span>,</span><br><span class="line">    <span class="comment"># 作者名称</span></span><br><span class="line">    author=<span class="string">'You'</span>,</span><br><span class="line">    <span class="comment"># 作者 URL</span></span><br><span class="line">    author_email=<span class="string">'your@email'</span>,</span><br><span class="line">    <span class="comment"># 如果有需要</span></span><br><span class="line">    license = <span class="string">"PSF"</span>,</span><br><span class="line">    <span class="comment"># 如果有需要</span></span><br><span class="line">    url = <span class="string">""</span>,</span><br><span class="line">    <span class="comment"># 依赖包</span></span><br><span class="line">    install_requires=[],</span><br><span class="line">    <span class="comment"># 源代码目录</span></span><br><span class="line">    package_dir = &#123;<span class="string">''</span>:<span class="string">'src'</span>&#125;,</span><br><span class="line">    <span class="comment"># 包文件</span></span><br><span class="line">    packages = find_packages(),</span><br><span class="line">    <span class="comment"># 包含其他必须文件，前面是文件夹，后面是扩展名，将会按此格式排列文件</span></span><br><span class="line">    package_data = &#123;<span class="comment"># include them:'': ['*.txt', '*.rst'],</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment"># 单元测试</span></span><br><span class="line">    test_suite = <span class="string">'your.module.tests'</span>,</span><br><span class="line">    **extra</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>在 setuptools &gt;= 0.7 的版本上，distribute 的功能已经被整合进入 Setuptools，例子也是适合于 0.7 以上版本的配置。上面这个例子适用于纯 Python 的包，很多时候我们需要做一些对 Python 的性能提升 (比如动态库 binding)，怎么做呢？这是下一篇文要写的了…</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-23-golang-rsa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/03/2014-03-23-golang-rsa/" class="post-title-link" itemprop="url">Golang 的 RSA 公私钥方法实现</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-03-23 20:25:52" itemprop="dateCreated datePublished" datetime="2014-03-23T20:25:52+08:00">2014-03-23</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>话不多说，自己看吧，比较明白。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"crypto"</span></span><br><span class="line">    <span class="string">"crypto/rand"</span></span><br><span class="line">    <span class="string">"crypto/rsa"</span></span><br><span class="line">    <span class="string">"crypto/sha256"</span></span><br><span class="line">    <span class="string">"crypto/x509"</span></span><br><span class="line">    <span class="string">"encoding/base64"</span></span><br><span class="line">    <span class="string">"encoding/pem"</span></span><br><span class="line">    <span class="string">"errors"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;signer, err := loadPrivateKey(<span class="string">"private.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"signer is damaged: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    toSign := <span class="string">"date: Thu, 05 Jan 2012 21:31:40 GMT"</span></span><br><span class="line"></span><br><span class="line">    signed, err := signer.Sign([]byte(toSign))</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line">    sig := base64.StdEncoding.EncodeToString(signed)</span><br><span class="line">    fmt.Printf(<span class="string">"Signature: %v\n"</span>, sig)</span><br><span class="line"></span><br><span class="line">    parser, perr := loadPublicKey(<span class="string">"public.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> perr != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    err = parser.Unsign([]byte(toSign), signed)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"Unsign error: %v\n"</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPublicKey(path string) (Unsigner, error) &#123;<span class="keyword">return</span> parsePublicKey([]byte(`-----BEGIN PUBLIC KEY-----</span><br><span class="line">MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCFENGw33yGihy92pDjZQhl0C3</span><br><span class="line"><span class="number">6</span>rPJj+CvfSC8+q28hxA161QFNUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span></span><br><span class="line">Z4UMR7EOcpfdUE9Hf3m/hs+FUR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJw</span><br><span class="line">oYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">-----END PUBLIC KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePublicKey(pemBytes []byte) (Unsigner, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"PUBLIC KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKIXPublicKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> newUnsignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPrivateKey(path string) (Signer, error) &#123;<span class="keyword">return</span> parsePrivateKey([]byte(`-----BEGIN RSA PRIVATE KEY-----</span><br><span class="line">MIICXgIBAAKBgQDCFENGw33yGihy92pDjZQhl0C36rPJj+CvfSC8+q28hxA161QF</span><br><span class="line">NUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span>Z4UMR7EOcpfdUE9Hf3m/hs+F</span><br><span class="line">UR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJwoYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">AoGBAJR8ZkCUvx5kzv+utdl7T5MnordT1TvoXXJGXK7ZZ+UuvMNUCdN2QPc4sBiA</span><br><span class="line">QWvLw1cSKt5DsKZ8UETpYPy8pPYnnDEz2dDYiaew9+xEpubyeW2oH4Zx71wqBtOK</span><br><span class="line">kqwrXa/pzdpiucRRjk6vE6YY7EBBs/g7uanVpGibOVAEsqH1AkEA7DkjVH28WDUg</span><br><span class="line">f1nqvfn2Kj6CT7nIcE3jGJsZZ7zlZmBmHFDONMLUrXR/Zm3pR5m0tCmBqa5RK95u</span><br><span class="line"><span class="number">412j</span>t1dPIwJBANJT3v8pnkth48bQo/fKel6uEYyboRtA5/uHuHkZ6FQF7OUkGogc</span><br><span class="line">mSJluOdc5t6hI1VsLn0QZEjQZMEOWr+wKSMCQQCC4kXJEsHAve77oP6HtG/IiEn7</span><br><span class="line">kpyUXRNvFsDE0czpJJBvL/aRFUJxuRK91jhjC68sA7NsKMGg5OXb5I5Jj36xAkEA</span><br><span class="line">gIT7aFOYBFwGgQAQkWNKLvySgKbAZRTeLBacpHMuQdl1DfdntvAyqpAZ0lY0RKmW</span><br><span class="line">G6aFKaqQfOXKCyWoUiVknQJAXrlgySFci/<span class="number">2</span>ueKlIE1QqIiLSZ8V8OlpFLRnb1pzI</span><br><span class="line"><span class="number">7</span>U1yQXnTAEFYM560yJlzUpOb1V4cScGd365tiSMvxLOvTA==</span><br><span class="line">-----END RSA PRIVATE KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePrivateKey(pemBytes []byte) (Signer, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"RSA PRIVATE KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKCS1PrivateKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> newSignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Signer interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Sign(data []byte) ([]byte, error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Unsigner interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Unsign(data[]byte, sig []byte) error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newSignerFromKey(k interface&#123;&#125;) (Signer, error) &#123;</span><br><span class="line">    var sshKey Signer</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PrivateKey:</span><br><span class="line">        sshKey = &amp;rsaPrivateKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newUnsignerFromKey(k interface&#123;&#125;) (Unsigner, error) &#123;</span><br><span class="line">    var sshKey Unsigner</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PublicKey:</span><br><span class="line">        sshKey = &amp;rsaPublicKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type rsaPublicKey struct &#123;*rsa.PublicKey&#125;</span><br><span class="line"></span><br><span class="line">type rsaPrivateKey struct &#123;*rsa.PrivateKey&#125;</span><br><span class="line"></span><br><span class="line">// Sign signs data <span class="keyword">with</span> rsa-sha256</span><br><span class="line">func (r *rsaPrivateKey) Sign(data []byte) ([]byte, error) &#123;h := sha256.New()</span><br><span class="line">    h.Write(data)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.SignPKCS1v15(rand.Reader, r.PrivateKey, crypto.SHA256, d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Unsign verifies the message using a rsa-sha256 signature</span><br><span class="line">func (r *rsaPublicKey) Unsign(message []byte, sig []byte) error &#123;h := sha256.New()</span><br><span class="line">    h.Write(message)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.VerifyPKCS1v15(r.PublicKey, crypto.SHA256, d, sig)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2121,7 +2041,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-count">76</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

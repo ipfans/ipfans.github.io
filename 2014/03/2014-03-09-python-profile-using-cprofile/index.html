@@ -94,20 +94,18 @@
 
 
 
-  <meta name="description" content="好吧，这个问题确实比较蛋疼的一个问题，也是最近经常遇到的问题。具体的原因是这样的，最近使用了一个开源的库实现功能，实现方法是使用的回调方式。这样就出现了一个问题，回调过来的对象是什么格式的我并不知道具体细节。有人说，看看文档不就行了么，问题是这个项目他就没个详细文档。其实读代码也是可以解决这个问题的，但是实际上这是一个时间的工作，并且很容易会把自己也绕进去。那怎么办呢？别急，往下看。  直接 di">
+  <meta name="description" content="在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是 C 语言扩展的实现。 官方文档页面：http://docs.python.org/2/library/profile.htm">
 <meta name="keywords" content="Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="快速确认 Python 对象结构">
-<meta property="og:url" content="https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/index.html">
+<meta property="og:title" content="利用 cProfile 进行 Python 程序性能调优">
+<meta property="og:url" content="https://www.4async.com/2014/03/2014-03-09-python-profile-using-cprofile/index.html">
 <meta property="og:site_name" content="ipfans&#39;s Blog">
-<meta property="og:description" content="好吧，这个问题确实比较蛋疼的一个问题，也是最近经常遇到的问题。具体的原因是这样的，最近使用了一个开源的库实现功能，实现方法是使用的回调方式。这样就出现了一个问题，回调过来的对象是什么格式的我并不知道具体细节。有人说，看看文档不就行了么，问题是这个项目他就没个详细文档。其实读代码也是可以解决这个问题的，但是实际上这是一个时间的工作，并且很容易会把自己也绕进去。那怎么办呢？别急，往下看。  直接 di">
+<meta property="og:description" content="在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是 C 语言扩展的实现。 官方文档页面：http://docs.python.org/2/library/profile.htm">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgw1egvlg1ocxqj20g7065myb.jpg">
-<meta property="og:updated_time" content="2019-07-04T03:20:39.084Z">
+<meta property="og:updated_time" content="2019-07-04T03:29:19.382Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="快速确认 Python 对象结构">
-<meta name="twitter:description" content="好吧，这个问题确实比较蛋疼的一个问题，也是最近经常遇到的问题。具体的原因是这样的，最近使用了一个开源的库实现功能，实现方法是使用的回调方式。这样就出现了一个问题，回调过来的对象是什么格式的我并不知道具体细节。有人说，看看文档不就行了么，问题是这个项目他就没个详细文档。其实读代码也是可以解决这个问题的，但是实际上这是一个时间的工作，并且很容易会把自己也绕进去。那怎么办呢？别急，往下看。  直接 di">
-<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/69e37fdbgw1egvlg1ocxqj20g7065myb.jpg">
+<meta name="twitter:title" content="利用 cProfile 进行 Python 程序性能调优">
+<meta name="twitter:description" content="在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是 C 语言扩展的实现。 官方文档页面：http://docs.python.org/2/library/profile.htm">
 
 
 
@@ -117,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/">
+  <link rel="canonical" href="https://www.4async.com/2014/03/2014-03-09-python-profile-using-cprofile/">
 
 
 
@@ -127,7 +125,7 @@
   };
 </script>
 
-  <title>快速确认 Python 对象结构 | ipfans's Blog</title>
+  <title>利用 cProfile 进行 Python 程序性能调优 | ipfans's Blog</title>
   
 
 
@@ -322,7 +320,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-09-python-profile-using-cprofile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="ipfans">
@@ -339,7 +337,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">快速确认 Python 对象结构
+          <h2 class="post-title" itemprop="name headline">利用 cProfile 进行 Python 程序性能调优
 
               
             
@@ -365,7 +363,7 @@
                 
               
 
-              <time title="Created: 2014-05-30 00:10:15" itemprop="dateCreated datePublished" datetime="2014-05-30T00:10:15+08:00">2014-05-30</time>
+              <time title="Created: 2014-03-09 23:04:00" itemprop="dateCreated datePublished" datetime="2014-03-09T23:04:00+08:00">2014-03-09</time>
             </span>
           
 
@@ -380,7 +378,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+                <time title="Modified: 2019-07-04 11:29:19" itemprop="dateModified" datetime="2019-07-04T11:29:19+08:00">2019-07-04</time>
               </span>
             
           
@@ -417,38 +415,41 @@
       
 
       
-        <p>好吧，这个问题确实比较蛋疼的一个问题，也是最近经常遇到的问题。具体的原因是这样的，最近使用了一个开源的库实现功能，实现方法是使用的回调方式。这样就出现了一个问题，回调过来的对象是什么格式的我并不知道具体细节。有人说，看看文档不就行了么，问题是这个项目他就没个详细文档。其实读代码也是可以解决这个问题的，但是实际上这是一个时间的工作，并且很容易会把自己也绕进去。那怎么办呢？别急，往下看。</p>
-<ol>
-<li>直接 dir 输出属性</li>
-</ol>
-<hr>
-<p>这个很简单了，直接 print dir(对象名) 就可以打印对象的属性名称了。不过这个得来回测试一下，不能一次性把所有的想要的都能得到。</p>
-<ol start="2">
-<li>利用 pdb 快速定位</li>
-</ol>
-<hr>
-<p>pdb 是官方库中的 Python Debugger，使用方法也比较简单：在 Python 代码中 import pdb 库，然后在指定的位置添加一句：pdb.set_trace()。以我的代码为例，我需要了解 msg 的结构：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StickyMaster</span><span class="params">(controller.Master)</span>:</span></span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">handle_request</span><span class="params">(self, msg)</span>:</span></span><br><span class="line">        pdb.set_trace()</span><br><span class="line">        ......</span><br></pre></td></tr></table></figure>
+        <p>在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是 C 语言扩展的实现。</p>
+<p>官方文档页面：<a href="http://docs.python.org/2/library/profile.html#module-cProfile" target="_blank" rel="noopener">http://docs.python.org/2/library/profile.html#module-cProfile</a>。</p>
+<p>先从一个例子开始：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delay</span><span class="params">()</span>:</span></span><br><span class="line">    time.sleep(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    delay()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"123"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
-<p>然后正常执行这个程序，在执行到这句时，得到如下结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">✗ python pdbtest.py</span><br><span class="line">......</span><br><span class="line">&gt; pdbtest.py(63)handle_request()</span><br><span class="line">-&gt; if allow_check(msg) is False:</span><br><span class="line">(Pdb)</span><br></pre></td></tr></table></figure>
+<p>使用下面这个命令就可以快速诊断：</p>
+<pre><code>python -m cProfile profile_run.py</code></pre><p>输出如下：</p>
+<pre><code>     5 function calls in 10.002 seconds
 
-<p>是不是看起来很像 gdb 一类的工具？这个时候输入命令查看对象了，输入 h 可以查看帮助：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) h</span><br><span class="line"></span><br><span class="line">Documented commands (type help &lt;topic&gt;):</span><br><span class="line">========================================</span><br><span class="line">EOF    bt         cont      enable  jump  pp       run      unt</span><br><span class="line">a      c          continue  exit    l     q        s        until</span><br><span class="line">alias  cl         d         h       list  quit     step     up</span><br><span class="line">args   clear      debug     help    n     r        tbreak   w</span><br><span class="line">b      commands   disable   ignore  next  restart  u        whatis</span><br><span class="line">break  condition  down      j       p     return   unalias  where</span><br><span class="line"></span><br><span class="line">Miscellaneous help topics:</span><br><span class="line">==========================</span><br><span class="line">exec  pdb</span><br><span class="line"></span><br><span class="line">Undocumented commands:</span><br><span class="line">======================</span><br><span class="line">retval  rv</span><br></pre></td></tr></table></figure>
+Ordered by: standard name
 
-<p>接下来查看下当前变量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) a</span><br><span class="line">self = &lt;__main__.StickyMaster instance at 0x107884128&gt;</span><br><span class="line">msg = &lt;libmproxy.flow.Request instance at 0x1080d5680&gt;</span><br></pre></td></tr></table></figure>
+ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    1    0.002    0.002   10.002   10.002 profile_run.py:11(main)
+    1    0.000    0.000   10.002   10.002 profile_run.py:4(&lt;module&gt;)
+    1    0.000    0.000   10.000   10.000 profile_run.py:7(delay)  &lt;-- 调用者这里
+    1    0.000    0.000    0.000    0.000 {method&apos;disable&apos;of&apos;_lsprof.Profiler&apos;objects}
+    1   10.000   10.000   10.000   10.000 {time.sleep}   &lt;--- 元凶在这里</code></pre><p>如果想输出到文件，添加一个 - o 参数即可：</p>
+<pre><code>python -m cProfile -o profile_output profile_run.py</code></pre><p>若想按照某列排序，则可以添加这个参数：</p>
+<pre><code>python -m cProfile -o profile_output -s tottime profile_run.py</code></pre><p>那么等等，这个结果文件如何识别呢：</p>
+<p>ncalls: 这个函数被调用的次数</p>
+<p>tottime：函数的具体执行时间，不包含其他函数消耗的时间</p>
+<p>percall：每次调用的消耗（包含其他函数消耗和不包含的时间）</p>
+<p>cumtime：程序消耗的总时间</p>
+<p>然后看一个实际的成果看一下结果如何，具体的诊断数据：</p>
+<p>![cProfile Result](<a href="http://ww3.sinaimg.cn/large/69e37fdbgw1ee9sd2f44tj20hs0dkjuv.jpg&quot;cProfile" target="_blank" rel="noopener">http://ww3.sinaimg.cn/large/69e37fdbgw1ee9sd2f44tj20hs0dkjuv.jpg&quot;cProfile</a> Result”)</p>
+<p>发现最慢的执行模块是 not_operation 这个函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_operation</span><span class="params">(operand, dictionary, pfile)</span>:</span></span><br><span class="line">    <span class="string">"""Performs the operation `NOT operand`."""</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of all the documents (sorted)</span></span><br><span class="line">    all_docs = dictionary.all_docs()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of the documents matching `operand` (sorted)</span></span><br><span class="line">    results = get_results(operand, dictionary, pfile, force_list=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [doc <span class="keyword">for</span> doc <span class="keyword">in</span> all_docs <span class="keyword">if</span> doc <span class="keyword">not</span> <span class="keyword">in</span> results]</span><br></pre></td></tr></table></figure>
 
-<p>然后直接 dir 一下这个变量的属性名称，这个时候的好处是方便进行查看属性值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) dir(msg)</span><br><span class="line">[&apos;__doc__&apos;, &apos;__eq__&apos;, &apos;__hash__&apos;, &apos;__init__&apos;, &apos;__module__&apos;, &apos;_assemble&apos;, &apos;_assemble_head&apos;, &apos;_from_state&apos;, &apos;_get_state&apos;, &apos;_load_state&apos;, &apos;_set_replay&apos;, &apos;anticache&apos;, &apos;anticomp&apos;, &apos;client_conn&apos;, &apos;close&apos;, &apos;constrain_encoding&apos;, &apos;content&apos;, &apos;copy&apos;, &apos;decode&apos;, &apos;encode&apos;, &apos;get_content_type&apos;, &apos;get_cookies&apos;, &apos;get_decoded_content&apos;, &apos;get_form_urlencoded&apos;, &apos;get_header_size&apos;, &apos;get_path_components&apos;, &apos;get_query&apos;, &apos;get_transmitted_size&apos;, &apos;get_url&apos;, &apos;headers&apos;, &apos;host&apos;, &apos;httpversion&apos;, &apos;ip&apos;, &apos;is_live&apos;, &apos;is_replay&apos;, &apos;method&apos;, &apos;path&apos;, &apos;port&apos;, &apos;replace&apos;, &apos;reply&apos;, &apos;rfile&apos;, &apos;scheme&apos;, &apos;set_form_urlencoded&apos;, &apos;set_live&apos;, &apos;set_path_components&apos;, &apos;set_query&apos;, &apos;set_url&apos;, &apos;size&apos;, &apos;ssl_setup_timestamp&apos;, &apos;stickyauth&apos;, &apos;stickycookie&apos;, &apos;tcp_setup_timestamp&apos;, &apos;timestamp_end&apos;, &apos;timestamp_start&apos;, &apos;wfile&apos;]</span><br><span class="line">(Pdb) msg.path</span><br><span class="line">&apos;/&apos;</span><br></pre></td></tr></table></figure>
+<p>接下来是怎么修复了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># the fix.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_operation</span><span class="params">(operand, dictionary, pfile)</span>:</span></span><br><span class="line">    <span class="string">"""Performs the operation `NOT operand`."""</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of all the documents (sorted)</span></span><br><span class="line">    all_docs = dictionary.all_docs()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of the documents matching `operand` (sorted)</span></span><br><span class="line">    results = get_results(operand, dictionary, pfile, force_list=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list_a_and_not_list_b(all_docs, results)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list_a_and_not_list_b</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="string">"""Returns `a AND NOT b`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Both a and b are expected to be sorted lists.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    """</span>results = []</span><br><span class="line">    idx_a = <span class="number">0</span></span><br><span class="line">    idx_b = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> idx_a &lt;len(a) <span class="keyword">and</span> idx_b &lt;len(b):</span><br><span class="line">        <span class="keyword">if</span> a[idx_a] &lt;b[idx_b]:</span><br><span class="line">            results.append(a[idx_a])</span><br><span class="line">            idx_a += <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> b[idx_b] &lt;a[idx_a]:</span><br><span class="line">            idx_b += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            idx_a += <span class="number">1</span></span><br><span class="line">            idx_b += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> idx_a &lt;len(a):</span><br><span class="line">        results.append(a[idx_a])</span><br><span class="line">        idx_a += <span class="number">1</span></span><br></pre></td></tr></table></figure>
 
-<ol start="3">
-<li>借助工具直接确定</li>
-</ol>
-<hr>
-<p>这里我使用的是 WingIDE，很简单方便。首先下个断点，然后运行下程序，结果如下图：</p>
-<p><img src="http://ww1.sinaimg.cn/large/69e37fdbgw1egvlg1ocxqj20g7065myb.jpg" alt="WingIDE"></p>
-<p>就是这么简单！</p>
+<p>对了，说起来，上面图片查看工具是 cprofilev，是针对 cProfile 的查看工具，使用命令安装：</p>
+<pre><code>pip install bottle cprofilev
+
+cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问题，你如果想解决，可以自己看一下:)</p>
 
       
     </div>
@@ -483,7 +484,7 @@
   <li class="post-copyright-link">
     <strong>Post link: </strong>
     
-    <a href="https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/" title="快速确认 Python 对象结构">https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/</a>
+    <a href="https://www.4async.com/2014/03/2014-03-09-python-profile-using-cprofile/" title="利用 cProfile 进行 Python 程序性能调优">https://www.4async.com/2014/03/2014-03-09-python-profile-using-cprofile/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
@@ -512,8 +513,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2014/05/2014-05-20-build-zbar-on-linux/" rel="next" title="Linux 系统上的 zbar 编译安装">
-                <i class="fa fa-chevron-left"></i> Linux 系统上的 zbar 编译安装
+              <a href="/2014/03/2014-02-18-benchmark-python-2/" rel="next" title="Python 性能技巧 (二)">
+                <i class="fa fa-chevron-left"></i> Python 性能技巧 (二)
               </a>
             
           </div>
@@ -522,8 +523,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2014/06/2014-06-01-try-docker-with-coreos/" rel="prev" title="初识 Docker">
-                初识 Docker <i class="fa fa-chevron-right"></i>
+              <a href="/2014/03/2014-03-13-python-base64-encode-utf-8error/" rel="prev" title="Python 中文 UTF-8 编码 base64 报错">
+                Python 中文 UTF-8 编码 base64 报错 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

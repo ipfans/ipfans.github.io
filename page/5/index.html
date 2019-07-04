@@ -316,583 +316,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/07/2015-07-22-howto-make-your-own-permission-plugin/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/07/2015-07-22-howto-make-your-own-permission-plugin/" class="post-title-link" itemprop="url">如何用 Python 实现一个权限管理系列 (一)</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2015-07-22 11:00:15" itemprop="dateCreated datePublished" datetime="2015-07-22T11:00:15+08:00">2015-07-22</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近在实现大型 B2B 系统之后，有很多细节需要考虑，其中一环就是权限控制。之前考虑的比较少，认为这一块框架可以 handle 问题不大，后来发现 Tornado 目前没有一个比较完善的权限管理模块，甚至连个包都没有… 于是只能自己动手，丰衣足食了。参考的方式也是通过 Flask-Principal 的类似实现方式。</p>
-<h2 id="原型"><a href="#原型" class="headerlink" title="原型"></a>原型</h2><p>一个权限管理模块应该有的功能应该有哪些呢？从基本角度出发，应该包含用户身份 (Identity)、用户角色（RoleNeed）、用户权限（Permission）这三个最基本的分类组成。那么从最开始，就需要定义这几个类：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RoleNeed</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Identity</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Permission</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-
-<p>再考虑一下，其实 RoleNeed 更像一个权限的枚举数组，除此之外，比如用户可能存在的权限与分组和单独的用户权限都有关系，这里需要更加抽象一下。具体的可以分成 UserNeed 和 RoleNeed，分别对应用户权限与用户组权限。这样如果通过类实现还是比较麻烦，需要继承，但是实际上这也只是一个元组而已。所以可以选择下面的方式：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> partial。</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"></span><br><span class="line">Need = namedtuple(<span class="string">'Need'</span>, [<span class="string">'method'</span>, <span class="string">'value'</span>])</span><br><span class="line"></span><br><span class="line">UserNeed = partial(Need,<span class="string">'user'</span>)</span><br><span class="line">RoleNeed = partial(Need,<span class="string">'role'</span>)</span><br></pre></td></tr></table></figure>
-
-<p>namedtuple 是 Python 高级数据结构中的一个内容，在 collections 包中，其实实现的效果是生成带名称的元组。比如 Need = namedtuple(‘Need’, [‘method’, ‘value’]) 实际上就是生成了一个名字叫做 Need 的元组，你可以通过 Need(‘a’, ‘b’) 的方式设置对应的 method 和 value 的值。</p>
-<p>接下来的 partial 是和之前我另一篇文章中介绍的 wraps 在一个包中的功能，可以简单理解为方便填入一个初始化参数的方法，比如 partial(Need,’user’) 等同于 Need(‘user’, x)，但是 x 的这个参数需要在调用 parial 的返回值的时候才会传入，可以用来预定义一部分的环境参数。</p>
-<p>现在相当于我们定义了一个以用户为维度身份权限要求和以用户组为维度的身份要求。接下来就可以实现用户身份的一些功能了。</p>
-<p>用户身份或者权限保存我们应该交由上层的业务逻辑来实现，以保证最大的模块复用性，那么用户身份就剩下了，声明用户身份和判断用户是否有权限执行某项权限操作的内容。</p>
-<p>所以我们可以这样实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Identity(object):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    A set of needs provided by this user</span><br><span class="line"></span><br><span class="line">    example:</span><br><span class="line">        identity = Identity(&apos;ali&apos;)</span><br><span class="line">        identity.provides.add((&apos;role&apos;, &apos;admin&apos;))</span><br><span class="line">    &quot;&quot;&quot;def __init__(self, name):</span><br><span class="line">        self.name = name</span><br><span class="line">        self.provides = set()</span><br><span class="line"></span><br><span class="line">    def can(self, permission):</span><br><span class="line">        return permission.allows(self)</span><br></pre></td></tr></table></figure>
-
-<p>这里的 provides 是作为用户权限的声明，是一个每个权限的集合。可以在最开始登录等等时间进行加载。而 can 方法则是判断某个权限是否可以被执行。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/06/2015-06-17-something-about-python-decorator/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/06/2015-06-17-something-about-python-decorator/" class="post-title-link" itemprop="url">Python Decorator 修饰器简介</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2015-06-17 18:00:15" itemprop="dateCreated datePublished" datetime="2015-06-17T18:00:15+08:00">2015-06-17</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>很久没有写技术存档了，太过于罪恶。最近在智能硬件创业公司担任架构师，推广一些更新更酷的技术应用在各个方面，包括 Golang/Python/Docker 等，如果你有兴趣，也欢迎加入我们: kevin[at yeeuu[dot]com。广告时间结束。</p>
-<p>Python 的修饰器是比较常见的开发应用帮助工具，他可以实现一些批量的修饰工作，比如统一来添加一些小功能等等。但是这些功能对原有的函数不产生侵入，也就是说可以实现快速的修改和替换、移除。</p>
-<p>如果你使用过 Python 的 Web 框架，相信你对修饰器应该并不陌生：<a href="https://docs.djangoproject.com/en/1.8/topics/http/decorators/" target="_blank" rel="noopener">Django</a>、<a href="http://flask.pocoo.org/docs/0.10/patterns/viewdecorators/" target="_blank" rel="noopener">Flask</a>、<a href="http://tornado.readthedocs.org/en/latest/gen.html#decorators" target="_blank" rel="noopener">Tornado</a> 等常见的框架中都包含了修饰器的使用。</p>
-<p>那么 decorators 是怎么实现的呢？还是先从一个简单的例子开始。先看下 Tornado 中的 <a href>tornado.web.authenticated</a> 使用。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></span><br><span class="line"><span class="meta">    @tornado.web.authenticated</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.render(<span class="string">'index.html'</span>)</span><br></pre></td></tr></table></figure>
-
-<p>tornado.web.authenticated 的作用就是判断 self.current_user 是否为 None 或者为空，否则跳转到之前设置的 login_url 地址去。至于获取 current_user 的内容，可以通过重载 get_current_user 函数实现。</p>
-<p>在查看修饰器的具体代码之前，我们先来了解一下 Python 修饰器的原理。Python 的修饰器其实是实现了下面的一个简单功能：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@decorator</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-
-<p>等价于</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">func = decorator(func)</span><br></pre></td></tr></table></figure>
-
-<p>多层的修饰器则是实现了多层的回调调用。同时在底层层面，提供了 <a href="https://docs.python.org/2/library/functools.html" target="_blank" rel="noopener">functools 包</a> 用于实现相关功能，注意，该包是 2.5 之后版本中引入，如果你还在使用古老的 Python 版本，则可以手工实现同等功能。</p>
-<p>具体功能 <a href="http://tornado.readthedocs.org/en/latest/_modules/tornado/web.html#authenticated" target="_blank" rel="noopener">实现代码</a> 如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">authenticated</span><span class="params">(method)</span>:</span></span><br><span class="line">    <span class="string">"""Decorate methods with this to require that the user be logged in.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    If the user is not logged in, they will be redirected to the configured</span></span><br><span class="line"><span class="string">    `login url &lt;RequestHandler.get_login_url&gt;`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    If you configure a login url with a query parameter, Tornado will</span></span><br><span class="line"><span class="string">    assume you know what you're doing and use it as-is.  If not, it</span></span><br><span class="line"><span class="string">    will add a `next` parameter so the login page knows where to send</span></span><br><span class="line"><span class="string">    you once you're logged in."""</span></span><br><span class="line">    <span class="comment"># method 作为参数传入，实际上为类中的 get 等函数。</span></span><br><span class="line"><span class="meta">    @functools.wraps(method)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">        <span class="comment"># 判断当前用户</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.current_user:</span><br><span class="line">            <span class="comment"># 没有权限操作</span></span><br><span class="line">            <span class="keyword">if</span> self.request.method <span class="keyword">in</span> (<span class="string">"GET"</span>, <span class="string">"HEAD"</span>):</span><br><span class="line">                <span class="comment"># get、head 请求跳转到登录页面</span></span><br><span class="line">                url = self.get_login_url()</span><br><span class="line">                <span class="keyword">if</span> <span class="string">"?"</span> <span class="keyword">not</span> <span class="keyword">in</span> url:</span><br><span class="line">                    <span class="keyword">if</span> urlparse.urlsplit(url).scheme:</span><br><span class="line">                        <span class="comment"># if login url is absolute, make next absolute too</span></span><br><span class="line">                        next_url = self.request.full_url()</span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        next_url = self.request.uri</span><br><span class="line">                    url += <span class="string">"?"</span> + urlencode(dict(next=next_url))</span><br><span class="line">                self.redirect(url)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="comment"># 403 无权限操作</span></span><br><span class="line">            <span class="keyword">raise</span> HTTPError(<span class="number">403</span>)</span><br><span class="line">        <span class="comment"># 通过验证</span></span><br><span class="line">        <span class="keyword">return</span> method(self, *args, **kwargs)</span><br><span class="line">    <span class="comment"># 函数式编程的典型范例 :)</span></span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br></pre></td></tr></table></figure>
-
-<p>根据这个，我们也可以尝试写一个自己的修饰器:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_hello</span><span class="params">(method)</span>:</span></span><br><span class="line"><span class="meta">    @functools.wraps(method)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">"hello!"</span></span><br><span class="line">        <span class="keyword">return</span> method(*args, **kwargs)</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@print_hello</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'in main'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
-<p>输出结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜  Desktop  python test_decorator.py</span><br><span class="line">hello!</span><br><span class="line">in main</span><br></pre></td></tr></table></figure>
-
-<p>现在看起来已经很不错了，但是不能修改参数看起来有些需求还是无法实现。那么能够通过修饰器传递修改一些参数么？答案是肯定的。</p>
-<p>修改一下上面的例子，我们试着用修饰器向函数中传递参数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_hello</span><span class="params">(method)</span>:</span></span><br><span class="line"><span class="meta">    @functools.wraps(method)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        kwargs[<span class="string">'name'</span>] = <span class="string">'Pythonic'</span></span><br><span class="line">        <span class="keyword">return</span> method(*args, **kwargs)</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@print_hello</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Hello, &#123;&#125;"</span>.format(name)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
-<p>输出结果为:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  Desktop  python test_decorator.py</span><br><span class="line">Hello, Pythonic</span><br></pre></td></tr></table></figure>
-
-<p>那么能不能向修饰器里面传递参数呢？当然也是可以的，不过相对来说更复杂一点：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_hello</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">real_wrapper</span><span class="params">(method)</span>:</span></span><br><span class="line"><span class="meta">        @functools.wraps(method)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            kwargs[<span class="string">'name'</span>] = name</span><br><span class="line">            <span class="keyword">return</span> method(*args, **kwargs)</span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line">    <span class="keyword">return</span> real_wrapper</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@print_hello(name='Pythonic')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Hello, &#123;&#125;"</span>.format(name)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
-<p>输出结果为:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  Desktop  python test_decorator.py</span><br><span class="line">Hello, Pythonic</span><br></pre></td></tr></table></figure>
-
-<p>上面的实现方法是函数式的实现，Python 同样支持类模式的修饰器支持，比如：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">function_wrapper</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, wrapped)</span>:</span></span><br><span class="line">        self.wrapped = wrapped</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.wrapped(*args, **kwargs)</span><br><span class="line"></span><br><span class="line"><span class="meta">@function_wrapper</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">function</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-
-<p>虽然修饰器很好，但是也是会存在一些问题的，使用这种方式之后，想要获取被包装函数的参数（argument）或源代码（source code）时并不能取到正确的结果。不过这个问题可以通过使用反射来解决：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_true_argspec</span><span class="params">(method)</span>:</span></span><br><span class="line">    argspec = inspect.getargspec(method)</span><br><span class="line">    args = argspec[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">if</span> args <span class="keyword">and</span> args[<span class="number">0</span>] == <span class="string">'self'</span>:</span><br><span class="line">        <span class="keyword">return</span> argspec</span><br><span class="line">    <span class="keyword">if</span> hasattr(method,<span class="string">'__func__'</span>):</span><br><span class="line">        method = method.__func__</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> hasattr(method,<span class="string">'func_closure'</span>) <span class="keyword">or</span> method.func_closure <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">raise</span> Exception(<span class="string">"No closure for method."</span>)</span><br><span class="line"></span><br><span class="line">    method = method.func_closure[<span class="number">0</span>].cell_contents</span><br><span class="line">    <span class="keyword">return</span> get_true_argspec(method)</span><br></pre></td></tr></table></figure>
-
-<p>不过说实话，很少在项目中获取这些东西，只是提供一些解决方案，实际上 functools.wraps 可以解决绝大多数的问题。</p>
-<p>最后介绍一些比较常用的修饰器使用方法，比如，进行性能测试：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cProfile, pstats, StringIO</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run_profile</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        datafn = func.__name__ + <span class="string">".profile"</span> <span class="comment"># Name the data file</span></span><br><span class="line">        prof = cProfile.Profile()</span><br><span class="line">        retval = prof.runcall(func, *args, **kwargs)</span><br><span class="line">        s = StringIO.StringIO()</span><br><span class="line">        sortby = <span class="string">'cumulative'</span></span><br><span class="line">        ps = pstats.Stats(prof, stream=s).sort_stats(sortby)</span><br><span class="line">        ps.print_stats()</span><br><span class="line">        <span class="keyword">print</span> s.getvalue()</span><br><span class="line">        <span class="keyword">return</span> retval</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br></pre></td></tr></table></figure>
-
-<p>还有一些案例可以看之前提供的几个框架的 API，比如路由组织，异步处理等等都是通过修饰器实现的。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/01/2015-01-12-rust-note-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/01/2015-01-12-rust-note-2/" class="post-title-link" itemprop="url">Rust 学习笔记二</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2015-01-12 20:46:15" itemprop="dateCreated datePublished" datetime="2015-01-12T20:46:15+08:00">2015-01-12</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>注：rust 目前更新仍旧很频繁，语法变化比较大，学习主要基于 Rust 1.0 Alpha 版本，之后可能会有部分变化。</p>
-<p>补充下笔记一中的内容：在 Rust 中变量默认是不能改变的，只有声明为 mut，才可以进行改变。</p>
-<p>比如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let x = 5;</span><br><span class="line">x = 7;</span><br></pre></td></tr></table></figure>
-
-<p>会报错 <figure class="highlight plain"><figcaption><span>of immutable variable```，不过下面的方法就可以正常执行了：</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-<p>let mut x = 5;<br>x = 7;</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">逻辑控制</span><br><span class="line">---</span><br><span class="line">一般逻辑控制分为判断分支、循环等等. if 在 rust 中区别不是特别大：</span><br></pre></td></tr></table></figure>
-
-<p>let x = 5;<br>if x == 5 {println!(“x is five!”);} else {println!(“x is not five :(“);}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">不过还可以这样写：</span><br></pre></td></tr></table></figure>
-
-<p>let x = 5;<br>let y = if x == 5 {10} else {15}; // y: i32</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">值得注意的是，下面的写法是不正确的：</span><br></pre></td></tr></table></figure>
-
-<p>let x = 5;<br>let y: i32 = if x == 5 {10;} else {15;};</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">但是 for 循环区别就比较大了：</span><br></pre></td></tr></table></figure>
-
-<p>for x in range(0, 10) {println!(“{}”, x); // x: i32<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">while 循环则可以更加简单：</span><br></pre></td></tr></table></figure>
-
-<p>let mut x = 5u;       // mut x: uint<br>let mut done = false; // mut done: bool</p>
-<p>while !done {<br>    x += x - 3;<br>    println!(“{}”, x);<br>    if x % 5 == 0 {done = true;}<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果是要求死循环，使用 ```loop&#123;&#125;``` 更加方便。在循环中可以使用 ```break``` 和 ```continue``` 控制流程进度，这个没什么区别就不再说了。</span><br><span class="line"></span><br><span class="line">复杂类型</span><br><span class="line">---</span><br><span class="line">Rust 作为更先进的编程语言，一些复杂变量类型肯定是支持的，比如 ```Tuples```、```Structs```、```Enums``` 等等。</span><br></pre></td></tr></table></figure>
-
-<p>let x = (1,”hello”); // or let x: (i32, &amp;str) = (1,”hello”);<br>struct Point {<br>    x: i32,<br>    y: i32,<br>}<br>let mut point = Point {x: 0, y: 0};<br>enum Ordering {<br>    Less,<br>    Equal,<br>    Greater,<br>}<br>Ordering::Less<br>let a = [1, 2, 3];<br>println!(“a has {} elements”, a.len());<br>for e in a.iter() {println!(“{}”, e);<br>}<br>println!(“{}”, a[0]);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">值得一提的是 ```::``` 表示的命名空间，这点和 c 有一些区别。</span><br><span class="line"></span><br><span class="line">除此之外，Rust 自定义了一些类型，一种是介于 tuple 和 struct 之间的类型，比如：</span><br></pre></td></tr></table></figure>
-
-<p>struct Color(i32, i32, i32);<br>struct Point(i32, i32, i32);<br>let black  = Color(0, 0, 0);<br>let origin = Point(0, 0, 0);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">还有一种叫向量：</span><br></pre></td></tr></table></figure>
-
-<p>let mut nums = vec![1, 2, 3];<br>nums.push(4);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">有点像队列，可变商都，可以 push 进行添加。</span><br><span class="line"></span><br><span class="line">还有一种切片：</span><br></pre></td></tr></table></figure>
-
-<p>let a = [0, 1, 2, 3, 4];<br>let middle = a.slice(1, 4);     // A slice of a: just the elements [1,2,3]</p>
-<p>for e in middle.iter() {println!(“{}”, e);          // Prints 1, 2, 3<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Match</span><br><span class="line">---</span><br><span class="line">这个也是 Rust 特有的，有点类似 switch 的感觉：</span><br></pre></td></tr></table></figure>
-
-<p>let x = 5;</p>
-<p>match x {1 =&gt; println!(“one”),<br>    2 =&gt; println!(“two”),<br>    3 =&gt; println!(“three”),<br>    4 =&gt; println!(“four”),<br>    5 =&gt; println!(“five”),<br>    _ =&gt; println!(“something else”),<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">但是 Rust 一定要有最后一行，否则会编译报错。</span><br><span class="line"></span><br><span class="line">字符串类型</span><br><span class="line">---</span><br><span class="line">Rust 的字符串默认是 UTF-8 编码，但是有两种类型的字符串 &amp; str 和 String。这两种类型下面的方式比较：</span><br></pre></td></tr></table></figure>
-
-<p>let a = “aaa”; //a: &amp;str<br>let b = a.to_string(); // b: String<br>let c = b.to_slice(); //c: &amp;str</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&amp;str 和 String 的区别是，&amp;str 更像是 slice，而 String 则是像一个分配过的内存空间字符串，不能够被修改长度（待确认）。String-&gt;&amp;str 会比较方便，但是 &amp; str-&gt;String 消耗则会比较大。</span><br><span class="line">输入输出</span><br><span class="line">---</span><br><span class="line">输入是官方库 std::io::stdin()。```::``` 之前介绍过，是命名空间，相当于 std::io 库里的 stdin 函数。</span><br><span class="line"></span><br><span class="line">比如：</span><br></pre></td></tr></table></figure>
-
-<p>use std::io;</p>
-<p>fn main() {println!(“Type something!”);</p>
-<pre><code>let input = io::stdin().read_line().ok().expect(&quot;Failed to read line&quot;);
-
-println!(&quot;{}&quot;, input);</code></pre><p>}</p>
-<pre><code></code></pre>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/01/2015-01-11-rust-note-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1009,7 +432,7 @@ println!(&quot;{}&quot;, input);</code></pre><p>}</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Cargo.toml 文件内容如下：</span><br></pre></td></tr></table></figure>
 
 <p>[package]</p>
-<p>name = “hello_world”<br>version = “0.0.1”<br>authors = [“Your name <a href="mailto:&#121;&#x6f;&#x75;&#64;&#x65;&#120;&#x61;&#109;&#112;&#x6c;&#101;&#46;&#99;&#x6f;&#109;" target="_blank" rel="noopener">&#121;&#x6f;&#x75;&#64;&#x65;&#120;&#x61;&#109;&#112;&#x6c;&#101;&#46;&#99;&#x6f;&#109;</a>“ ]</p>
+<p>name = “hello_world”<br>version = “0.0.1”<br>authors = [“Your name <a href="mailto:&#121;&#x6f;&#117;&#x40;&#x65;&#120;&#x61;&#x6d;&#x70;&#108;&#x65;&#x2e;&#x63;&#111;&#109;" target="_blank" rel="noopener">&#121;&#x6f;&#117;&#x40;&#x65;&#120;&#x61;&#x6d;&#x70;&#108;&#x65;&#x2e;&#x63;&#111;&#109;</a>“ ]</p>
 <p>[[bin]]</p>
 <p>name = “main”</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">使用 ```cargo build``` 命令可以在 src 同级目录下生成 target 目录，下面就包含了生成的二进制文件。执行完成之后，在 Cargo.toml 同级目录下会生成一个 Cargo.lock 文件，这个文件是用于跟踪程序版本的。</span><br><span class="line"></span><br><span class="line">参数赋值</span><br><span class="line">---</span><br><span class="line">参数赋值主要是使用下面的方式：</span><br></pre></td></tr></table></figure>
@@ -2083,6 +1506,566 @@ println!(&quot;{}&quot;, input);</code></pre><p>}</p>
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/06/2014-06-01-try-docker-with-coreos/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/06/2014-06-01-try-docker-with-coreos/" class="post-title-link" itemprop="url">初识 Docker</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-06-10 11:52:15" itemprop="dateCreated datePublished" datetime="2014-06-10T11:52:15+08:00">2014-06-10</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Docker 是一个最近非常风行的轻量级应用容器。如果不知道的同学自行搜索去吧，这里不在赘述了。针对于 Docker，有个初创公司推出了适用于 Docker 专用的 Linux：CoreOS。一个号称系统运行内存只占用 161MB 的精简系统。这个 CoreOS 只提供了 Docker 需要的必须环境和管理功能，因此很轻量级，非常适合批量部署和我们这种用来研究学习目的的。</p>
+<p>值得一提的是里面的管理工具也是由 Golang 开发的，提供 json api 接口，有兴趣的话可以自行查看源代码。</p>
+<h2 id="安装必须软件"><a href="#安装必须软件" class="headerlink" title="安装必须软件"></a>安装必须软件</h2><p>必须软件需要 Vargrant 和 VirtualBox。Vargrant 可以当作是一个虚拟机和镜像管理器，VirtualBox 我就不用说了吧。安装下载就不说立刻，下载安装地址见下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://www.vagrantup.com/downloads.html</span><br><span class="line">https://www.virtualbox.org/wiki/Downloads</span><br></pre></td></tr></table></figure>
+
+<h2 id="CoreOS-配置"><a href="#CoreOS-配置" class="headerlink" title="CoreOS 配置"></a>CoreOS 配置</h2><p>CoreOS 的 Vargrant 脚本可以在 <a href="https://github.com/coreos/coreos-vagrant/" target="_blank" rel="noopener">https://github.com/coreos/coreos-vagrant/</a> 找到，下载下来的方法很简单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/coreos/coreos-vagrant/</span><br><span class="line">cd coreos-vagrant</span><br></pre></td></tr></table></figure>
+
+<p>然后执行命令直接开启虚拟机了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant up</span><br></pre></td></tr></table></figure>
+
+<p>如果第一次执行，会下载 CoreOS 的镜像，站点在国外，难免会慢一点，不过也没啥关系，稍微等一下吧，如果出现问题了，就重新执行一下。</p>
+<p>如果出现下面错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">You specified a box version constraint with a direct box file</span><br><span class="line">path. Box version constraints only work with boxes from Vagrant</span><br><span class="line">Cloud or a custom box host. Please remove the version constraint</span><br><span class="line">and try again.</span><br></pre></td></tr></table></figure>
+
+<p>注释掉 Vagrantfile 文件中的 config.vm.box_version 这行。</p>
+<p>执行完成上面的指令之后，CoreOS 就运行了，同时你也注意到有一些关于 ssh 的信息。这个时候怎么登陆到 CoreOS 呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant ssh</span><br></pre></td></tr></table></figure>
+
+<p>然后就登录到了 CoreOS 系统了。</p>
+<p>如果你有代理想要下载加速，也是可以的，在命令行中执行 (Windows)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set all_proxy=socks5://127.0.0.1:1080</span><br></pre></td></tr></table></figure>
+
+<h2 id="Docker-试用"><a href="#Docker-试用" class="headerlink" title="Docker 试用"></a>Docker 试用</h2><p>先来一个简单的 hello world：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run ubuntu /bin/echo hello world</span><br></pre></td></tr></table></figure>
+
+<p>嗯，据说国内以后会有源，不过现在还没有，所以镜像又得从国外下载，又是一个漫长的等待…. 经过一天一夜的下载，我的 repo 终于下载成功了….</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">core@core-01 / $ docker run ubuntu /bin/echo hello world</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
+
+<p>这样就表示一个 docker 模版安装成功了。不过这还早，怎么利用 docker 部署 python 应用呢？</p>
+<p>首先是创建一个 Docker 容器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -i -t -p 80:80 ubuntu /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>执行完成之后，你不仅会创建一个容器，并且会登录到这个容器内了。这样就可以当作一个简单的系统来应用了。退出容器的方法是按快捷键 CTRL+P 和 CTRL+Q。列举运行的 docker 可以使用 sudo docker ps 命令，然后 docker attach [id] 方式进入容器。</p>
+<p>根据之前提到的内容，我们现在可以执行 coreos 里面没有的命令了，比如说 apt-get:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get upgrade</span><br></pre></td></tr></table></figure>
+
+<p>接下来是安装必须的工具了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get install -y tar git curl nano wget dialog net-tools vim build-essential zlib1g-dev</span><br><span class="line">apt-get install -y python python-dev python-setuptools python-pip libxml2-dev libxslt-dev libffi-dev</span><br></pre></td></tr></table></figure>
+
+<p>接下来安装一些 python 依赖库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install cython gevent flask falcon sqlalchemy lxml cffi somplejson</span><br><span class="line">pip install --allow-external mysql-connector-python mysql-connector-python</span><br></pre></td></tr></table></figure>
+
+<p>下面就是开发一些的东西啦，每个人都不同，这里就不多说了。docker 自动化部署之类的东西就放在下个日志来讲好了。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/05/2014-05-30-quick-Identify-python-object-struct/" class="post-title-link" itemprop="url">快速确认 Python 对象结构</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-05-30 00:10:15" itemprop="dateCreated datePublished" datetime="2014-05-30T00:10:15+08:00">2014-05-30</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>好吧，这个问题确实比较蛋疼的一个问题，也是最近经常遇到的问题。具体的原因是这样的，最近使用了一个开源的库实现功能，实现方法是使用的回调方式。这样就出现了一个问题，回调过来的对象是什么格式的我并不知道具体细节。有人说，看看文档不就行了么，问题是这个项目他就没个详细文档。其实读代码也是可以解决这个问题的，但是实际上这是一个时间的工作，并且很容易会把自己也绕进去。那怎么办呢？别急，往下看。</p>
+<ol>
+<li>直接 dir 输出属性</li>
+</ol>
+<hr>
+<p>这个很简单了，直接 print dir(对象名) 就可以打印对象的属性名称了。不过这个得来回测试一下，不能一次性把所有的想要的都能得到。</p>
+<ol start="2">
+<li>利用 pdb 快速定位</li>
+</ol>
+<hr>
+<p>pdb 是官方库中的 Python Debugger，使用方法也比较简单：在 Python 代码中 import pdb 库，然后在指定的位置添加一句：pdb.set_trace()。以我的代码为例，我需要了解 msg 的结构：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StickyMaster</span><span class="params">(controller.Master)</span>:</span></span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">handle_request</span><span class="params">(self, msg)</span>:</span></span><br><span class="line">        pdb.set_trace()</span><br><span class="line">        ......</span><br></pre></td></tr></table></figure>
+
+<p>然后正常执行这个程序，在执行到这句时，得到如下结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">✗ python pdbtest.py</span><br><span class="line">......</span><br><span class="line">&gt; pdbtest.py(63)handle_request()</span><br><span class="line">-&gt; if allow_check(msg) is False:</span><br><span class="line">(Pdb)</span><br></pre></td></tr></table></figure>
+
+<p>是不是看起来很像 gdb 一类的工具？这个时候输入命令查看对象了，输入 h 可以查看帮助：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) h</span><br><span class="line"></span><br><span class="line">Documented commands (type help &lt;topic&gt;):</span><br><span class="line">========================================</span><br><span class="line">EOF    bt         cont      enable  jump  pp       run      unt</span><br><span class="line">a      c          continue  exit    l     q        s        until</span><br><span class="line">alias  cl         d         h       list  quit     step     up</span><br><span class="line">args   clear      debug     help    n     r        tbreak   w</span><br><span class="line">b      commands   disable   ignore  next  restart  u        whatis</span><br><span class="line">break  condition  down      j       p     return   unalias  where</span><br><span class="line"></span><br><span class="line">Miscellaneous help topics:</span><br><span class="line">==========================</span><br><span class="line">exec  pdb</span><br><span class="line"></span><br><span class="line">Undocumented commands:</span><br><span class="line">======================</span><br><span class="line">retval  rv</span><br></pre></td></tr></table></figure>
+
+<p>接下来查看下当前变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) a</span><br><span class="line">self = &lt;__main__.StickyMaster instance at 0x107884128&gt;</span><br><span class="line">msg = &lt;libmproxy.flow.Request instance at 0x1080d5680&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后直接 dir 一下这个变量的属性名称，这个时候的好处是方便进行查看属性值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) dir(msg)</span><br><span class="line">[&apos;__doc__&apos;, &apos;__eq__&apos;, &apos;__hash__&apos;, &apos;__init__&apos;, &apos;__module__&apos;, &apos;_assemble&apos;, &apos;_assemble_head&apos;, &apos;_from_state&apos;, &apos;_get_state&apos;, &apos;_load_state&apos;, &apos;_set_replay&apos;, &apos;anticache&apos;, &apos;anticomp&apos;, &apos;client_conn&apos;, &apos;close&apos;, &apos;constrain_encoding&apos;, &apos;content&apos;, &apos;copy&apos;, &apos;decode&apos;, &apos;encode&apos;, &apos;get_content_type&apos;, &apos;get_cookies&apos;, &apos;get_decoded_content&apos;, &apos;get_form_urlencoded&apos;, &apos;get_header_size&apos;, &apos;get_path_components&apos;, &apos;get_query&apos;, &apos;get_transmitted_size&apos;, &apos;get_url&apos;, &apos;headers&apos;, &apos;host&apos;, &apos;httpversion&apos;, &apos;ip&apos;, &apos;is_live&apos;, &apos;is_replay&apos;, &apos;method&apos;, &apos;path&apos;, &apos;port&apos;, &apos;replace&apos;, &apos;reply&apos;, &apos;rfile&apos;, &apos;scheme&apos;, &apos;set_form_urlencoded&apos;, &apos;set_live&apos;, &apos;set_path_components&apos;, &apos;set_query&apos;, &apos;set_url&apos;, &apos;size&apos;, &apos;ssl_setup_timestamp&apos;, &apos;stickyauth&apos;, &apos;stickycookie&apos;, &apos;tcp_setup_timestamp&apos;, &apos;timestamp_end&apos;, &apos;timestamp_start&apos;, &apos;wfile&apos;]</span><br><span class="line">(Pdb) msg.path</span><br><span class="line">&apos;/&apos;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>借助工具直接确定</li>
+</ol>
+<hr>
+<p>这里我使用的是 WingIDE，很简单方便。首先下个断点，然后运行下程序，结果如下图：</p>
+<p><img src="http://ww1.sinaimg.cn/large/69e37fdbgw1egvlg1ocxqj20g7065myb.jpg" alt="WingIDE"></p>
+<p>就是这么简单！</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-20-build-zbar-on-linux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/05/2014-05-20-build-zbar-on-linux/" class="post-title-link" itemprop="url">Linux 系统上的 zbar 编译安装</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-05-20 15:33:35" itemprop="dateCreated datePublished" datetime="2014-05-20T15:33:35+08:00">2014-05-20</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>因为系统不方便使用包升级，因此使用的源码方式安装，坑基本上都踩过了，做一下记录吧。</p>
+<p>zbar 的安装依赖于 ImageMagick，ImageMagick 则依赖于 jpeg 提供 jpeg 图片支持，因此安装顺序为反序安装。</p>
+<h2 id="安装-jpeg-库"><a href="#安装-jpeg-库" class="headerlink" title="安装 jpeg 库"></a>安装 jpeg 库</h2><p>这个安装比较简单，没什么坑来的。先到 <a href="http://www.imagemagick.org/download/delegates/" target="_blank" rel="noopener">http://www.imagemagick.org/download/delegates/</a> 下载 jpeg 的库，比如我用的是 jpegsrc.v9a.tar.gz，执行下列执行进行安装：</p>
+<pre><code>/.configure
+make &amp;&amp; make install</code></pre><h2 id="安装-ImageMagick"><a href="#安装-ImageMagick" class="headerlink" title="安装 ImageMagick"></a>安装 ImageMagick</h2><p>这个安装稍微麻烦一点，还是差不多开始的：</p>
+<pre><code>./configure
+make &amp;&amp; make install</code></pre><p>下面是需要配置一些参数，否则 zbar 安装会不成功：</p>
+<pre><code>export MAGICK_CFLAGS=&quot;/usr/local/include/ImageMagick-6/&quot;
+export MAGICK_LIBS=&quot;/usr/local/lib/libMagickWand-6.Q16.so&quot;</code></pre><h2 id="安装-zbar"><a href="#安装-zbar" class="headerlink" title="安装 zbar"></a>安装 zbar</h2><p>接下来编译 zbar 了，这个之前配置好了会方便一点，同时禁用一些不用的功能：</p>
+<pre><code>./configure --enable-shared --without-gtk --without-qt --without-python CPPFLAGS=-I/usr/local/include/ImageMagick-6
+make &amp;&amp; make install</code></pre><p>接下来添加 ldconfig 文件让 libzbar.so 生效。</p>
+<pre><code>ldconfig</code></pre><h2 id="测试安装"><a href="#测试安装" class="headerlink" title="测试安装"></a>测试安装</h2><p>测试一下 zbar 是否安装成功：</p>
+<pre><code>wget http://i1.hexunimg.cn/2012-03-13/139256375.jpg 
+/usr/local/bin/zbarimg 139256375.jpg
+QR-Code:http://www.baidu.com
+QR-Code:http://apk.hiapk.com/m/downloads?id=com.qq.reader&amp;vcode=11
+QR-Code:http://apk.hiapk.com/m/downloads?id=cn.ibuka.manga.ui&amp;vcode=16843778
+QR-Code:http://apk.hiapk.com/m/downloads?id=com.kugou.android&amp;vcode=4120
+QR-Code:http://apk.hiapk.com/m/downloads?id=com.kandian.vodapp4pad7in&amp;vcode=7
+scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2131,7 +2114,7 @@ println!(&quot;{}&quot;, input);</code></pre><p>}</p>
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-count">76</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

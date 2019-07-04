@@ -316,491 +316,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/07/2014-03-09-python-profile-using-cprofile/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/07/2014-03-09-python-profile-using-cprofile/" class="post-title-link" itemprop="url">利用 cProfile 进行 Python 程序性能调优</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-07-04 11:20:39" itemprop="dateCreated datePublished" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-            </span>
-          
-
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是 C 语言扩展的实现。</p>
-<p>官方文档页面：<a href="http://docs.python.org/2/library/profile.html#module-cProfile" target="_blank" rel="noopener">http://docs.python.org/2/library/profile.html#module-cProfile</a>。</p>
-<p>先从一个例子开始：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delay</span><span class="params">()</span>:</span></span><br><span class="line">    time.sleep(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    delay()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"123"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
-<p>使用下面这个命令就可以快速诊断：</p>
-<pre><code>python -m cProfile profile_run.py</code></pre><p>输出如下：</p>
-<pre><code>     5 function calls in 10.002 seconds
-
-Ordered by: standard name
-
-ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-    1    0.002    0.002   10.002   10.002 profile_run.py:11(main)
-    1    0.000    0.000   10.002   10.002 profile_run.py:4(&lt;module&gt;)
-    1    0.000    0.000   10.000   10.000 profile_run.py:7(delay)  &lt;-- 调用者这里
-    1    0.000    0.000    0.000    0.000 {method&apos;disable&apos;of&apos;_lsprof.Profiler&apos;objects}
-    1   10.000   10.000   10.000   10.000 {time.sleep}   &lt;--- 元凶在这里</code></pre><p>如果想输出到文件，添加一个 - o 参数即可：</p>
-<pre><code>python -m cProfile -o profile_output profile_run.py</code></pre><p>若想按照某列排序，则可以添加这个参数：</p>
-<pre><code>python -m cProfile -o profile_output -s tottime profile_run.py</code></pre><p>那么等等，这个结果文件如何识别呢：</p>
-<p>ncalls: 这个函数被调用的次数</p>
-<p>tottime：函数的具体执行时间，不包含其他函数消耗的时间</p>
-<p>percall：每次调用的消耗（包含其他函数消耗和不包含的时间）</p>
-<p>cumtime：程序消耗的总时间</p>
-<p>然后看一个实际的成果看一下结果如何，具体的诊断数据：</p>
-<p>![cProfile Result](<a href="http://ww3.sinaimg.cn/large/69e37fdbgw1ee9sd2f44tj20hs0dkjuv.jpg&quot;cProfile" target="_blank" rel="noopener">http://ww3.sinaimg.cn/large/69e37fdbgw1ee9sd2f44tj20hs0dkjuv.jpg&quot;cProfile</a> Result”)</p>
-<p>发现最慢的执行模块是 not_operation 这个函数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_operation</span><span class="params">(operand, dictionary, pfile)</span>:</span></span><br><span class="line">    <span class="string">"""Performs the operation `NOT operand`."""</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of all the documents (sorted)</span></span><br><span class="line">    all_docs = dictionary.all_docs()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of the documents matching `operand` (sorted)</span></span><br><span class="line">    results = get_results(operand, dictionary, pfile, force_list=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [doc <span class="keyword">for</span> doc <span class="keyword">in</span> all_docs <span class="keyword">if</span> doc <span class="keyword">not</span> <span class="keyword">in</span> results]</span><br></pre></td></tr></table></figure>
-
-<p>接下来是怎么修复了：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># the fix.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_operation</span><span class="params">(operand, dictionary, pfile)</span>:</span></span><br><span class="line">    <span class="string">"""Performs the operation `NOT operand`."""</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of all the documents (sorted)</span></span><br><span class="line">    all_docs = dictionary.all_docs()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of the documents matching `operand` (sorted)</span></span><br><span class="line">    results = get_results(operand, dictionary, pfile, force_list=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list_a_and_not_list_b(all_docs, results)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list_a_and_not_list_b</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="string">"""Returns `a AND NOT b`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Both a and b are expected to be sorted lists.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    """</span>results = []</span><br><span class="line">    idx_a = <span class="number">0</span></span><br><span class="line">    idx_b = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> idx_a &lt;len(a) <span class="keyword">and</span> idx_b &lt;len(b):</span><br><span class="line">        <span class="keyword">if</span> a[idx_a] &lt;b[idx_b]:</span><br><span class="line">            results.append(a[idx_a])</span><br><span class="line">            idx_a += <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> b[idx_b] &lt;a[idx_a]:</span><br><span class="line">            idx_b += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            idx_a += <span class="number">1</span></span><br><span class="line">            idx_b += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> idx_a &lt;len(a):</span><br><span class="line">        results.append(a[idx_a])</span><br><span class="line">        idx_a += <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p>对了，说起来，上面图片查看工具是 cprofilev，是针对 cProfile 的查看工具，使用命令安装：</p>
-<pre><code>pip install bottle cprofilev
-
-cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问题，你如果想解决，可以自己看一下:)</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/07/2014-03-13-python-base64-encode-utf-8error/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/07/2014-03-13-python-base64-encode-utf-8error/" class="post-title-link" itemprop="url">Python 中文 UTF-8 编码 base64 报错</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-07-04 11:20:39" itemprop="dateCreated datePublished" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-            </span>
-          
-
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>第一次用 python encode utf-8 的中文，结果发现了一个蛋疼的问题</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">base64.b64encode(<span class="string">u' 你好世界 '</span>)</span><br><span class="line"></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">    File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    File <span class="string">"/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/base64.py"</span>, line <span class="number">53</span>, <span class="keyword">in</span> b64encode</span><br><span class="line">        encoded = binascii.b2a_base64(s)[:<span class="number">-1</span>]</span><br><span class="line">UnicodeEncodeError: <span class="string">'ascii'</span> codec can<span class="string">'t encode characters in position 0-3: ordinal not in range(128)</span></span><br></pre></td></tr></table></figure>
-
-<p>这个问题在 <a href="http://bugs.python.org/issue4329" target="_blank" rel="noopener">2008 年就提出来过</a>，这个 Base64 的这个库的实现是按照 RFC 3548 实现的，仅按照 byte 和 ascii 字符，所以会出现这个问题。如果修复这个问题的话，就是把 unicode 字符换成 byte 就可以正常了。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">_str = <span class="string">u"你好世界"</span></span><br><span class="line">encoded = base64.b64encode(_str.encode(<span class="string">'utf-8'</span>))</span><br><span class="line"><span class="keyword">print</span> encoded</span><br><span class="line"><span class="keyword">print</span> base64.b64decode(encoded).decode(<span class="string">'utf-8'</span>)</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/04/2019-04-02-go-executable-size-visualization-with-d3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/04/2019-04-02-go-executable-size-visualization-with-d3/" class="post-title-link" itemprop="url">为什么我的Go程序这么大？-使用D3进行Go程序的体积可视化</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-04-02 14:22:00" itemprop="dateCreated datePublished" datetime="2019-04-02T14:22:00+08:00">2019-04-02</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>原文：<a href="https://science.raphael.poss.name/go-executable-size-visualization-with-d3.html" target="_blank" rel="noopener">Why are my Go executable files so large? - Size visualization of Go executables using D3</a><br>作者：Raphael ‘kena’ Poss</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/04/2019-04-02-go-executable-size-visualization-with-d3/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/03/2019-03-20-using-go-modules/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1946,6 +1461,495 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/05/2018-05-10-consul-graceful-stop/" class="post-title-link" itemprop="url">Consul平滑升级的一点建议</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-05-10 15:20:00" itemprop="dateCreated datePublished" datetime="2018-05-10T15:20:00+08:00">2018-05-10</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们从 Consul 0.6.x 版本开始使用，中间也遇到的一些各种各样的问题，比较常见的操作问题就是 consul 的升级问题（比如解决 BUG，早期 Consul 的 BUG 也遇到了好几个）。</p>
+<p>平滑升级时，我们常见的方式一般为替换 consul 可执行文件，然后执行 Graceful 重启</p>
+<p>常见 Consul 的 Graceful leave 的方法有以下两种：</p>
+<ol>
+<li>发送 <code>SIGINT</code> 信号至 Consul；</li>
+<li>连接要升级的 consul，使用命令 <code>consul leave</code> 发送离开命令；</li>
+</ol>
+<p>这两种方式都会让该节点主动退出集群并结束进程，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[INFO] agent: Caught signal:  terminated</span><br><span class="line">[INFO] agent: Graceful shutdown disabled. Exiting</span><br><span class="line">[INFO] agent: Requesting shutdown</span><br><span class="line">[INFO] consul: shutting down server</span><br><span class="line">[WARN] serf: Shutdown without a Leave</span><br><span class="line">[ERR] agent: Coordinate update error: No cluster leader</span><br><span class="line">[ERR] agent: failed to sync remote state: No cluster leader</span><br><span class="line">[WARN] serf: Shutdown without a Leave</span><br><span class="line">[INFO] manager: shutting down</span><br><span class="line">[INFO] agent: consul server down</span><br><span class="line">[INFO] agent: shutdown complete</span><br><span class="line">[INFO] agent: Stopping DNS server 10.135.218.10:53 (tcp)</span><br><span class="line">[INFO] agent: Stopping DNS server 10.135.218.10:53 (udp)</span><br><span class="line">[INFO] agent: Stopping HTTP server 10.135.218.10:8500 (tcp)</span><br><span class="line">[INFO] agent: Waiting for endpoints to shut down</span><br><span class="line">[INFO] agent: Endpoints down</span><br><span class="line">[INFO] agent: Exit code: 1</span><br></pre></td></tr></table></figure>
+
+<p>之后重新启动 consul 进程即可。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/05/2018-05-03-new-domain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/05/2018-05-03-new-domain/" class="post-title-link" itemprop="url">配置新域名</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-05-03 11:20:00" itemprop="dateCreated datePublished" datetime="2018-05-03T11:20:00+08:00">2018-05-03</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>感谢Github Page终于<a href="https://blog.github.com/2018-05-01-github-pages-custom-domains-https/" target="_blank" rel="noopener">支持了Let’s Encrypt的HTTPS</a>，很久之前购买的域名终于可以再次发光发热了。</p>
+<p>新的域名： <a href="https://www.4async.com">https://www.4async.com</a></p>
+<p>值得注意的是，在新的域名生效之后，HTTPS需要等待1-2个小时才能启用。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/" class="post-title-link" itemprop="url">树莓派无界面配置WiFi</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-04-20 17:30:00" itemprop="dateCreated datePublished" datetime="2018-04-20T17:30:00+08:00">2018-04-20</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>树莓派支持命令行下配置WiFi连接，可以通过编辑 <code>/etc/wpa_supplicant/wpa_supplicant.conf</code> 文件配置对应的WiFi配置。具体的内容可以使用 <code>wpa_passphrase</code> 工具生成对应的配置信息，附加到该文件结尾即可。</p>
+<p>假设我存在 <code>SSID</code> 为 <code>testing</code> 密码为 <code>testingPassword</code> 的WiFi网络，我可以使用 <code>wpa_passphrase</code> 生成对应的配置字符串：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ wpa_passphrase &quot;testing&quot; &quot;testingPassword&quot;</span><br><span class="line">network=&#123;</span><br><span class="line">	ssid=&quot;testing&quot;</span><br><span class="line">	#psk=&quot;testingPassword&quot;</span><br><span class="line">	psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">```</span><br></pre></td></tr></table></figure>
+
+<p>当然你可以在 <code>psk</code> 填写原始的密码。</p>
+<p>不过在某些极限环境下，我们有可能便装出门，未配置网线等工具，这个时候只有未加入过的WiFi网络，这样如何处理呢？</p>
+<p>这种方式与开启SSH方式类似，在制作的SD卡根目录下，新增/修改对应的 <code>wpa_supplicant.conf</code> 文件，添加对应的信息即可。</p>
+<p><em>注意，该文件包含默认头部信息不能缺少。如Raspbian 20180418版本完整配置为：</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev</span><br><span class="line">update_config=1</span><br><span class="line"></span><br><span class="line">network=&#123;</span><br><span class="line">	ssid=&quot;testing&quot;</span><br><span class="line">	#psk=&quot;testingPassword&quot;</span><br><span class="line">	psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1994,7 +1998,7 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-count">76</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

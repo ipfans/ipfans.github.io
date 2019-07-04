@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.4async.com/"/>
-  <updated>2019-07-04T03:20:39.104Z</updated>
+  <updated>2019-07-04T03:20:39.096Z</updated>
   <id>https://www.4async.com/</id>
   
   <author>
@@ -15,67 +15,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>利用 cProfile 进行 Python 程序性能调优</title>
-    <link href="https://www.4async.com/2019/07/2014-03-09-python-profile-using-cprofile/"/>
-    <id>https://www.4async.com/2019/07/2014-03-09-python-profile-using-cprofile/</id>
-    <published>2019-07-04T03:20:39.103Z</published>
-    <updated>2019-07-04T03:20:39.104Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是
-      
-    
-    </summary>
-    
-    
-      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python 中文 UTF-8 编码 base64 报错</title>
-    <link href="https://www.4async.com/2019/07/2014-03-13-python-base64-encode-utf-8error/"/>
-    <id>https://www.4async.com/2019/07/2014-03-13-python-base64-encode-utf-8error/</id>
-    <published>2019-07-04T03:20:39.061Z</published>
-    <updated>2019-07-04T03:20:39.062Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;第一次用 python encode utf-8 的中文，结果发现了一个蛋疼的问题&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/s
-      
-    
-    </summary>
-    
-    
-      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>为什么我的Go程序这么大？-使用D3进行Go程序的体积可视化</title>
-    <link href="https://www.4async.com/2019/04/2019-04-02-go-executable-size-visualization-with-d3/"/>
-    <id>https://www.4async.com/2019/04/2019-04-02-go-executable-size-visualization-with-d3/</id>
-    <published>2019-04-02T06:22:00.000Z</published>
-    <updated>2019-07-04T03:20:39.046Z</updated>
-    
-    <summary type="html">
-    
-      &lt;p&gt;原文：&lt;a href=&quot;https://science.raphael.poss.name/go-executable-size-visualization-with-d3.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Why are my Go executable files so large? - Size visualization of Go executables using D3&lt;/a&gt;&lt;br&gt;作者：Raphael ‘kena’ Poss&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
-    
-  </entry>
   
   <entry>
     <title>使用Go Modules</title>
@@ -428,6 +367,85 @@
       <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
     
       <category term="dtrace" scheme="https://www.4async.com/tags/dtrace/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>traefik 简介</title>
+    <link href="https://www.4async.com/2016/08/2016-08-01-introduce-traefik-load-balance/"/>
+    <id>https://www.4async.com/2016/08/2016-08-01-introduce-traefik-load-balance/</id>
+    <published>2016-08-01T03:00:00.000Z</published>
+    <updated>2019-07-04T03:20:39.051Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;traefik(&lt;a href=&quot;https://traefik.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://traefik.io/&lt;/a&gt;) 是一款开源的反向代理与负载均衡工具。它最大的优点是能够与常见的微服务系统直接整合，可以
+      
+    
+    </summary>
+    
+    
+      <category term="traefik" scheme="https://www.4async.com/tags/traefik/"/>
+    
+      <category term="LoadBalance" scheme="https://www.4async.com/tags/LoadBalance/"/>
+    
+      <category term="configure" scheme="https://www.4async.com/tags/configure/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>利用 Type Hint 提升 Python 程序开发效率</title>
+    <link href="https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/"/>
+    <id>https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/</id>
+    <published>2016-07-13T12:00:00.000Z</published>
+    <updated>2019-07-04T03:20:39.050Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Type Hint（或者叫做 PEP-484）提供了一种针对 Python 程序的类型标注标准。&lt;/p&gt;
+&lt;p&gt;为什么使用 Type Hint？对于动态语言而言，常常出现的情况是当你写了一段代码后，隔段时间你可能忘记这个方法的原型是什么样子的了，你也不清楚具体应该传入什么类
+      
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
+    
+      <category term="TypeHint" scheme="https://www.4async.com/tags/TypeHint/"/>
+    
+      <category term="PEP0484" scheme="https://www.4async.com/tags/PEP0484/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CoreOS 折腾笔记（三）了解 Etcd</title>
+    <link href="https://www.4async.com/2016/05/2016-05-31-learning-coreos-part3/"/>
+    <id>https://www.4async.com/2016/05/2016-05-31-learning-coreos-part3/</id>
+    <published>2016-05-31T01:13:00.000Z</published>
+    <updated>2019-07-04T03:20:39.085Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;服务发现是微服务化架构中重要的一环，服务的配置信息需要有一种可靠高效的发现机制，保证服务上线时可以及时被使用，服务失效中断时可以及时切走。服务发现工具 Etcd 就是为了这种需求开发的。&lt;/p&gt;
+&lt;h2 id=&quot;什么是-Etcd？&quot;&gt;&lt;a href=&quot;#什么是-Etcd？&quot;
+      
+    
+    </summary>
+    
+    
+      <category term="Docker" scheme="https://www.4async.com/tags/Docker/"/>
+    
+      <category term="CoreOS" scheme="https://www.4async.com/tags/CoreOS/"/>
+    
+      <category term="Fleet" scheme="https://www.4async.com/tags/Fleet/"/>
+    
+      <category term="Etcd" scheme="https://www.4async.com/tags/Etcd/"/>
     
   </entry>
   
