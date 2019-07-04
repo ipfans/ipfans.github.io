@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>ipfans&#39;s Blog</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://www.4async.com/"/>
+  <updated>2019-07-04T03:04:29.467Z</updated>
+  <id>https://www.4async.com/</id>
+  
+  <author>
+    <name>ipfans</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://www.4async.com/2019/07/hello-world/"/>
+    <id>https://www.4async.com/2019/07/hello-world/</id>
+    <published>2019-07-04T03:04:29.466Z</published>
+    <updated>2019-07-04T03:04:29.467Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
