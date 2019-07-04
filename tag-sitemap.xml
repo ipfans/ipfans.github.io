@@ -3,6 +3,13 @@
 
 
     <url>
+        <loc>https://www.4async.com/tags/Others/</loc>
+        <lastmod>2019-07-04T03:25:25.631Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>https://www.4async.com/tags/vendor/</loc>
         <lastmod>2019-07-04T03:20:39.118Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -75,13 +82,6 @@
     <url>
         <loc>https://www.4async.com/tags/JWT/</loc>
         <lastmod>2019-07-04T03:20:39.110Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Others/</loc>
-        <lastmod>2019-07-04T03:20:39.109Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

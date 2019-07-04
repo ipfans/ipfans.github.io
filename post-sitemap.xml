@@ -8,6 +8,14 @@
     </url>
 
     <url>
+        <loc>https://www.4async.com/2018/12/2018-12-25-scm-security/</loc>
+        <lastmod>2019-07-04T03:25:25.631Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://www.4async.com/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/</loc>
         <lastmod>2019-07-04T03:20:39.118Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -448,7 +456,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/03/2014-02-18-benchmark-python-2/</loc>
+        <loc>https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/</loc>
         <lastmod>2019-07-04T03:20:39.065Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -456,7 +464,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/</loc>
+        <loc>https://www.4async.com/2014/03/2014-02-18-benchmark-python-2/</loc>
         <lastmod>2019-07-04T03:20:39.065Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -610,14 +618,6 @@
     <url>
         <loc>https://www.4async.com/2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/</loc>
         <lastmod>2019-07-04T03:20:39.042Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2018/12/2018-12-25-scm-security/</loc>
-        <lastmod>2019-07-04T03:20:39.040Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
