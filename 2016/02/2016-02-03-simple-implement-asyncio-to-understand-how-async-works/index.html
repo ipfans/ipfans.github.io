@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="从 asyncio 简单实现看异步是如何工作的 by ipfans 注：请使用 Python 3.5+ 版本运行以下代码。 先从例子看起首先我们来看一个 socket 通讯的例子，这个例子我们可以在官方 socket 模块的文档中找到部分原型代码： 12345678910111213141516171819202122232425# echo.pyfrom socket import *  # 是">
+<meta name="keywords" content="Python,async,asyncio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从 asyncio 简单实现看异步是如何工作的">
+<meta property="og:url" content="https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="从 asyncio 简单实现看异步是如何工作的 by ipfans 注：请使用 Python 3.5+ 版本运行以下代码。 先从例子看起首先我们来看一个 socket 通讯的例子，这个例子我们可以在官方 socket 模块的文档中找到部分原型代码： 12345678910111213141516171819202122232425# echo.pyfrom socket import *  # 是">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.074Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从 asyncio 简单实现看异步是如何工作的">
+<meta name="twitter:description" content="从 asyncio 简单实现看异步是如何工作的 by ipfans 注：请使用 Python 3.5+ 版本运行以下代码。 先从例子看起首先我们来看一个 socket 通讯的例子，这个例子我们可以在官方 socket 模块的文档中找到部分原型代码： 12345678910111213141516171819202122232425# echo.pyfrom socket import *  # 是">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>从 asyncio 简单实现看异步是如何工作的 | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">从 asyncio 简单实现看异步是如何工作的
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2016-02-03 15:40:00" itemprop="dateCreated datePublished" datetime="2016-02-03T15:40:00+08:00">2016-02-03</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>从 asyncio 简单实现看异步是如何工作的</p>
+<p>by ipfans</p>
+<p>注：请使用 <code>Python 3.5+</code> 版本运行以下代码。</p>
+<h2 id="先从例子看起"><a href="#先从例子看起" class="headerlink" title="先从例子看起"></a>先从例子看起</h2><p>首先我们来看一个 socket 通讯的例子，这个例子我们可以在官方 <code>socket</code> 模块的文档中找到部分原型代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># echo.py</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *  <span class="comment"># 是的，这是一个不好的写法</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">echo_server</span><span class="params">(address)</span>:</span></span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, <span class="number">1</span>)</span><br><span class="line">    sock.bind(address)</span><br><span class="line">    sock.listen(<span class="number">5</span>)</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        client, addr = sock.accept()</span><br><span class="line">        print(<span class="string">"connect from"</span>, addr)</span><br><span class="line">        echo_handler(client)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">echo_handler</span><span class="params">(client)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        data = client.recv(<span class="number">10000</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        client.send(str.encode(<span class="string">"Got: "</span>) + data)</span><br><span class="line">    print(<span class="string">"connection closed."</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    echo_server((<span class="string">''</span>, <span class="number">25000</span>))</span><br></pre></td></tr></table></figure>
+
+<p>但是同步模式会有一个问题，当进行通讯是阻塞的，当一个连接占用时就会阻碍其他连接的继续，这个时候应该怎么更快的运行呢？</p>
+<h2 id="回顾历史"><a href="#回顾历史" class="headerlink" title="回顾历史"></a>回顾历史</h2><p>在 asyncio 出现之前，我们都是怎么提高效率的呢？首先想到的方法就是多线程处理：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># echo_thread.py</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> _thread</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">echo_server</span><span class="params">(address)</span>:</span></span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, <span class="number">1</span>)</span><br><span class="line">    sock.bind(address)</span><br><span class="line">    sock.listen(<span class="number">5</span>)</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        client, addr = sock.accept()</span><br><span class="line">        print(<span class="string">"connect from"</span>, addr)</span><br><span class="line">        _thread.start_new_thread(echo_handler, (client,))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">echo_handler</span><span class="params">(client)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        data = client.recv(<span class="number">10000</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        client.send(str.encode(<span class="string">"Got: "</span>) + data)</span><br><span class="line">    print(<span class="string">"connection closed."</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    echo_server((<span class="string">''</span>, <span class="number">25000</span>))</span><br></pre></td></tr></table></figure>
+
+<p>当然了，我们都知道多线程之下总是会有一些问题的。那么还有更好的方案吗？如果你了解过<a href="http://www.kegel.com/c10k.html" target="_blank" rel="noopener">C10k 问题</a>，你一定听过 `epoll<figure class="highlight plain"><figcaption><span>之类的大名。那么，能在 Python 中使用这些功能吗？答案是肯定的。那就是[```select```](https://docs.python.org/3.5/library/select.html)。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```python</span><br><span class="line"># echo_select.py</span><br><span class="line">from socket import *</span><br><span class="line">import select</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def echo_server(address):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)</span><br><span class="line">    sock.bind(address)</span><br><span class="line">    sock.listen(5)</span><br><span class="line">    input = [sock,]</span><br><span class="line">    while True:</span><br><span class="line">        r, _, _ = select.select(input, [], [])</span><br><span class="line">        for s in r:</span><br><span class="line">            if s == sock:</span><br><span class="line">                client, addr = sock.accept()</span><br><span class="line">                print(&quot;connect from&quot;, addr)</span><br><span class="line">                echo_handler(client)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def echo_handler(client):</span><br><span class="line">    while True:</span><br><span class="line">        data = client.recv(10000)</span><br><span class="line">        if not data:</span><br><span class="line">            break</span><br><span class="line">        client.send(str.encode(&quot;Got: &quot;) + data)</span><br><span class="line">    print(&quot;connection closed.&quot;)</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    echo_server((&apos;&apos;, 25000))</span><br></pre></td></tr></table></figure></p>
+<p>相比 <code>_thread</code> 来说，<code>select</code> 更加底层，提供了最基础的等待 IO 完成功能。但是缺点是这个功能太单一了，这也就是为什么后面语言提供了 `asyncio<figure class="highlight plain"><figcaption><span>`python-dev` 中 [提出了](https://mail.python.org/pipermail/python-ideas/2012-May/015223.html) 要在标准库中添加基于 `select` 的异步 IO 功能。之后 Python 在 3.4 版本之中就加入了 [```selectors `](https://docs.python.org/3.5/library/selectors.html) 与 [```asyncio```](https://docs.python.org/3.5/library/asyncio.html) 库用于异步 IO。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">其他的方法还有 `gevent`、`Twisted`、`Tornado` 等等的方案，这里就不多赘述了。(在 3.4 的时候我一直觉得 `yield form` 太丑陋了，相对我宁愿继续用 `Tornado` 的 `yield` 方式。当然这个更加主观的原因吧，不过现在 `async/await` 方式明显让我又让我爱上了。）</span><br><span class="line"></span><br><span class="line">## 从同步到 asyncio</span><br><span class="line"></span><br><span class="line">那么如何在 asyncio 框架下如何实现异步 socket 通讯的例子呢？事实上官方文档中提供了两个比较高层封装过的 asyncio 库例子 [TCP echo server protocol](https://docs.python.org/3.5/library/asyncio-protocol.html#tcp-echo-server-protocol) 和[TCP echo server using streams](https://docs.python.org/3.5/library/asyncio-stream.html#tcp-echo-server-using-streams)。这两个例子采用的是 `asyncio` 的 `socket` 通讯高级别封装，似乎与我们同步代码相差有点远。这里我们实际例子中使用了更加底层的[Low-level socket operations](https://docs.python.org/3.5/library/asyncio-eventloop.html#low-level-socket-operations)。这个更接近于我们在同步状态下使用 `socket` 的代码。</span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line"># aecho.py</span><br><span class="line">from socket import *</span><br><span class="line">import asyncio</span><br><span class="line"></span><br><span class="line">loop = asyncio.get_event_loop()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">async def echo_server(address):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)</span><br><span class="line">    sock.bind(address)</span><br><span class="line">    sock.listen(5)</span><br><span class="line">    sock.setblocking(False) # 设置非阻塞</span><br><span class="line">    while True:</span><br><span class="line">        client, addr = await loop.sock_accept(sock)</span><br><span class="line">        print(&quot;connect from&quot;, addr)</span><br><span class="line">        loop.create_task(echo_handler(client))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">async def echo_handler(client):</span><br><span class="line">    with client:</span><br><span class="line">        while True:</span><br><span class="line">            data = await loop.sock_recv(client, 10000)</span><br><span class="line">            if not data:</span><br><span class="line">                break</span><br><span class="line">            await loop.sock_sendall(client, str.encode(&quot;Got: &quot;) + data)</span><br><span class="line">    print(&quot;connection closed&quot;)</span><br><span class="line"></span><br><span class="line">loop.create_task(echo_server((&apos;&apos;, 25000)))</span><br><span class="line">loop.run_forever()</span><br></pre></td></tr></table></figure></p>
+<p>其中遇到的 <code>create_task</code> 会相对同步状态下无法对应，这个方法用于安排一个异步任务的执行，将一个异步方法封装为 <code>future</code> 对象。其他的 <code>Event Loop</code> 中的功能基本与传统的程序相同。</p>
+<h2 id="从-asyncio-到自己的实现"><a href="#从-asyncio-到自己的实现" class="headerlink" title="从 asyncio 到自己的实现"></a>从 asyncio 到自己的实现</h2><p>那么在 <code>asyncio.event_loop</code> 中到底发生了什么呢？我们可以尝试用自己的程序实现一下。</p>
+<p>如果你阅读过<a href="https://www.python.org/dev/peps/pep-0492/" target="_blank" rel="noopener">PEP-0492</a>，你就知道，实际上 Python 的协程是通过生成器实现的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># async_yield.py</span></span><br><span class="line"><span class="keyword">from</span> types <span class="keyword">import</span> coroutine</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_wait</span><span class="params">(sock)</span>:</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">"read_wait"</span>, sock  <span class="comment"># 为什么有个 read_wait？等下介绍</span></span><br></pre></td></tr></table></figure>
+
+<p>下面来模拟实际调用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">python -i async_yield.py</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>f = read_wait(<span class="string">"somesocket"</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>f</span><br><span class="line">&lt;generator object read_wait at <span class="number">0x10200d5c8</span>&gt;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>f.send(<span class="literal">None</span>)</span><br><span class="line">(<span class="string">'read_wait'</span>, <span class="string">'somesocket'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>f.send(<span class="literal">None</span>)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">StopIteration</span><br></pre></td></tr></table></figure>
+
+<p>如果不了解 <code>send()</code> 与 <code>StopIteration</code> 作用的话，请参考 <code>PEP-0492</code> 中相关的描述。</p>
+<p>接下来继续完善 <code>write</code> 方法，并且实现我们自己的 <code>Loop</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># async_yield.py</span></span><br><span class="line"><span class="keyword">from</span> types <span class="keyword">import</span> coroutine</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> deque</span><br><span class="line"><span class="keyword">from</span> selectors <span class="keyword">import</span> DefaultSelector, EVENT_READ, EVENT_WRITE</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_wait</span><span class="params">(sock)</span>:</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">"read_wait"</span>, sock</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_wait</span><span class="params">(sock)</span>:</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">"write_wait"</span>, sock</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Loop</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.ready = deque()</span><br><span class="line">        self.selector = DefaultSelector()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">sock_recv</span><span class="params">(self, sock, maxbytes)</span>:</span></span><br><span class="line">        <span class="keyword">await</span> read_wait(sock)</span><br><span class="line">        <span class="keyword">return</span> sock.recv(maxbytes)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">sock_accept</span><span class="params">(self, sock)</span>:</span></span><br><span class="line">        <span class="keyword">await</span> read_wait(sock)</span><br><span class="line">        <span class="keyword">return</span> sock.accept()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">sock_sendall</span><span class="params">(self, sock, data)</span>:</span></span><br><span class="line">        <span class="keyword">while</span> data:</span><br><span class="line">            <span class="keyword">await</span> write_wait(sock)</span><br><span class="line">            n = sock.send(data)</span><br><span class="line">            data = data[n:]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create_task</span><span class="params">(self, coro)</span>:</span></span><br><span class="line">        self.ready.append(coro)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run_forever</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">while</span> <span class="keyword">not</span> self.ready:</span><br><span class="line">                events = self.selector.select()</span><br><span class="line">                <span class="keyword">for</span> key, _ <span class="keyword">in</span> events:</span><br><span class="line">                    self.ready.append(key.data)</span><br><span class="line">                    self.selector.unregister(key.fileobj)</span><br><span class="line">            <span class="keyword">while</span> self.ready:</span><br><span class="line">                self.current_task = self.ready.popleft()</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    op, *args = self.current_task.send(<span class="literal">None</span>)</span><br><span class="line">                    getattr(self, op)(*args)</span><br><span class="line">                <span class="keyword">except</span> StopIteration:</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">read_wait</span><span class="params">(self, sock)</span>:</span></span><br><span class="line">        self.selector.register(sock, EVENT_READ, self.current_task)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">write_wait</span><span class="params">(self, sock)</span>:</span></span><br><span class="line">        self.selector.register(sock, EVENT_WRITE, self.current_task)</span><br></pre></td></tr></table></figure>
+
+<p>对于之前一节中的 <code>aecho.py</code> 文件，我们只需要修改一下导入模块与 loop 的获取方法即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pecho.py</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> async_yield</span><br><span class="line"></span><br><span class="line">loop = async_yield.Loop()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">echo_server</span><span class="params">(address)</span>:</span></span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, <span class="number">1</span>)</span><br><span class="line">    sock.bind(address)</span><br><span class="line">    sock.listen(<span class="number">5</span>)</span><br><span class="line">    sock.setblocking(<span class="literal">False</span>)  <span class="comment"># 设置非阻塞模式</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        client, addr = <span class="keyword">await</span> loop.sock_accept(sock)</span><br><span class="line">        print(<span class="string">"connect from"</span>, addr)</span><br><span class="line">        loop.create_task(echo_handler(client))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">echo_handler</span><span class="params">(client)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> client:</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            data = <span class="keyword">await</span> loop.sock_recv(client, <span class="number">10000</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">await</span> loop.sock_sendall(client, str.encode(<span class="string">"Got: "</span>) + data)</span><br><span class="line">    print(<span class="string">"connection closed"</span>)</span><br><span class="line"></span><br><span class="line">loop.create_task(echo_server((<span class="string">''</span>, <span class="number">25000</span>)))</span><br><span class="line">loop.run_forever()</span><br></pre></td></tr></table></figure>
+
+<h2 id="async-yield-发生了什么？"><a href="#async-yield-发生了什么？" class="headerlink" title="async_yield 发生了什么？"></a>async_yield 发生了什么？</h2><p>首先，我们定义了两个协程函数 <code>read_wait</code> 和 <code>write_wait</code>，分别用于相应处理读取操作与写入操作。其中返回了一个 tuple 类型数据，用于在 <code>op, *args = self.current_task.send(None)</code> 中填充方法名和参数，之后在 <code>getattr(self, op)(*args)</code> 中进行分别调用。</p>
+<p>下面 <code>Loop</code> 类实现了在 pecho 中用到的所有异步函数。初始化时的 <code>self.ready</code> 用于存储协程的调用序列。该序列通过 <code>create_task</code> 添加协程到队列中。</p>
+<p>在 <code>run_forever</code> 中，如果目前队列为空，则通过 <code>self.selector.select()</code> 提取一个事件放入队列处理，若队列存在通过 <code>self.current_task.send(None)</code> 通知事件发送，从而调用对应的事件功能。你也可以在 <code>op, *args = self.current_task.send(None)</code> 后添加 <code>print(op)</code> 获取实时的调用情况。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>事实上这篇文章的思路是基于 <a href="https://twitter.com/dabeaz" target="_blank" rel="noopener">@dabeaz</a> 在 <code>Python Brasil</code> 上的 <a href="https://www.youtube.com/watch?v=ZzfHjytDceU" target="_blank" rel="noopener">keynote</a> 整理而来。dabeaz 还有另外一个非常不错的基于 select 的异步库，名字叫做<a href="https://github.com/dabeaz/curio" target="_blank" rel="noopener">curio</a>，是一个了解实现异步库的很好教程。</p>
+<p>最后讲个段子，之前有人开玩笑，蟒爹开发一个功能，之后大家都不会正确使用，直到 dabeaz 站出来告诉大家如何正确使用新功能。在写这篇文章的时候虽然很想找出来出处，但是似乎找不到了…</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/" title="从 asyncio 简单实现看异步是如何工作的">https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/async/" rel="tag"># async</a>
+          
+            <a href="/tags/asyncio/" rel="tag"># asyncio</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/2016-01-27-startup-architecture-language/" rel="next" title="聊聊初创公司的后端语言选型 (小众语言)">
+                <i class="fa fa-chevron-left"></i> 聊聊初创公司的后端语言选型 (小众语言)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/2016-04-18-writing-testable-golang-code/" rel="prev" title="编写测试友好的 Golang 代码">
+                编写测试友好的 Golang 代码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#先从例子看起"><span class="nav-number">1.</span> <span class="nav-text">先从例子看起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回顾历史"><span class="nav-number">2.</span> <span class="nav-text">回顾历史</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从-asyncio-到自己的实现"><span class="nav-number">3.</span> <span class="nav-text">从 asyncio 到自己的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#async-yield-发生了什么？"><span class="nav-number">4.</span> <span class="nav-text">async_yield 发生了什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">5.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

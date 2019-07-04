@@ -316,7 +316,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/07/hello-world/">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/07/2014-03-09-python-profile-using-cprofile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="ipfans">
@@ -336,7 +336,7 @@
           <h2 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/07/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
+                <a href="/2019/07/2014-03-09-python-profile-using-cprofile/" class="post-title-link" itemprop="url">利用 cProfile 进行 Python 程序性能调优</a>
               
             
           </h2>
@@ -361,7 +361,7 @@
                 
               
 
-              <time title="Created: 2019-07-04 11:04:29" itemprop="dateCreated datePublished" datetime="2019-07-04T11:04:29+08:00">2019-07-04</time>
+              <time title="Created: 2019-07-04 11:20:39" itemprop="dateCreated datePublished" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
             </span>
           
 
@@ -401,21 +401,1513 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+            <p>在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是 C 语言扩展的实现。</p>
+<p>官方文档页面：<a href="http://docs.python.org/2/library/profile.html#module-cProfile" target="_blank" rel="noopener">http://docs.python.org/2/library/profile.html#module-cProfile</a>。</p>
+<p>先从一个例子开始：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delay</span><span class="params">()</span>:</span></span><br><span class="line">    time.sleep(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    delay()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"123"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>使用下面这个命令就可以快速诊断：</p>
+<pre><code>python -m cProfile profile_run.py</code></pre><p>输出如下：</p>
+<pre><code>     5 function calls in 10.002 seconds
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+Ordered by: standard name
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    1    0.002    0.002   10.002   10.002 profile_run.py:11(main)
+    1    0.000    0.000   10.002   10.002 profile_run.py:4(&lt;module&gt;)
+    1    0.000    0.000   10.000   10.000 profile_run.py:7(delay)  &lt;-- 调用者这里
+    1    0.000    0.000    0.000    0.000 {method&apos;disable&apos;of&apos;_lsprof.Profiler&apos;objects}
+    1   10.000   10.000   10.000   10.000 {time.sleep}   &lt;--- 元凶在这里</code></pre><p>如果想输出到文件，添加一个 - o 参数即可：</p>
+<pre><code>python -m cProfile -o profile_output profile_run.py</code></pre><p>若想按照某列排序，则可以添加这个参数：</p>
+<pre><code>python -m cProfile -o profile_output -s tottime profile_run.py</code></pre><p>那么等等，这个结果文件如何识别呢：</p>
+<p>ncalls: 这个函数被调用的次数</p>
+<p>tottime：函数的具体执行时间，不包含其他函数消耗的时间</p>
+<p>percall：每次调用的消耗（包含其他函数消耗和不包含的时间）</p>
+<p>cumtime：程序消耗的总时间</p>
+<p>然后看一个实际的成果看一下结果如何，具体的诊断数据：</p>
+<p>![cProfile Result](<a href="http://ww3.sinaimg.cn/large/69e37fdbgw1ee9sd2f44tj20hs0dkjuv.jpg&quot;cProfile" target="_blank" rel="noopener">http://ww3.sinaimg.cn/large/69e37fdbgw1ee9sd2f44tj20hs0dkjuv.jpg&quot;cProfile</a> Result”)</p>
+<p>发现最慢的执行模块是 not_operation 这个函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_operation</span><span class="params">(operand, dictionary, pfile)</span>:</span></span><br><span class="line">    <span class="string">"""Performs the operation `NOT operand`."""</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of all the documents (sorted)</span></span><br><span class="line">    all_docs = dictionary.all_docs()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of the documents matching `operand` (sorted)</span></span><br><span class="line">    results = get_results(operand, dictionary, pfile, force_list=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [doc <span class="keyword">for</span> doc <span class="keyword">in</span> all_docs <span class="keyword">if</span> doc <span class="keyword">not</span> <span class="keyword">in</span> results]</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+<p>接下来是怎么修复了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># the fix.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_operation</span><span class="params">(operand, dictionary, pfile)</span>:</span></span><br><span class="line">    <span class="string">"""Performs the operation `NOT operand`."""</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of all the documents (sorted)</span></span><br><span class="line">    all_docs = dictionary.all_docs()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># A list of the documents matching `operand` (sorted)</span></span><br><span class="line">    results = get_results(operand, dictionary, pfile, force_list=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list_a_and_not_list_b(all_docs, results)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list_a_and_not_list_b</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="string">"""Returns `a AND NOT b`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Both a and b are expected to be sorted lists.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    """</span>results = []</span><br><span class="line">    idx_a = <span class="number">0</span></span><br><span class="line">    idx_b = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> idx_a &lt;len(a) <span class="keyword">and</span> idx_b &lt;len(b):</span><br><span class="line">        <span class="keyword">if</span> a[idx_a] &lt;b[idx_b]:</span><br><span class="line">            results.append(a[idx_a])</span><br><span class="line">            idx_a += <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> b[idx_b] &lt;a[idx_a]:</span><br><span class="line">            idx_b += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            idx_a += <span class="number">1</span></span><br><span class="line">            idx_b += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> idx_a &lt;len(a):</span><br><span class="line">        results.append(a[idx_a])</span><br><span class="line">        idx_a += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>对了，说起来，上面图片查看工具是 cprofilev，是针对 cProfile 的查看工具，使用命令安装：</p>
+<pre><code>pip install bottle cprofilev
+
+cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问题，你如果想解决，可以自己看一下:)</p>
 
           
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/07/2014-03-13-python-base64-encode-utf-8error/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/2014-03-13-python-base64-encode-utf-8error/" class="post-title-link" itemprop="url">Python 中文 UTF-8 编码 base64 报错</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-04 11:20:39" itemprop="dateCreated datePublished" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+            </span>
+          
+
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>第一次用 python encode utf-8 的中文，结果发现了一个蛋疼的问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">base64.b64encode(<span class="string">u' 你好世界 '</span>)</span><br><span class="line"></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">    File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    File <span class="string">"/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/base64.py"</span>, line <span class="number">53</span>, <span class="keyword">in</span> b64encode</span><br><span class="line">        encoded = binascii.b2a_base64(s)[:<span class="number">-1</span>]</span><br><span class="line">UnicodeEncodeError: <span class="string">'ascii'</span> codec can<span class="string">'t encode characters in position 0-3: ordinal not in range(128)</span></span><br></pre></td></tr></table></figure>
+
+<p>这个问题在 <a href="http://bugs.python.org/issue4329" target="_blank" rel="noopener">2008 年就提出来过</a>，这个 Base64 的这个库的实现是按照 RFC 3548 实现的，仅按照 byte 和 ascii 字符，所以会出现这个问题。如果修复这个问题的话，就是把 unicode 字符换成 byte 就可以正常了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">_str = <span class="string">u"你好世界"</span></span><br><span class="line">encoded = base64.b64encode(_str.encode(<span class="string">'utf-8'</span>))</span><br><span class="line"><span class="keyword">print</span> encoded</span><br><span class="line"><span class="keyword">print</span> base64.b64decode(encoded).decode(<span class="string">'utf-8'</span>)</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/04/2019-04-02-go-executable-size-visualization-with-d3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/04/2019-04-02-go-executable-size-visualization-with-d3/" class="post-title-link" itemprop="url">为什么我的Go程序这么大？-使用D3进行Go程序的体积可视化</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-04-02 14:22:00" itemprop="dateCreated datePublished" datetime="2019-04-02T14:22:00+08:00">2019-04-02</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>原文：<a href="https://science.raphael.poss.name/go-executable-size-visualization-with-d3.html" target="_blank" rel="noopener">Why are my Go executable files so large? - Size visualization of Go executables using D3</a><br>作者：Raphael ‘kena’ Poss</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/04/2019-04-02-go-executable-size-visualization-with-d3/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/03/2019-03-20-using-go-modules/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/03/2019-03-20-using-go-modules/" class="post-title-link" itemprop="url">使用Go Modules</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-20 14:22:00" itemprop="dateCreated datePublished" datetime="2019-03-20T14:22:00+08:00">2019-03-20</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>原文：<a href="https://blog.golang.org/using-go-modules" target="_blank" rel="noopener">Using Go Modules</a><br>作者：Tyler Bui-Palsulich、Eno Compton</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/03/2019-03-20-using-go-modules/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/2019-01-28-python-typing-with-stub-files/" class="post-title-link" itemprop="url">利用Stub File标注Python文件</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-29 14:30:00" itemprop="dateCreated datePublished" datetime="2019-01-29T14:30:00+08:00">2019-01-29</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>在升级到<code>Python 3.5+</code>版本之后，最大的项目管理优化来自于<a href="https://www.python.org/dev/peps/pep-0484/" target="_blank" rel="noopener"><code>PEP-484 Type Hint</code></a>的引入。借助<code>Type Hint</code>，我们可以进一步提升<code>Python</code>代码的类型标注，保障在重构过程中避免出现一些低级失误。</p>
+<p>我们可以通过高版本<code>Python</code>新加的新语法启用这项特性，然后通过<code>mypy</code>等工具检查：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greeting</span><span class="params">(name: str)</span> -&gt; str:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello '</span> + name</span><br></pre></td></tr></table></figure>
+
+<p>然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/2019-01-28-python-typing-with-stub-files/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </p></div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/2019-01-25-go-new-xerrors/" class="post-title-link" itemprop="url">聊聊新的Go语言错误处理方案</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-25 23:20:00" itemprop="dateCreated datePublished" datetime="2019-01-25T23:20:00+08:00">2019-01-25</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>今天早些时候，<code>golang/x/exp</code>中默默的更新了一个名曰<code>xerrors</code>的包，这个包和同样处于<code>golang/x/exp</code>下的另一个名叫<code>errors</code>的包名字十分相似，就连介绍也都一致：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> Package errors implements functions to manipulate errors.</span><br><span class="line"></span><br><span class="line">This package implements the Go 2 draft designs for error inspection and printing</span><br></pre></td></tr></table></figure>
+
+<p>从目前的情况来看，基本上错误的处理形式基本已经定型，处理方式则是类似于之前的另一个<code>github.com/pkg/errors</code>包，但是具体细节不尽相同。</p>
+<h2 id="如何处理error？"><a href="#如何处理error？" class="headerlink" title="如何处理error？"></a>如何处理error？</h2><p>在之前<a href="/2017/02/more-effective-golang-error/">介绍文章</a>中提到过<code>github.com/pkg/errors</code>包的设计思路，那么在Go团队的实现中，这种思路也得到了继承。先从一个小例子开始：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"golang.org/x/exp/xerrors"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">raiseError</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> xerrors.New(<span class="string">"a new error"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	err := xerrors.Errorf(<span class="string">"raiseError: %w"</span>, raiseError())</span><br><span class="line">	fmt.Println(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raiseError: a new error</span><br></pre></td></tr></table></figure>
+
+<p>看起来非常类似于之前<code>github.com/pkg/errors</code>的显示内容。而其中<code>xerrors.Errorf</code>则充当了之前<code>errors.Wrap</code>的功能。 其中值得一提的是<code>%w</code>，这个用于包装错误，后续验证错误中也会用到其中的值。</p>
+<p>同时，这个包中也包含了几个非常有用的辅助函数，分别是：验证错误类型方法<code>Is</code>、错误类型转换方法<code>As</code>、错误关系链解除方法<code>Opaque</code>和提取内层错误方法<code>Unwrap</code>。我们可以用一个简单的演示来说明这种关系：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	ErrBase = xerrors.New(<span class="string">"a new error"</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	err := xerrors.Errorf(<span class="string">"raiseError: %w"</span>, ErrBase)</span><br><span class="line">	fmt.Println(ErrBase == ErrBase)                       <span class="comment">// 地址相同</span></span><br><span class="line">	fmt.Println(err == ErrBase)                           <span class="comment">// 基于ErrBase包装之后不同</span></span><br><span class="line">	fmt.Println(xerrors.Is(err, ErrBase))                 <span class="comment">// 验证是否为基于ErrBase</span></span><br><span class="line">	fmt.Println(xerrors.Opaque(err) == err)               <span class="comment">// 解除关系链之后不为相同地址</span></span><br><span class="line">	fmt.Println(xerrors.Is(xerrors.Opaque(err), ErrBase)) <span class="comment">// 解除关系链之后无法确定关系</span></span><br><span class="line">	fmt.Println(xerrors.Unwrap(err) == ErrBase)           <span class="comment">// 获取内层错误为原错误，地址相同</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">true</span><br><span class="line">false</span><br><span class="line">true</span><br><span class="line">false</span><br><span class="line">false</span><br><span class="line">true</span><br></pre></td></tr></table></figure>
+
+<p>即便是在包裹多层之后，错误类型也能通过<code>Is</code>方法正确识别：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	err := xerrors.Errorf(<span class="string">"raiseError: %w"</span>, ErrBase)</span><br><span class="line">	err2 := xerrors.Errorf(<span class="string">"wrap#01: %w"</span>, err)</span><br><span class="line">	err3 := xerrors.Errorf(<span class="string">"wrap#02: %w"</span>, err2)</span><br><span class="line">	fmt.Println(xerrors.Is(err, ErrBase))</span><br><span class="line">	fmt.Println(xerrors.Is(err3, ErrBase)) <span class="comment">// 能够正确识别关系，打印为true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果需要打印详细的调用链路，则可以通过标准库<code>fmt</code>相关功能进行输出，比如<code>Printf</code>或者<code>Sprintf</code>等。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	err := xerrors.Errorf(<span class="string">"raiseError: %w"</span>, ErrBase)</span><br><span class="line">	err2 := xerrors.Errorf(<span class="string">"wrap#01: %w"</span>, err)</span><br><span class="line">	err3 := xerrors.Errorf(<span class="string">"wrap#02: %w"</span>, err2)</span><br><span class="line">	fmt.Printf(<span class="string">"%+v\n"</span>, err3)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出链路如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">wrap#02:</span><br><span class="line">    main.main</span><br><span class="line">        /.../error.go:16</span><br><span class="line">  - wrap#01:</span><br><span class="line">    main.main</span><br><span class="line">        /.../error.go:15</span><br><span class="line">  - raiseError:</span><br><span class="line">    main.main</span><br><span class="line">        /.../error.go:14</span><br><span class="line">  - a new error:</span><br><span class="line">    main.init</span><br><span class="line">        /.../error.go:10</span><br></pre></td></tr></table></figure>
+
+<p>但是注意，使用<code>%w</code>进行包装时，仅能单次包装单个错误，比如下面这种两个错误同时包装时，是会无法识别的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	ErrBase  = xerrors.New(<span class="string">"a new error"</span>)</span><br><span class="line">	ErrBase2 = xerrors.New(<span class="string">"another new error"</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	err := xerrors.Errorf(<span class="string">"raiseError: %w, %w"</span>, ErrBase2, ErrBase2)</span><br><span class="line">	fmt.Println(xerrors.Is(err, ErrBase))</span><br><span class="line">	fmt.Println(xerrors.Is(err, ErrBase2))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="落地使用"><a href="#落地使用" class="headerlink" title="落地使用"></a>落地使用</h2><p>在具体项目实现中，如对外提供的库文件中，我建议可以参考其他语言的实现方式，定义一个特殊的基础错误类型<code>ErrBase</code>，所有其他错误类型均由此类型派生，则后续外部在使用过程中，只需通过<code>xerros.Is</code>判定错误类型，则可以快速判定错误是否来自于本包，并且可以借助此功能统一单独处理来自于此第三方包的异常。</p>
+<p>如果你有其他的建议和疑问，也欢迎在留言区中留言讨论。另外，根据实际实现代码来看，其中还有一些边缘情况未考虑或者未做处理，由于是试验性库，本库在使用过程中需自行承担所带来的风险。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/2019-01-18-gin-toolkit-gini/" class="post-title-link" itemprop="url">gini：一个让你更方便使用Gin框架的库</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-18 23:20:00" itemprop="dateCreated datePublished" datetime="2019-01-18T23:20:00+08:00">2019-01-18</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">Gin框架</a>是一个Go语言框架中非常受欢迎的一款。今天我们开放了一个<a href="https://github.com/ipfans/gini" target="_blank" rel="noopener">gini</a>库，结合了我们实际开发中的使用，描述一下我们为什么开发这个库，在开发过程中的权衡。</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/2019-01-18-gin-toolkit-gini/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/12/2018-12-25-scm-security/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/12/2018-12-25-scm-security/" class="post-title-link" itemprop="url">漫谈代码安全：也来聊一聊AntD这档子事</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-12-25 23:20:00" itemprop="dateCreated datePublished" datetime="2018-12-25T23:20:00+08:00">2018-12-25</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>没想到今年突然有动力还能写一篇。可能来自于两个方面，有些东西需要整理，另外有一个事情我是感觉到很诧异的。今天技术圈最火的事情当属<a href="https://www.zhihu.com/question/306858501" target="_blank" rel="noopener">AntDesign彩蛋事件</a>了（以下简称AntD），很不幸的是，本司也是本次受害者之一。</p>
+<p><img src alt="本司车祸现场"></p>
+<p>考虑到AntD是一个使用十分广泛并且关注度非常高的国内项目，并且有阿里支付宝的背书效应，这一次我想影响的会在两个方面：一个是阿里开源本身的信用，一个是开源项目在国内的推广。当然，我们确实在引入AntD方面确实太过草率：我其实关注AntD了大概一年时间，考虑到issue情况和项目开发活跃度情况，要求团队引入此框架希望可以提升开发效率，没想到相关的项目1-2个月就出现了这种事情，真是令人实在痛心。</p>
+<p>这件事情也暴露出来，我们以前在使用开源项目时，太过信任</p>
+<p>另外，作为最后的一个建议，我们希望如果大家以后开源项目，如果做不到，请不要说自己是<strong>企业级项目</strong>，因为一般也就是放在自己企业里面用，这跟企业级项目是两个概念。至少我们具体到AntD这个项目上，这个项目无论代码开发和管控上，都是算不上的。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/06/2018-06-08-compatibility-in-golang-1-10/" class="post-title-link" itemprop="url">Go 1.10中的一处不兼容问题</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-06-08 12:20:00" itemprop="dateCreated datePublished" datetime="2018-06-08T12:20:00+08:00">2018-06-08</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>最近我们在把线上系统升级至Go 1.10版本时发现，在我们实现的某些接口中，出现了客户反馈调用失败提示参数缺失的情况。这种情况我们在测试过程中未能复线，后来经过了解，发现了故障原因为Go 1.10版本升级过程中更改了部分程序代码与验证逻辑导致的。</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/06/2018-06-08-compatibility-in-golang-1-10/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/" class="post-title-link" itemprop="url">关于Golang过滤敏感信息的正确姿势</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-06-06 16:07:00" itemprop="dateCreated datePublished" datetime="2018-06-06T16:07:00+08:00">2018-06-06</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>今天正好看到一篇关于敏感信息过滤的<a href="https://hackernoon.com/keep-passwords-and-secrets-out-of-your-logs-with-go-a2294a9546ce" target="_blank" rel="noopener">文章</a>，这算做一个interface实际应用的一些举例和应用。</p>
+<p>例子中介绍了一种比较常见的使用场景：使用JSON保存数据时的对诸如用户密码等信息进行保护时候应该做的事情。作者以使用JSON格式保存用户账户和密码为例，讲解了使用<code>json.Unmarshaler</code>接口类型过滤敏感信息。</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -458,6 +1950,10 @@
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
+
 
 
           </div>
@@ -499,7 +1995,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-count">77</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -507,6 +2003,117 @@
 
               
 
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
               
             </nav>
           

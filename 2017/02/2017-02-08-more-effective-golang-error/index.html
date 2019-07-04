@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Golang 中的错误处理是一个被大家经常拿出来讨论的 话题(另外一个是 泛型)。其中泛型这个问题，rsc 在最近的计划中也提出 了纳入他今年的考虑计划中，同时，泛型的提案 在 2016 年也进行了一些更新，相信未来会有一些更好的方案提出。这个文章我们讨论一下如何在现行的 Golang 框架下提供更友好和优雅的错误处理。 从现状谈起Golang 中的错误处理原则，开发者曾经之前专门发布了几篇文章">
+<meta name="keywords" content="Golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="更优雅的 Golang 错误处理">
+<meta property="og:url" content="https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="Golang 中的错误处理是一个被大家经常拿出来讨论的 话题(另外一个是 泛型)。其中泛型这个问题，rsc 在最近的计划中也提出 了纳入他今年的考虑计划中，同时，泛型的提案 在 2016 年也进行了一些更新，相信未来会有一些更好的方案提出。这个文章我们讨论一下如何在现行的 Golang 框架下提供更友好和优雅的错误处理。 从现状谈起Golang 中的错误处理原则，开发者曾经之前专门发布了几篇文章">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.047Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="更优雅的 Golang 错误处理">
+<meta name="twitter:description" content="Golang 中的错误处理是一个被大家经常拿出来讨论的 话题(另外一个是 泛型)。其中泛型这个问题，rsc 在最近的计划中也提出 了纳入他今年的考虑计划中，同时，泛型的提案 在 2016 年也进行了一些更新，相信未来会有一些更好的方案提出。这个文章我们讨论一下如何在现行的 Golang 框架下提供更友好和优雅的错误处理。 从现状谈起Golang 中的错误处理原则，开发者曾经之前专门发布了几篇文章">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>更优雅的 Golang 错误处理 | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">更优雅的 Golang 错误处理
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-02-08 18:00:00" itemprop="dateCreated datePublished" datetime="2017-02-08T18:00:00+08:00">2017-02-08</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Golang 中的错误处理是一个被大家经常拿出来讨论的 <a href="http://www.infoq.com/cn/news/2012/11/go-error-handle" target="_blank" rel="noopener">话题</a>(另外一个是 <a href="http://www.weibo.com/1609119537/CdzJVejwg?type=comment" target="_blank" rel="noopener">泛型</a>)。其中泛型这个问题，rsc 在最近的计划中也<a href="https://mp.weixin.qq.com/s?__biz=MjM5OTcxMzE0MQ==&mid=2653369836&idx=1&sn=ddff3df7dbf52bb5bcc8b0ace78e0121&chksm=bce4d5f68b935ce0ece41ada8a49bbd33b638d184901ca8a61b5288daaf7c5a2d63af0cc3b34" target="_blank" rel="noopener">提出</a> 了纳入他今年的考虑计划中，同时，<a href="https://github.com/golang/proposal/blob/master/design/15292-generics.md" target="_blank" rel="noopener">泛型的提案</a> 在 2016 年也进行了一些更新，相信未来会有一些更好的方案提出。这个文章我们讨论一下如何在现行的 Golang 框架下提供更友好和优雅的错误处理。</p>
+<h2 id="从现状谈起"><a href="#从现状谈起" class="headerlink" title="从现状谈起"></a>从现状谈起</h2><p>Golang 中的错误处理原则，开发者曾经之前专门发布了几篇文章 (<a href="https://blog.golang.org/error-handling-and-go" target="_blank" rel="noopener">Error handling and Go</a> 和 <a href="https://blog.golang.org/defer-panic-and-recover" target="_blank" rel="noopener">Defer, Panic, and Recover</a>、<a href="https://blog.golang.org/errors-are-values" target="_blank" rel="noopener">Errors are values</a> ) 介绍。分别介绍了 Golang 中处理一般预知到的错误与遇到崩溃时的错误处理机制。</p>
+<p>一般情况下，我们还是以官方博客中的错误处理例子为例：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;f, err := os.Open(<span class="string">"filename.ext"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;log.Fatal(err)</span><br><span class="line">        <span class="comment">// 或者更简单的：</span></span><br><span class="line">        <span class="comment">// return err</span></span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然对于简化代码行数，还有另外一种写法：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">if</span> f, err = os.Open(<span class="string">"filename.ext"</span>); err != <span class="literal">nil</span>&#123;log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>正常情况下，Golang 现有的哲学中，要求你尽量手工处理所有的错误返回，这稍微增加了开发人员的心智负担。关于这部分设计的讨论，请参考本文最开始提供的参考链接，此处不做太多探讨。</p>
+<p>本质上，Golang 中的错误类型 <code>error</code> 是一个接口类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">type error interface &#123;Error() string</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>只要满足这一接口定义的所有数值都可以传入 <code>error</code> 类型的位置。在 <a href="http://go-proverbs.github.io/" target="_blank" rel="noopener">Go Proverbs</a> 中也提到了关于错误的描述： <figure class="highlight plain"><figcaption><span>are values```。这一句如何理解呢？</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Errors are values</span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">事实上，在实际使用过程中，你可能也发现了对 Golang 而言，所有的信息是非常不足的。比如下面这个例子：</span><br><span class="line"></span><br><span class="line">```go</span><br><span class="line">buf := make([]byte, 100)</span><br><span class="line">n, err := r.Read(buf)</span><br><span class="line">buf = buf[:n]</span><br><span class="line">if err == io.EOF &#123;log.Fatal(&quot;read failed:&quot;, err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>事实上这只会打印信息 <code>2017/02/08 13:53:54 read failed:EOF</code>，这对我们真实环境下的错误调试与分析其实是并没有任何意义的，我们在查看日志获取错误信息的时候能够获取到的信息十分有限。</p>
+<p>于是乎，一些提供了上下文方式的一些错误处理形式便在很多类库中非常常见：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">err := os.Remove(<span class="string">"/tmp/nonexist"</span>)</span><br><span class="line">log.Println(err)</span><br></pre></td></tr></table></figure>
+
+<p>输出了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2017/02/08 14:09:22 remove /tmp/nonexist: no such file or directory</span><br></pre></td></tr></table></figure>
+
+<p>这种方式提供了一种更加直观的上下文信息，比如具体出错的内容，也可以是出现错误的文件等等。通过查看 Remove 的实现，我们可以看到：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// PathError records an error and the operation and file path that caused it.</span></span><br><span class="line"><span class="keyword">type</span> PathError <span class="keyword">struct</span> &#123;</span><br><span class="line">	Op   <span class="keyword">string</span></span><br><span class="line">	Path <span class="keyword">string</span></span><br><span class="line">	Err  error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *PathError)</span> <span class="title">Error</span><span class="params">()</span> <span class="title">string</span></span> &#123; <span class="keyword">return</span> e.Op +<span class="string">" "</span>+ e.Path +<span class="string">": "</span>+ e.Err.Error() &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// file_unix.go 针对 *nix 系统的实现</span></span><br><span class="line"><span class="comment">// Remove removes the named file or directory.</span></span><br><span class="line"><span class="comment">// If there is an error, it will be of type *PathError.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Remove</span><span class="params">(name <span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="comment">// System call interface forces us to know</span></span><br><span class="line">	<span class="comment">// whether name is a file or directory.</span></span><br><span class="line">	<span class="comment">// Try both: it is cheaper on average than</span></span><br><span class="line">	<span class="comment">// doing a Stat plus the right one.</span></span><br><span class="line">	e := syscall.Unlink(name)</span><br><span class="line">	<span class="keyword">if</span> e == <span class="literal">nil</span> &#123;<span class="keyword">return</span> <span class="literal">nil</span>&#125;</span><br><span class="line">	e1 := syscall.Rmdir(name)</span><br><span class="line">	<span class="keyword">if</span> e1 == <span class="literal">nil</span> &#123;<span class="keyword">return</span> <span class="literal">nil</span>&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Both failed: figure out which error to return.</span></span><br><span class="line">	<span class="comment">// OS X and Linux differ on whether unlink(dir)</span></span><br><span class="line">	<span class="comment">// returns EISDIR, so can't use that. However,</span></span><br><span class="line">	<span class="comment">// both agree that rmdir(file) returns ENOTDIR,</span></span><br><span class="line">	<span class="comment">// so we can use that to decide which error is real.</span></span><br><span class="line">	<span class="comment">// Rmdir might also return ENOTDIR if given a bad</span></span><br><span class="line">	<span class="comment">// file path, like /etc/passwd/foo, but in that case,</span></span><br><span class="line">	<span class="comment">// both errors will be ENOTDIR, so it's okay to</span></span><br><span class="line">	<span class="comment">// use the error from unlink.</span></span><br><span class="line">	<span class="keyword">if</span> e1 != syscall.ENOTDIR &#123;e = e1&#125;</span><br><span class="line">	<span class="keyword">return</span> &amp;PathError&#123;<span class="string">"remove"</span>, name, e&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上这里 Golang 标准库中返回了一个名为 <code>PathError</code> 的结构体，这个结构体定义了操作类型、路径和原始的错误信息，然后通过 <code>Error</code> 方法对所有信息进行了整合。</p>
+<p>但是这样也会存在问题，比如需要进行单独类型复杂的分类处理，比如上面例子中，需要单独处理 <code>PathError</code> 这种问题，你可能需要一个单独的类型推导：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">err := xxxx()</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;swtich err := err.(<span class="keyword">type</span>) &#123;</span><br><span class="line">	<span class="keyword">case</span> *os.PathError:</span><br><span class="line">		...</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样反倒会增加错误处理的复杂度。同时，这些错误必须变为导出类型，也会增加整个系统的复杂度。</p>
+<p>另外一个问题是，我们在出现错误时，我们通常也希望获取更多的堆栈信息，方便我们进行后续的故障追踪。在现有的错误体系中，这相对比较复杂：你很难通过一个接口类型获取完整的调用堆栈。这时，我们可能就需要一个第三方库区去解决遇到的这些错误处理问题。</p>
+<p>还有一种情况是，我们希望在错误处理过程中同样可以附加一些信息，这些也会相对比较麻烦。</p>
+<h2 id="更优雅的错误处理"><a href="#更优雅的错误处理" class="headerlink" title="更优雅的错误处理"></a>更优雅的错误处理</h2><p>之前提到了多种实际应用场景中出现的错误处理方法和遇到的一些问题，这里推荐使用第三方库去解决部分问题：<code>github.com/pkg/errors</code>。</p>
+<p>比如当我们出现问题时，我们可以简单的使用 <code>errors.New</code> 或者 <code>errors.Errorf</code> 生成一个错误变量：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">err := errors.New(<span class="string">"whoops"</span>)</span><br><span class="line"><span class="comment">// or</span></span><br><span class="line">err := errors.Errorf(<span class="string">"whoops: %s"</span>, <span class="string">"foo"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>当我们需要附加信息时，则可以使用：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cause := errors.New(<span class="string">"whoops"</span>)</span><br><span class="line">err := errors.Wrap(cause,<span class="string">"oh noes"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>当需要获取 @用堆栈时，则可以使用：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">err := errors.New(<span class="string">"whoops"</span>)</span><br><span class="line">fmt.Printf(<span class="string">"%+v"</span>, err)</span><br></pre></td></tr></table></figure>
+
+<h2 id="其他建议"><a href="#其他建议" class="headerlink" title="其他建议"></a>其他建议</h2><p>在上面做类型推导时，我们发现在处理一类错误时可能需要多个错误类型，这可能在某些情况下相对来说比较复杂，很多时候我们可以使用接口形式去方便处理：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> temporary <span class="keyword">interface</span> &#123;Temporary() <span class="keyword">bool</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// IsTemporary returns true if err is temporary.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">IsTemporary</span><span class="params">(err error)</span> <span class="title">bool</span></span> &#123;te, ok := errors.Cause(err).(temporary)</span><br><span class="line">	<span class="keyword">return</span> ok &amp;&amp; te.Temporary()&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以提供更加方便的错误解析和处理。</p>
+<h3 id="广告时间"><a href="#广告时间" class="headerlink" title="广告时间"></a>广告时间</h3><p>我们正在招收新人 Gopher，应届毕业生 or 实习生欢迎投递简历。我们正在努力实现开发流程标准化，如果你想获得提高，相信也是一个非常不错的机会。简历投递 kevin [at] yeeuu [dot] com。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/" title="更优雅的 Golang 错误处理">https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Golang/" rel="tag"># Golang</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/2016-09-15-tracing-python-program-with-dtrace/" rel="next" title="使用 dtrace 跟踪 Python 应用">
+                <i class="fa fa-chevron-left"></i> 使用 dtrace 跟踪 Python 应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/" rel="prev" title="使用 Python 和 Pandas 分析 Pronto CycleShare 数据">
+                使用 Python 和 Pandas 分析 Pronto CycleShare 数据 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从现状谈起"><span class="nav-number">1.</span> <span class="nav-text">从现状谈起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更优雅的错误处理"><span class="nav-number">2.</span> <span class="nav-text">更优雅的错误处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他建议"><span class="nav-number">3.</span> <span class="nav-text">其他建议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#广告时间"><span class="nav-number">3.1.</span> <span class="nav-text">广告时间</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

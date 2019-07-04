@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。  本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 Pronto Cycle Share 的数据分析挑战。 你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyDat">
+<meta name="keywords" content="Python,Pandas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Python 和 Pandas 分析 Pronto CycleShare 数据">
+<meta property="og:url" content="https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。  本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 Pronto Cycle Share 的数据分析挑战。 你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyDat">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvpy4sgpyj20pu0ebjuf">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtq0o8jaj20q20aimxv">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtx6xmpqj20q30axgmm">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvu4jj5p0j20e20a5aab">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuk9mwpzj20ke07tjrm">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuq6y9e5j20dw0a5dg1">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvut21qj5j20no0butca">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwev74fzj20su0a2mxj">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqa1v43j20rp0c4wg6">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqr99vcj20rj0c440e">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.068Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 Python 和 Pandas 分析 Pronto CycleShare 数据">
+<meta name="twitter:description" content="这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。  本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 Pronto Cycle Share 的数据分析挑战。 你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyDat">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvpy4sgpyj20pu0ebjuf">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据 | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">使用 Python 和 Pandas 分析 Pronto CycleShare 数据
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-02-19 18:00:00" itemprop="dateCreated datePublished" datetime="2017-02-19T18:00:00+08:00">2017-02-19</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这是一篇非常不错的 <a href="https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/" target="_blank" rel="noopener">pandas 分析入门文章</a>，在此简单翻译摘录如下。</p>
+<hr>
+<p>本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 <a href="http://www.prontocycleshare.com/datachallenge" target="_blank" rel="noopener">Pronto Cycle Share 的数据分析挑战</a>。</p>
+<p>你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 <a href="http://www.numpy.org/" target="_blank" rel="noopener">NumPy</a>，<a href="http://pandas.pydata.org/" target="_blank" rel="noopener">Pandas</a>，<a href="http://matplotlib.org/" target="_blank" rel="noopener">Matplotlib</a> 和 <a href="http://seaborn.pydata.org/index.html" target="_blank" rel="noopener">Seaborn</a> 与其他可用的数据源。</p>
+<p>这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 <a href="http://jakevdp.github.io/downloads/notebooks/ProntoData.ipynb" target="_blank" rel="noopener">对应的 Notebook 文件</a>，并通过 Jupyter 打开。</p>
+<h2 id="下载-Pronto-的数据"><a href="#下载-Pronto-的数据" class="headerlink" title="下载 Pronto 的数据"></a>下载 Pronto 的数据</h2><p>我们可以从 <a href="http://www.prontocycleshare.com/datachallenge" target="_blank" rel="noopener">Pronto 官网</a> 下载对应的 <a href="https://s3.amazonaws.com/pronto-data/open_data_year_one.zip" target="_blank" rel="noopener">数据文件</a>。总下载大约 70MB，解压缩的文件大约 900MB。</p>
+<p>接下来我们需要导入一些 Python 包：</p>
+<p>In [2]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns; sns.set()</span><br></pre></td></tr></table></figure>
+
+<p>现在我们使用 Pandas 加载所有的行程记录：</p>
+<p>In [3]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">trips = pd.read_csv(<span class="string">'2015_trip_data.csv'</span>,</span><br><span class="line">                    parse_dates=[<span class="string">'starttime'</span>, <span class="string">'stoptime'</span>],</span><br><span class="line">                    infer_datetime_format=<span class="literal">True</span>)</span><br><span class="line">trips.head()</span><br></pre></td></tr></table></figure>
+
+<p>Out[3]:</p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>trip_id</th>
+      <th>starttime</th>
+      <th>stoptime</th>
+      <th>bikeid</th>
+      <th>tripduration</th>
+      <th>from_station_name</th>
+      <th>to_station_name</th>
+      <th>from_station_id</th>
+      <th>to_station_id</th>
+      <th>usertype</th>
+      <th>gender</th>
+      <th>birthyear</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>431</td>
+      <td>2014-10-13 10:31:00</td>
+      <td>2014-10-13 10:48:00</td>
+      <td>SEA00298</td>
+      <td>985.935</td>
+      <td>2nd Ave &amp; Spring St</td>
+      <td>Occidental Park / Occidental Ave S &amp; S Washing...</td>
+      <td>CBD-06</td>
+      <td>PS-04</td>
+      <td>Annual Member</td>
+      <td>Male</td>
+      <td>1960</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>432</td>
+      <td>2014-10-13 10:32:00</td>
+      <td>2014-10-13 10:48:00</td>
+      <td>SEA00195</td>
+      <td>926.375</td>
+      <td>2nd Ave &amp; Spring St</td>
+      <td>Occidental Park / Occidental Ave S &amp; S Washing...</td>
+      <td>CBD-06</td>
+      <td>PS-04</td>
+      <td>Annual Member</td>
+      <td>Male</td>
+      <td>1970</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>433</td>
+      <td>2014-10-13 10:33:00</td>
+      <td>2014-10-13 10:48:00</td>
+      <td>SEA00486</td>
+      <td>883.831</td>
+      <td>2nd Ave &amp; Spring St</td>
+      <td>Occidental Park / Occidental Ave S &amp; S Washing...</td>
+      <td>CBD-06</td>
+      <td>PS-04</td>
+      <td>Annual Member</td>
+      <td>Female</td>
+      <td>1988</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>434</td>
+      <td>2014-10-13 10:34:00</td>
+      <td>2014-10-13 10:48:00</td>
+      <td>SEA00333</td>
+      <td>865.937</td>
+      <td>2nd Ave &amp; Spring St</td>
+      <td>Occidental Park / Occidental Ave S &amp; S Washing...</td>
+      <td>CBD-06</td>
+      <td>PS-04</td>
+      <td>Annual Member</td>
+      <td>Female</td>
+      <td>1977</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>435</td>
+      <td>2014-10-13 10:34:00</td>
+      <td>2014-10-13 10:49:00</td>
+      <td>SEA00202</td>
+      <td>923.923</td>
+      <td>2nd Ave &amp; Spring St</td>
+      <td>Occidental Park / Occidental Ave S &amp; S Washing...</td>
+      <td>CBD-06</td>
+      <td>PS-04</td>
+      <td>Annual Member</td>
+      <td>Male</td>
+      <td>1971</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这个行程数据集的每一行是由一个人单独骑行，共包含超过 140,000 条数据。</p>
+<h2 id="探索时间与行程的关系"><a href="#探索时间与行程的关系" class="headerlink" title="探索时间与行程的关系"></a>探索时间与行程的关系</h2><p>让我们先看看一年中每日行程次数的趋势。</p>
+<p>In [4]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Find the start date</span></span><br><span class="line">ind = pd.DatetimeIndex(trips.starttime)</span><br><span class="line">trips[<span class="string">'date'</span>] = ind.date.astype(<span class="string">'datetime64'</span>)</span><br><span class="line">trips[<span class="string">'hour'</span>] = ind.hour</span><br></pre></td></tr></table></figure>
+
+<p>In [5]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Count trips by date</span></span><br><span class="line">by_date = trips.pivot_table(<span class="string">'trip_id'</span>, aggfunc=<span class="string">'count'</span>,</span><br><span class="line">                            index=<span class="string">'date'</span>,</span><br><span class="line">                            columns=<span class="string">'usertype'</span>, )</span><br></pre></td></tr></table></figure>
+
+<p>In [6]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(<span class="number">2</span>, figsize=(<span class="number">16</span>, <span class="number">8</span>))</span><br><span class="line">fig.subplots_adjust(hspace=<span class="number">0.4</span>)</span><br><span class="line">by_date.iloc[:, <span class="number">0</span>].plot(ax=ax[<span class="number">0</span>], title=<span class="string">'Annual Members'</span>);</span><br><span class="line">by_date.iloc[:, <span class="number">1</span>].plot(ax=ax[<span class="number">1</span>], title=<span class="string">'Day-Pass Users'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvpy4sgpyj20pu0ebjuf" alt></p>
+<p>此图显示每日趋势，以年费用户（上图）和临时用户（下图）分隔。 根据图标，我们可以获得几个结论：</p>
+<ul>
+<li>4 月份短期使用的临时用户大幅增加可能是由于 <a href="http://www.planetizen.com/node/75958/seattle-sets-bikeshare-record-apa-town" target="_blank" rel="noopener">美国规划协会全国会议</a> 在西雅图市中心举行。 其他一个比较接近的时间是 7 月 4 日周末。</li>
+<li>临时用户呈现了一个与季节相关联的稳定的衰退趋势; 年费用户的使用没有随着秋天的来临而显着减少。</li>
+<li>年费用户和临时用户似乎都显示出明显的每周趋势。</li>
+</ul>
+<p>现在放大每周趋势，看一下所有的骑乘都是按照星期几分部的。由于 2015 年 1 月份左右模式的变化，我们按照年份和星期几进行拆分：</p>
+<p>In [7]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">by_weekday = by_date.groupby([by_date.index.year,</span><br><span class="line">                              by_date.index.dayofweek]).mean()</span><br><span class="line">by_weekday.columns.name = <span class="literal">None</span>  <span class="comment"># remove label for plot</span></span><br><span class="line"></span><br><span class="line">fig, ax = plt.subplots(<span class="number">1</span>, <span class="number">2</span>, figsize=(<span class="number">16</span>, <span class="number">6</span>), sharey=<span class="literal">True</span>)</span><br><span class="line">by_weekday.loc[<span class="number">2014</span>].plot(title=<span class="string">'Average Use by Day of Week (2014)'</span>, ax=ax[<span class="number">0</span>]);</span><br><span class="line">by_weekday.loc[<span class="number">2015</span>].plot(title=<span class="string">'Average Use by Day of Week (2015)'</span>, ax=ax[<span class="number">1</span>]);</span><br><span class="line"><span class="keyword">for</span> axi <span class="keyword">in</span> ax:</span><br><span class="line">    axi.set_xticklabels([<span class="string">'Mon'</span>, <span class="string">'Tues'</span>, <span class="string">'Wed'</span>, <span class="string">'Thurs'</span>, <span class="string">'Fri'</span>, <span class="string">'Sat'</span>, <span class="string">'Sun'</span>])</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtq0o8jaj20q20aimxv" alt></p>
+<p>我们看到了一个互补的模式：年费用户倾向于工作日使用他们的自行车（即作为通勤的一部分），而临时用户倾向于在周末使用他们的自行车。这种模式甚至在 2015 年年初都没有特别的体现出来，尤其是年费用户：似乎在头几个月，用户还没有使用 Pronto 的通勤习惯。</p>
+<p>查看平日和周末的平均每小时骑行也很有趣。这需要一些操作：</p>
+<p>In [8]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># count trips by date and by hour</span></span><br><span class="line">by_hour = trips.pivot_table(<span class="string">'trip_id'</span>, aggfunc=<span class="string">'count'</span>,</span><br><span class="line">                            index=[<span class="string">'date'</span>, <span class="string">'hour'</span>],</span><br><span class="line">                            columns=<span class="string">'usertype'</span>).fillna(<span class="number">0</span>).reset_index(<span class="string">'hour'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># average these counts by weekend</span></span><br><span class="line">by_hour[<span class="string">'weekend'</span>] = (by_hour.index.dayofweek&gt;= <span class="number">5</span>)</span><br><span class="line">by_hour = by_hour.groupby([<span class="string">'weekend'</span>, <span class="string">'hour'</span>]).mean()</span><br><span class="line">by_hour.index.set_levels([[<span class="string">'weekday'</span>, <span class="string">'weekend'</span>],</span><br><span class="line">                          [<span class="string">"&#123;0&#125;:00"</span>.format(i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">24</span>)]],</span><br><span class="line">                         inplace=<span class="literal">True</span>);</span><br><span class="line">by_hour.columns.name = <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+
+<p>现在我们可以绘制结果来查看每小时的趋势：</p>
+<p>In [9]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(<span class="number">1</span>, <span class="number">2</span>, figsize=(<span class="number">16</span>, <span class="number">6</span>), sharey=<span class="literal">True</span>)</span><br><span class="line">by_hour.loc[<span class="string">'weekday'</span>].plot(title=<span class="string">'Average Hourly Use (Mon-Fri)'</span>, ax=ax[<span class="number">0</span>])</span><br><span class="line">by_hour.loc[<span class="string">'weekend'</span>].plot(title=<span class="string">'Average Hourly Use (Sat-Sun)'</span>, ax=ax[<span class="number">1</span>])</span><br><span class="line">ax[<span class="number">0</span>].set_ylabel(<span class="string">'Average Trips per Hour'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtx6xmpqj20q30axgmm" alt></p>
+<p>我们看到一个 “通勤” 模式和一个 “娱乐” 模式之间的明显区别:“通勤” 模式在早上和晚上急剧上升，而 “娱乐” 模式在下午的时候有一个宽峰。 有趣的是，年费会员在周末的行为似乎与临时用户在周末的行为几乎相同。</p>
+<h2 id="旅行时间"><a href="#旅行时间" class="headerlink" title="旅行时间"></a>旅行时间</h2><p>接下来，我们来看看旅行的持续时间。 Pronto 免费骑行最长可达 30 分钟; 任何长于此的单次使用，在前半个小时都会产生几美元的使用费，此后每小时大约需要十美元。</p>
+<p>让我们看看年费会员和临时使用者的旅行持续时间的分布：</p>
+<p>In [10]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">trips[<span class="string">'minutes'</span>] = trips.tripduration / <span class="number">60</span></span><br><span class="line">trips.groupby(<span class="string">'usertype'</span>)[<span class="string">'minutes'</span>].hist(bins=np.arange(<span class="number">61</span>), alpha=<span class="number">0.5</span>, normed=<span class="literal">True</span>);</span><br><span class="line">plt.xlabel(<span class="string">'Duration (minutes)'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'relative frequency'</span>)</span><br><span class="line">plt.title(<span class="string">'Trip Durations'</span>)</span><br><span class="line">plt.text(<span class="number">34</span>, <span class="number">0.09</span>,<span class="string">"Free Trips\n\nAdditional Fee"</span>, ha=<span class="string">'right'</span>,</span><br><span class="line">         size=<span class="number">18</span>, rotation=<span class="number">90</span>, alpha=<span class="number">0.5</span>, color=<span class="string">'red'</span>)</span><br><span class="line">plt.legend([<span class="string">'Annual Members'</span>, <span class="string">'Short-term Pass'</span>])</span><br><span class="line"></span><br><span class="line">plt.axvline(<span class="number">30</span>, linestyle=<span class="string">'--'</span>, color=<span class="string">'red'</span>, alpha=<span class="number">0.3</span>);</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvu4jj5p0j20e20a5aab" alt></p>
+<p>在这里，我添加了一个红色的虚线，分开免费骑乘（左）和付费骑乘（右）。看来，年费用户对系统规则更加了解：只有行程分布的一小部分超过 30 分钟。另一方面，大约四分之一的临时用户时间超过半小时限制，并收取额外费用。 我的预期是，这些临时用户不能很好理解这种定价结构，并且可能会因为不开心的体验不再使用。</p>
+<h2 id="估计行程距离"><a href="#估计行程距离" class="headerlink" title="估计行程距离"></a>估计行程距离</h2><p>看看旅行的距离也十分有趣。Pronto 发布的数据中不包括行车的距离，因此我们需要通过其他来源来确定。让我们从加载行车数据开始 - 因为一些行程在 Pronto 的服务点之间开始和结束，我们将其添加为一个 “车站”：</p>
+<p>In [11]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">stations = pd.read_csv(<span class="string">'2015_station_data.csv'</span>)</span><br><span class="line">pronto_shop = dict(id=<span class="number">54</span>, name=<span class="string">"Pronto shop"</span>,</span><br><span class="line">                   terminal=<span class="string">"Pronto shop"</span>,</span><br><span class="line">                   lat=<span class="number">47.6173156</span>, long=<span class="number">-122.3414776</span>,</span><br><span class="line">                   dockcount=<span class="number">100</span>, online=<span class="string">'10/13/2014'</span>)</span><br><span class="line">stations = stations.append(pronto_shop, ignore_index=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>现在我们需要找到两对纬度 / 经度坐标之间的骑车距离。幸运的是，Google 地图有一个距离 API，我们可以免费使用。</p>
+<p>从文档中知道，我们每天免费使用的限制为每天最多 2500 个距离，每 10 秒最多 100 个距离。现在有 55 个站，我们有（55 * 54/2） = 1485 个非零距离，所以我们可以在几天内免费查询所有车站之间的距离。</p>
+<p>为此，我们一次查询一行，在查询之间等待 10 + 秒（注意：我们可能还会使用 googlemaps Python 包 ，但使用它需要获取 API 密钥）。</p>
+<p>In [12]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">query_distances</span><span class="params">(stations=stations)</span>:</span></span><br><span class="line">    <span class="string">"""Query the Google API for bicycling distances"""</span></span><br><span class="line">    latlon_list = [<span class="string">'&#123;0&#125;,&#123;1&#125;'</span>.format(lat, long)</span><br><span class="line">                   <span class="keyword">for</span> (lat, long) <span class="keyword">in</span> zip(stations.lat, stations.long)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create_url</span><span class="params">(i)</span>:</span></span><br><span class="line">        URL = (<span class="string">'https://maps.googleapis.com/maps/api/distancematrix/json?'</span></span><br><span class="line">               <span class="string">'origins=&#123;origins&#125;&amp;destinations=&#123;destinations&#125;&amp;mode=bicycling'</span>)</span><br><span class="line">        <span class="keyword">return</span> URL.format(origins=latlon_list[i],</span><br><span class="line">                          destinations=<span class="string">'|'</span>.join(latlon_list[i + <span class="number">1</span>:]))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(latlon_list) - <span class="number">1</span>):</span><br><span class="line">        url = create_url(i)</span><br><span class="line">        filename = <span class="string">"distances_&#123;0&#125;.json"</span>.format(stations.terminal.iloc[i])</span><br><span class="line">        print(i, filename)</span><br><span class="line">        !curl <span class="string">"&#123;url&#125;"</span> -o &#123;filename&#125;</span><br><span class="line">        sleep(<span class="number">11</span>) <span class="comment"># only one query per 10 seconds!</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build_distance_matrix</span><span class="params">(stations=stations)</span>:</span></span><br><span class="line">    <span class="string">"""Build a matrix from the Google API results"""</span></span><br><span class="line">    dist = np.zeros((len(stations), len(stations)), dtype=float)</span><br><span class="line">    <span class="keyword">for</span> i, term <span class="keyword">in</span> enumerate(stations.terminal[:<span class="number">-1</span>]):</span><br><span class="line">        filename = <span class="string">'queried_distances/distances_&#123;0&#125;.json'</span>.format(term)</span><br><span class="line">        row = json.load(open(filename))</span><br><span class="line">        dist[i, i + <span class="number">1</span>:] = [el[<span class="string">'distance'</span>][<span class="string">'value'</span>] <span class="keyword">for</span> el <span class="keyword">in</span> row[<span class="string">'rows'</span>][<span class="number">0</span>][<span class="string">'elements'</span>]]</span><br><span class="line">    dist += dist.T</span><br><span class="line">    distances = pd.DataFrame(dist, index=stations.terminal,</span><br><span class="line">                             columns=stations.terminal)</span><br><span class="line">    distances.to_csv(<span class="string">'station_distances.csv'</span>)</span><br><span class="line">    <span class="keyword">return</span> distances</span><br><span class="line"></span><br><span class="line"><span class="comment"># only call this the first time</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(<span class="string">'station_distances.csv'</span>):</span><br><span class="line">    <span class="comment"># Note: you can call this function at most ~twice per day!</span></span><br><span class="line">    query_distances()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Move all the queried files into a directory</span></span><br><span class="line">    <span class="comment"># so we don't accidentally overwrite them</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(<span class="string">'queried_distances'</span>):</span><br><span class="line">        os.makedirs(<span class="string">'queried_distances'</span>)</span><br><span class="line">    !mv distances_*.json queried_distances</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Build distance matrix and save to CSV</span></span><br><span class="line">    distances = build_distance_matrix()</span><br></pre></td></tr></table></figure>
+
+<p>这里是第一个 5x5 距离矩阵：</p>
+<p>In [13]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">distances = pd.read_csv(<span class="string">'station_distances.csv'</span>, index_col=<span class="string">'terminal'</span>)</span><br><span class="line">distances.iloc[:<span class="number">5</span>, :<span class="number">5</span>]</span><br></pre></td></tr></table></figure>
+
+<p>Out[13]:</p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>BT-01</th>
+      <th>BT-03</th>
+      <th>BT-04</th>
+      <th>BT-05</th>
+      <th>CBD-13</th>
+    </tr>
+    <tr>
+      <th>terminal</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>BT-01</th>
+      <td>0</td>
+      <td>422</td>
+      <td>1067</td>
+      <td>867</td>
+      <td>1342</td>
+    </tr>
+    <tr>
+      <th>BT-03</th>
+      <td>422</td>
+      <td>0</td>
+      <td>838</td>
+      <td>445</td>
+      <td>920</td>
+    </tr>
+    <tr>
+      <th>BT-04</th>
+      <td>1067</td>
+      <td>838</td>
+      <td>0</td>
+      <td>1094</td>
+      <td>1121</td>
+    </tr>
+    <tr>
+      <th>BT-05</th>
+      <td>867</td>
+      <td>445</td>
+      <td>1094</td>
+      <td>0</td>
+      <td>475</td>
+    </tr>
+    <tr>
+      <th>CBD-13</th>
+      <td>1342</td>
+      <td>920</td>
+      <td>1121</td>
+      <td>475</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>让我们将这些距离转换为英里，并将它们加入我们的行程数据：</p>
+<p>In [14]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">stacked = distances.stack() / <span class="number">1609.34</span>  <span class="comment"># convert meters to miles</span></span><br><span class="line">stacked.name = <span class="string">'distance'</span></span><br><span class="line">trips = trips.join(stacked, on=[<span class="string">'from_station_id'</span>,<span class="string">'to_station_id'</span>])</span><br></pre></td></tr></table></figure>
+
+<p>现在我们可以绘制行程距离的分布：</p>
+<p>In [15]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(figsize=(<span class="number">12</span>, <span class="number">4</span>))</span><br><span class="line">trips.groupby(<span class="string">'usertype'</span>)[<span class="string">'distance'</span>].hist(bins=np.linspace(<span class="number">0</span>, <span class="number">6.99</span>, <span class="number">50</span>),</span><br><span class="line">                                           alpha=<span class="number">0.5</span>, ax=ax);</span><br><span class="line">plt.xlabel(<span class="string">'Distance between start &amp; end (miles)'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'relative frequency'</span>)</span><br><span class="line">plt.title(<span class="string">'Minimum Distance of Trip'</span>)</span><br><span class="line">plt.legend([<span class="string">'Annual Members'</span>, <span class="string">'Short-term Pass'</span>]);</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuk9mwpzj20ke07tjrm" alt></p>
+<p>请记住，这显示站点之间的最短可能距离，是每次行程上实际距离的下限。许多旅行（特别是临时用户）在几个街区内开始和结束。除此之外，旅行高峰一般在大约 1 英里左右，也有一些用户将他们的旅行距离扩展到四英里或更长的距离。</p>
+<h2 id="骑手速度"><a href="#骑手速度" class="headerlink" title="骑手速度"></a>骑手速度</h2><p>给定这些距离，我们还可以计算估计骑行速度的下限。 让我们这样做，然后看看年费用户和临时用户的速度分布：</p>
+<p>In [16]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">trips[<span class="string">'speed'</span>] = trips.distance * <span class="number">60</span> / trips.minutes</span><br><span class="line">trips.groupby(<span class="string">'usertype'</span>)[<span class="string">'speed'</span>].hist(bins=np.linspace(<span class="number">0</span>, <span class="number">15</span>, <span class="number">50</span>), alpha=<span class="number">0.5</span>, normed=<span class="literal">True</span>);</span><br><span class="line">plt.xlabel(<span class="string">'lower bound riding speed (MPH)'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'relative frequency'</span>)</span><br><span class="line">plt.title(<span class="string">'Rider Speed Lower Bound (MPH)'</span>)</span><br><span class="line">plt.legend([<span class="string">'Annual Members'</span>, <span class="string">'Short-term Pass'</span>]);</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuq6y9e5j20dw0a5dg1" alt></p>
+<p>有趣的是，分布是完全不同的，年费用户的速度平均值更高一些。你可能会想到这里的结论，年费用户的速度比临时用户更高，但数据本身不足以支持这一结论。如果年费用户倾向于通过最直接的路线从点 A 去往点 B，那么这些数据也可以被解释，而临时用户倾向于绕行并间接到达他们的目的地。我怀疑现实是这两种效应的混合。</p>
+<p>还要看看距离和速度之间的关系：</p>
+<p>In [17]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">g = sns.FacetGrid(trips, col=<span class="string">"usertype"</span>, hue=<span class="string">'usertype'</span>, size=<span class="number">6</span>)</span><br><span class="line">g.map(plt.scatter,<span class="string">"distance"</span>,<span class="string">"speed"</span>, s=<span class="number">4</span>, alpha=<span class="number">0.2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add lines and labels</span></span><br><span class="line">x = np.linspace(<span class="number">0</span>, <span class="number">10</span>)</span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">0</span>].set_ylabel(<span class="string">'Lower Bound Speed'</span>)</span><br><span class="line"><span class="keyword">for</span> ax <span class="keyword">in</span> g.axes.flat:</span><br><span class="line">    ax.set_xlabel(<span class="string">'Lower Bound Distance'</span>)</span><br><span class="line">    ax.plot(x, <span class="number">2</span> * x,<span class="string">'--r'</span>, alpha=<span class="number">0.3</span>)</span><br><span class="line">    ax.text(<span class="number">9.8</span>, <span class="number">16.5</span>,<span class="string">"Free Trips\n\nAdditional Fee"</span>, ha=<span class="string">'right'</span>,</span><br><span class="line">            size=<span class="number">18</span>, rotation=<span class="number">39</span>, alpha=<span class="number">0.5</span>, color=<span class="string">'red'</span>)</span><br><span class="line">    ax.axis([<span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">25</span>])</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvut21qj5j20no0butca" alt></p>
+<p>总的来说，我们看到较长的路途速度更快 - 虽然这受到与上述相同的下限影响。如上所述，作为参考，我绘制了需要的红线用于区分额外费用（低于红线）和免费费用（红线以上）。我们再次看到，年度会员对于不超过半小时的限制比每天通过用户更加精明 - 点的分布的指向了用户注意了他们使用的时间，以避免额外的费用。</p>
+<h2 id="海拔高度"><a href="#海拔高度" class="headerlink" title="海拔高度"></a>海拔高度</h2><p>在西雅图自行车分享服务的可行性的一个焦点是，西雅图是一个丘陵城市。在服务发布之前，一些分析师预测，西雅图会有源源不断的自行车上坡下坡，所以并不适合分享单车系统的落地。</p>
+<p>数据版本中不包含海拔高度数据，但我们可以转到 Google Maps API 获取我们需要的数据; 请参阅 <a href="https://developers.google.com/maps/documentation/elevation/intro" target="_blank" rel="noopener">此网站</a> 了解海拔 API 的描述。</p>
+<p>在这种情况下，自由使用限制为每天 2500 个请求，每次请求最多包含 512 个海拔高度。 由于我们只需要 55 个海拔高度，我们可以在单个查询中执行：</p>
+<p>In [18]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_station_elevations</span><span class="params">(stations)</span>:</span></span><br><span class="line">    <span class="string">"""Get station elevations via Google Maps API"""</span></span><br><span class="line">    URL = <span class="string">"https://maps.googleapis.com/maps/api/elevation/json?locations="</span></span><br><span class="line">    locs = <span class="string">'|'</span>.join([<span class="string">'&#123;0&#125;,&#123;1&#125;'</span>.format(lat, long)</span><br><span class="line">                     <span class="keyword">for</span> (lat, long) <span class="keyword">in</span> zip(stations.lat, stations.long)])</span><br><span class="line">    URL += locs</span><br><span class="line">    !curl <span class="string">"&#123;URL&#125;"</span> -o elevations.json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process_station_elevations</span><span class="params">()</span>:</span><span class="string">"""Convert Elevations JSON output to CSV"""</span></span><br><span class="line">    <span class="keyword">import</span> json</span><br><span class="line">    D = json.load(open(<span class="string">'elevations.json'</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unnest</span><span class="params">(D)</span>:</span></span><br><span class="line">        loc = D.pop(<span class="string">'location'</span>)</span><br><span class="line">        loc.update(D)</span><br><span class="line">        <span class="keyword">return</span> loc</span><br><span class="line">    elevs = pd.DataFrame([unnest(item) <span class="keyword">for</span> item <span class="keyword">in</span> D[<span class="string">'results'</span>]])</span><br><span class="line">    elevs.to_csv(<span class="string">'station_elevations.csv'</span>)</span><br><span class="line">    <span class="keyword">return</span> elevs</span><br><span class="line"></span><br><span class="line"><span class="comment"># only run this the first time:</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(<span class="string">'station_elevations.csv'</span>):</span><br><span class="line">    get_station_elevations(stations)</span><br><span class="line">    process_station_elevations()</span><br></pre></td></tr></table></figure>
+
+<p>现在让我们读入海拔高度数据：</p>
+<p>In [19]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">elevs = pd.read_csv(<span class="string">'station_elevations.csv'</span>, index_col=<span class="number">0</span>)</span><br><span class="line">elevs.head()</span><br></pre></td></tr></table></figure>
+
+<p>Out[19]:</p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>elevation</th>
+      <th>lat</th>
+      <th>lng</th>
+      <th>resolution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>37.351780</td>
+      <td>47.618418</td>
+      <td>-122.350964</td>
+      <td>76.351616</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>33.815830</td>
+      <td>47.615829</td>
+      <td>-122.348564</td>
+      <td>76.351616</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>34.274055</td>
+      <td>47.616094</td>
+      <td>-122.341102</td>
+      <td>76.351616</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>44.283257</td>
+      <td>47.613110</td>
+      <td>-122.344208</td>
+      <td>76.351616</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>42.460381</td>
+      <td>47.610185</td>
+      <td>-122.339641</td>
+      <td>76.351616</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>为了验证结果，我们需要仔细检查纬度和经度是否匹配：</p>
+<p>In [20]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># double check that locations match</span></span><br><span class="line">print(np.allclose(stations.long, elevs.lng))</span><br><span class="line">print(np.allclose(stations.lat, elevs.lat))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">True</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+
+<p>现在我们可以将海拔数据与行程数据整合：</p>
+<p>In [21]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">stations[<span class="string">'elevation'</span>] = elevs[<span class="string">'elevation'</span>]</span><br><span class="line">elevs.index = stations[<span class="string">'terminal'</span>]</span><br><span class="line"></span><br><span class="line">trips[<span class="string">'elevation_start'</span>] = trips.join(elevs, on=<span class="string">'from_station_id'</span>)[<span class="string">'elevation'</span>]</span><br><span class="line">trips[<span class="string">'elevation_end'</span>] = trips.join(elevs, on=<span class="string">'to_station_id'</span>)[<span class="string">'elevation'</span>]</span><br><span class="line">trips[<span class="string">'elevation_gain'</span>] = trips[<span class="string">'elevation_end'</span>] - trips[<span class="string">'elevation_start'</span>]</span><br></pre></td></tr></table></figure>
+
+<p>让我们来看看海拔数据和会员类型的分布关系：</p>
+<p>In [22]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">g = sns.FacetGrid(trips, col=<span class="string">"usertype"</span>, hue=<span class="string">'usertype'</span>)</span><br><span class="line">g.map(plt.hist,<span class="string">"elevation_gain"</span>, bins=np.arange(<span class="number">-145</span>, <span class="number">150</span>, <span class="number">10</span>))</span><br><span class="line">g.fig.set_figheight(<span class="number">6</span>)</span><br><span class="line">g.fig.set_figwidth(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># plot some lines to guide the eye</span></span><br><span class="line"><span class="keyword">for</span> lim <span class="keyword">in</span> range(<span class="number">60</span>, <span class="number">150</span>, <span class="number">20</span>):</span><br><span class="line">    x = np.linspace(-lim, lim, <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">for</span> ax <span class="keyword">in</span> g.axes.flat:</span><br><span class="line">        ax.fill(x, <span class="number">100</span> * (lim - abs(x)),</span><br><span class="line">                color=<span class="string">'gray'</span>, alpha=<span class="number">0.1</span>, zorder=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwev74fzj20su0a2mxj" alt></p>
+<p>我们在背景中绘制了一些阴影以帮助引导分析。 年度会员和临时用户之间有很大的区别：年费用户非常明显的表示出偏好下坡行程（左侧的分布），而临时用户表现并不明显，而是表示喜欢骑乘开始并在相同高度结束。</p>
+<p>为了使海拔数据变化的影响更加明显，我们做一些计算：</p>
+<p>In [23]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"total downhill trips:"</span>, (trips.elevation_gain &lt; <span class="number">0</span>).sum())</span><br><span class="line">print(<span class="string">"total uphill trips:"</span>, (trips.elevation_gain&gt; <span class="number">0</span>).sum())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">total downhill trips: 80532</span><br><span class="line">total uphill trips:   50493</span><br></pre></td></tr></table></figure>
+
+<p>我们看到，第一年下坡比上坡多出了 3 万次 - 这是大约 60％ 以上。 根据目前的使用水平，这意味着 Pronto 工作人员必须每天从海拔较低的服务点运送大约 100 辆自行车到高海拔服务点。</p>
+<h2 id="天气"><a href="#天气" class="headerlink" title="天气"></a>天气</h2><p>另一个常见的反对循环共享的可行性的论点是天气。让我们来看看出行数量随着温度和降水量的变化。</p>
+<p>幸运的是，数据包括了大范围的天气数据：</p>
+<p>In [24]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">weather = pd.read_csv(<span class="string">'2015_weather_data.csv'</span>, index_col=<span class="string">'Date'</span>, parse_dates=<span class="literal">True</span>)</span><br><span class="line">weather.columns</span><br></pre></td></tr></table></figure>
+
+<p>Out[24]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Index([<span class="string">'Max_Temperature_F'</span>, <span class="string">'Mean_Temperature_F'</span>, <span class="string">'Min_TemperatureF'</span>,</span><br><span class="line">       <span class="string">'Max_Dew_Point_F'</span>, <span class="string">'MeanDew_Point_F'</span>, <span class="string">'Min_Dewpoint_F'</span>, <span class="string">'Max_Humidity'</span>,</span><br><span class="line">       <span class="string">'Mean_Humidity'</span>, <span class="string">'Min_Humidity'</span>, <span class="string">'Max_Sea_Level_Pressure_In'</span>,</span><br><span class="line">       <span class="string">'Mean_Sea_Level_Pressure_In'</span>, <span class="string">'Min_Sea_Level_Pressure_In'</span>,</span><br><span class="line">       <span class="string">'Max_Visibility_Miles'</span>, <span class="string">'Mean_Visibility_Miles'</span>,</span><br><span class="line">       <span class="string">'Min_Visibility_Miles'</span>, <span class="string">'Max_Wind_Speed_MPH'</span>, <span class="string">'Mean_Wind_Speed_MPH'</span>,</span><br><span class="line">       <span class="string">'Max_Gust_Speed_MPH'</span>, <span class="string">'Precipitation_In'</span>, <span class="string">'Events'</span>],</span><br><span class="line">      dtype=<span class="string">'object'</span>)</span><br><span class="line">       dtype =<span class="string">'object'</span>）</span><br></pre></td></tr></table></figure>
+
+<p>让我们将天气数据与行程数据结合起来：</p>
+<p>In [25]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">by_date = trips.groupby([<span class="string">'date'</span>, <span class="string">'usertype'</span>])[<span class="string">'trip_id'</span>].count()</span><br><span class="line">by_date.name = <span class="string">'count'</span></span><br><span class="line">by_date = by_date.reset_index(<span class="string">'usertype'</span>).join(weather)</span><br></pre></td></tr></table></figure>
+
+<p>现在我们可以看看按工作日和周末为纬度，查看出行数量随温度和降水量的变化：</p>
+<p>In [26]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># add a flag indicating weekend</span></span><br><span class="line">by_date[<span class="string">'weekend'</span>] = (by_date.index.dayofweek&gt;= <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#----------------------------------------------------------------</span></span><br><span class="line"><span class="comment"># Plot Temperature Trend</span></span><br><span class="line">g = sns.FacetGrid(by_date, col=<span class="string">"weekend"</span>, hue=<span class="string">'usertype'</span>, size=<span class="number">6</span>)</span><br><span class="line">g.map(sns.regplot,<span class="string">"Mean_Temperature_F"</span>,<span class="string">"count"</span>)</span><br><span class="line">g.add_legend();</span><br><span class="line"></span><br><span class="line"><span class="comment"># do some formatting</span></span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">0</span>].set_title(<span class="string">''</span>)</span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">1</span>].set_title(<span class="string">''</span>)</span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">0</span>].text(<span class="number">0.05</span>, <span class="number">0.95</span>,<span class="string">'Monday - Friday'</span>, va=<span class="string">'top'</span>, size=<span class="number">14</span>,</span><br><span class="line">                  transform=g.axes[<span class="number">0</span>, <span class="number">0</span>].transAxes)</span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">1</span>].text(<span class="number">0.05</span>, <span class="number">0.95</span>,<span class="string">'Saturday - Sunday'</span>, va=<span class="string">'top'</span>, size=<span class="number">14</span>,</span><br><span class="line">                  transform=g.axes[<span class="number">0</span>, <span class="number">1</span>].transAxes)</span><br><span class="line">g.fig.text(<span class="number">0.45</span>, <span class="number">1</span>,<span class="string">"Trend With Temperature"</span>, ha=<span class="string">'center'</span>, va=<span class="string">'top'</span>, size=<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">#----------------------------------------------------------------</span></span><br><span class="line"><span class="comment"># Plot Precipitation</span></span><br><span class="line">g = sns.FacetGrid(by_date, col=<span class="string">"weekend"</span>, hue=<span class="string">'usertype'</span>, size=<span class="number">6</span>)</span><br><span class="line">g.map(sns.regplot,<span class="string">"Precipitation_In "</span>,<span class="string">"count"</span>)</span><br><span class="line">g.add_legend();</span><br><span class="line"></span><br><span class="line"><span class="comment"># do some formatting</span></span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">0</span>].set_ylim(<span class="number">-50</span>, <span class="number">600</span>);</span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">0</span>].set_title(<span class="string">''</span>)</span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">1</span>].set_title(<span class="string">''</span>)</span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">0</span>].text(<span class="number">0.95</span>, <span class="number">0.95</span>,<span class="string">'Monday - Friday'</span>, ha=<span class="string">'right'</span>, va=<span class="string">'top'</span>, size=<span class="number">14</span>,</span><br><span class="line">                  transform=g.axes[<span class="number">0</span>, <span class="number">0</span>].transAxes)</span><br><span class="line">g.axes[<span class="number">0</span>, <span class="number">1</span>].text(<span class="number">0.95</span>, <span class="number">0.95</span>,<span class="string">'Saturday - Sunday'</span>, ha=<span class="string">'right'</span>, va=<span class="string">'top'</span>, size=<span class="number">14</span>,</span><br><span class="line">                  transform=g.axes[<span class="number">0</span>, <span class="number">1</span>].transAxes)</span><br><span class="line">g.fig.text(<span class="number">0.45</span>, <span class="number">1</span>,<span class="string">"Trend With Precipitation"</span>, ha=<span class="string">'center'</span>, va=<span class="string">'top'</span>, size=<span class="number">16</span>);</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqa1v43j20rp0c4wg6" alt><br>   <img src="http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqr99vcj20rj0c440e" alt></p>
+<p>对于天气的影响，我们可以看出明显的趋势：人们更喜欢温暖、阳光明媚的天气。但是也有一些有趣的细节：工作日期间，所有的用户都受到天气的影响。然而周末年费用户受影响更少。我没有什么好的理论说明为什么有这种趋势，如果你有好的想法，欢迎提供。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>根据上面的一些系列分析，但是我想我们可以从这些数据中获得一些结论：</p>
+<ul>
+<li>年费用户与临时用户整体上会有不同的行为：年费用户通常是利用 Pronto 进行工作日的通勤。临时用户则是周末使用 Pronto 探索城市的特定区域。</li>
+<li>尽管年费用户对定价策略有所了解，但是四分之一的行程还是超过了半小时的限制，并产生了额外的费用。为了客户的权益，Pronto 应该更好告知用户这种定价策略。</li>
+<li>海拔和天气会影响使用，正如你预计的一样：下坡比上坡多 60%，寒冷和下雨也会明显减少当天的骑行数量。</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/" title="使用 Python 和 Pandas 分析 Pronto CycleShare 数据">https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/Pandas/" rel="tag"># Pandas</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/2017-02-08-more-effective-golang-error/" rel="next" title="更优雅的 Golang 错误处理">
+                <i class="fa fa-chevron-left"></i> 更优雅的 Golang 错误处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/2017-05-19-grpc-call-timeout/" rel="prev" title="gRPC 调用超时控制">
+                gRPC 调用超时控制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载-Pronto-的数据"><span class="nav-number">1.</span> <span class="nav-text">下载 Pronto 的数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#探索时间与行程的关系"><span class="nav-number">2.</span> <span class="nav-text">探索时间与行程的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#旅行时间"><span class="nav-number">3.</span> <span class="nav-text">旅行时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#估计行程距离"><span class="nav-number">4.</span> <span class="nav-text">估计行程距离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#骑手速度"><span class="nav-number">5.</span> <span class="nav-text">骑手速度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#海拔高度"><span class="nav-number">6.</span> <span class="nav-text">海拔高度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#天气"><span class="nav-number">7.</span> <span class="nav-text">天气</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

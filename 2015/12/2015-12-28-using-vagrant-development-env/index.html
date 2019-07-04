@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在服务器端开发过程中，比较痛苦的是在多个人员进行开发时，容易因为环境不统一等等的情况，容易出现传说中的 “我这儿能跑，换个环境就出问题” 的情况。我们在项目开发过程中大量的使用了 Python 语言构建 Web 类型服务。Python 对于某些需要编译的扩展模块，可能在不同的场景下带来不同的影响（如编译不过等等、二进制版本不同等等问题）。 在处理这种多人协作的环境统一问题时，我们选择 Vagran">
+<meta name="keywords" content="Others">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Vagrant 统一开发环境实践">
+<meta property="og:url" content="https://www.4async.com/2015/12/2015-12-28-using-vagrant-development-env/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="在服务器端开发过程中，比较痛苦的是在多个人员进行开发时，容易因为环境不统一等等的情况，容易出现传说中的 “我这儿能跑，换个环境就出问题” 的情况。我们在项目开发过程中大量的使用了 Python 语言构建 Web 类型服务。Python 对于某些需要编译的扩展模块，可能在不同的场景下带来不同的影响（如编译不过等等、二进制版本不同等等问题）。 在处理这种多人协作的环境统一问题时，我们选择 Vagran">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.078Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 Vagrant 统一开发环境实践">
+<meta name="twitter:description" content="在服务器端开发过程中，比较痛苦的是在多个人员进行开发时，容易因为环境不统一等等的情况，容易出现传说中的 “我这儿能跑，换个环境就出问题” 的情况。我们在项目开发过程中大量的使用了 Python 语言构建 Web 类型服务。Python 对于某些需要编译的扩展模块，可能在不同的场景下带来不同的影响（如编译不过等等、二进制版本不同等等问题）。 在处理这种多人协作的环境统一问题时，我们选择 Vagran">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2015/12/2015-12-28-using-vagrant-development-env/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用 Vagrant 统一开发环境实践 | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/12/2015-12-28-using-vagrant-development-env/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">使用 Vagrant 统一开发环境实践
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2015-12-28 15:43:12" itemprop="dateCreated datePublished" datetime="2015-12-28T15:43:12+08:00">2015-12-28</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在服务器端开发过程中，比较痛苦的是在多个人员进行开发时，容易因为环境不统一等等的情况，容易出现传说中的 “我这儿能跑，换个环境就出问题” 的情况。我们在项目开发过程中大量的使用了 Python 语言构建 Web 类型服务。Python 对于某些需要编译的扩展模块，可能在不同的场景下带来不同的影响（如编译不过等等、二进制版本不同等等问题）。</p>
+<p>在处理这种多人协作的环境统一问题时，我们选择 Vagrant＋VirtualBox＋CentOS 虚拟环境方案统一开发环境，避免出现切换开发者，切换开发环境带来的不统一的麻烦。</p>
+<h2 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h2><p>vagrant 可以在 <a href="https://www.vagrantup.com/" target="_blank" rel="noopener">https://www.vagrantup.com/</a> 下载安装，对应的系统镜像可以在 <a href="http://www.vagrantbox.es/" target="_blank" rel="noopener">http://www.vagrantbox.es/</a> 找到下载安装。根据国内实际的下载情况，我们建议先行下载镜像方式初始化项目。在选择镜像时，建议选择与线上服务器版本相同的镜像。下面我们仅演示本地加载镜像方式。</p>
+<p>下载 vagrant 和镜像后，安装 vagrant 软件。这样就可以在命令行中执行相关指令。还有，记得安装 VirtualBox。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant box add centos /path/to/centos-6.6-x86_64.box</span><br></pre></td></tr></table></figure>
+
+<p>比如我们线上服务器使用了 centos 环境，我们在开发时，也是选择相同版本的 CentOS box。</p>
+<p>接下来进入对应的项目目录，使用如下命令创建 Vagrantfile（centos 是刚刚添加的 box）。当然，如果项目已经存在 Vagrantfile，则可以进行省略。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant init centos</span><br></pre></td></tr></table></figure>
+
+<p>项目文件夹下会生成 Vagrantfile 文件。</p>
+<h2 id="Vagrantfile-编辑"><a href="#Vagrantfile-编辑" class="headerlink" title="Vagrantfile 编辑"></a>Vagrantfile 编辑</h2><p>Vagrant 在执行环境初始化时会根据 Vagrantfile 文件的描述进行。比较常见的编辑内容一般包含以下几种。</p>
+<p>如果想要使用 IP 访问该虚拟服务器，可以通过删除 <figure class="highlight plain"><figcaption><span>:private_network, ip: "192.168.33.10"``` 前的 “#”，将该设置生效。注意需要确认 ip 不要被占用。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果需要同步文件夹到虚拟机中（比如项目文件夹），可以注释掉 ```config.vm.synced_folder &quot;../data&quot;, &quot;/vagrant_data&quot;``` 前的 “#”，将设置生效。该命令可以切换更复杂的设置：```config.vm.synced_folder &quot;./&quot;, &quot;/var/www&quot;, create: true, group: &quot;nginx&quot;, owner: &quot;nginx&quot;``` 命令表示将本地的当前目录映射到 ```/var/www``` 目录，若不存在时创建，同意 user 和 group 设置为 nginx。</span><br><span class="line"></span><br><span class="line">## 服务器初始化</span><br><span class="line"></span><br><span class="line">服务器初始化功能也算是在 Vagrantfile 编辑之中的，之所以单独介绍，是因为服务器的环境是初始化时一个更加独立的过程，应用也最多。在 vagrant 环境初始化时，可以通过 Vagrantfile 的 ```config.vm.provision &quot;shell&quot;``` 功能，初始化服务器配置和一些基础运行环境。比如说我们现在正在使用的配置如下（Vagrantfile 中对应内容）：</span><br><span class="line"></span><br><span class="line">```ruby</span><br><span class="line">  config.vm.provision &quot;shell&quot;, inline: &lt;&lt;-SHELL</span><br><span class="line">    mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup</span><br><span class="line">    wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo</span><br><span class="line">    sudo yum install -y zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel</span><br><span class="line">    sudo yum install -y mysql-server mysql-client mysql-devel</span><br><span class="line">    sudo yum install -y make gcc gcc-c++</span><br><span class="line">    cd /tmp</span><br><span class="line">    wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz</span><br><span class="line">    tar zxvf Python-2.7.11.tgz</span><br><span class="line">    cd /tmp/Python-2.7.11</span><br><span class="line">    ./configure --prefix=/usr/local --with-ensurepip=upgrade</span><br><span class="line">    make</span><br><span class="line">    sudo make install</span><br><span class="line">    sudo /usr/local/bin/pip install virtualenv</span><br><span class="line">    virtualenv /mnt/pyenv</span><br><span class="line">    sudo /usr/local/bin/virtualenv /mnt/pyenv</span><br><span class="line">    source /mnt/pyenv/bin/activate</span><br><span class="line">    sudo /mnt/pyenv/bin/pip install -r /vagrant/requirements.txt</span><br><span class="line">  SHELL</span><br></pre></td></tr></table></figure></p>
+<p>该项配置使用了阿里云的 CentOS 源，编译 Python 2.7.11 并且安装应用必须的一些依赖。项目默认路径会安装在 / vagrant / 目录下，可以通过其他形式，安装至与线上环境相同的位置。</p>
+<p>Vagrant 也支持使用 <figure class="highlight plain"><figcaption><span>形式部署服务，如果你了解具体的使用方法，可以使用下面的形式指定 playbook。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```ruby</span><br><span class="line">Vagrant.configure(2) do |config|</span><br><span class="line"></span><br><span class="line">  #</span><br><span class="line">  # Run Ansible from the Vagrant Host</span><br><span class="line">  #</span><br><span class="line">  config.vm.provision &quot;ansible&quot; do |ansible|</span><br><span class="line">    ansible.playbook = &quot;playbook.yml&quot;</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>当然，利用 Vagrant 也可以很方便的学习和测试 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 运行测试</span><br><span class="line"></span><br><span class="line">在编辑 Vagrantfile 完成后，可以通过 ```vagrant up``` 命令，启动虚拟环境。此时如果设置了服务器初始化，会在最开始过程中执行大量的初始化操作。待操作完成后，则可以验证。</span><br><span class="line"></span><br><span class="line">## 打包分发</span><br><span class="line"></span><br><span class="line">在编辑完成后，则可以根据当前版本生成 Box 文件。对其他开发者而言，可以通过 Box 文件直接快速生成开发环境，也避免了还需要进行服务器初始化阶段。</span><br></pre></td></tr></table></figure></p>
+<p>vagrant package</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">输出会提示保存文件地址：</span><br></pre></td></tr></table></figure>
+
+<p>==&gt; default: Attempting graceful shutdown of VM…<br>==&gt; default: Clearing any previously set forwarded ports…<br>==&gt; default: Exporting VM…<br>==&gt; default: Compressing package to: /path/to/package.box</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果进行了初始化环境的变更，我们建议同时更新 Vagrantfile 文件，通过重新打包的方式进行同步更新。</span><br><span class="line"></span><br><span class="line">## Vagrant 其他命令</span><br><span class="line"></span><br><span class="line">在刚刚提到的几个命令中，```vagrant up``` 可以用于开启环境，对应的还有一些其他命令：</span><br></pre></td></tr></table></figure>
+
+<p>vagrant ssh                // ssh<br>vagrant halt            // 关机<br>vagrant status            // 查看状态<br>vagrant destory            // 删除虚拟机，如果你需要重新开始<br>…</p>
+<pre><code></code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2015/12/2015-12-28-using-vagrant-development-env/" title="使用 Vagrant 统一开发环境实践">https://www.4async.com/2015/12/2015-12-28-using-vagrant-development-env/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Others/" rel="tag"># Others</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/2015-11-11-async-python/" rel="next" title="Python 异步与性能迷思">
+                <i class="fa fa-chevron-left"></i> Python 异步与性能迷思
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/2016-01-05-golang-vendor/" rel="prev" title="使用 vendor 管理 Golang 项目依赖">
+                使用 vendor 管理 Golang 项目依赖 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化项目"><span class="nav-number">1.</span> <span class="nav-text">初始化项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vagrantfile-编辑"><span class="nav-number">2.</span> <span class="nav-text">Vagrantfile 编辑</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

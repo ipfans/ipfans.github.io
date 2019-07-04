@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。 但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。 集合使用">
+<meta name="keywords" content="MongoDB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一些 MongoDB 的坑">
+<meta property="og:url" content="https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。 但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。 集合使用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/69e37fdbgy1fi38mlkzgvj20kt0u277g.jpg">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一些 MongoDB 的坑">
+<meta name="twitter:description" content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。 但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。 集合使用">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/69e37fdbgy1fi38mlkzgvj20kt0u277g.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>一些 MongoDB 的坑 | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">一些 MongoDB 的坑
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-07-31 18:45:00" itemprop="dateCreated datePublished" datetime="2017-07-31T18:45:00+08:00">2017-07-31</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。</p>
+<p>但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。</p>
+<h2 id="集合使用不当问题"><a href="#集合使用不当问题" class="headerlink" title="集合使用不当问题"></a>集合使用不当问题</h2><p>在使用 MongoDB 过程中，我们创建了大量的集合。这种情况在 WiredTriger 引擎下创建大量零散文件。这个在使用过程中暂时未对我们造成实际的业务较大影响，但是从实际使用而言，对整体数据库性能、后续主从复制集群同步，都是有一定影响的。在实际应用过程中应该避免：拥有过多 DB、一个 DB 下有过多 Collection，这样都会导致部分指令的性能大幅度下滑。同时，过多的 DB 也会导致主从同步失败 (listDatabse 超时导致失败，从库退出)。</p>
+<h2 id="数据库索引建立"><a href="#数据库索引建立" class="headerlink" title="数据库索引建立"></a>数据库索引建立</h2><p>MongoDB Collection 索引建立功能支持前台创建模式与后台创建模式两种。默认模式为前台创建模式。这种模式下会发生：DB 被锁，主库所有读写被禁止、从库无法访问。从另一方面来说，会导致业务系统的数据库访问受到影响。虽然前台创建模式效率更高，但是如果是线上操作，并且有一定数量级，创建索引时需要添加 <code>{background:true}</code> 让创建索引操作转换为后台操作，尽管时间较长，但是对业务影响较小。同时，该操作也应该在业务量小时进行。</p>
+<h2 id="数据库主从切换"><a href="#数据库主从切换" class="headerlink" title="数据库主从切换"></a>数据库主从切换</h2><p>虽然 MongoDB 的 Replica Set 功能可以方便的进行自动主从切换。但是实际使用过程中，我们也会遇到一些需要手工进行主从库切换的情况。比如，进行进行版本升级修复 BUG 或者安全漏洞。但是如果这个时候强行进行 Primary 的重启，则可能会出现未同步至 Secondary 的数据丢失的情况（血泪教训）。这种情况下，重启集群的方式是，优先进行 Secondary 的更新操作，在 Secondary 更新完成后，对 Primary 进行 <a href="https://docs.mongodb.com/manual/reference/method/rs.stepDown/" target="_blank" rel="noopener">stepDown</a> 操作，等待主节点降级成为 Secondary 节点，之后进行操作。这样的好处是不会丢失数据。但是如果主从数据差异较大时，有可能会造成降级失败，此时可以重复执行 stepDown 直至成功。还有一个值得注意的是，即便 Secondary 可以停机维护，但是仍旧有可能丢数据，这个与 <code>oplog</code> 大小有关，我们放在后面说。</p>
+<h2 id="慢查询问题"><a href="#慢查询问题" class="headerlink" title="慢查询问题"></a>慢查询问题</h2><p>慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 <code>db.setProfilingLevel()</code> 进行管理。同时，主动分析也可以通过 <code>explain</code> 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 <code>db.currentOp()</code> 和 <code>db.killOp()</code> 功能干掉长时间执行、浪费资源的操作。</p>
+<h2 id="主从同步延迟问题"><a href="#主从同步延迟问题" class="headerlink" title="主从同步延迟问题"></a>主从同步延迟问题</h2><p>主从同步问题是比较常见的延迟问题了，主要问题都是出在 <code>oplog</code> 上。毕竟主从同步机制都是通过此实现的。<code>oplog</code> 是固定大小的集合，如果满了，就会自动删除老的数据。</p>
+<p><img src="https://ws1.sinaimg.cn/large/69e37fdbgy1fi38mlkzgvj20kt0u277g.jpg" alt></p>
+<p>这里可以看到，此处查询 <code>oplog</code> 操作记录到从库同步，已经执行了 194 毫秒。</p>
+<p>上面我们提到，当 Secondary 停机维护时也可能出现问题，就是因为，当 <code>oplog</code> 不足时，那么就有可能会导致数据同步失败。因此一般数据库停机维护操作，也应该放在业务量小的时候进行。不过 <code>oplog</code> 是可以调整的，可以参考 <a href="https://docs.mongodb.com/v3.2/tutorial/change-oplog-size" target="_blank" rel="noopener">官方文档</a> 进行调整。注意，这需要重启数据库来执行。</p>
+<p>主从同步延迟一般出现的情况都是数据出现大量插入和修改的情况。在 Secondary 进行 <code>oplog</code> 重放时，开销会大于 <code>Primary</code> 进行操作的开销。这种情况会产生大量的 <code>oplog</code>（每条修改记录一条，非操作），记录越多，同步速度越慢。同时，某些操作也会大幅度提高单条记录的同步成本，比如 <code>$inc</code>、<code>$push</code> 等等会让同步更慢。如果你对数据库中较大量数据进行 <code>$set</code> 操作，同样也会造成数据延迟。我们的一位工程师就因为这样曾经造成了分钟级别的延迟，教训也是非常惨痛的。这种操作比较频繁时，我们可以通过调整 <code>replWriterThreadCount</code> 参数进行 Secondary 重放线程数量调整。在 MongoDB 中默认为 16，这个可以根据情况进行具体调整。不过该参数为 MongoDB 启动参数，调整该参数会要求重启 MongoDB。另外一个值得注意的是这种操作会加大内存开销，如果内存紧张时也需要注意。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/" title="一些 MongoDB 的坑">https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/MongoDB/" rel="tag"># MongoDB</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/2017-05-19-grpc-call-timeout/" rel="next" title="gRPC 调用超时控制">
+                <i class="fa fa-chevron-left"></i> gRPC 调用超时控制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/2017-08-02-install-face-recognition-on-osx/" rel="prev" title="OSX 下安装 face_recognition">
+                OSX 下安装 face_recognition <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#集合使用不当问题"><span class="nav-number">1.</span> <span class="nav-text">集合使用不当问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库索引建立"><span class="nav-number">2.</span> <span class="nav-text">数据库索引建立</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库主从切换"><span class="nav-number">3.</span> <span class="nav-text">数据库主从切换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#慢查询问题"><span class="nav-number">4.</span> <span class="nav-text">慢查询问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主从同步延迟问题"><span class="nav-number">5.</span> <span class="nav-text">主从同步延迟问题</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

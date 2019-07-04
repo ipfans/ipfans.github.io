@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近有一个需求是在一个常驻内存的程序中结束相关任务。在 Go 中，创建一个 goroutine 非常简单，只需要 go 一下就可以了，但是如果我创建了很多 goroutine，想要结束怎么办？ 比如说我有一个死循环的例子 1234567891011121314151617181920package mainimport (&quot;fmt&quot;	&quot;sync&quot;	&quot;time&quot;)func main() &amp;#123;">
+<meta name="keywords" content="Golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="channel 和 select 控制 goroutines">
+<meta property="og:url" content="https://www.4async.com/2014/04/2014-04-28-control-goroutines-by-channel-select/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="最近有一个需求是在一个常驻内存的程序中结束相关任务。在 Go 中，创建一个 goroutine 非常简单，只需要 go 一下就可以了，但是如果我创建了很多 goroutine，想要结束怎么办？ 比如说我有一个死循环的例子 1234567891011121314151617181920package mainimport (&quot;fmt&quot;	&quot;sync&quot;	&quot;time&quot;)func main() &amp;#123;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.091Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="channel 和 select 控制 goroutines">
+<meta name="twitter:description" content="最近有一个需求是在一个常驻内存的程序中结束相关任务。在 Go 中，创建一个 goroutine 非常简单，只需要 go 一下就可以了，但是如果我创建了很多 goroutine，想要结束怎么办？ 比如说我有一个死循环的例子 1234567891011121314151617181920package mainimport (&quot;fmt&quot;	&quot;sync&quot;	&quot;time&quot;)func main() &amp;#123;">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2014/04/2014-04-28-control-goroutines-by-channel-select/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>channel 和 select 控制 goroutines | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-28-control-goroutines-by-channel-select/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">channel 和 select 控制 goroutines
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-04-28 20:57:20" itemprop="dateCreated datePublished" datetime="2014-04-28T20:57:20+08:00">2014-04-28</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近有一个需求是在一个常驻内存的程序中结束相关任务。在 Go 中，创建一个 goroutine 非常简单，只需要 go 一下就可以了，但是如果我创建了很多 goroutine，想要结束怎么办？</p>
+<p>比如说我有一个死循环的例子</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;queue := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">20</span>)</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// 就是一个死循环</span></span><br><span class="line">		queue &lt;- <span class="number">1</span></span><br><span class="line">		&lt;-queue</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt;<span class="number">10</span>; i++ &#123;wg.Add(<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="keyword">int</span>)</span></span> &#123;time.Sleep(<span class="number">5</span> * time.Second)</span><br><span class="line">				fmt.Println(<span class="string">"Sleep"</span>)</span><br><span class="line">				wg.Done()&#125;(i)</span><br><span class="line">		&#125;</span><br><span class="line">		wg.Wait()&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如何在一个 goroutine 里面控制所有的 goroutine，让所有的 goroutine 结束呢？这就需要 select 出场了。有人告诉我，这样子实现会更好一些：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 定义一个用于指定退出的 channel</span></span><br><span class="line">	EXIT := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">1</span>)</span><br><span class="line">	queue := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">20</span>)</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	<span class="comment">// 启动新的 goroutine</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;time.Sleep(<span class="number">10</span> * time.Second)</span><br><span class="line">		<span class="comment">// 休息了之后，该结束了</span></span><br><span class="line">		EXIT &lt;- <span class="number">1</span>&#125;()</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// 进入死循环</span></span><br><span class="line">		queue &lt;- <span class="number">1</span></span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> &lt;-EXIT:</span><br><span class="line">			<span class="comment">// 收到了退出消息</span></span><br><span class="line">			fmt.Println(<span class="string">"KILLED"</span>)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		<span class="keyword">case</span> &lt;-queue:</span><br><span class="line">			<span class="keyword">for</span> i := <span class="number">0</span>; i &lt;<span class="number">10</span>; i++ &#123;wg.Add(<span class="number">1</span>)</span><br><span class="line">				<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="keyword">int</span>)</span></span> &#123;time.Sleep(<span class="number">5</span> * time.Second)</span><br><span class="line">					fmt.Println(<span class="string">"Sleep"</span>)</span><br><span class="line">					wg.Done()&#125;(i)</span><br><span class="line">			&#125;</span><br><span class="line">			wg.Wait()&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是输出却是比较让人困惑：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">F:\&gt;<span class="keyword">go</span> run dada.<span class="keyword">go</span></span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">Sleep</span><br><span class="line">KILLED</span><br></pre></td></tr></table></figure>
+
+<p>看起来停止的时间有 15s，比预想的 10s 时间要长一些，这是为什么呢？</p>
+<p>这里 select 的作用是，在遇到 channel case 时，尝试所有的 channel 是否为 ready；若有一个为 ready，则执行该 case，多个 case 时会随机执行其中一个 case；如果有 default，则会在所有都 not ready 时执行；没有 default 的话就 wait 等待 ready。</p>
+<p>关于 select 的随机性，用一个例子来说明更方便一些：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"time"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 定义一个用于指定退出的 channel</span></span><br><span class="line">	c1 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">1</span>)</span><br><span class="line">	c2 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		c1 &lt;- <span class="number">1</span></span><br><span class="line">		c2 &lt;- <span class="number">1</span></span><br><span class="line">		<span class="keyword">select</span>&#123;</span><br><span class="line">		<span class="keyword">case</span> &lt;-c1:</span><br><span class="line">			fmt.Println(<span class="string">"c1"</span>)</span><br><span class="line">			<span class="comment">// 防止出现 panic</span></span><br><span class="line">			&lt;-c2</span><br><span class="line">			time.Sleep(<span class="number">1</span>*time.Second)</span><br><span class="line">		<span class="keyword">case</span> &lt;-c2:</span><br><span class="line">			fmt.Println(<span class="string">"c2"</span>)</span><br><span class="line">			&lt;-c1</span><br><span class="line">			time.Sleep(<span class="number">1</span>*time.Second)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">go</span> run dada.<span class="keyword">go</span></span><br><span class="line">c1</span><br><span class="line">c1</span><br><span class="line">c2</span><br><span class="line">c1</span><br><span class="line">c1</span><br><span class="line">c2</span><br><span class="line">c1</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<p>那这样上面还是会出现那种有可能没退出的情况，这样怎么做呢？下面我个人感觉会是一种更好的做法：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 定义一个用于指定退出的 channel</span></span><br><span class="line">	EXIT := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	<span class="comment">// 启动新的 goroutine</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;time.Sleep(<span class="number">10</span> * time.Second)</span><br><span class="line">		<span class="comment">// 休息了之后，该结束了</span></span><br><span class="line">		EXIT &lt;- <span class="number">1</span>&#125;()</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> &lt;-EXIT:</span><br><span class="line">			<span class="comment">// 收到了退出消息</span></span><br><span class="line">			fmt.Println(<span class="string">"KILLED"</span>)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="keyword">for</span> i := <span class="number">0</span>; i &lt;<span class="number">10</span>; i++ &#123;wg.Add(<span class="number">1</span>)</span><br><span class="line">				<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="keyword">int</span>)</span></span> &#123;time.Sleep(<span class="number">5</span> * time.Second)</span><br><span class="line">					fmt.Println(<span class="string">"Sleep"</span>)</span><br><span class="line">					wg.Done()&#125;(i)</span><br><span class="line">			&#125;</span><br><span class="line">			wg.Wait()&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还有一个值得注意的事情就是，对 select 来说，整体的运行相当于一个循环分支处理的过程。对 case 来说，过程是一个 block 的过程，比如说在执行 default 过程中，即使收到了来自 EXIT 的信息，也不会中断执行 default 去跳转执行 EXIT，而是在 default 完成之后，进入条件分支选择使优先进入 channel 已经 ready 的 case。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2014/04/2014-04-28-control-goroutines-by-channel-select/" title="channel 和 select 控制 goroutines">https://www.4async.com/2014/04/2014-04-28-control-goroutines-by-channel-select/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Golang/" rel="tag"># Golang</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/04/2014-04-22-build-your-private-git-serivce/" rel="next" title="基于 Gogs 实现的私密 Git 服务">
+                <i class="fa fa-chevron-left"></i> 基于 Gogs 实现的私密 Git 服务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/04/2014-04-29-more-about-golang-channel/" rel="prev" title="更多关于 channel 的扯淡">
+                更多关于 channel 的扯淡 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

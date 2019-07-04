@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="话不多说，自己看吧，比较明白。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192939495969">
+<meta name="keywords" content="Golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang 的 RSA 公私钥方法实现">
+<meta property="og:url" content="https://www.4async.com/2014/03/2014-03-23-golang-rsa/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="话不多说，自己看吧，比较明白。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192939495969">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.108Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Golang 的 RSA 公私钥方法实现">
+<meta name="twitter:description" content="话不多说，自己看吧，比较明白。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192939495969">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2014/03/2014-03-23-golang-rsa/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Golang 的 RSA 公私钥方法实现 | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-23-golang-rsa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Golang 的 RSA 公私钥方法实现
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-03-23 20:25:52" itemprop="dateCreated datePublished" datetime="2014-03-23T20:25:52+08:00">2014-03-23</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>话不多说，自己看吧，比较明白。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"crypto"</span></span><br><span class="line">    <span class="string">"crypto/rand"</span></span><br><span class="line">    <span class="string">"crypto/rsa"</span></span><br><span class="line">    <span class="string">"crypto/sha256"</span></span><br><span class="line">    <span class="string">"crypto/x509"</span></span><br><span class="line">    <span class="string">"encoding/base64"</span></span><br><span class="line">    <span class="string">"encoding/pem"</span></span><br><span class="line">    <span class="string">"errors"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;signer, err := loadPrivateKey(<span class="string">"private.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"signer is damaged: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    toSign := <span class="string">"date: Thu, 05 Jan 2012 21:31:40 GMT"</span></span><br><span class="line"></span><br><span class="line">    signed, err := signer.Sign([]byte(toSign))</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line">    sig := base64.StdEncoding.EncodeToString(signed)</span><br><span class="line">    fmt.Printf(<span class="string">"Signature: %v\n"</span>, sig)</span><br><span class="line"></span><br><span class="line">    parser, perr := loadPublicKey(<span class="string">"public.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> perr != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    err = parser.Unsign([]byte(toSign), signed)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"Unsign error: %v\n"</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPublicKey(path string) (Unsigner, error) &#123;<span class="keyword">return</span> parsePublicKey([]byte(`-----BEGIN PUBLIC KEY-----</span><br><span class="line">MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCFENGw33yGihy92pDjZQhl0C3</span><br><span class="line"><span class="number">6</span>rPJj+CvfSC8+q28hxA161QFNUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span></span><br><span class="line">Z4UMR7EOcpfdUE9Hf3m/hs+FUR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJw</span><br><span class="line">oYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">-----END PUBLIC KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePublicKey(pemBytes []byte) (Unsigner, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"PUBLIC KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKIXPublicKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> newUnsignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPrivateKey(path string) (Signer, error) &#123;<span class="keyword">return</span> parsePrivateKey([]byte(`-----BEGIN RSA PRIVATE KEY-----</span><br><span class="line">MIICXgIBAAKBgQDCFENGw33yGihy92pDjZQhl0C36rPJj+CvfSC8+q28hxA161QF</span><br><span class="line">NUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span>Z4UMR7EOcpfdUE9Hf3m/hs+F</span><br><span class="line">UR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJwoYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">AoGBAJR8ZkCUvx5kzv+utdl7T5MnordT1TvoXXJGXK7ZZ+UuvMNUCdN2QPc4sBiA</span><br><span class="line">QWvLw1cSKt5DsKZ8UETpYPy8pPYnnDEz2dDYiaew9+xEpubyeW2oH4Zx71wqBtOK</span><br><span class="line">kqwrXa/pzdpiucRRjk6vE6YY7EBBs/g7uanVpGibOVAEsqH1AkEA7DkjVH28WDUg</span><br><span class="line">f1nqvfn2Kj6CT7nIcE3jGJsZZ7zlZmBmHFDONMLUrXR/Zm3pR5m0tCmBqa5RK95u</span><br><span class="line"><span class="number">412j</span>t1dPIwJBANJT3v8pnkth48bQo/fKel6uEYyboRtA5/uHuHkZ6FQF7OUkGogc</span><br><span class="line">mSJluOdc5t6hI1VsLn0QZEjQZMEOWr+wKSMCQQCC4kXJEsHAve77oP6HtG/IiEn7</span><br><span class="line">kpyUXRNvFsDE0czpJJBvL/aRFUJxuRK91jhjC68sA7NsKMGg5OXb5I5Jj36xAkEA</span><br><span class="line">gIT7aFOYBFwGgQAQkWNKLvySgKbAZRTeLBacpHMuQdl1DfdntvAyqpAZ0lY0RKmW</span><br><span class="line">G6aFKaqQfOXKCyWoUiVknQJAXrlgySFci/<span class="number">2</span>ueKlIE1QqIiLSZ8V8OlpFLRnb1pzI</span><br><span class="line"><span class="number">7</span>U1yQXnTAEFYM560yJlzUpOb1V4cScGd365tiSMvxLOvTA==</span><br><span class="line">-----END RSA PRIVATE KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePrivateKey(pemBytes []byte) (Signer, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"RSA PRIVATE KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKCS1PrivateKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> newSignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Signer interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Sign(data []byte) ([]byte, error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Unsigner interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Unsign(data[]byte, sig []byte) error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newSignerFromKey(k interface&#123;&#125;) (Signer, error) &#123;</span><br><span class="line">    var sshKey Signer</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PrivateKey:</span><br><span class="line">        sshKey = &amp;rsaPrivateKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newUnsignerFromKey(k interface&#123;&#125;) (Unsigner, error) &#123;</span><br><span class="line">    var sshKey Unsigner</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PublicKey:</span><br><span class="line">        sshKey = &amp;rsaPublicKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type rsaPublicKey struct &#123;*rsa.PublicKey&#125;</span><br><span class="line"></span><br><span class="line">type rsaPrivateKey struct &#123;*rsa.PrivateKey&#125;</span><br><span class="line"></span><br><span class="line">// Sign signs data <span class="keyword">with</span> rsa-sha256</span><br><span class="line">func (r *rsaPrivateKey) Sign(data []byte) ([]byte, error) &#123;h := sha256.New()</span><br><span class="line">    h.Write(data)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.SignPKCS1v15(rand.Reader, r.PrivateKey, crypto.SHA256, d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Unsign verifies the message using a rsa-sha256 signature</span><br><span class="line">func (r *rsaPublicKey) Unsign(message []byte, sig []byte) error &#123;h := sha256.New()</span><br><span class="line">    h.Write(message)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.VerifyPKCS1v15(r.PublicKey, crypto.SHA256, d, sig)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2014/03/2014-03-23-golang-rsa/" title="Golang 的 RSA 公私钥方法实现">https://www.4async.com/2014/03/2014-03-23-golang-rsa/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Golang/" rel="tag"># Golang</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/03/2014-03-23-python-celery-queue-first-step/" rel="next" title="初识 Celery">
+                <i class="fa fa-chevron-left"></i> 初识 Celery
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/03/2014-03-28-python-distribute-building-part-one/" rel="prev" title="Python 分发包制作（一）">
+                Python 分发包制作（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

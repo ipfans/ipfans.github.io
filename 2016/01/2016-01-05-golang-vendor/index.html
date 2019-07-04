@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="我们在项目中除了 大量的使用 Python 外，也大量的使用了 Golang 构建高效基础运行服务。在使用 Golang 过程中，我们发现 Golang 程序缺少依赖库版本功能是一个非常令人头大的问题：某些依赖在某个 commit 之后发生了 API 变更之后，如果不修改代码很难兼容，然而开发者之间很有可能因为参与的时间不同，导致执行 get``` 命令获取的版本不同，而导致在不同电脑上出现编译不">
+<meta name="keywords" content="Golang,vendor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 vendor 管理 Golang 项目依赖">
+<meta property="og:url" content="https://www.4async.com/2016/01/2016-01-05-golang-vendor/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="我们在项目中除了 大量的使用 Python 外，也大量的使用了 Golang 构建高效基础运行服务。在使用 Golang 过程中，我们发现 Golang 程序缺少依赖库版本功能是一个非常令人头大的问题：某些依赖在某个 commit 之后发生了 API 变更之后，如果不修改代码很难兼容，然而开发者之间很有可能因为参与的时间不同，导致执行 get``` 命令获取的版本不同，而导致在不同电脑上出现编译不">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.118Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 vendor 管理 Golang 项目依赖">
+<meta name="twitter:description" content="我们在项目中除了 大量的使用 Python 外，也大量的使用了 Golang 构建高效基础运行服务。在使用 Golang 过程中，我们发现 Golang 程序缺少依赖库版本功能是一个非常令人头大的问题：某些依赖在某个 commit 之后发生了 API 变更之后，如果不修改代码很难兼容，然而开发者之间很有可能因为参与的时间不同，导致执行 get``` 命令获取的版本不同，而导致在不同电脑上出现编译不">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2016/01/2016-01-05-golang-vendor/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用 vendor 管理 Golang 项目依赖 | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/01/2016-01-05-golang-vendor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">使用 vendor 管理 Golang 项目依赖
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2016-01-05 23:13:00" itemprop="dateCreated datePublished" datetime="2016-01-05T23:13:00+08:00">2016-01-05</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们在项目中除了 <a href="http://ipfans.github.io/2015/12/using-vagrant-development-env/" target="_blank" rel="noopener">大量的使用 Python</a> 外，也大量的使用了 Golang 构建高效基础运行服务。在使用 Golang 过程中，我们发现 Golang 程序缺少依赖库版本功能是一个非常令人头大的问题：某些依赖在某个 commit 之后发生了 API 变更之后，如果不修改代码很难兼容，然而开发者之间很有可能因为参与的时间不同，导致执行 <figure class="highlight go"><figcaption><span>get``` 命令获取的版本不同，而导致在不同电脑上出现编译不通过问题。同时，在多个程序中，如果使用的 commit 版本不同，也可能会导致程序编译过程中出现不同的问题。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在之前，我们解决这个问题有两个方案，一种是拆解 <span class="string">``</span><span class="string">`go get`</span><span class="string">``</span> 命令的执行，首先创建对应依赖目录，利用 git 命令切换至指定的 commit，然后执行 <span class="string">``</span><span class="string">`go install`</span><span class="string">``</span> 命令。另外一种比较省事的方法是使用 [godep](https:<span class="comment">//github.com/tools/godep) 工具，这里就不做过多介绍了，具体可以参考文档或者搜索中文教程。</span></span><br><span class="line"></span><br><span class="line">在 Golang1<span class="number">.5</span> 之后，Go 提供了 <span class="string">``</span><span class="string">`GO15VENDOREXPERIMENT`</span><span class="string">``</span> 环境变量，用于将 <span class="keyword">go</span> build 时的应用路径搜索调整成为 <span class="string">``</span><span class="string">` 当前项目目录 / vendor`</span><span class="string">``</span> 目录方式。通过这种形式，我们可以实现类似于 <span class="string">``</span><span class="string">`godep`</span><span class="string">``</span> 方式的项目依赖管理。不过起码在程序编译过程中，再也无需在其他端部署一个 <span class="string">``</span><span class="string">`godep`</span><span class="string">``</span> 工具。</span><br><span class="line"></span><br><span class="line">在使用之前，需要安装一个辅助工具（如果 Golang 自改一个就好了）：<span class="string">``</span><span class="string">`go get -u -v github.com/kardianos/govendor`</span><span class="string">``</span>。</span><br><span class="line"></span><br><span class="line">下面，我们用一个例子来说明。首先有一个名为 <span class="string">``</span><span class="string">`vendorproj`</span><span class="string">``</span> 的项目。假如只有一个文件：</span><br><span class="line"></span><br><span class="line"><span class="string">``</span><span class="string">`go</span></span><br><span class="line"><span class="string">package main</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">import ("github.com/yeeuu/echoic")</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">func main() &#123;e := echoic.New()</span></span><br><span class="line"><span class="string">	e.SetDebug(true)</span></span><br><span class="line"><span class="string">	e.Run("127.0.0.1:4321")</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>执行一下命令就可以生成 vendor 文件夹：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ govendor init</span><br><span class="line">$ ls</span><br><span class="line">main.go    vendor</span><br><span class="line">$ <span class="built_in">cd</span> vendor/</span><br><span class="line">$ ls</span><br><span class="line">vendor.json</span><br></pre></td></tr></table></figure>
+
+<p>这个 <figure class="highlight plain"><figcaption><span>会类似 ```godep``` 工具中的描述文件版本的功能。接下来，需要执行命令将当前应用必须的文件包含进来</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>$ govendor add +external</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果需要更新或移除，可以参考一下工具的具体文档使用 ```update``` 或者 ```remove``` 命令即可。这样会在 vendor 目录下将必须的编译文件移入进来（注意：测试所需依赖并不包含，依赖项目的测试文件也不会包含）。</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">$ ls</span><br><span class="line">github.com  golang.org  vendor.json</span><br><span class="line">$ cat vendor.json</span><br><span class="line">&#123;&quot;comment&quot;: &quot;&quot;,&quot;ignore&quot;:&quot;test&quot;,&quot;package&quot;: [&#123;&quot;path&quot;:&quot;github.com/yeeuu/echoic&quot;,&quot;revision&quot;:&quot;a7d6994f92e2dc60cff071ae38b204fbd4bd2a3f&quot;,&quot;revisionTime&quot;:&quot;2015-12-18T11:14:29+08:00&quot;&#125;,</span><br><span class="line">		&#123;&quot;path&quot;: &quot;golang.org/x/net/context&quot;,</span><br><span class="line">			&quot;revision&quot;: &quot;1d9fd3b8333e891c0e7353e1adcfe8a612573033&quot;,</span><br><span class="line">			&quot;revisionTime&quot;: &quot;2015-11-13T15:40:13-08:00&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br><span class="line">$ cd github.com/yeeuu/echoic</span><br><span class="line">$ ls</span><br><span class="line">LICENSE     context.go  group.go    router.go</span><br><span class="line">README.md   echoic.go   response.go</span><br></pre></td></tr></table></figure>
+
+<p>通过设置环境变量 <code>GO15VENDOREXPERIMENT=1</code> 使用 vendor 文件夹构建文件。可以选择 <code>export GO15VENDOREXPERIMENT=1</code> 或者干脆 <code>GO15VENDOREXPERIMENT=1 go build</code> 执行编译。</p>
+<p>通过这种方式就可以保证程序能够实现类似 Python 中 Virtualenv 的模式，实现不同程序使用不同版本依赖的目的。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2016/01/2016-01-05-golang-vendor/" title="使用 vendor 管理 Golang 项目依赖">https://www.4async.com/2016/01/2016-01-05-golang-vendor/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Golang/" rel="tag"># Golang</a>
+          
+            <a href="/tags/vendor/" rel="tag"># vendor</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/2015-12-28-using-vagrant-development-env/" rel="next" title="使用 Vagrant 统一开发环境实践">
+                <i class="fa fa-chevron-left"></i> 使用 Vagrant 统一开发环境实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/2016-01-06-rust-http-client/" rel="prev" title="一个 Rust HttpClient 例子">
+                一个 Rust HttpClient 例子 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

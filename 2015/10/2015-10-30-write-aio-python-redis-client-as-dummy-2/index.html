@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="从 Call 到命令端在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的： 12client = redis.StrictRedis()client.setex(&quot;key&quot;, 10, &quot;value&quot;)  接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 s">
+<meta name="keywords" content="Python,async,Redis,asyncio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零实现一个 Redis 客户端（二）">
+<meta property="og:url" content="https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="从 Call 到命令端在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的： 12client = redis.StrictRedis()client.setex(&quot;key&quot;, 10, &quot;value&quot;)  接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 s">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.079Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从零实现一个 Redis 客户端（二）">
+<meta name="twitter:description" content="从 Call 到命令端在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的： 12client = redis.StrictRedis()client.setex(&quot;key&quot;, 10, &quot;value&quot;)  接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 s">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>从零实现一个 Redis 客户端（二） | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">从零实现一个 Redis 客户端（二）
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2015-10-30 23:11:15" itemprop="dateCreated datePublished" datetime="2015-10-30T23:11:15+08:00">2015-10-30</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="从-Call-到命令端"><a href="#从-Call-到命令端" class="headerlink" title="从 Call 到命令端"></a>从 Call 到命令端</h2><p>在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">client = redis.StrictRedis()</span><br><span class="line">client.setex(<span class="string">"key"</span>, <span class="number">10</span>, <span class="string">"value"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 setex 方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setex</span><span class="params">(self, key, seconds, value)</span>:</span></span><br><span class="line">    <span class="string">"""Set the value and expiration of a key.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :raises TypeError: if seconds is neither int</span></span><br><span class="line"><span class="string">    """</span><span class="keyword">if</span> <span class="keyword">not</span> isinstance(seconds, int):</span><br><span class="line">        <span class="keyword">raise</span> TypeError(<span class="string">"milliseconds argument must be int"</span>)</span><br><span class="line">    fut = self._conn.execute(<span class="string">b'SETEX'</span>, key, seconds, value)</span><br><span class="line">    <span class="keyword">return</span> wait_ok(fut)</span><br></pre></td></tr></table></figure>
+
+<p>剩下的就是一个个方法逐个完善。</p>
+<h2 id="什么是连接池"><a href="#什么是连接池" class="headerlink" title="什么是连接池"></a>什么是连接池</h2><p>我们会看到，无论那个数据库客户端，总是会有连接池机制。那么连接池是什么呢？我们为什么需要连接池呢？</p>
+<p>首先，我们都知道，对连接而言，创建是必要重型的操作。比如说，TCP 连接，接下来之后是登录认证等等过程，最后才会执行命令。这也就是我们通常计算库性能时，很多时候会把建立连接的时候去掉。但是这就出现了一个问题，当一个连接被占用时，其他的操作仍旧是不能够完成操作了，只能等待前一个操作完成。但是假如我们一次性创建一堆连接呢？从一堆连接中找到空闲的连接，使用完成后释放成空闲的状态，这就是线程池的本质。因为减少了每次创建连接的过程，所以对性能提升也非常有帮助。</p>
+<h2 id="从单连接到连接池"><a href="#从单连接到连接池" class="headerlink" title="从单连接到连接池"></a>从单连接到连接池</h2><p>首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RedisPool</span>:</span></span><br><span class="line">    <span class="string">"""Redis connections pool."""</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, address, db=<span class="number">0</span>, password=None, encoding=None,</span></span></span><br><span class="line"><span class="function"><span class="params">                 *, minsize, maxsize, commands_factory, loop=None)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> loop <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            loop = asyncio.get_event_loop()</span><br><span class="line">        self._address = address</span><br><span class="line">        self._db = db</span><br><span class="line">        self._password = password</span><br><span class="line">        self._encoding = encoding</span><br><span class="line">        self._minsize = minsize</span><br><span class="line">        self._factory = commands_factory</span><br><span class="line">        self._loop = loop  <span class="comment"># 连接池数组</span></span><br><span class="line">        self._pool = collections.deque(maxlen=maxsize)</span><br><span class="line">        self._used = set()</span><br><span class="line">        self._acquiring = <span class="number">0</span></span><br><span class="line">        self._cond = asyncio.Condition(loop=loop)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_create_new_connection</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> create_redis(self._address,</span><br><span class="line">                            db=self._db,</span><br><span class="line">                            password=self._password,</span><br><span class="line">                            encoding=self._encoding,</span><br><span class="line">                            commands_factory=self._factory,</span><br><span class="line">                            loop=self._loop)</span><br></pre></td></tr></table></figure>
+
+<p>接下来，就需要创建大量的连接了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">create_pool</span><span class="params">(self, *, override_min)</span>:</span></span><br><span class="line">    <span class="comment"># todo: drop closed connections first</span></span><br><span class="line">    <span class="comment"># 判断是否达到了连接池数量限制</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> self._pool <span class="keyword">and</span> self.size &lt; self.maxsize:</span><br><span class="line">        self._acquiring += <span class="number">1</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            conn = <span class="keyword">await</span> self._create_new_connection()</span><br><span class="line">            self._pool.append(conn)</span><br><span class="line">        <span class="keyword">finally</span>:</span><br><span class="line">            self._acquiring -= <span class="number">1</span></span><br><span class="line">            <span class="comment"># connection may be closed at yeild point</span></span><br><span class="line">            self._drop_closed()</span><br></pre></td></tr></table></figure>
+
+<p>那么怎么从这些连接中抽取连接并且进行连接呢:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@asyncio.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">acquire</span><span class="params">(self)</span>:</span></span><br><span class="line">	<span class="string">"""Acquires a connection from free pool.</span></span><br><span class="line"><span class="string">	Creates new connection if needed.</span></span><br><span class="line"><span class="string">	"""</span></span><br><span class="line">	<span class="keyword">with</span> <span class="keyword">await</span> self._cond:</span><br><span class="line">	    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">	        <span class="keyword">await</span> self._fill_free(override_min=<span class="literal">True</span>)</span><br><span class="line">	        <span class="keyword">if</span> self.freesize:</span><br><span class="line">	            conn = self._pool.popleft()</span><br><span class="line">	            <span class="keyword">assert</span> <span class="keyword">not</span> conn.closed, conn</span><br><span class="line">	            <span class="keyword">assert</span> conn <span class="keyword">not</span> <span class="keyword">in</span> self._used, (conn, self._used)</span><br><span class="line">	            self._used.add(conn)</span><br><span class="line">	            <span class="keyword">return</span> conn</span><br><span class="line">	        <span class="keyword">else</span>:</span><br><span class="line">	            <span class="keyword">await</span> self._cond.wait()</span><br></pre></td></tr></table></figure>
+
+<p>接下来就是使用完成后进行释放即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">release</span><span class="params">(self, conn)</span>:</span></span><br><span class="line">     <span class="string">"""Returns used connection back into pool.</span></span><br><span class="line"><span class="string">     When returned connection has db index that differs from one in pool</span></span><br><span class="line"><span class="string">     the connection will be closed and dropped.</span></span><br><span class="line"><span class="string">     When queue of free connections is full the connection will be dropped.</span></span><br><span class="line"><span class="string">     """</span><span class="keyword">assert</span> conn <span class="keyword">in</span> self._used,<span class="string">"Invalid connection, maybe from other pool"</span>self._used.remove(conn)</span><br><span class="line">     <span class="keyword">if</span> <span class="keyword">not</span> conn.closed:</span><br><span class="line">         <span class="keyword">if</span> conn.in_transaction:</span><br><span class="line">             logger.warning(<span class="string">"Connection %r in transaction, closing it."</span>,</span><br><span class="line">                            conn)</span><br><span class="line">             conn.close()</span><br><span class="line">         <span class="keyword">elif</span> conn.db == self.db:</span><br><span class="line">             <span class="keyword">if</span> self.maxsize <span class="keyword">and</span> self.freesize &lt; self.maxsize:</span><br><span class="line">                 self._pool.append(conn)</span><br><span class="line">             <span class="keyword">else</span>:</span><br><span class="line">                 <span class="comment"># consider this connection as old and close it.</span></span><br><span class="line">                 conn.close()</span><br><span class="line">         <span class="keyword">else</span>:</span><br><span class="line">             conn.close()</span><br><span class="line">     <span class="comment"># <span class="doctag">FIXME:</span> check event loop is not closed</span></span><br><span class="line">     asyncio.<span class="keyword">async</span>(self._wakeup(), loop=self._loop)</span><br></pre></td></tr></table></figure>
+
+<p>至此，你已经可以实现一个基本的 Redis 客户端了，还在犹豫什么？快自己动手吧！</p>
+<p><strong>注: 文中 Redis 库参考了 aio-lib/aioredis 库。</strong></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/" title="从零实现一个 Redis 客户端（二）">https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/async/" rel="tag"># async</a>
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+            <a href="/tags/asyncio/" rel="tag"># asyncio</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/" rel="next" title="零基础编写 Python Redis Client（一）">
+                <i class="fa fa-chevron-left"></i> 零基础编写 Python Redis Client（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/" rel="prev" title="PEP 0492 Coroutines with async and await syntax 中文翻译">
+                PEP 0492 Coroutines with async and await syntax 中文翻译 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从-Call-到命令端"><span class="nav-number">1.</span> <span class="nav-text">从 Call 到命令端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是连接池"><span class="nav-number">2.</span> <span class="nav-text">什么是连接池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从单连接到连接池"><span class="nav-number">3.</span> <span class="nav-text">从单连接到连接池</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

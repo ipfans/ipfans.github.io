@@ -4,7 +4,17 @@
 
     <sitemap>
         <loc>https://www.4async.com/post-sitemap.xml</loc>
-        <lastmod>2019-07-04T03:04:29.467Z</lastmod>
+        <lastmod>2019-07-04T03:20:39.118Z</lastmod>
+    </sitemap>
+
+    <sitemap>
+        <loc>https://www.4async.com/page-sitemap.xml</loc>
+        <lastmod>2019-07-04T03:20:39.120Z</lastmod>
+    </sitemap>
+
+    <sitemap>
+        <loc>https://www.4async.com/tag-sitemap.xml</loc>
+        <lastmod>2019-07-04T03:20:39.118Z</lastmod>
     </sitemap>
 
 </sitemapindex>

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="之前作为 beta``` 的第一批用户获得了 beta 的授权，但是因为邮件进了垃圾邮件，所以一直没有发现。今天给 Docker 发邮件申请 beta 测试才知道已经通过了，赶紧尝鲜起来。如果你没有权限，可以尝试到 [Docker Beta](https://beta.docker.com) 申请测试资格。1234567891011121314151617181920212223242526272">
+<meta name="keywords" content="Golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker for Mac 尝鲜">
+<meta property="og:url" content="https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="之前作为 beta``` 的第一批用户获得了 beta 的授权，但是因为邮件进了垃圾邮件，所以一直没有发现。今天给 Docker 发邮件申请 beta 测试才知道已经通过了，赶紧尝鲜起来。如果你没有权限，可以尝试到 [Docker Beta](https://beta.docker.com) 申请测试资格。1234567891011121314151617181920212223242526272">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.066Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker for Mac 尝鲜">
+<meta name="twitter:description" content="之前作为 beta``` 的第一批用户获得了 beta 的授权，但是因为邮件进了垃圾邮件，所以一直没有发现。今天给 Docker 发邮件申请 beta 测试才知道已经通过了，赶紧尝鲜起来。如果你没有权限，可以尝试到 [Docker Beta](https://beta.docker.com) 申请测试资格。1234567891011121314151617181920212223242526272">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Docker for Mac 尝鲜 | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Docker for Mac 尝鲜
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2016-04-26 18:00:00" itemprop="dateCreated datePublished" datetime="2016-04-26T18:00:00+08:00">2016-04-26</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前作为 <figure class="highlight docker"><figcaption><span>beta``` 的第一批用户获得了 beta 的授权，但是因为邮件进了垃圾邮件，所以一直没有发现。今天给 Docker 发邮件申请 beta 测试才知道已经通过了，赶紧尝鲜起来。如果你没有权限，可以尝试到 [Docker Beta](https://beta.docker.com) 申请测试资格。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">__测试版本可能存在风险，请自行判断。__</span><br><span class="line"></span><br><span class="line"><span class="comment">## 安装之前</span></span><br><span class="line"></span><br><span class="line">Docker for Mac 需要一些前置要求，官方文档提供的数据如下：</span><br><span class="line"></span><br><span class="line">* <span class="number">2010</span> 年之后的 Intel Mac 机型，支持 ```MMU(Memory Management Unit)``` 虚拟化、```EPT(Extended Page Table)``` 等特性</span><br><span class="line">* ```OSX <span class="number">10.10</span>.<span class="number">3</span>``` 以上系统</span><br><span class="line">* 至少 ```<span class="number">4</span>GB``` 内存</span><br><span class="line">* ```VirtualBox <span class="number">4</span>.x``` 与 ```Docker for Mac``` 冲突，因此如果你安装这个系列的 ```Virtualbox``` 需要卸载。</span><br><span class="line"></span><br><span class="line">如果之前装过 ```Docker Toolbox``` 的话，需要一些额外的操作去与 ```Docker Toolbox``` 兼容。（我选择了直接卸载现有的 ```Docker Toolbox```。XD ）</span><br><span class="line"></span><br><span class="line"><span class="comment">## 安装 Docker for Mac</span></span><br><span class="line"></span><br><span class="line">```Docker for Mac``` 是一个 <span class="number">98.3</span>M(Mac 显示为 <span class="number">103.1</span>MB) 的 DMG 文件，下载下来之后双击文件，将鲸鱼拖拽到 ```Applications``` 文件夹中即可。</span><br><span class="line"></span><br><span class="line">![Docker drag](http://ww1.sinaimg.cn/mw690/<span class="number">69</span>e37fdbgw1f3a9ba0ex5j20n40ck75x.jpg)</span><br><span class="line"></span><br><span class="line">第一次打开 ```Docker for Mac``` 需要提供邀请码，同时需要特殊权限写入 ```Docker bin``` 文件。</span><br><span class="line"></span><br><span class="line">![](http://ww3.sinaimg.cn/mw690/<span class="number">69</span>e37fdbgw1f3a9afjankj20g809s0uj.jpg)</span><br><span class="line"></span><br><span class="line">```Docker for Mac``` 包含了 ```Docker``` 引擎，```Docker``` 命令行客户端，```Docker Compose``` 和 ```Docker Machine```。之后双击应用程序中的 ```Docker``` 就可以启用引擎，这时，右上角会有一个鲸鱼的标志。</span><br><span class="line"></span><br><span class="line">![](http://ww2.sinaimg.cn/mw690/<span class="number">69</span>e37fdbgw1f3a9bckt09j20aj020q2x.jpg)</span><br><span class="line"></span><br><span class="line">点击标记可以获得菜单，进行设置，查看日志等等信息。</span><br><span class="line"></span><br><span class="line">![](http://ww3.sinaimg.cn/mw690/<span class="number">69</span>e37fdbgw1f3a9bb23nlj206906e74i.jpg)</span><br><span class="line"></span><br><span class="line">点击检查更新可以验证当前是否为最新版本的 ```Docker for Mac```。</span><br><span class="line"></span><br><span class="line">![](http://ww2.sinaimg.cn/mw690/<span class="number">69</span>e37fdbgw1f3a9feab6kj20hf07tdhe.jpg)</span><br><span class="line"></span><br><span class="line"><span class="comment">## Docker for mac 尝鲜</span></span><br><span class="line"></span><br><span class="line">先看一下 ```Docker``` 的设置，可以设置使用的内存启用方式，是否启用 ```VPN``` 兼容模式 (现在我看论坛有人提到会不兼容 ```Cisco AnyConnect```)，禁用 VM 的时光机备份功能。另外可以在这里提供了直接卸载按钮，不想用的时候也比较方便。</span><br><span class="line"></span><br><span class="line">![](http://ww3.sinaimg.cn/mw690/<span class="number">69</span>e37fdbgw1f3aazp4etzj20e40erq4d.jpg)</span><br><span class="line"></span><br><span class="line">附带的软件版本也是新的 Docker 软件：</span><br><span class="line"></span><br><span class="line">```batch</span><br><span class="line">➜  ~ docker -v</span><br><span class="line">Docker version <span class="number">1.11</span>.<span class="number">0</span>, build <span class="number">4</span>dc5990</span><br><span class="line">➜  ~ docker-compose --version</span><br><span class="line">docker-compose version <span class="number">1.7</span>.<span class="number">0</span>, build <span class="number">0</span>d7bf73</span><br><span class="line">➜  ~ docker-machine --version</span><br><span class="line">docker-machine version <span class="number">0.7</span>.<span class="number">0</span>, build a650a40</span><br></pre></td></tr></table></figure></p>
+<p>跑一个 Ubuntu 测试一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ docker run -i -t --name ubuntu ubuntu:16.04 /bin/bash</span><br><span class="line">root@d5ceb77516bf:/# uname -a</span><br><span class="line">Linux d5ceb77516bf 4.4.6 #1 SMP Mon Apr 18 19:18:15 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux</span><br><span class="line">root@d5ceb77516bf:/#</span><br></pre></td></tr></table></figure>
+
+<p>我发现一直不怎么会写结尾／结论，那么最后扯个蛋：我们在进行 <code>Docker</code> 在 <code>CI/CD</code>、线上环境中的应用摸索，如果你有兴趣交流，欢迎联系 <code>kevin &lt;at&gt; yeeuu &lt;dot&gt; com</code>。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/" title="Docker for Mac 尝鲜">https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Golang/" rel="tag"># Golang</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/2016-04-18-writing-testable-golang-code/" rel="next" title="编写测试友好的 Golang 代码">
+                <i class="fa fa-chevron-left"></i> 编写测试友好的 Golang 代码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/2016-05-28-learning-coreos-part1/" rel="prev" title="CoreOS 折腾笔记（一）集群部署">
+                CoreOS 折腾笔记（一）集群部署 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

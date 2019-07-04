@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.4async.com/"/>
-  <updated>2019-07-04T03:04:29.467Z</updated>
+  <updated>2019-07-04T03:20:39.104Z</updated>
   <id>https://www.4async.com/</id>
   
   <author>
@@ -17,21 +17,417 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hello World</title>
-    <link href="https://www.4async.com/2019/07/hello-world/"/>
-    <id>https://www.4async.com/2019/07/hello-world/</id>
-    <published>2019-07-04T03:04:29.466Z</published>
-    <updated>2019-07-04T03:04:29.467Z</updated>
+    <title>利用 cProfile 进行 Python 程序性能调优</title>
+    <link href="https://www.4async.com/2019/07/2014-03-09-python-profile-using-cprofile/"/>
+    <id>https://www.4async.com/2019/07/2014-03-09-python-profile-using-cprofile/</id>
+    <published>2019-07-04T03:20:39.103Z</published>
+    <updated>2019-07-04T03:20:39.104Z</updated>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+        &lt;p&gt;在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是
       
     
     </summary>
     
+    
+      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python 中文 UTF-8 编码 base64 报错</title>
+    <link href="https://www.4async.com/2019/07/2014-03-13-python-base64-encode-utf-8error/"/>
+    <id>https://www.4async.com/2019/07/2014-03-13-python-base64-encode-utf-8error/</id>
+    <published>2019-07-04T03:20:39.061Z</published>
+    <updated>2019-07-04T03:20:39.062Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;第一次用 python encode utf-8 的中文，结果发现了一个蛋疼的问题&lt;/p&gt;
+&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/s
+      
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>为什么我的Go程序这么大？-使用D3进行Go程序的体积可视化</title>
+    <link href="https://www.4async.com/2019/04/2019-04-02-go-executable-size-visualization-with-d3/"/>
+    <id>https://www.4async.com/2019/04/2019-04-02-go-executable-size-visualization-with-d3/</id>
+    <published>2019-04-02T06:22:00.000Z</published>
+    <updated>2019-07-04T03:20:39.046Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;原文：&lt;a href=&quot;https://science.raphael.poss.name/go-executable-size-visualization-with-d3.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Why are my Go executable files so large? - Size visualization of Go executables using D3&lt;/a&gt;&lt;br&gt;作者：Raphael ‘kena’ Poss&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Go Modules</title>
+    <link href="https://www.4async.com/2019/03/2019-03-20-using-go-modules/"/>
+    <id>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</id>
+    <published>2019-03-20T06:22:00.000Z</published>
+    <updated>2019-07-04T03:20:39.096Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;原文：&lt;a href=&quot;https://blog.golang.org/using-go-modules&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Using Go Modules&lt;/a&gt;&lt;br&gt;作者：Tyler Bui-Palsulich、Eno Compton&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>利用Stub File标注Python文件</title>
+    <link href="https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/"/>
+    <id>https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/</id>
+    <published>2019-01-29T06:30:00.000Z</published>
+    <updated>2019-07-04T03:20:39.062Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在升级到&lt;code&gt;Python 3.5+&lt;/code&gt;版本之后，最大的项目管理优化来自于&lt;a href=&quot;https://www.python.org/dev/peps/pep-0484/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;code&gt;PEP-484 Type Hint&lt;/code&gt;&lt;/a&gt;的引入。借助&lt;code&gt;Type Hint&lt;/code&gt;，我们可以进一步提升&lt;code&gt;Python&lt;/code&gt;代码的类型标注，保障在重构过程中避免出现一些低级失误。&lt;/p&gt;
+&lt;p&gt;我们可以通过高版本&lt;code&gt;Python&lt;/code&gt;新加的新语法启用这项特性，然后通过&lt;code&gt;mypy&lt;/code&gt;等工具检查：&lt;/p&gt;
+&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;greeting&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(name: str)&lt;/span&gt; -&amp;gt; str:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&#39;Hello &#39;&lt;/span&gt; + name&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>聊聊新的Go语言错误处理方案</title>
+    <link href="https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/"/>
+    <id>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</id>
+    <published>2019-01-25T15:20:00.000Z</published>
+    <updated>2019-07-04T03:20:39.060Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;今天早些时候，&lt;code&gt;golang/x/exp&lt;/code&gt;中默默的更新了一个名曰&lt;code&gt;xerrors&lt;/code&gt;的包，这个包和同样处于&lt;code&gt;golang/x/exp&lt;/code&gt;下的另一个名叫&lt;code&gt;errors&lt;/code&gt;的包名字十分相似，就连介
+      
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>gini：一个让你更方便使用Gin框架的库</title>
+    <link href="https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/"/>
+    <id>https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/</id>
+    <published>2019-01-18T15:20:00.000Z</published>
+    <updated>2019-07-04T03:20:39.045Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://github.com/gin-gonic/gin&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Gin框架&lt;/a&gt;是一个Go语言框架中非常受欢迎的一款。今天我们开放了一个&lt;a href=&quot;https://github.com/ipfans/gini&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;gini&lt;/a&gt;库，结合了我们实际开发中的使用，描述一下我们为什么开发这个库，在开发过程中的权衡。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+      <category term="gini" scheme="https://www.4async.com/tags/gini/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>漫谈代码安全：也来聊一聊AntD这档子事</title>
+    <link href="https://www.4async.com/2018/12/2018-12-25-scm-security/"/>
+    <id>https://www.4async.com/2018/12/2018-12-25-scm-security/</id>
+    <published>2018-12-25T15:20:00.000Z</published>
+    <updated>2019-07-04T03:20:39.040Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;没想到今年突然有动力还能写一篇。可能来自于两个方面，有些东西需要整理，另外有一个事情我是感觉到很诧异的。今天技术圈最火的事情当属&lt;a href=&quot;https://www.zhihu.com/question/306858501&quot; target=&quot;_blank&quot; rel=&quot;n
+      
+    
+    </summary>
+    
+    
+      <category term="Others" scheme="https://www.4async.com/tags/Others/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Go 1.10中的一处不兼容问题</title>
+    <link href="https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/"/>
+    <id>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</id>
+    <published>2018-06-08T04:20:00.000Z</published>
+    <updated>2019-07-04T03:20:39.089Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近我们在把线上系统升级至Go 1.10版本时发现，在我们实现的某些接口中，出现了客户反馈调用失败提示参数缺失的情况。这种情况我们在测试过程中未能复线，后来经过了解，发现了故障原因为Go 1.10版本升级过程中更改了部分程序代码与验证逻辑导致的。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于Golang过滤敏感信息的正确姿势</title>
+    <link href="https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/"/>
+    <id>https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/</id>
+    <published>2018-06-06T08:07:00.000Z</published>
+    <updated>2019-07-04T03:20:39.071Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;今天正好看到一篇关于敏感信息过滤的&lt;a href=&quot;https://hackernoon.com/keep-passwords-and-secrets-out-of-your-logs-with-go-a2294a9546ce&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;文章&lt;/a&gt;，这算做一个interface实际应用的一些举例和应用。&lt;/p&gt;
+&lt;p&gt;例子中介绍了一种比较常见的使用场景：使用JSON保存数据时的对诸如用户密码等信息进行保护时候应该做的事情。作者以使用JSON格式保存用户账户和密码为例，讲解了使用&lt;code&gt;json.Unmarshaler&lt;/code&gt;接口类型过滤敏感信息。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Consul平滑升级的一点建议</title>
+    <link href="https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/"/>
+    <id>https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/</id>
+    <published>2018-05-10T07:20:00.000Z</published>
+    <updated>2019-07-04T03:20:39.086Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;我们从 Consul 0.6.x 版本开始使用，中间也遇到的一些各种各样的问题，比较常见的操作问题就是 consul 的升级问题（比如解决 BUG，早期 Consul 的 BUG 也遇到了好几个）。&lt;/p&gt;
+&lt;p&gt;平滑升级时，我们常见的方式一般为替换 consul 可执行文
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>配置新域名</title>
+    <link href="https://www.4async.com/2018/05/2018-05-03-new-domain/"/>
+    <id>https://www.4async.com/2018/05/2018-05-03-new-domain/</id>
+    <published>2018-05-03T03:20:00.000Z</published>
+    <updated>2019-07-04T03:20:39.071Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;感谢Github Page终于&lt;a href=&quot;https://blog.github.com/2018-05-01-github-pages-custom-domains-https/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;支持了Let’s En
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>树莓派无界面配置WiFi</title>
+    <link href="https://www.4async.com/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/"/>
+    <id>https://www.4async.com/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/</id>
+    <published>2018-04-20T09:30:00.000Z</published>
+    <updated>2019-07-04T03:20:39.102Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;树莓派支持命令行下配置WiFi连接，可以通过编辑 &lt;code&gt;/etc/wpa_supplicant/wpa_supplicant.conf&lt;/code&gt; 文件配置对应的WiFi配置。具体的内容可以使用 &lt;code&gt;wpa_passphrase&lt;/code&gt; 工具生成对应的
+      
+    
+    </summary>
+    
+    
+      <category term="RaspberryPi" scheme="https://www.4async.com/tags/RaspberryPi/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>gRPC性能优化</title>
+    <link href="https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/"/>
+    <id>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</id>
+    <published>2018-04-20T04:00:00.000Z</published>
+    <updated>2019-07-04T03:20:39.067Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;背景介绍&quot;&gt;&lt;a href=&quot;#背景介绍&quot; class=&quot;headerlink&quot; title=&quot;背景介绍&quot;&gt;&lt;/a&gt;背景介绍&lt;/h2&gt;&lt;p&gt;我们在项目中逐渐切换使用了gRPC作为服务间调用的主要手段，逐步替换RESTful API在目前我们项目中的使用。在使用过程
+      
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+      <category term="gRPC" scheme="https://www.4async.com/tags/gRPC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OSX 下安装 face_recognition</title>
+    <link href="https://www.4async.com/2017/08/2017-08-02-install-face-recognition-on-osx/"/>
+    <id>https://www.4async.com/2017/08/2017-08-02-install-face-recognition-on-osx/</id>
+    <published>2017-08-02T10:30:00.000Z</published>
+    <updated>2019-07-04T03:20:39.077Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;face_recognition 是一个热门的人脸识别库，常年占据 &lt;a href=&quot;https://github.com/trending/python&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Github Trending Python 子类&lt;/
+      
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一些 MongoDB 的坑</title>
+    <link href="https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/"/>
+    <id>https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/</id>
+    <published>2017-07-31T10:45:00.000Z</published>
+    <updated>2019-07-04T03:20:39.044Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。&lt;/p&gt;
+&lt;p&gt;但是，随着我
+      
+    
+    </summary>
+    
+    
+      <category term="MongoDB" scheme="https://www.4async.com/tags/MongoDB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>gRPC 调用超时控制</title>
+    <link href="https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/"/>
+    <id>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</id>
+    <published>2017-04-06T10:00:00.000Z</published>
+    <updated>2019-07-04T03:20:39.114Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;我们在进行服务间调用时广泛采用 gRPC 作为主要的调用协议，借助 gRPC 的模块化与语言无关的特性，可以在我们拓展多语言模块之间提供更好的支持。但是我们在使用 gRPC 之中也出现了一些问题，这些问题会做一些记录，希望可以与大家一起沟通与交流。&lt;/p&gt;
+&lt;p&gt;某日，我们
+      
+    
+    </summary>
+    
+    
+      <category term="gRPC" scheme="https://www.4async.com/tags/gRPC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title>
+    <link href="https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/"/>
+    <id>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</id>
+    <published>2017-02-19T10:00:00.000Z</published>
+    <updated>2019-07-04T03:20:39.068Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;这是一篇非常不错的 &lt;a href=&quot;https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/&quot; target=&quot;_blank&quot; re
+      
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
+    
+      <category term="Pandas" scheme="https://www.4async.com/tags/Pandas/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>更优雅的 Golang 错误处理</title>
+    <link href="https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/"/>
+    <id>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</id>
+    <published>2017-02-08T10:00:00.000Z</published>
+    <updated>2019-07-04T03:20:39.047Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Golang 中的错误处理是一个被大家经常拿出来讨论的 &lt;a href=&quot;http://www.infoq.com/cn/news/2012/11/go-error-handle&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;话题&lt;/a&gt;(另外一个是 &lt;a
+      
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用 dtrace 跟踪 Python 应用</title>
+    <link href="https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/"/>
+    <id>https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/</id>
+    <published>2016-09-15T10:00:00.000Z</published>
+    <updated>2019-07-04T03:20:39.097Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;今年在 Pycon China 上，来自饿了么的郭浩川分享了 &lt;a href=&quot;http://ocgxshkaw.bkt.clouddn.com/4%20%E3%80%8A%E7%94%A8%E9%AB%98%E9%AD%94%E7%9A%84%E5%A7%BF%E5%8A
+      
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
+    
+      <category term="dtrace" scheme="https://www.4async.com/tags/dtrace/"/>
     
   </entry>
   

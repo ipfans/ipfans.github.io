@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近升级了一下 simplejson，发现 simplejson 的 speedup 模块报了一个错误： 123456789101112131415161718192021Installing collected packages: simplejson  Found existing installation: simplejson 3.3.1    Uninstalling simplejso">
+<meta name="keywords" content="Python,OSX,Xcode,Mavericks">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决 Mavericks 系统上 Python 库 - mno-fused-madd 错误">
+<meta property="og:url" content="https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="最近升级了一下 simplejson，发现 simplejson 的 speedup 模块报了一个错误： 123456789101112131415161718192021Installing collected packages: simplejson  Found existing installation: simplejson 3.3.1    Uninstalling simplejso">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-04T03:20:39.070Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="解决 Mavericks 系统上 Python 库 - mno-fused-madd 错误">
+<meta name="twitter:description" content="最近升级了一下 simplejson，发现 simplejson 的 speedup 模块报了一个错误： 123456789101112131415161718192021Installing collected packages: simplejson  Found existing installation: simplejson 3.3.1    Uninstalling simplejso">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>解决 Mavericks 系统上 Python 库 - mno-fused-madd 错误 | ipfans's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>Sitemap</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">解决 Mavericks 系统上 Python 库 - mno-fused-madd 错误
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-04-08 11:43:52" itemprop="dateCreated datePublished" datetime="2014-04-08T11:43:52+08:00">2014-04-08</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近升级了一下 simplejson，发现 simplejson 的 speedup 模块报了一个错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Installing collected packages: simplejson</span><br><span class="line">  Found existing installation: simplejson 3.3.1</span><br><span class="line">    Uninstalling simplejson:</span><br><span class="line">      Successfully uninstalled simplejson</span><br><span class="line">  Running setup.py install for simplejson</span><br><span class="line">    building &apos;simplejson._speedups&apos; extension</span><br><span class="line">    cc -fno-strict-aliasing -fno-common -dynamic -arch x86_64 -arch i386 -g -Os -pipe -fno-common -fno-strict-aliasing -fwrapv -mno-fused-madd -DENABLE_DTRACE -DMACOSX -DNDEBUG -Wall -Wstrict-prototypes -Wshorten-64-to-32 -DNDEBUG -g -fwrapv -Os -Wall -Wstrict-prototypes -DENABLE_DTRACE -arch x86_64 -arch i386 -pipe -I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -c simplejson/_speedups.c -o build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o</span><br><span class="line">    clang: error: unknown argument: &apos;-mno-fused-madd&apos; [-Wunused-command-line-argument-hard-error-in-future]</span><br><span class="line">    clang: note: this will be a hard error (cannot be downgraded to a warning) in the future</span><br><span class="line">    ***************************************************************************</span><br><span class="line">    WARNING: The C extension could not be compiled, speedups are not enabled.</span><br><span class="line">    Failure information, if any, is above.</span><br><span class="line">    I&apos;m retrying the build without the C extension now.</span><br><span class="line">    ***************************************************************************</span><br><span class="line"></span><br><span class="line">    ***************************************************************************</span><br><span class="line">    WARNING: The C extension could not be compiled, speedups are not enabled.</span><br><span class="line">    Plain-Python installation succeeded.</span><br><span class="line">    ***************************************************************************</span><br><span class="line">Successfully installed simplejson</span><br><span class="line">Cleaning up...</span><br></pre></td></tr></table></figure>
+
+<p>注意看 error 这里，有一个 <figure class="highlight plain"><figcaption><span>argument: '-mno-fused-madd'``` 的错误，应该是 Xcode 升级最新的版本之后，clang 替换带来的问题。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">解决方法也很简单，在编译之前 export 两个参数即可：</span><br></pre></td></tr></table></figure></p>
+<p>$ export CFLAGS=-Qunused-arguments<br>$ export CPPFLAGS=-Qunused-arguments<br>$ pip install simplejson<br>Downloading/unpacking simplejson<br>  Downloading simplejson-3.4.0.tar.gz (68kB): 68kB downloaded<br>  Running setup.py egg_info for package simplejson</p>
+<p>Installing collected packages: simplejson<br>  Running setup.py install for simplejson<br>    building ‘simplejson._speedups’ extension<br>    cc -DNDEBUG -g -fwrapv -Os -Wall -Wstrict-prototypes -Qunused-arguments -Qunused-arguments -arch x86_64 -arch i386 -pipe -I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -c simplejson/_speedups.c -o build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o<br>    cc -bundle -undefined dynamic_lookup -arch x86_64 -arch i386 -Wl,-F. -Qunused-arguments -Qunused-arguments build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o -o build/lib.macosx-10.9-intel-2.7/simplejson/_speedups.so</p>
+<p>Successfully installed simplejson<br>Cleaning up…</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">后来查了一下具体的原因，在 [Xcode5.1 的 release note](https://developer.apple.com/library/mac/releasenotes/DeveloperTools/RN-Xcode/Introduction/Introduction.html) 中有提及：</span><br></pre></td></tr></table></figure>
+
+<p>The Apple LLVM compiler in Xcode 5.1 treats unrecognized command-line options as errors. This issue has been seen when building both Python native extensions and Ruby Gems, where some invalid compiler options are currently specified.</p>
+<p>Projects using invalid compiler options will need to be changed to remove those options. To help ease that transition, the compiler will temporarily accept an option to downgrade the error to a warning:</p>
+<p>-Wno-error=unused-command-line-argument-hard-error-in-future</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">官方推荐的方法是：</span><br></pre></td></tr></table></figure>
+
+<p>$ ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install simplejson<br>Downloading/unpacking simplejson<br>  Downloading simplejson-3.4.0.tar.gz (68kB): 68kB downloaded<br>  Running setup.py egg_info for package simplejson</p>
+<p>Installing collected packages: simplejson<br>  Running setup.py install for simplejson<br>    building ‘simplejson._speedups’ extension<br>    cc -fno-strict-aliasing -fno-common -dynamic -g -Os -pipe -fno-common -fno-strict-aliasing -fwrapv -mno-fused-madd -DENABLE_DTRACE -DMACOSX -DNDEBUG -Wall -Wstrict-prototypes -Wshorten-64-to-32 -DNDEBUG -g -fwrapv -Os -Wall -Wstrict-prototypes -DENABLE_DTRACE -Wno-error=unused-command-line-argument-hard-error-in-future -pipe -Wno-error=unused-command-line-argument-hard-error-in-future -I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -c simplejson/_speedups.c -o build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o<br>    clang: warning: unknown argument: ‘-mno-fused-madd’ [-Wunused-command-line-argument-hard-error-in-future]<br>    clang: note: this will be a hard error (cannot be downgraded to a warning) in the future<br>    clang: warning: argument unused during compilation: ‘-mno-fused-madd’<br>    cc -bundle -undefined dynamic_lookup -Wl,-F. -Wno-error=unused-command-line-argument-hard-error-in-future -Wno-error=unused-command-line-argument-hard-error-in-future build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o -o build/lib.macosx-10.9-intel-2.7/simplejson/_speedups.so</p>
+<p>Successfully installed simplejson<br>Cleaning up…</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">最后来个轻量级的性能测试 (python 2.7.5)：</span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">from timeit import Timer</span><br><span class="line">import json</span><br><span class="line">import simplejson</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def by_json():</span><br><span class="line">    a = &#123;&quot;a&quot;: 1, &quot;b&quot;: &quot;2&quot;, &quot;c&quot;: [1, 2, 3], &quot;d&quot;: [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;]&#125;</span><br><span class="line">    b = json.dumps(a)</span><br><span class="line">    a = json.loads(b)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def by_simplejson():</span><br><span class="line">    a = &#123;&quot;a&quot;: 1, &quot;b&quot;: &quot;2&quot;, &quot;c&quot;: [1, 2, 3], &quot;d&quot;: [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;]&#125;</span><br><span class="line">    b = simplejson.dumps(a)</span><br><span class="line">    a = simplejson.loads(b)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    t = Timer(stmt=&quot;by_json()&quot;, setup=&quot;from __main__ import by_json&quot;)</span><br><span class="line">    print &apos;by json: %s seconds&apos; % t.timeit(number=3)</span><br><span class="line">    t = Timer(stmt=&quot;by_simplejson()&quot;, setup=&quot;from __main__ import by_simplejson&quot;)</span><br><span class="line">    print &apos;by simplejson: %s seconds&apos; % t.timeit(number=3)</span><br></pre></td></tr></table></figure>
+
+<p>测试结果表明：恩，实际上不用 simplejson 也可以，不会有很大性能差异：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ python json_speed.py</span><br><span class="line">by json: 0.000191926956177 seconds</span><br><span class="line">by simplejson: 0.000169992446899 seconds</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/" title="解决 Mavericks 系统上 Python 库 - mno-fused-madd 错误">https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/OSX/" rel="tag"># OSX</a>
+          
+            <a href="/tags/Xcode/" rel="tag"># Xcode</a>
+          
+            <a href="/tags/Mavericks/" rel="tag"># Mavericks</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/04/2014-04-02-falcon-web-framework/" rel="next" title="短小精悍 Falcon">
+                <i class="fa fa-chevron-left"></i> 短小精悍 Falcon
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/04/2014-04-11-openssl-algorithm-speed-result/" rel="prev" title="几种常见加密 / hash 算法效率 (OpenSSL)">
+                几种常见加密 / hash 算法效率 (OpenSSL) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
+            
+              <p class="site-author-name" itemprop="name">ipfans</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>
