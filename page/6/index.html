@@ -316,6 +316,192 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-20-build-zbar-on-linux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/05/2014-05-20-build-zbar-on-linux/" class="post-title-link" itemprop="url">Linux 系统上的 zbar 编译安装</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2014-05-20 15:33:35" itemprop="dateCreated datePublished" datetime="2014-05-20T15:33:35+08:00">2014-05-20</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+              
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2014/05/2014-05-20-build-zbar-on-linux/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/05/2014-05-20-build-zbar-on-linux/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>因为系统不方便使用包升级，因此使用的源码方式安装，坑基本上都踩过了，做一下记录吧。</p>
+<p>zbar 的安装依赖于 ImageMagick，ImageMagick 则依赖于 jpeg 提供 jpeg 图片支持，因此安装顺序为反序安装。</p>
+<h2 id="安装-jpeg-库"><a href="#安装-jpeg-库" class="headerlink" title="安装 jpeg 库"></a>安装 jpeg 库</h2><p>这个安装比较简单，没什么坑来的。先到 <a href="http://www.imagemagick.org/download/delegates/" target="_blank" rel="noopener">http://www.imagemagick.org/download/delegates/</a> 下载 jpeg 的库，比如我用的是 jpegsrc.v9a.tar.gz，执行下列执行进行安装：</p>
+<pre><code>/.configure
+make &amp;&amp; make install</code></pre><h2 id="安装-ImageMagick"><a href="#安装-ImageMagick" class="headerlink" title="安装 ImageMagick"></a>安装 ImageMagick</h2><p>这个安装稍微麻烦一点，还是差不多开始的：</p>
+<pre><code>./configure
+make &amp;&amp; make install</code></pre><p>下面是需要配置一些参数，否则 zbar 安装会不成功：</p>
+<pre><code>export MAGICK_CFLAGS=&quot;/usr/local/include/ImageMagick-6/&quot;
+export MAGICK_LIBS=&quot;/usr/local/lib/libMagickWand-6.Q16.so&quot;</code></pre><h2 id="安装-zbar"><a href="#安装-zbar" class="headerlink" title="安装 zbar"></a>安装 zbar</h2><p>接下来编译 zbar 了，这个之前配置好了会方便一点，同时禁用一些不用的功能：</p>
+<pre><code>./configure --enable-shared --without-gtk --without-qt --without-python CPPFLAGS=-I/usr/local/include/ImageMagick-6
+make &amp;&amp; make install</code></pre><p>接下来添加 ldconfig 文件让 libzbar.so 生效。</p>
+<pre><code>ldconfig</code></pre><h2 id="测试安装"><a href="#测试安装" class="headerlink" title="测试安装"></a>测试安装</h2><p>测试一下 zbar 是否安装成功：</p>
+<pre><code>wget http://i1.hexunimg.cn/2012-03-13/139256375.jpg 
+/usr/local/bin/zbarimg 139256375.jpg
+QR-Code:http://www.baidu.com
+QR-Code:http://apk.hiapk.com/m/downloads?id=com.qq.reader&amp;vcode=11
+QR-Code:http://apk.hiapk.com/m/downloads?id=cn.ibuka.manga.ui&amp;vcode=16843778
+QR-Code:http://apk.hiapk.com/m/downloads?id=com.kugou.android&amp;vcode=4120
+QR-Code:http://apk.hiapk.com/m/downloads?id=com.kandian.vodapp4pad7in&amp;vcode=7
+scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-17-speed-python-code-with-cython/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1945,174 +2131,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-23-golang-rsa/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/03/2014-03-23-golang-rsa/" class="post-title-link" itemprop="url">Golang 的 RSA 公私钥方法实现</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2014-03-23 20:25:52" itemprop="dateCreated datePublished" datetime="2014-03-23T20:25:52+08:00">2014-03-23</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">Comments: </span>
-                <a href="/2014/03/2014-03-23-golang-rsa/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-23-golang-rsa/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>话不多说，自己看吧，比较明白。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"crypto"</span></span><br><span class="line">    <span class="string">"crypto/rand"</span></span><br><span class="line">    <span class="string">"crypto/rsa"</span></span><br><span class="line">    <span class="string">"crypto/sha256"</span></span><br><span class="line">    <span class="string">"crypto/x509"</span></span><br><span class="line">    <span class="string">"encoding/base64"</span></span><br><span class="line">    <span class="string">"encoding/pem"</span></span><br><span class="line">    <span class="string">"errors"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;signer, err := loadPrivateKey(<span class="string">"private.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"signer is damaged: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    toSign := <span class="string">"date: Thu, 05 Jan 2012 21:31:40 GMT"</span></span><br><span class="line"></span><br><span class="line">    signed, err := signer.Sign([]byte(toSign))</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line">    sig := base64.StdEncoding.EncodeToString(signed)</span><br><span class="line">    fmt.Printf(<span class="string">"Signature: %v\n"</span>, sig)</span><br><span class="line"></span><br><span class="line">    parser, perr := loadPublicKey(<span class="string">"public.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> perr != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    err = parser.Unsign([]byte(toSign), signed)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"Unsign error: %v\n"</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPublicKey(path string) (Unsigner, error) &#123;<span class="keyword">return</span> parsePublicKey([]byte(`-----BEGIN PUBLIC KEY-----</span><br><span class="line">MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCFENGw33yGihy92pDjZQhl0C3</span><br><span class="line"><span class="number">6</span>rPJj+CvfSC8+q28hxA161QFNUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span></span><br><span class="line">Z4UMR7EOcpfdUE9Hf3m/hs+FUR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJw</span><br><span class="line">oYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">-----END PUBLIC KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePublicKey(pemBytes []byte) (Unsigner, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"PUBLIC KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKIXPublicKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> newUnsignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPrivateKey(path string) (Signer, error) &#123;<span class="keyword">return</span> parsePrivateKey([]byte(`-----BEGIN RSA PRIVATE KEY-----</span><br><span class="line">MIICXgIBAAKBgQDCFENGw33yGihy92pDjZQhl0C36rPJj+CvfSC8+q28hxA161QF</span><br><span class="line">NUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span>Z4UMR7EOcpfdUE9Hf3m/hs+F</span><br><span class="line">UR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJwoYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">AoGBAJR8ZkCUvx5kzv+utdl7T5MnordT1TvoXXJGXK7ZZ+UuvMNUCdN2QPc4sBiA</span><br><span class="line">QWvLw1cSKt5DsKZ8UETpYPy8pPYnnDEz2dDYiaew9+xEpubyeW2oH4Zx71wqBtOK</span><br><span class="line">kqwrXa/pzdpiucRRjk6vE6YY7EBBs/g7uanVpGibOVAEsqH1AkEA7DkjVH28WDUg</span><br><span class="line">f1nqvfn2Kj6CT7nIcE3jGJsZZ7zlZmBmHFDONMLUrXR/Zm3pR5m0tCmBqa5RK95u</span><br><span class="line"><span class="number">412j</span>t1dPIwJBANJT3v8pnkth48bQo/fKel6uEYyboRtA5/uHuHkZ6FQF7OUkGogc</span><br><span class="line">mSJluOdc5t6hI1VsLn0QZEjQZMEOWr+wKSMCQQCC4kXJEsHAve77oP6HtG/IiEn7</span><br><span class="line">kpyUXRNvFsDE0czpJJBvL/aRFUJxuRK91jhjC68sA7NsKMGg5OXb5I5Jj36xAkEA</span><br><span class="line">gIT7aFOYBFwGgQAQkWNKLvySgKbAZRTeLBacpHMuQdl1DfdntvAyqpAZ0lY0RKmW</span><br><span class="line">G6aFKaqQfOXKCyWoUiVknQJAXrlgySFci/<span class="number">2</span>ueKlIE1QqIiLSZ8V8OlpFLRnb1pzI</span><br><span class="line"><span class="number">7</span>U1yQXnTAEFYM560yJlzUpOb1V4cScGd365tiSMvxLOvTA==</span><br><span class="line">-----END RSA PRIVATE KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePrivateKey(pemBytes []byte) (Signer, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"RSA PRIVATE KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKCS1PrivateKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> newSignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Signer interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Sign(data []byte) ([]byte, error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Unsigner interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Unsign(data[]byte, sig []byte) error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newSignerFromKey(k interface&#123;&#125;) (Signer, error) &#123;</span><br><span class="line">    var sshKey Signer</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PrivateKey:</span><br><span class="line">        sshKey = &amp;rsaPrivateKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newUnsignerFromKey(k interface&#123;&#125;) (Unsigner, error) &#123;</span><br><span class="line">    var sshKey Unsigner</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PublicKey:</span><br><span class="line">        sshKey = &amp;rsaPublicKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type rsaPublicKey struct &#123;*rsa.PublicKey&#125;</span><br><span class="line"></span><br><span class="line">type rsaPrivateKey struct &#123;*rsa.PrivateKey&#125;</span><br><span class="line"></span><br><span class="line">// Sign signs data <span class="keyword">with</span> rsa-sha256</span><br><span class="line">func (r *rsaPrivateKey) Sign(data []byte) ([]byte, error) &#123;h := sha256.New()</span><br><span class="line">    h.Write(data)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.SignPKCS1v15(rand.Reader, r.PrivateKey, crypto.SHA256, d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Unsign verifies the message using a rsa-sha256 signature</span><br><span class="line">func (r *rsaPublicKey) Unsign(message []byte, sig []byte) error &#123;h := sha256.New()</span><br><span class="line">    h.Write(message)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.VerifyPKCS1v15(r.PublicKey, crypto.SHA256, d, sig)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2161,7 +2179,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">76</span>
+                    <span class="site-state-item-count">77</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

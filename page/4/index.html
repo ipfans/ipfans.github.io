@@ -316,6 +316,183 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/01/2016-01-05-golang-vendor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2016/01/2016-01-05-golang-vendor/" class="post-title-link" itemprop="url">使用 vendor 管理 Golang 项目依赖</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2016-01-05 23:13:00" itemprop="dateCreated datePublished" datetime="2016-01-05T23:13:00+08:00">2016-01-05</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+              
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2016/01/2016-01-05-golang-vendor/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/2016-01-05-golang-vendor/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们在项目中除了 <a href="http://ipfans.github.io/2015/12/using-vagrant-development-env/" target="_blank" rel="noopener">大量的使用 Python</a> 外，也大量的使用了 Golang 构建高效基础运行服务。在使用 Golang 过程中，我们发现 Golang 程序缺少依赖库版本功能是一个非常令人头大的问题：某些依赖在某个 commit 之后发生了 API 变更之后，如果不修改代码很难兼容，然而开发者之间很有可能因为参与的时间不同，导致执行 <figure class="highlight go"><figcaption><span>get``` 命令获取的版本不同，而导致在不同电脑上出现编译不通过问题。同时，在多个程序中，如果使用的 commit 版本不同，也可能会导致程序编译过程中出现不同的问题。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在之前，我们解决这个问题有两个方案，一种是拆解 <span class="string">``</span><span class="string">`go get`</span><span class="string">``</span> 命令的执行，首先创建对应依赖目录，利用 git 命令切换至指定的 commit，然后执行 <span class="string">``</span><span class="string">`go install`</span><span class="string">``</span> 命令。另外一种比较省事的方法是使用 [godep](https:<span class="comment">//github.com/tools/godep) 工具，这里就不做过多介绍了，具体可以参考文档或者搜索中文教程。</span></span><br><span class="line"></span><br><span class="line">在 Golang1<span class="number">.5</span> 之后，Go 提供了 <span class="string">``</span><span class="string">`GO15VENDOREXPERIMENT`</span><span class="string">``</span> 环境变量，用于将 <span class="keyword">go</span> build 时的应用路径搜索调整成为 <span class="string">``</span><span class="string">` 当前项目目录 / vendor`</span><span class="string">``</span> 目录方式。通过这种形式，我们可以实现类似于 <span class="string">``</span><span class="string">`godep`</span><span class="string">``</span> 方式的项目依赖管理。不过起码在程序编译过程中，再也无需在其他端部署一个 <span class="string">``</span><span class="string">`godep`</span><span class="string">``</span> 工具。</span><br><span class="line"></span><br><span class="line">在使用之前，需要安装一个辅助工具（如果 Golang 自改一个就好了）：<span class="string">``</span><span class="string">`go get -u -v github.com/kardianos/govendor`</span><span class="string">``</span>。</span><br><span class="line"></span><br><span class="line">下面，我们用一个例子来说明。首先有一个名为 <span class="string">``</span><span class="string">`vendorproj`</span><span class="string">``</span> 的项目。假如只有一个文件：</span><br><span class="line"></span><br><span class="line"><span class="string">``</span><span class="string">`go</span></span><br><span class="line"><span class="string">package main</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">import ("github.com/yeeuu/echoic")</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">func main() &#123;e := echoic.New()</span></span><br><span class="line"><span class="string">	e.SetDebug(true)</span></span><br><span class="line"><span class="string">	e.Run("127.0.0.1:4321")</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>执行一下命令就可以生成 vendor 文件夹：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ govendor init</span><br><span class="line">$ ls</span><br><span class="line">main.go    vendor</span><br><span class="line">$ <span class="built_in">cd</span> vendor/</span><br><span class="line">$ ls</span><br><span class="line">vendor.json</span><br></pre></td></tr></table></figure>
+
+<p>这个 <figure class="highlight plain"><figcaption><span>会类似 ```godep``` 工具中的描述文件版本的功能。接下来，需要执行命令将当前应用必须的文件包含进来</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>$ govendor add +external</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果需要更新或移除，可以参考一下工具的具体文档使用 ```update``` 或者 ```remove``` 命令即可。这样会在 vendor 目录下将必须的编译文件移入进来（注意：测试所需依赖并不包含，依赖项目的测试文件也不会包含）。</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">$ ls</span><br><span class="line">github.com  golang.org  vendor.json</span><br><span class="line">$ cat vendor.json</span><br><span class="line">&#123;&quot;comment&quot;: &quot;&quot;,&quot;ignore&quot;:&quot;test&quot;,&quot;package&quot;: [&#123;&quot;path&quot;:&quot;github.com/yeeuu/echoic&quot;,&quot;revision&quot;:&quot;a7d6994f92e2dc60cff071ae38b204fbd4bd2a3f&quot;,&quot;revisionTime&quot;:&quot;2015-12-18T11:14:29+08:00&quot;&#125;,</span><br><span class="line">		&#123;&quot;path&quot;: &quot;golang.org/x/net/context&quot;,</span><br><span class="line">			&quot;revision&quot;: &quot;1d9fd3b8333e891c0e7353e1adcfe8a612573033&quot;,</span><br><span class="line">			&quot;revisionTime&quot;: &quot;2015-11-13T15:40:13-08:00&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br><span class="line">$ cd github.com/yeeuu/echoic</span><br><span class="line">$ ls</span><br><span class="line">LICENSE     context.go  group.go    router.go</span><br><span class="line">README.md   echoic.go   response.go</span><br></pre></td></tr></table></figure>
+
+<p>通过设置环境变量 <code>GO15VENDOREXPERIMENT=1</code> 使用 vendor 文件夹构建文件。可以选择 <code>export GO15VENDOREXPERIMENT=1</code> 或者干脆 <code>GO15VENDOREXPERIMENT=1 go build</code> 执行编译。</p>
+<p>通过这种方式就可以保证程序能够实现类似 Python 中 Virtualenv 的模式，实现不同程序使用不同版本依赖的目的。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/12/2015-12-28-using-vagrant-development-env/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2066,223 +2243,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/01/2015-01-12-rust-note-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/01/2015-01-12-rust-note-2/" class="post-title-link" itemprop="url">Rust 学习笔记二</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2015-01-12 20:46:15" itemprop="dateCreated datePublished" datetime="2015-01-12T20:46:15+08:00">2015-01-12</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">Comments: </span>
-                <a href="/2015/01/2015-01-12-rust-note-2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/01/2015-01-12-rust-note-2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>注：rust 目前更新仍旧很频繁，语法变化比较大，学习主要基于 Rust 1.0 Alpha 版本，之后可能会有部分变化。</p>
-<p>补充下笔记一中的内容：在 Rust 中变量默认是不能改变的，只有声明为 mut，才可以进行改变。</p>
-<p>比如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let x = 5;</span><br><span class="line">x = 7;</span><br></pre></td></tr></table></figure>
-
-<p>会报错 <figure class="highlight plain"><figcaption><span>of immutable variable```，不过下面的方法就可以正常执行了：</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-<p>let mut x = 5;<br>x = 7;</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">逻辑控制</span><br><span class="line">---</span><br><span class="line">一般逻辑控制分为判断分支、循环等等. if 在 rust 中区别不是特别大：</span><br></pre></td></tr></table></figure>
-
-<p>let x = 5;<br>if x == 5 {println!(“x is five!”);} else {println!(“x is not five :(“);}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">不过还可以这样写：</span><br></pre></td></tr></table></figure>
-
-<p>let x = 5;<br>let y = if x == 5 {10} else {15}; // y: i32</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">值得注意的是，下面的写法是不正确的：</span><br></pre></td></tr></table></figure>
-
-<p>let x = 5;<br>let y: i32 = if x == 5 {10;} else {15;};</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">但是 for 循环区别就比较大了：</span><br></pre></td></tr></table></figure>
-
-<p>for x in range(0, 10) {println!(“{}”, x); // x: i32<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">while 循环则可以更加简单：</span><br></pre></td></tr></table></figure>
-
-<p>let mut x = 5u;       // mut x: uint<br>let mut done = false; // mut done: bool</p>
-<p>while !done {<br>    x += x - 3;<br>    println!(“{}”, x);<br>    if x % 5 == 0 {done = true;}<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如果是要求死循环，使用 ```loop&#123;&#125;``` 更加方便。在循环中可以使用 ```break``` 和 ```continue``` 控制流程进度，这个没什么区别就不再说了。</span><br><span class="line"></span><br><span class="line">复杂类型</span><br><span class="line">---</span><br><span class="line">Rust 作为更先进的编程语言，一些复杂变量类型肯定是支持的，比如 ```Tuples```、```Structs```、```Enums``` 等等。</span><br></pre></td></tr></table></figure>
-
-<p>let x = (1,”hello”); // or let x: (i32, &amp;str) = (1,”hello”);<br>struct Point {<br>    x: i32,<br>    y: i32,<br>}<br>let mut point = Point {x: 0, y: 0};<br>enum Ordering {<br>    Less,<br>    Equal,<br>    Greater,<br>}<br>Ordering::Less<br>let a = [1, 2, 3];<br>println!(“a has {} elements”, a.len());<br>for e in a.iter() {println!(“{}”, e);<br>}<br>println!(“{}”, a[0]);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">值得一提的是 ```::``` 表示的命名空间，这点和 c 有一些区别。</span><br><span class="line"></span><br><span class="line">除此之外，Rust 自定义了一些类型，一种是介于 tuple 和 struct 之间的类型，比如：</span><br></pre></td></tr></table></figure>
-
-<p>struct Color(i32, i32, i32);<br>struct Point(i32, i32, i32);<br>let black  = Color(0, 0, 0);<br>let origin = Point(0, 0, 0);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">还有一种叫向量：</span><br></pre></td></tr></table></figure>
-
-<p>let mut nums = vec![1, 2, 3];<br>nums.push(4);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">有点像队列，可变商都，可以 push 进行添加。</span><br><span class="line"></span><br><span class="line">还有一种切片：</span><br></pre></td></tr></table></figure>
-
-<p>let a = [0, 1, 2, 3, 4];<br>let middle = a.slice(1, 4);     // A slice of a: just the elements [1,2,3]</p>
-<p>for e in middle.iter() {println!(“{}”, e);          // Prints 1, 2, 3<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Match</span><br><span class="line">---</span><br><span class="line">这个也是 Rust 特有的，有点类似 switch 的感觉：</span><br></pre></td></tr></table></figure>
-
-<p>let x = 5;</p>
-<p>match x {1 =&gt; println!(“one”),<br>    2 =&gt; println!(“two”),<br>    3 =&gt; println!(“three”),<br>    4 =&gt; println!(“four”),<br>    5 =&gt; println!(“five”),<br>    _ =&gt; println!(“something else”),<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">但是 Rust 一定要有最后一行，否则会编译报错。</span><br><span class="line"></span><br><span class="line">字符串类型</span><br><span class="line">---</span><br><span class="line">Rust 的字符串默认是 UTF-8 编码，但是有两种类型的字符串 &amp; str 和 String。这两种类型下面的方式比较：</span><br></pre></td></tr></table></figure>
-
-<p>let a = “aaa”; //a: &amp;str<br>let b = a.to_string(); // b: String<br>let c = b.to_slice(); //c: &amp;str</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&amp;str 和 String 的区别是，&amp;str 更像是 slice，而 String 则是像一个分配过的内存空间字符串，不能够被修改长度（待确认）。String-&gt;&amp;str 会比较方便，但是 &amp; str-&gt;String 消耗则会比较大。</span><br><span class="line">输入输出</span><br><span class="line">---</span><br><span class="line">输入是官方库 std::io::stdin()。```::``` 之前介绍过，是命名空间，相当于 std::io 库里的 stdin 函数。</span><br><span class="line"></span><br><span class="line">比如：</span><br></pre></td></tr></table></figure>
-
-<p>use std::io;</p>
-<p>fn main() {println!(“Type something!”);</p>
-<pre><code>let input = io::stdin().read_line().ok().expect(&quot;Failed to read line&quot;);
-
-println!(&quot;{}&quot;, input);</code></pre><p>}</p>
-<pre><code></code></pre>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2331,7 +2291,7 @@ println!(&quot;{}&quot;, input);</code></pre><p>}</p>
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">76</span>
+                    <span class="site-state-item-count">77</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

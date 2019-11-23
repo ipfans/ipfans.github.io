@@ -8,8 +8,16 @@
     </url>
 
     <url>
+        <loc>https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/</loc>
+        <lastmod>2019-11-23T14:44:11.109Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://www.4async.com/2014/03/2014-03-13-python-base64-encode-utf-8error/</loc>
-        <lastmod>2019-07-04T03:29:24.759Z</lastmod>
+        <lastmod>2019-07-04T03:29:24.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -17,7 +25,7 @@
 
     <url>
         <loc>https://www.4async.com/2014/03/2014-03-09-python-profile-using-cprofile/</loc>
-        <lastmod>2019-07-04T03:29:19.382Z</lastmod>
+        <lastmod>2019-07-04T03:29:19.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -25,247 +33,7 @@
 
     <url>
         <loc>https://www.4async.com/2018/12/2018-12-25-scm-security/</loc>
-        <lastmod>2019-07-04T03:25:25.631Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/</loc>
-        <lastmod>2019-07-04T03:20:39.118Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/01/2016-01-05-golang-vendor/</loc>
-        <lastmod>2019-07-04T03:20:39.118Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/01/2015-01-11-rust-note-1/</loc>
-        <lastmod>2019-07-04T03:20:39.117Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part1/</loc>
-        <lastmod>2019-07-04T03:20:39.117Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/06/2015-06-17-something-about-python-decorator/</loc>
-        <lastmod>2019-07-04T03:20:39.116Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</loc>
-        <lastmod>2019-07-04T03:20:39.114Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/01/2014-01-02-something-about-block-part-one/</loc>
-        <lastmod>2019-07-04T03:20:39.113Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/08/2015-08-07-jwt-basic/</loc>
-        <lastmod>2019-07-04T03:20:39.110Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/01/2016-01-27-startup-architecture-language/</loc>
-        <lastmod>2019-07-04T03:20:39.109Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/03/2014-03-23-golang-rsa/</loc>
-        <lastmod>2019-07-04T03:20:39.108Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/01/2014-01-01-build-lnmp-on-debian/</loc>
-        <lastmod>2019-07-04T03:20:39.107Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/01/2014-01-15-openssl-and-pyopenssl/</loc>
-        <lastmod>2019-07-04T03:20:39.106Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</loc>
-        <lastmod>2019-07-04T03:20:39.105Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/</loc>
-        <lastmod>2019-07-04T03:20:39.102Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/05/2014-05-20-build-zbar-on-linux/</loc>
-        <lastmod>2019-07-04T03:20:39.101Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/01/2014-01-12-something-details/</loc>
-        <lastmod>2019-07-04T03:20:39.100Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/06/2014-06-01-try-docker-with-coreos/</loc>
-        <lastmod>2019-07-04T03:20:39.099Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/</loc>
-        <lastmod>2019-07-04T03:20:39.097Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</loc>
-        <lastmod>2019-07-04T03:20:39.096Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/04/2014-04-02-falcon-web-framework/</loc>
-        <lastmod>2019-07-04T03:20:39.095Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/02/2014-02-17-create-sign-quickly-python/</loc>
-        <lastmod>2019-07-04T03:20:39.094Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/01/2014-01-26-unit-test/</loc>
-        <lastmod>2019-07-04T03:20:39.092Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/12/2014-12-18-golang-optimizing/</loc>
-        <lastmod>2019-07-04T03:20:39.092Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/04/2014-04-28-control-goroutines-by-channel-select/</loc>
-        <lastmod>2019-07-04T03:20:39.091Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</loc>
-        <lastmod>2019-07-04T03:20:39.089Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/02/2014-02-18-benchmark-python/</loc>
-        <lastmod>2019-07-04T03:20:39.086Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/</loc>
-        <lastmod>2019-07-04T03:20:39.086Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/05/2016-05-31-learning-coreos-part3/</loc>
-        <lastmod>2019-07-04T03:20:39.085Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/04/2014-04-01-beego-tips/</loc>
-        <lastmod>2019-07-04T03:20:39.084Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/</loc>
-        <lastmod>2019-07-04T03:20:39.084Z</lastmod>
+        <lastmod>2019-07-04T03:25:25.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -273,255 +41,7 @@
 
     <url>
         <loc>https://www.4async.com/2013/12/2013-12-27-first-post/</loc>
-        <lastmod>2019-07-04T03:20:39.083Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/05/2014-05-17-speed-python-code-with-cython/</loc>
-        <lastmod>2019-07-04T03:20:39.082Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/</loc>
-        <lastmod>2019-07-04T03:20:39.080Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/</loc>
-        <lastmod>2019-07-04T03:20:39.079Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/12/2015-12-28-using-vagrant-development-env/</loc>
-        <lastmod>2019-07-04T03:20:39.078Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2017/08/2017-08-02-install-face-recognition-on-osx/</loc>
-        <lastmod>2019-07-04T03:20:39.077Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/03/2014-03-23-python-celery-queue-first-step/</loc>
-        <lastmod>2019-07-04T03:20:39.076Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/08/2015-08-14-introduction-to-async-and-await/</loc>
-        <lastmod>2019-07-04T03:20:39.076Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/10/2014-10-22-python-get-current-line-and-filename/</loc>
-        <lastmod>2019-07-04T03:20:39.075Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/07/2015-07-22-howto-make-your-own-permission-plugin/</loc>
-        <lastmod>2019-07-04T03:20:39.075Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/</loc>
-        <lastmod>2019-07-04T03:20:39.074Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/11/2015-11-11-async-python/</loc>
-        <lastmod>2019-07-04T03:20:39.073Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/01/2016-01-26-something-about-mgo-driver/</loc>
-        <lastmod>2019-07-04T03:20:39.073Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/01/2016-01-15-how-we-follow-python-style-guide/</loc>
-        <lastmod>2019-07-04T03:20:39.072Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2018/05/2018-05-03-new-domain/</loc>
-        <lastmod>2019-07-04T03:20:39.071Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/</loc>
-        <lastmod>2019-07-04T03:20:39.071Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/</loc>
-        <lastmod>2019-07-04T03:20:39.070Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2015/01/2015-01-12-rust-note-2/</loc>
-        <lastmod>2019-07-04T03:20:39.070Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/09/2014-09-10-trying-cubieboard-on-mac-os-x/</loc>
-        <lastmod>2019-07-04T03:20:39.069Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/04/2014-04-29-more-about-golang-channel/</loc>
-        <lastmod>2019-07-04T03:20:39.068Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</loc>
-        <lastmod>2019-07-04T03:20:39.068Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/08/2014-08-01-migrate-ollvm-into-ios-project/</loc>
-        <lastmod>2019-07-04T03:20:39.067Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</loc>
-        <lastmod>2019-07-04T03:20:39.067Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</loc>
-        <lastmod>2019-07-04T03:20:39.066Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/03/2014-02-18-benchmark-python-2/</loc>
-        <lastmod>2019-07-04T03:20:39.065Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/</loc>
-        <lastmod>2019-07-04T03:20:39.065Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/08/2014-08-13-diagnostics-ios-tweak-based-on-mobile-substrate/</loc>
-        <lastmod>2019-07-04T03:20:39.064Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/</loc>
-        <lastmod>2019-07-04T03:20:39.062Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</loc>
-        <lastmod>2019-07-04T03:20:39.060Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</loc>
-        <lastmod>2019-07-04T03:20:39.058Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2016/01/2016-01-06-rust-http-client/</loc>
-        <lastmod>2019-07-04T03:20:39.058Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/2014/04/2014-04-11-openssl-algorithm-speed-result/</loc>
-        <lastmod>2019-07-04T03:20:39.057Z</lastmod>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -529,15 +49,15 @@
 
     <url>
         <loc>https://www.4async.com/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/</loc>
-        <lastmod>2019-07-04T03:20:39.055Z</lastmod>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/12/2014-12-27-integrate-umeng-into-phonegap-app/</loc>
-        <lastmod>2019-07-04T03:20:39.053Z</lastmod>
+        <loc>https://www.4async.com/2014/01/2014-01-01-build-lnmp-on-debian/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -545,63 +65,319 @@
 
     <url>
         <loc>https://www.4async.com/2014/01/2014-01-07-web-browser-cross-fuzz/</loc>
-        <lastmod>2019-07-04T03:20:39.052Z</lastmod>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>https://www.4async.com/2016/08/2016-08-01-introduce-traefik-load-balance/</loc>
-        <lastmod>2019-07-04T03:20:39.051Z</lastmod>
+        <loc>https://www.4async.com/2014/01/2014-01-15-openssl-and-pyopenssl/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/</loc>
-        <lastmod>2019-07-04T03:20:39.050Z</lastmod>
+        <loc>https://www.4async.com/2014/01/2014-01-02-something-about-block-part-one/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>https://www.4async.com/2016/04/2016-04-18-writing-testable-golang-code/</loc>
-        <lastmod>2019-07-04T03:20:39.049Z</lastmod>
+        <loc>https://www.4async.com/2014/01/2014-01-12-something-details/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part2/</loc>
-        <lastmod>2019-07-04T03:20:39.049Z</lastmod>
+        <loc>https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</loc>
-        <lastmod>2019-07-04T03:20:39.047Z</lastmod>
+        <loc>https://www.4async.com/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/</loc>
-        <lastmod>2019-07-04T03:20:39.045Z</lastmod>
+        <loc>https://www.4async.com/2014/02/2014-02-17-create-sign-quickly-python/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/</loc>
-        <lastmod>2019-07-04T03:20:39.044Z</lastmod>
+        <loc>https://www.4async.com/2014/03/2014-02-18-benchmark-python-2/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/01/2014-01-26-unit-test/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/02/2014-02-18-benchmark-python/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/03/2014-03-23-golang-rsa/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/03/2014-03-23-python-celery-queue-first-step/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/04/2014-04-01-beego-tips/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/04/2014-04-02-falcon-web-framework/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/04/2014-04-11-openssl-algorithm-speed-result/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/04/2014-04-28-control-goroutines-by-channel-select/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/05/2014-05-17-speed-python-code-with-cython/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/05/2014-05-20-build-zbar-on-linux/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/04/2014-04-29-more-about-golang-channel/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/06/2014-06-01-try-docker-with-coreos/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/08/2014-08-01-migrate-ollvm-into-ios-project/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/08/2014-08-13-diagnostics-ios-tweak-based-on-mobile-substrate/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/09/2014-09-10-trying-cubieboard-on-mac-os-x/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/10/2014-10-22-python-get-current-line-and-filename/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/01/2015-01-11-rust-note-1/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/01/2015-01-12-rust-note-2/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/12/2014-12-18-golang-optimizing/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/12/2014-12-27-integrate-umeng-into-phonegap-app/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/07/2015-07-22-howto-make-your-own-permission-plugin/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/08/2015-08-07-jwt-basic/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/08/2015-08-14-introduction-to-async-and-await/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/06/2015-06-17-something-about-python-decorator/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/11/2015-11-11-async-python/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2015/12/2015-12-28-using-vagrant-development-env/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -609,7 +385,239 @@
 
     <url>
         <loc>https://www.4async.com/2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/</loc>
-        <lastmod>2019-07-04T03:20:39.042Z</lastmod>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/01/2016-01-05-golang-vendor/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/01/2016-01-06-rust-http-client/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/01/2016-01-15-how-we-follow-python-style-guide/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/01/2016-01-26-something-about-mgo-driver/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/01/2016-01-27-startup-architecture-language/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/04/2016-04-18-writing-testable-golang-code/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part2/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part1/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/05/2016-05-31-learning-coreos-part3/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/08/2016-08-01-introduce-traefik-load-balance/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2017/08/2017-08-02-install-face-recognition-on-osx/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2018/05/2018-05-03-new-domain/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

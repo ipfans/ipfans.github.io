@@ -316,6 +316,183 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/" class="post-title-link" itemprop="url">树莓派无界面配置WiFi</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-04-20 17:30:00" itemprop="dateCreated datePublished" datetime="2018-04-20T17:30:00+08:00">2018-04-20</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+              
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/04/2018-04-20-setup-wifi-raspberrypi-headless/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>树莓派支持命令行下配置WiFi连接，可以通过编辑 <code>/etc/wpa_supplicant/wpa_supplicant.conf</code> 文件配置对应的WiFi配置。具体的内容可以使用 <code>wpa_passphrase</code> 工具生成对应的配置信息，附加到该文件结尾即可。</p>
+<p>假设我存在 <code>SSID</code> 为 <code>testing</code> 密码为 <code>testingPassword</code> 的WiFi网络，我可以使用 <code>wpa_passphrase</code> 生成对应的配置字符串：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ wpa_passphrase &quot;testing&quot; &quot;testingPassword&quot;</span><br><span class="line">network=&#123;</span><br><span class="line">	ssid=&quot;testing&quot;</span><br><span class="line">	#psk=&quot;testingPassword&quot;</span><br><span class="line">	psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">```</span><br></pre></td></tr></table></figure>
+
+<p>当然你可以在 <code>psk</code> 填写原始的密码。</p>
+<p>不过在某些极限环境下，我们有可能便装出门，未配置网线等工具，这个时候只有未加入过的WiFi网络，这样如何处理呢？</p>
+<p>这种方式与开启SSH方式类似，在制作的SD卡根目录下，新增/修改对应的 <code>wpa_supplicant.conf</code> 文件，添加对应的信息即可。</p>
+<p><em>注意，该文件包含默认头部信息不能缺少。如Raspbian 20180418版本完整配置为：</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev</span><br><span class="line">update_config=1</span><br><span class="line"></span><br><span class="line">network=&#123;</span><br><span class="line">	ssid=&quot;testing&quot;</span><br><span class="line">	#psk=&quot;testingPassword&quot;</span><br><span class="line">	psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2349,197 +2526,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/05/2016-05-31-learning-coreos-part3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2016/05/2016-05-31-learning-coreos-part3/" class="post-title-link" itemprop="url">CoreOS 折腾笔记（三）了解 Etcd</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2016-05-31 09:13:00" itemprop="dateCreated datePublished" datetime="2016-05-31T09:13:00+08:00">2016-05-31</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">Comments: </span>
-                <a href="/2016/05/2016-05-31-learning-coreos-part3/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/2016-05-31-learning-coreos-part3/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>服务发现是微服务化架构中重要的一环，服务的配置信息需要有一种可靠高效的发现机制，保证服务上线时可以及时被使用，服务失效中断时可以及时切走。服务发现工具 Etcd 就是为了这种需求开发的。</p>
-<h2 id="什么是-Etcd？"><a href="#什么是-Etcd？" class="headerlink" title="什么是 Etcd？"></a>什么是 Etcd？</h2><p>Etcd 是一个分布式 KV 数据库，通过将数据分散存储在多台独立的设备上，从而提高数据的可靠性或读写性能。Etcd 是几个比较常见的服务发现应用之一，它支持 TTL 的支持和 HTTP Restful API，同时通过 Raft 一致性算法处理日志复制以保证强一致性。关于 Raft 算法，请参考 <a href="http://www.infoq.com/cn/articles/coreos-analyse-etcd" target="_blank" rel="noopener">这篇文章</a>，这里不多介绍。Etcd 本来就是 CoreOS 团队开发支持的，因此也是原生存在在 CoreOS 系统中。</p>
-<p>Etcd 中提供了订阅通知机制，同时提供了一个线上服务 <figure class="highlight plain"><figcaption><span>Fleet 等等工具也是基于 Etcd 去发现网络中的节点服务器。在 CoreOS 机器部署之后，系统中一个叫做 ```cloud-init``` 的服务会根据之前的 ```user-data``` 文件去启动 Etcd。Etcd 会更新对应的自己的节点信息，并且获取其它的节点信息。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">另外比较常见的服务发现还有 ZooKeeper（应用最广泛）、Consul 等等，如果有兴趣，可以自己在进行研究。</span><br><span class="line"></span><br><span class="line">## Etcdctl 使用</span><br><span class="line"></span><br><span class="line">工具 ```etcdctl``` 是 ```etcd``` 的控制程序，我们可以通过执行命令查看所有键值：</span><br></pre></td></tr></table></figure></p>
-<p>core@core-01 ~ $ etcdctl ls / –recursive<br>/coreos.com<br>/coreos.com/network<br>/coreos.com/network/config<br>/coreos.com/network/subnets<br>/coreos.com/network/subnets/10.1.64.0-24<br>/coreos.com/network/subnets/10.1.48.0-24<br>/coreos.com/network/subnets/10.1.10.0-24<br>/coreos.com/updateengine<br>/coreos.com/updateengine/rebootlock<br>/coreos.com/updateengine/rebootlock/semaphore</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">还可以通过类似 Redis 的 ```get``` 等命令获取具体存储内容：</span><br></pre></td></tr></table></figure>
-
-<p>core@core-01 ~ $ etcdctl get /coreos.com/network/subnets/10.1.64.0-24<br>{“PublicIP”:”172.17.8.101”}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">区别是 Etcd 是支持目录的：</span><br></pre></td></tr></table></figure>
-
-<p>core@core-01 ~ $ etcdctl mkdir hello<br>core@core-01 ~ $ etcdctl get hello<br>/hello: is a directory<br>core@core-01 ~ $ etcdctl rmdir hello</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">刚刚我们介绍时也提到，Etcd 支持 HTTP 方式调用，比如：</span><br></pre></td></tr></table></figure>
-
-<p>core@core-01 ~ $ curl -L -X PUT <a href="http://127.0.0.1:2379/v2/keys/message" target="_blank" rel="noopener">http://127.0.0.1:2379/v2/keys/message</a> -d value=”Hello”<br>{“action”:”set”,”node”:{“key”:”/message”,”value”:”Hello”,”modifiedIndex”:10318,”createdIndex”:10318},”prevNode”:{“key”:”/message”,”value”:”Hello”,”modifiedIndex”:10300,”createdIndex”:10300}}<br>core@core-01 ~ $ etcdctl get /message<br>Hello<br>core@core-01 ~ $ curl -L -X DELETE <a href="http://127.0.0.1:2379/v2/keys/message" target="_blank" rel="noopener">http://127.0.0.1:2379/v2/keys/message</a><br>{“action”:”delete”,”node”:{“key”:”/message”,”modifiedIndex”:10462,”createdIndex”:10318},”prevNode”:{“key”:”/message”,”value”:”Hello”,”modifiedIndex”:10318,”createdIndex”:10318}}<br>core@core-01 ~ $ etcdctl get /message<br>Error:  100: Key not found (/message) [10467]</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">TTL 的特性可以在设置状态时进行设定：</span><br></pre></td></tr></table></figure>
-
-<p>etcdctl set /foo “Expiring Soon” –ttl 20</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">这个 KV 对就会在 20 秒内时效。</span><br><span class="line"></span><br><span class="line">## Etcd 集群管理</span><br><span class="line"></span><br><span class="line">除了本身的 KV 数据库特性外，作为集群服务发现工具时，也可以通过 restful api 方式发现当前集群信息：</span><br></pre></td></tr></table></figure>
-
-<p>core@core-01 ~ $ curl -L <a href="http://127.0.0.1:4001/v2/stats/leader" target="_blank" rel="noopener">http://127.0.0.1:4001/v2/stats/leader</a><br>{“leader”:”efb737dfdc9ee528”,”followers”:{“6219cfe16536320”:{“latency”:{“current”:0.003561,”average”:0.0031178274017212987,”standardDeviation”:0.018016615756979302,”minimum”:9e-06,”maximum”:1.338917},”counts”:{“fail”:0,”success”:51588}},”a8cc28a8e121c40d”:{“latency”:{“current”:0.002212,”average”:0.002837358092138387,”standardDeviation”:0.015615452604769925,”minimum”:1.7e-05,”maximum”:1.48721},”counts”:{“fail”:0,”success”:51618}},”e44ee28dd4e590ac”:{“latency”:{“current”:0.001838,”average”:0.006247004906804689,”standardDeviation”:0.4458222893241591,”minimum”:9e-06,”maximum”:105.637627},”counts”:{“fail”:32,”success”:58694}}}}<br>core@core-01 ~ $ curl -L <a href="http://127.0.0.1:4001/v2/stats/self" target="_blank" rel="noopener">http://127.0.0.1:4001/v2/stats/self</a><br>{“name”:”c99fef8aac9b4a3e9d3a44f58b0739a6”,”id”:”efb737dfdc9ee528”,”state”:”StateLeader”,”startTime”:”2016-05-28T09:44:01.416629553Z”,”leaderInfo”:{“leader”:”efb737dfdc9ee528”,”uptime”:”1h59m14.023315023s”,”startTime”:”2016-05-28T09:44:44.495996231Z”},”recvAppendRequestCnt”:0,”sendAppendRequestCnt”:162816,”sendPkgRate”:20.004570208101516,”sendBandwidthRate”:1953.7463493742348}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">其它的系列集群接口，也可以在 [官方文档](https://coreos.com/etcd/docs/latest/) 中查看。</span><br><span class="line"></span><br><span class="line">## Etcd 配置</span><br><span class="line"></span><br><span class="line">如果你有印象在第一篇中，如果你打开 ```user-data``` 文件，你就会发现 Etcd 的踪影：</span><br><span class="line"></span><br><span class="line">```yaml</span><br><span class="line">➜  coreos-vagrant git:(master) cat user-data</span><br><span class="line">#cloud-config</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">coreos:</span><br><span class="line">  etcd2:</span><br><span class="line">    advertise-client-urls: http://$public_ipv4:2379</span><br><span class="line">    initial-advertise-peer-urls: http://$private_ipv4:2380</span><br><span class="line">    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001</span><br><span class="line">    listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001</span><br><span class="line">    discovery: https://discovery.etcd.io/xxxxxxxxxxxx</span><br><span class="line">  fleet:</span><br><span class="line">    public-ip: &quot;$public_ipv4&quot;</span><br><span class="line">  flannel:</span><br><span class="line">    interface: &quot;$public_ipv4&quot;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
-
-<p>我们这里使用了线上服务 <code>https://discovery.etcd.io/</code> 发现集群中的机器，这个服务同样也可以使用本地内系统。</p>
-<h2 id="利用-Etcd-制作服务发现"><a href="#利用-Etcd-制作服务发现" class="headerlink" title="利用 Etcd 制作服务发现"></a>利用 Etcd 制作服务发现</h2><p>之前提到，Etcd 的特性非常方便用做服务发现，具体如何操作呢？在谈具体实现之前，我们来介绍一下两种服务注册方法：一种叫做 <a href="http://microservices.io/patterns/self-registration.html" target="_blank" rel="noopener">自注册方法</a>；另外一种叫 <a href="http://microservices.io/patterns/3rd-party-registration.html" target="_blank" rel="noopener">第三方注册方法</a>。区别是是否由自身来进行健康检查和提醒。另外，服务发现重要的是，在服务失效时可以及时去除无效服务，这个在 Etcd 的 TTL 功能上就会显得比较重要。我们可以设置一个键值的有效期为 3 秒，并且每秒钟都来刷新授权，如果程序异常退出或者刷新不及时，那么这个服务简直就会失效。通过这种方式就可以有效验证服务是否有效。</p>
-<p>具体的代码就不再额外给出了，大家可以自己动手实现一下。另外，其实服务发现还有一个重要的是提供自身工作的地址端口信息，这些可以通过环境变量传递到容器的注册过程中去，这个也是能够让负载均衡或者 WebService 服务器可以识别服务的重要手段。比如 Nginx 可以在根据服务注册信息定期更新自己的配置文件，利用重载保证不间断的服务运行。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2588,7 +2574,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">76</span>
+                    <span class="site-state-item-count">77</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

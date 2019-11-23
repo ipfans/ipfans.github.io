@@ -94,13 +94,18 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="ipfans&#39;s Blog">
-<meta property="og:url" content="https://www.4async.com/tags/Golang/index.html">
+  <meta name="description" content="缘起今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。 后来在Go的1.3版本发布后，我在支付宝的内部">
+<meta name="keywords" content="Golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序">
+<meta property="og:url" content="https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/index.html">
 <meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="缘起今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。 后来在Go的1.3版本发布后，我在支付宝的内部">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-23T14:44:11.109Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ipfans&#39;s Blog">
+<meta name="twitter:title" content="从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序">
+<meta name="twitter:description" content="缘起今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。 后来在Go的1.3版本发布后，我在支付宝的内部">
 
 
 
@@ -110,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="https://www.4async.com/tags/Golang/">
+  <link rel="canonical" href="https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/">
 
 
 
@@ -120,7 +125,7 @@
   };
 </script>
 
-  <title>Tag: Golang | ipfans's Blog</title>
+  <title>从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序 | ipfans's Blog</title>
   
 
 
@@ -168,7 +173,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -295,318 +300,234 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block tag">
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h2>Golang<small>Tag</small>
-        </h2>
-      </div>
-
-      
-        
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/">
 
-      <h3 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2019/11/2019-11-23-learning-go-from-3rd-library/" itemprop="url">
-            
-              <span itemprop="name">从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序</span>
-            
-          </a>
         
-      </h3>
+          <h2 class="post-title" itemprop="name headline">从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-11-23T22:43:00+08:00" content="2019-11-23">
-          11-23
-        </time>
-      </div>
+              
+            
+          </h2>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
 
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-11-23 22:43:00 / Modified: 22:44:11" itemprop="dateCreated datePublished" datetime="2019-11-23T22:43:00+08:00">2019-11-23</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+              
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2019/11/2019-11-23-learning-go-from-3rd-library/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/11/2019-11-23-learning-go-from-3rd-library/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/2019/03/2019-03-20-using-go-modules/" itemprop="url">
-            
-              <span itemprop="name">使用Go Modules</span>
-            
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-03-20T14:22:00+08:00" content="2019-03-20">
-          03-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/2019/01/2019-01-25-go-new-xerrors/" itemprop="url">
-            
-              <span itemprop="name">聊聊新的Go语言错误处理方案</span>
-            
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-01-25T23:20:00+08:00" content="2019-01-25">
-          01-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/2019/01/2019-01-18-gin-toolkit-gini/" itemprop="url">
-            
-              <span itemprop="name">gini：一个让你更方便使用Gin框架的库</span>
-            
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-01-18T23:20:00+08:00" content="2019-01-18">
-          01-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/2018/06/2018-06-08-compatibility-in-golang-1-10/" itemprop="url">
-            
-              <span itemprop="name">Go 1.10中的一处不兼容问题</span>
-            
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-06-08T12:20:00+08:00" content="2018-06-08">
-          06-08
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/" itemprop="url">
-            
-              <span itemprop="name">关于Golang过滤敏感信息的正确姿势</span>
-            
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-06-06T16:07:00+08:00" content="2018-06-06">
-          06-06
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/2018/04/2018-04-20-grpc-performance-optimizing/" itemprop="url">
-            
-              <span itemprop="name">gRPC性能优化</span>
-            
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-04-20T12:00:00+08:00" content="2018-04-20">
-          04-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/2017/02/2017-02-08-more-effective-golang-error/" itemprop="url">
-            
-              <span itemprop="name">更优雅的 Golang 错误处理</span>
-            
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-02-08T18:00:00+08:00" content="2017-02-08">
-          02-08
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/2016/04/2016-04-26-docker-for-mac-beta/" itemprop="url">
-            
-              <span itemprop="name">Docker for Mac 尝鲜</span>
-            
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2016-04-26T18:00:00+08:00" content="2016-04-26">
-          04-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/2016/04/2016-04-18-writing-testable-golang-code/" itemprop="url">
-            
-              <span itemprop="name">编写测试友好的 Golang 代码</span>
-            
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2016-04-18T18:40:00+08:00" content="2016-04-18">
-          04-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+        <h2 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h2><p>今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。</p>
+<p>后来在Go的1.3版本发布后，我在支付宝的内部系统中第一次上线了一个基于Go语言的边缘服务，也是第一次将Go语言应用到了实际的生产环境中。后来在云柚科技创业过程中，正式将Go语言作为我们物联网环境的第一优选语言（也基本上是唯一语言），大规模的批量部署Go语言项目和代码。</p>
+<h2 id="聊聊如何开发更方便维护的Go语言程序"><a href="#聊聊如何开发更方便维护的Go语言程序" class="headerlink" title="聊聊如何开发更方便维护的Go语言程序"></a>聊聊如何开发更方便维护的Go语言程序</h2><p>对Go语言而言，开发似乎是简单的事情：Go本身的语法比较简单，关键词不多，可以快速上手。如果基本功能而言，能采用的花式解法不多，导致Go语言的上手比较简单，对我们创业期间的公司而言，享受到了很多这种方面带来的很多红利：我们工程师基本上都是其他语言/岗位转型过来的全(quan)栈(gan)工程师，他们也为我们业务的快速发展提供了原生的动力。</p>
+<p>然而，当我们把时间稍微放长一点，我们会发现当时我们仍旧遗留下了很多历史性的技术债，这些内容包含了我们当时对于代码质量的妥协，由其他语言习惯带过来的洋玩意但有点水土不服，一些过度的设计，一些库选择上和我们后续的最佳实践相违背等等问题。</p>
+<p>这里面，一些软性的东西其实我们可以通过一些非编码环节去解决：对开发过的代码要求提供单元测试和开发后的Code Review；在技术开发之前进行沟通，规避可能出现的过度设计问题等等。不过，我想了想，这些更多属于规范性的问题，各个公司自有自身的特色在，那么还有什么内容可以更适合初中级开发一块聊一聊的呢？</p>
+<p>那么毫无疑问就是对依赖库的选择。这部分的内容直接与我们在开发过程中会采用的实际最佳实践相关，无论是多人合作项目，还是单枪匹马的开源项目开发，各种依赖库无法避免：它们可以帮我们有效提升开发效率，帮我们落地最佳实践，让我们更快的更高效的完成工作。因此，我打算从这个系列中，一方面去聊聊我们未来会介绍的依赖库的使用；另外一方面，也想通过这个系列，聊聊如何是使用依赖库的过程中，将各种最佳实践一一落地。我们可能会介绍为什么选择这个依赖库，这个依赖库会带给我们的实践会是怎么样的。</p>
+<p>不过在这里仍旧提醒一句，这里提到的所有的功能和实践均为在实际项目中总结的内容，部分实践则可根据个人情况进行实际选择。所有的实践并非全部都是最优解，仍需根据实际项目情况进行对应的调整和抉择。</p>
+<p>最后，希望你们能够喜欢这个系列。：）</p>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>ipfans</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/" title="从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序">https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Golang/" rel="tag"># Golang</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/2019-03-20-using-go-modules/" rel="next" title="使用Go Modules">
+                <i class="fa fa-chevron-left"></i> 使用Go Modules
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/tags/Golang/page/2/">2</a><a class="extend next" rel="next" href="/tags/Golang/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
-  </nav>
+  </article>
 
 
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
 
         </div>
         
@@ -626,8 +547,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -834,6 +764,23 @@
       </div>
 
       
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#缘起"><span class="nav-number">1.</span> <span class="nav-text">缘起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聊聊如何开发更方便维护的Go语言程序"><span class="nav-number">2.</span> <span class="nav-text">聊聊如何开发更方便维护的Go语言程序</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
       
 
@@ -957,6 +904,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
 
   
 
@@ -984,9 +935,46 @@
 </script>
 
 
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/";
+    this.page.identifier = "2019/11/2019-11-23-learning-go-from-3rd-library/";
+    this.page.title = '从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://s1mbily.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        window.addEventListener('load', loadComments, false);
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
 
 
 
+
+
+  
 
 
   

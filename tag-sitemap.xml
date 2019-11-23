@@ -3,337 +3,337 @@
 
 
     <url>
+        <loc>https://www.4async.com/tags/Golang/</loc>
+        <lastmod>2019-11-23T14:44:11.109Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>https://www.4async.com/tags/Python/</loc>
-        <lastmod>2019-07-04T03:29:24.759Z</lastmod>
+        <lastmod>2019-07-04T03:29:24.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>https://www.4async.com/tags/Others/</loc>
-        <lastmod>2019-07-04T03:25:25.631Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/vendor/</loc>
-        <lastmod>2019-07-04T03:20:39.118Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Golang/</loc>
-        <lastmod>2019-07-04T03:20:39.118Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/OSX/</loc>
-        <lastmod>2019-07-04T03:20:39.118Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Fleet/</loc>
-        <lastmod>2019-07-04T03:20:39.117Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/CoreOS/</loc>
-        <lastmod>2019-07-04T03:20:39.117Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Rust/</loc>
-        <lastmod>2019-07-04T03:20:39.117Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Docker/</loc>
-        <lastmod>2019-07-04T03:20:39.117Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/gRPC/</loc>
-        <lastmod>2019-07-04T03:20:39.114Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Objective-C/</loc>
-        <lastmod>2019-07-04T03:20:39.113Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/JWT/</loc>
-        <lastmod>2019-07-04T03:20:39.110Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Debian/</loc>
-        <lastmod>2019-07-04T03:20:39.107Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Linux/</loc>
-        <lastmod>2019-07-04T03:20:39.106Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/RaspberryPi/</loc>
-        <lastmod>2019-07-04T03:20:39.102Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/zbar/</loc>
-        <lastmod>2019-07-04T03:20:39.101Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/dtrace/</loc>
-        <lastmod>2019-07-04T03:20:39.097Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Falcon/</loc>
-        <lastmod>2019-07-04T03:20:39.095Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/test/</loc>
-        <lastmod>2019-07-04T03:20:39.092Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Etcd/</loc>
-        <lastmod>2019-07-04T03:20:39.085Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Beego/</loc>
-        <lastmod>2019-07-04T03:20:39.084Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Cython/</loc>
-        <lastmod>2019-07-04T03:20:39.082Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/PEPs/</loc>
-        <lastmod>2019-07-04T03:20:39.080Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/async/</loc>
-        <lastmod>2019-07-04T03:20:39.080Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/asyncio/</loc>
-        <lastmod>2019-07-04T03:20:39.079Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Redis/</loc>
-        <lastmod>2019-07-04T03:20:39.079Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Celery/</loc>
-        <lastmod>2019-07-04T03:20:39.076Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Mavericks/</loc>
-        <lastmod>2019-07-04T03:20:39.070Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Xcode/</loc>
-        <lastmod>2019-07-04T03:20:39.070Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Pandas/</loc>
-        <lastmod>2019-07-04T03:20:39.068Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Git/</loc>
-        <lastmod>2019-07-04T03:20:39.068Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/LLVM/</loc>
-        <lastmod>2019-07-04T03:20:39.067Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/ollvm/</loc>
-        <lastmod>2019-07-04T03:20:39.067Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Substrate/</loc>
-        <lastmod>2019-07-04T03:20:39.064Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Cydia/</loc>
-        <lastmod>2019-07-04T03:20:39.064Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/algorithm/</loc>
-        <lastmod>2019-07-04T03:20:39.057Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/SSH/</loc>
-        <lastmod>2019-07-04T03:20:39.055Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/SecureCRT/</loc>
-        <lastmod>2019-07-04T03:20:39.055Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/Mac/</loc>
-        <lastmod>2019-07-04T03:20:39.055Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/PhoneGap/</loc>
-        <lastmod>2019-07-04T03:20:39.053Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/fuzzer/</loc>
-        <lastmod>2019-07-04T03:20:39.052Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/configure/</loc>
-        <lastmod>2019-07-04T03:20:39.051Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/LoadBalance/</loc>
-        <lastmod>2019-07-04T03:20:39.051Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/traefik/</loc>
-        <lastmod>2019-07-04T03:20:39.051Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/PEP0484/</loc>
-        <lastmod>2019-07-04T03:20:39.050Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.4async.com/tags/TypeHint/</loc>
-        <lastmod>2019-07-04T03:20:39.050Z</lastmod>
+        <lastmod>2019-07-04T03:25:25.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>https://www.4async.com/tags/gini/</loc>
-        <lastmod>2019-07-04T03:20:39.045Z</lastmod>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/RaspberryPi/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Pandas/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/gRPC/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>https://www.4async.com/tags/MongoDB/</loc>
-        <lastmod>2019-07-04T03:20:39.044Z</lastmod>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/dtrace/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/configure/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/LoadBalance/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/traefik/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/PEP0484/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/TypeHint/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Fleet/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Etcd/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/CoreOS/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/vendor/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/PEPs/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/asyncio/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Redis/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/async/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/JWT/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/PhoneGap/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Rust/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Substrate/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Cydia/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/LLVM/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/ollvm/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Docker/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/zbar/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Cython/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Git/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Mavericks/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Xcode/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/algorithm/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Falcon/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Beego/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Celery/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/test/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/OSX/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Objective-C/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Linux/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/fuzzer/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Debian/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/SSH/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/SecureCRT/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/tags/Mac/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
