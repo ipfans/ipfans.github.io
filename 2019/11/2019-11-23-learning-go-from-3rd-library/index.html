@@ -94,18 +94,18 @@
 
 
 
-  <meta name="description" content="缘起今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。 后来在Go的1.3版本发布后，我在支付宝的内部">
+  <meta name="description" content="缘起今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。">
 <meta name="keywords" content="Golang">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序">
 <meta property="og:url" content="https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/index.html">
 <meta property="og:site_name" content="ipfans&#39;s Blog">
-<meta property="og:description" content="缘起今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。 后来在Go的1.3版本发布后，我在支付宝的内部">
+<meta property="og:description" content="缘起今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-23T14:44:11.109Z">
+<meta property="og:updated_time" content="2019-11-23T14:46:54.382Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序">
-<meta name="twitter:description" content="缘起今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。 后来在Go的1.3版本发布后，我在支付宝的内部">
+<meta name="twitter:description" content="缘起今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。">
 
 
 
@@ -363,7 +363,7 @@
                 
               
 
-              <time title="Created: 2019-11-23 22:43:00 / Modified: 22:44:11" itemprop="dateCreated datePublished" datetime="2019-11-23T22:43:00+08:00">2019-11-23</time>
+              <time title="Created: 2019-11-23 22:43:00 / Modified: 22:46:54" itemprop="dateCreated datePublished" datetime="2019-11-23T22:43:00+08:00">2019-11-23</time>
             </span>
           
 
@@ -418,6 +418,8 @@
 
       
         <h2 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h2><p>今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。</p>
+<a id="more"></a>
+
 <p>后来在Go的1.3版本发布后，我在支付宝的内部系统中第一次上线了一个基于Go语言的边缘服务，也是第一次将Go语言应用到了实际的生产环境中。后来在云柚科技创业过程中，正式将Go语言作为我们物联网环境的第一优选语言（也基本上是唯一语言），大规模的批量部署Go语言项目和代码。</p>
 <h2 id="聊聊如何开发更方便维护的Go语言程序"><a href="#聊聊如何开发更方便维护的Go语言程序" class="headerlink" title="聊聊如何开发更方便维护的Go语言程序"></a>聊聊如何开发更方便维护的Go语言程序</h2><p>对Go语言而言，开发似乎是简单的事情：Go本身的语法比较简单，关键词不多，可以快速上手。如果基本功能而言，能采用的花式解法不多，导致Go语言的上手比较简单，对我们创业期间的公司而言，享受到了很多这种方面带来的很多红利：我们工程师基本上都是其他语言/岗位转型过来的全(quan)栈(gan)工程师，他们也为我们业务的快速发展提供了原生的动力。</p>
 <p>然而，当我们把时间稍微放长一点，我们会发现当时我们仍旧遗留下了很多历史性的技术债，这些内容包含了我们当时对于代码质量的妥协，由其他语言习惯带过来的洋玩意但有点水土不服，一些过度的设计，一些库选择上和我们后续的最佳实践相违背等等问题。</p>

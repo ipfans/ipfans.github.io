@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.4async.com/"/>
-  <updated>2019-11-23T14:44:11.109Z</updated>
+  <updated>2019-11-23T14:46:54.382Z</updated>
   <id>https://www.4async.com/</id>
   
   <author>
@@ -21,14 +21,11 @@
     <link href="https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/"/>
     <id>https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/</id>
     <published>2019-11-23T14:43:00.000Z</published>
-    <updated>2019-11-23T14:44:11.109Z</updated>
+    <updated>2019-11-23T14:46:54.382Z</updated>
     
     <summary type="html">
     
-      
-      
-        &lt;h2 id=&quot;缘起&quot;&gt;&lt;a href=&quot;#缘起&quot; class=&quot;headerlink&quot; title=&quot;缘起&quot;&gt;&lt;/a&gt;缘起&lt;/h2&gt;&lt;p&gt;今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没
-      
+      &lt;h2 id=&quot;缘起&quot;&gt;&lt;a href=&quot;#缘起&quot; class=&quot;headerlink&quot; title=&quot;缘起&quot;&gt;&lt;/a&gt;缘起&lt;/h2&gt;&lt;p&gt;今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。&lt;/p&gt;
     
     </summary>
     
