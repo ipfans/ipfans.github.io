@@ -40,7 +40,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/</loc>
+        <loc>https://www.4async.com/2013/12/2013-12-27-first-post/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -48,7 +48,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2013/12/2013-12-27-first-post/</loc>
+        <loc>https://www.4async.com/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -72,7 +72,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/01/2014-01-12-something-details/</loc>
+        <loc>https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -80,7 +80,15 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</loc>
+        <loc>https://www.4async.com/2014/01/2014-01-07-web-browser-cross-fuzz/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/01/2014-01-12-something-details/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -96,14 +104,6 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/01/2014-01-26-unit-test/</loc>
-        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://www.4async.com/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -112,7 +112,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/02/2014-02-17-create-sign-quickly-python/</loc>
+        <loc>https://www.4async.com/2014/01/2014-01-26-unit-test/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -120,7 +120,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/01/2014-01-07-web-browser-cross-fuzz/</loc>
+        <loc>https://www.4async.com/2014/02/2014-02-17-create-sign-quickly-python/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -144,14 +144,6 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/</loc>
-        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://www.4async.com/2014/03/2014-03-23-golang-rsa/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -168,7 +160,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/04/2014-04-01-beego-tips/</loc>
+        <loc>https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -176,7 +168,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/</loc>
+        <loc>https://www.4async.com/2014/04/2014-04-01-beego-tips/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -192,7 +184,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</loc>
+        <loc>https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -201,6 +193,14 @@
 
     <url>
         <loc>https://www.4async.com/2014/04/2014-04-11-openssl-algorithm-speed-result/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -440,6 +440,14 @@
     </url>
 
     <url>
+        <loc>https://www.4async.com/2016/04/2016-04-18-writing-testable-golang-code/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -448,7 +456,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2016/04/2016-04-18-writing-testable-golang-code/</loc>
+        <loc>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part1/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -472,14 +480,6 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part1/</loc>
-        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -496,14 +496,6 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</loc>
-        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -512,7 +504,15 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</loc>
+        <loc>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</loc>
+        <lastmod>2019-07-04T03:20:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -528,7 +528,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2017/08/2017-08-02-install-face-recognition-on-osx/</loc>
+        <loc>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -536,7 +536,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/</loc>
+        <loc>https://www.4async.com/2017/08/2017-08-02-install-face-recognition-on-osx/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
