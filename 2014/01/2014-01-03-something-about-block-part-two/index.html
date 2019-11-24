@@ -1,98 +1,51 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
-
-<link rel="stylesheet" href="/css/main.css?v=7.2.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
+<script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
+    hostname: new URL('https://www.4async.com').hostname,
     root: '/',
-    scheme: 'Pisces',
-    version: '7.2.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
-    fastclick: false,
+    mediumzoom: false,
     lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    pangu: true,
     algolia: {
-      applicationID: '',
+      appID: '',
       apiKey: '',
       indexName: '',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
   };
 </script>
-
-
-  
-
-
-
 
   <meta name="description" content="前面看过的 NSConcreteGobalBlock 其实在实际应用里是并不是太多的情况，相对来说，接下来要提到的 NSConcreteStackBlock 则是会经常遇到的情况。 从源码看 NSConcreteStackBlock还是先从代码来看： 123456789101112#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;    int a = 1;    i">
 <meta name="keywords" content="Objective-C">
@@ -107,21 +60,17 @@
 <meta name="twitter:title" content="谈谈 block Part 2">
 <meta name="twitter:description" content="前面看过的 NSConcreteGobalBlock 其实在实际应用里是并不是太多的情况，相对来说，接下来要提到的 NSConcreteStackBlock 则是会经常遇到的情况。 从源码看 NSConcreteStackBlock还是先从代码来看： 123456789101112#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;    int a = 1;    i">
 
+<link rel="canonical" href="https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/">
 
 
-  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
-
-
-
-  
-  
-  <link rel="canonical" href="https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/">
-
-
-
-<script id="page.configurations">
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
   };
 </script>
 
@@ -129,19 +78,21 @@
   
 
 
-
-
-
-
-
-
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce941e79d34f1e138ac0ca9d45556db5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
 
   <noscript>
   <style>
-  .use-motion .motion-element,
   .use-motion .brand,
   .use-motion .menu-item,
   .sidebar-inner,
@@ -150,9 +101,8 @@
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .logo,
   .use-motion .site-title,
   .use-motion .site-subtitle {
     opacity: initial;
@@ -166,265 +116,138 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-meta">
-    
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">ipfans's Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-    
-    
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
-
 
 
 <nav class="site-nav">
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
+        <li class="menu-item menu-item-about">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
+        <li class="menu-item menu-item-archives">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-sitemap">
+        <li class="menu-item menu-item-sitemap">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
 
   </li>
+  </ul>
 
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
-
-
-
-  
-
-
-
 </div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
-    <main id="main" class="main">
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
           
+
+          <div class="content">
             
 
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
+  <div class="posts-expand">
+      
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">谈谈 block Part 2
-
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          谈谈 block Part 2
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-01-02 15:00:00" itemprop="dateCreated datePublished" datetime="2014-01-02T15:00:00+08:00">2014-01-02</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/01/2014-01-03-something-about-block-part-two/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-03-something-about-block-part-two/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-03-something-about-block-part-two/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-03-something-about-block-part-two/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
 
       
         <p>前面看过的 NSConcreteGobalBlock 其实在实际应用里是并不是太多的情况，相对来说，接下来要提到的 NSConcreteStackBlock 则是会经常遇到的情况。</p>
@@ -442,397 +265,157 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">__text:00002F0C _main</span><br><span class="line">__text:00002F0C</span><br><span class="line">__text:00002F0C var_34          = -0x34</span><br><span class="line">__text:00002F0C var_30          = -0x30</span><br><span class="line">__text:00002F0C var_2C          = -0x2C</span><br><span class="line">__text:00002F0C var_28          = -0x28</span><br><span class="line">__text:00002F0C var_24          = -0x24</span><br><span class="line">__text:00002F0C var_20          = -0x20</span><br><span class="line">__text:00002F0C var_1C          = -0x1C</span><br><span class="line">__text:00002F0C var_18          = -0x18</span><br><span class="line">__text:00002F0C var_14          = -0x14</span><br><span class="line">__text:00002F0C var_10          = -0x10</span><br><span class="line">__text:00002F0C var_C           = -0xC</span><br><span class="line">__text:00002F0C var_8           = -8</span><br><span class="line">__text:00002F0C</span><br><span class="line">__text:00002F0C                 PUSH            &#123;R4,R7,LR&#125;</span><br><span class="line">__text:00002F0E                 ADD             R7, SP, #4</span><br><span class="line">__text:00002F10                 SUB             SP, SP, #0x30</span><br><span class="line">__text:00002F12                 MOV             R0, #(aD - 0x2F1E) ; &quot;%d\n&quot;</span><br><span class="line">__text:00002F1A                 ADD             R0, PC  ; &quot;%d\n&quot;</span><br><span class="line">__text:00002F1C                 ADD             R1, SP, #0x34+var_28</span><br><span class="line">__text:00002F1E                 MOV             R2, #(___block_descriptor_tmp - 0x2F2A) ; ___block_descriptor_tmp</span><br><span class="line">__text:00002F26                 ADD             R2, PC ; ___block_descriptor_tmp</span><br><span class="line">__text:00002F28                 MOV             R3, #(___main_block_invoke+1 - 0x2F34) ; ___main_block_invoke</span><br><span class="line">__text:00002F30                 ADD             R3, PC ; ___main_block_invoke</span><br><span class="line">__text:00002F32                 MOV             R9, #0</span><br><span class="line">__text:00002F3A                 MOV             R12, #0x40000000</span><br><span class="line">__text:00002F42                 MOV             LR, #(__NSConcreteStackBlock_ptr - 0x2F4E) ; __NSConcreteStackBlock_ptr</span><br><span class="line">__text:00002F4A                 ADD             LR, PC ; __NSConcreteStackBlock_ptr</span><br><span class="line">__text:00002F4C                 LDR.W           LR, [LR] ; __NSConcreteStackBlock</span><br><span class="line">__text:00002F50                 MOVS            R4, #1</span><br><span class="line">__text:00002F56                 STR.W           R9, [SP,#0x34+var_8]</span><br><span class="line">__text:00002F5A                 STR             R4, [SP,#0x34+var_C]</span><br><span class="line">__text:00002F5C                 STR.W           LR, [SP,#0x34+var_28]</span><br><span class="line">__text:00002F60                 STR.W           R12, [SP,#0x34+var_24]</span><br><span class="line">__text:00002F64                 STR.W           R9, [SP,#0x34+var_20]</span><br><span class="line">__text:00002F68                 STR             R3, [SP,#0x34+var_1C]</span><br><span class="line">__text:00002F6A                 STR             R2, [SP,#0x34+var_18]</span><br><span class="line">__text:00002F6C                 LDR             R2, [SP,#0x34+var_C]</span><br><span class="line">__text:00002F6E                 STR             R2, [SP,#0x34+var_14]</span><br><span class="line">__text:00002F70                 STR             R1, [SP,#0x34+var_10]</span><br><span class="line">__text:00002F72                 LDR             R1, [SP,#0x34+var_10]</span><br><span class="line">__text:00002F74                 MOV             R2, R1</span><br><span class="line">__text:00002F76                 LDR             R1, [R1,#0xC]</span><br><span class="line">__text:00002F78                 STR             R0, [SP,#0x34+var_30]</span><br><span class="line">__text:00002F7A                 MOV             R0, R2</span><br><span class="line">__text:00002F7C                 BLX             R1</span><br><span class="line">__text:00002F7E                 STR             R0, [SP,#0x34+var_2C]</span><br><span class="line">__text:00002F80                 LDR             R1, [SP,#0x34+var_2C]</span><br><span class="line">__text:00002F82                 LDR             R0, [SP,#0x34+var_30] ; char *</span><br><span class="line">__text:00002F84                 BLX             _printf</span><br><span class="line">__text:00002F88                 MOVS            R1, #0</span><br><span class="line">__text:00002F8E                 STR             R0, [SP,#0x34+var_34]</span><br><span class="line">__text:00002F90                 MOV             R0, R1</span><br><span class="line">__text:00002F92                 ADD             SP, SP, #0x30</span><br><span class="line">__text:00002F94                 POP             &#123;R4,R7,PC&#125;</span><br><span class="line">__text:00002F94 ; End of function _main</span><br></pre></td></tr></table></figure>
 
 
-      
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-      <div>
         
 
-
-
-
-  
-
-
-
+<div>
 <ul class="post-copyright">
   <li class="post-copyright-author">
-    <strong>本文作者： </strong>ipfans</li>
+    <strong>本文作者： </strong>ipfans
+  </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    
     <a href="https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/" title="谈谈 block Part 2">https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</a>
   </li>
   <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
 </ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        
-          
-        
-        <div class="post-tags">
-          
-            <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2014/01/2014-01-01-build-lnmp-on-debian/" rel="next" title="Debian 系统下配置 lnmp">
-                <i class="fa fa-chevron-left"></i> Debian 系统下配置 lnmp
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2014/01/2014-01-02-something-about-block-part-one/" rel="prev" title="谈谈 block Part 1">
-                谈谈 block Part 1 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-    <div class="comments" id="comments">
-      <div id="disqus_thread">
-        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-      </div>
-    </div>
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
-            
-              <p class="site-author-name" itemprop="name">ipfans</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">77</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">48</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从源码看-NSConcreteStackBlock"><span class="nav-number">1.</span> <span class="nav-text">从源码看 NSConcreteStackBlock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从逆向看-NSConcreteStackBlock"><span class="nav-number">2.</span> <span class="nav-text">从逆向看 NSConcreteStackBlock</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">ipfans</span>
-
-  
-
-  
 </div>
 
 
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/01/2014-01-01-build-lnmp-on-debian/" rel="prev" title="Debian 系统下配置 lnmp">
+      <i class="fa fa-chevron-left"></i> Debian 系统下配置 lnmp
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/01/2014-01-02-something-about-block-part-one/" rel="next" title="谈谈 block Part 1">
+      谈谈 block Part 1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments" id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从源码看-NSConcreteStackBlock"><span class="nav-number">1.</span> <span class="nav-text">从源码看 NSConcreteStackBlock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从逆向看-NSConcreteStackBlock"><span class="nav-number">2.</span> <span class="nav-text">从逆向看 NSConcreteStackBlock</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ipfans"
+      src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+  <p class="site-author-name" itemprop="name">ipfans</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ipfans" title="GitHub → https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/janxin" title="Twitter → https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
 
 
 
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
 
 
+      </div>
+    </main>
 
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2013 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+</div>
 
         
 
@@ -846,38 +429,20 @@
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
   </div>
 
   
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
 
 
 
-
-
-
-
+  
 
 
 
@@ -895,54 +460,9 @@
 
 
   
-  <script src="/lib/jquery/index.js?v=3.4.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
 
   
 
-
-  <script src="/js/utils.js?v=7.2.0"></script>
-
-  <script src="/js/motion.js?v=7.2.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.2.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.2.0"></script>
-<script src="/js/post-details.js?v=7.2.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.2.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-  
 <script>
   function loadCount() {
     var d = document, s = d.createElement('script');
@@ -953,82 +473,27 @@
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
 </script>
-
-
 <script>
-  var disqus_config = function() {
-    this.page.url = "https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/";
-    this.page.identifier = "2014/01/2014-01-03-something-about-block-part-two/";
-    this.page.title = '谈谈 block Part 2';
-    };
   function loadComments() {
-    var d = document, s = d.createElement('script');
-    s.src = 'https://s1mbily.disqus.com/embed.js';
-    s.setAttribute('data-timestamp', '' + +new Date());
-    (d.head || d.body).appendChild(s);
-  }
-  
-    $(function() {
-      var offsetTop = $('#comments').offset().top - $(window).height();
-      if (offsetTop <= 0) {
-        // load directly when there's no a scrollbar
-        window.addEventListener('load', loadComments, false);
-      } else {
-        $(window).on('scroll.disqus_scroll', function() {
-          // offsetTop may changes because of manually resizing browser window or lazy loading images.
-          var offsetTop = $('#comments').offset().top - $(window).height();
-          var scrollTop = $(window).scrollTop();
-
-          // pre-load comments a bit? (margin or anything else)
-          if (offsetTop - scrollTop < 60) {
-            $(window).off('.disqus_scroll');
-            loadComments();
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: {page: {
+            url: "https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/",
+            identifier: "2014/01/2014-01-03-something-about-block-part-two/",
+            title: "谈谈 block Part 2"
           }
-        });
-      }
-    });
-  
+        }
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://s1mbily.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  }
+    window.addEventListener('load', loadComments, false);
 </script>
-
-
-
-
-
-  
-
-
-  
-
-
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
 
   <script>
   var link = "" ;

@@ -1,98 +1,51 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
-
-<link rel="stylesheet" href="/css/main.css?v=7.2.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
+<script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
+    hostname: new URL('https://www.4async.com').hostname,
     root: '/',
-    scheme: 'Pisces',
-    version: '7.2.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
-    fastclick: false,
+    mediumzoom: false,
     lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    pangu: true,
     algolia: {
-      applicationID: '',
+      appID: '',
       apiKey: '',
       indexName: '',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
   };
 </script>
-
-
-  
-
-
-
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="ipfans&#39;s Blog">
@@ -102,21 +55,17 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ipfans&#39;s Blog">
 
+<link rel="canonical" href="https://www.4async.com/page/4/">
 
 
-  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
-
-
-
-  
-  
-  <link rel="canonical" href="https://www.4async.com/page/4/">
-
-
-
-<script id="page.configurations">
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome: true,
+    isPost: false,
+    isPage: false,
+    isArchive: false
   };
 </script>
 
@@ -124,19 +73,21 @@
   
 
 
-
-
-
-
-
-
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce941e79d34f1e138ac0ca9d45556db5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
 
   <noscript>
   <style>
-  .use-motion .motion-element,
   .use-motion .brand,
   .use-motion .menu-item,
   .sidebar-inner,
@@ -145,9 +96,8 @@
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .logo,
   .use-motion .site-title,
   .use-motion .site-subtitle {
     opacity: initial;
@@ -161,260 +111,134 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-meta">
-    
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">ipfans's Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-    
-    
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
-
 
 
 <nav class="site-nav">
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
+        <li class="menu-item menu-item-about">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
+        <li class="menu-item menu-item-archives">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-sitemap">
+        <li class="menu-item menu-item-sitemap">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
 
   </li>
+  </ul>
 
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
-
-
-
-  
-
-
-
 </div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
-    <main id="main" class="main">
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
           
+
+          <div class="content">
             
 
-          
-          <div id="content" class="content">
-            
-  <section id="posts" class="posts-expand">
-    
-      
-
-  
-
+  <div class="posts-expand">
+        
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/01/2016-01-05-golang-vendor/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2016/01/2016-01-05-golang-vendor/" class="post-title-link" itemprop="url">使用 vendor 管理 Golang 项目依赖</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/01/2016-01-05-golang-vendor/" class="post-title-link" itemprop="url">使用 vendor 管理 Golang 项目依赖</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2016-01-05 23:13:00" itemprop="dateCreated datePublished" datetime="2016-01-05T23:13:00+08:00">2016-01-05</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2016/01/2016-01-05-golang-vendor/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/2016-01-05-golang-vendor/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2016/01/2016-01-05-golang-vendor/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/2016-01-05-golang-vendor/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -422,12 +246,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>我们在项目中除了 <a href="http://ipfans.github.io/2015/12/using-vagrant-development-env/" target="_blank" rel="noopener">大量的使用 Python</a> 外，也大量的使用了 Golang 构建高效基础运行服务。在使用 Golang 过程中，我们发现 Golang 程序缺少依赖库版本功能是一个非常令人头大的问题：某些依赖在某个 commit 之后发生了 API 变更之后，如果不修改代码很难兼容，然而开发者之间很有可能因为参与的时间不同，导致执行 <figure class="highlight go"><figcaption><span>get``` 命令获取的版本不同，而导致在不同电脑上出现编译不通过问题。同时，在多个程序中，如果使用的 commit 版本不同，也可能会导致程序编译过程中出现不同的问题。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在之前，我们解决这个问题有两个方案，一种是拆解 <span class="string">``</span><span class="string">`go get`</span><span class="string">``</span> 命令的执行，首先创建对应依赖目录，利用 git 命令切换至指定的 commit，然后执行 <span class="string">``</span><span class="string">`go install`</span><span class="string">``</span> 命令。另外一种比较省事的方法是使用 [godep](https:<span class="comment">//github.com/tools/godep) 工具，这里就不做过多介绍了，具体可以参考文档或者搜索中文教程。</span></span><br><span class="line"></span><br><span class="line">在 Golang1<span class="number">.5</span> 之后，Go 提供了 <span class="string">``</span><span class="string">`GO15VENDOREXPERIMENT`</span><span class="string">``</span> 环境变量，用于将 <span class="keyword">go</span> build 时的应用路径搜索调整成为 <span class="string">``</span><span class="string">` 当前项目目录 / vendor`</span><span class="string">``</span> 目录方式。通过这种形式，我们可以实现类似于 <span class="string">``</span><span class="string">`godep`</span><span class="string">``</span> 方式的项目依赖管理。不过起码在程序编译过程中，再也无需在其他端部署一个 <span class="string">``</span><span class="string">`godep`</span><span class="string">``</span> 工具。</span><br><span class="line"></span><br><span class="line">在使用之前，需要安装一个辅助工具（如果 Golang 自改一个就好了）：<span class="string">``</span><span class="string">`go get -u -v github.com/kardianos/govendor`</span><span class="string">``</span>。</span><br><span class="line"></span><br><span class="line">下面，我们用一个例子来说明。首先有一个名为 <span class="string">``</span><span class="string">`vendorproj`</span><span class="string">``</span> 的项目。假如只有一个文件：</span><br><span class="line"></span><br><span class="line"><span class="string">``</span><span class="string">`go</span></span><br><span class="line"><span class="string">package main</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">import ("github.com/yeeuu/echoic")</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">func main() &#123;e := echoic.New()</span></span><br><span class="line"><span class="string">	e.SetDebug(true)</span></span><br><span class="line"><span class="string">	e.Run("127.0.0.1:4321")</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure></p>
+          <p>我们在项目中除了 <a href="http://ipfans.github.io/2015/12/using-vagrant-development-env/" target="_blank" rel="noopener">大量的使用 Python</a> 外，也大量的使用了 Golang 构建高效基础运行服务。在使用 Golang 过程中，我们发现 Golang 程序缺少依赖库版本功能是一个非常令人头大的问题：某些依赖在某个 commit 之后发生了 API 变更之后，如果不修改代码很难兼容，然而开发者之间很有可能因为参与的时间不同，导致执行 <figure class="highlight go"><figcaption><span>get``` 命令获取的版本不同，而导致在不同电脑上出现编译不通过问题。同时，在多个程序中，如果使用的 commit 版本不同，也可能会导致程序编译过程中出现不同的问题。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在之前，我们解决这个问题有两个方案，一种是拆解 <span class="string">``</span><span class="string">`go get`</span><span class="string">``</span> 命令的执行，首先创建对应依赖目录，利用 git 命令切换至指定的 commit，然后执行 <span class="string">``</span><span class="string">`go install`</span><span class="string">``</span> 命令。另外一种比较省事的方法是使用 [godep](https:<span class="comment">//github.com/tools/godep) 工具，这里就不做过多介绍了，具体可以参考文档或者搜索中文教程。</span></span><br><span class="line"></span><br><span class="line">在 Golang1<span class="number">.5</span> 之后，Go 提供了 <span class="string">``</span><span class="string">`GO15VENDOREXPERIMENT`</span><span class="string">``</span> 环境变量，用于将 <span class="keyword">go</span> build 时的应用路径搜索调整成为 <span class="string">``</span><span class="string">` 当前项目目录 / vendor`</span><span class="string">``</span> 目录方式。通过这种形式，我们可以实现类似于 <span class="string">``</span><span class="string">`godep`</span><span class="string">``</span> 方式的项目依赖管理。不过起码在程序编译过程中，再也无需在其他端部署一个 <span class="string">``</span><span class="string">`godep`</span><span class="string">``</span> 工具。</span><br><span class="line"></span><br><span class="line">在使用之前，需要安装一个辅助工具（如果 Golang 自改一个就好了）：<span class="string">``</span><span class="string">`go get -u -v github.com/kardianos/govendor`</span><span class="string">``</span>。</span><br><span class="line"></span><br><span class="line">下面，我们用一个例子来说明。首先有一个名为 <span class="string">``</span><span class="string">`vendorproj`</span><span class="string">``</span> 的项目。假如只有一个文件：</span><br><span class="line"></span><br><span class="line"><span class="string">``</span><span class="string">`go</span></span><br><span class="line"><span class="string">package main</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">import ("github.com/yeeuu/echoic")</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">func main() &#123;e := echoic.New()</span></span><br><span class="line"><span class="string">	e.SetDebug(true)</span></span><br><span class="line"><span class="string">	e.Run("127.0.0.1:4321")</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure></p>
 <p>执行一下命令就可以生成 vendor 文件夹：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ govendor init</span><br><span class="line">$ ls</span><br><span class="line">main.go    vendor</span><br><span class="line">$ <span class="built_in">cd</span> vendor/</span><br><span class="line">$ ls</span><br><span class="line">vendor.json</span><br></pre></td></tr></table></figure>
 
@@ -438,160 +257,76 @@
 <p>通过设置环境变量 <code>GO15VENDOREXPERIMENT=1</code> 使用 vendor 文件夹构建文件。可以选择 <code>export GO15VENDOREXPERIMENT=1</code> 或者干脆 <code>GO15VENDOREXPERIMENT=1 go build</code> 执行编译。</p>
 <p>通过这种方式就可以保证程序能够实现类似 Python 中 Virtualenv 的模式，实现不同程序使用不同版本依赖的目的。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/12/2015-12-28-using-vagrant-development-env/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/12/2015-12-28-using-vagrant-development-env/" class="post-title-link" itemprop="url">使用 Vagrant 统一开发环境实践</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/12/2015-12-28-using-vagrant-development-env/" class="post-title-link" itemprop="url">使用 Vagrant 统一开发环境实践</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2015-12-28 15:43:12" itemprop="dateCreated datePublished" datetime="2015-12-28T15:43:12+08:00">2015-12-28</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2015/12/2015-12-28-using-vagrant-development-env/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/2015-12-28-using-vagrant-development-env/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/12/2015-12-28-using-vagrant-development-env/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/2015-12-28-using-vagrant-development-env/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -599,12 +334,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>在服务器端开发过程中，比较痛苦的是在多个人员进行开发时，容易因为环境不统一等等的情况，容易出现传说中的 “我这儿能跑，换个环境就出问题” 的情况。我们在项目开发过程中大量的使用了 Python 语言构建 Web 类型服务。Python 对于某些需要编译的扩展模块，可能在不同的场景下带来不同的影响（如编译不过等等、二进制版本不同等等问题）。</p>
+          <p>在服务器端开发过程中，比较痛苦的是在多个人员进行开发时，容易因为环境不统一等等的情况，容易出现传说中的 “我这儿能跑，换个环境就出问题” 的情况。我们在项目开发过程中大量的使用了 Python 语言构建 Web 类型服务。Python 对于某些需要编译的扩展模块，可能在不同的场景下带来不同的影响（如编译不过等等、二进制版本不同等等问题）。</p>
 <p>在处理这种多人协作的环境统一问题时，我们选择 Vagrant＋VirtualBox＋CentOS 虚拟环境方案统一开发环境，避免出现切换开发者，切换开发环境带来的不统一的麻烦。</p>
 <h2 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h2><p>vagrant 可以在 <a href="https://www.vagrantup.com/" target="_blank" rel="noopener">https://www.vagrantup.com/</a> 下载安装，对应的系统镜像可以在 <a href="http://www.vagrantbox.es/" target="_blank" rel="noopener">http://www.vagrantbox.es/</a> 找到下载安装。根据国内实际的下载情况，我们建议先行下载镜像方式初始化项目。在选择镜像时，建议选择与线上服务器版本相同的镜像。下面我们仅演示本地加载镜像方式。</p>
 <p>下载 vagrant 和镜像后，安装 vagrant 软件。这样就可以在命令行中执行相关指令。还有，记得安装 VirtualBox。</p>
@@ -628,160 +358,76 @@
 
 <p>vagrant ssh                // ssh<br>vagrant halt            // 关机<br>vagrant status            // 查看状态<br>vagrant destory            // 删除虚拟机，如果你需要重新开始<br>…</p>
 <pre><code></code></pre>
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/11/2015-11-11-async-python/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/11/2015-11-11-async-python/" class="post-title-link" itemprop="url">Python 异步与性能迷思</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/11/2015-11-11-async-python/" class="post-title-link" itemprop="url">Python 异步与性能迷思</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2015-11-11 18:18:18" itemprop="dateCreated datePublished" datetime="2015-11-11T18:18:18+08:00">2015-11-11</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2015/11/2015-11-11-async-python/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/2015-11-11-async-python/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/11/2015-11-11-async-python/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/2015-11-11-async-python/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -789,12 +435,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？</p>
+          <p>今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？</p>
 <p>为了搞清楚这个问题，我对线上环境应用使用了性能探针系统。性能出人意料 (CPython 2.7.10)：</p>
 <p><img src="http://ww3.sinaimg.cn/bmiddle/69e37fdbgw1exx27zl4eij211q0nw0vk.jpg" alt="线上性能"></p>
 <p>似乎真实来说，Python 本身的性能问题才是影响 Python 性能的真凶。</p>
@@ -807,160 +448,76 @@
 <p>对异步情况而言，对 Python 的代码执行并没有影响，我们所提到的异步，能够提升的性能，也仅仅限于针对针对于较长 IO 等待的问题，比如常见的就是请求远程 API 接口 (http query) 等等情况。对这种情况而言，当进入 Blocking 的 socket 等待时间时，将 CPU 时间释放，用于去做更有意义的其他操作是完全合理的。对于数据库操作而言，则也需要根据不同的情况进行对待。比如连接远程网络数据库，那么使用异步则根据实际的性能消耗时间而定，如果是本地的数据库，那么我想回到第一张图，相信根本无需使用异步库就可以解决这个问题。</p>
 <p>从一个 <a href="http://ipfans.github.io/2014/05/speed-python-code-with-cython/" target="_blank" rel="noopener">CPU 密集的例子</a>，我们也能看出，其实，使用 JIT 带来的性能提升比较明显。然而，对异步库的异步队列仍是按顺序单个处理的，当队列较长时，同样会带来更严重的性能损耗：因为对那些快速的网络连接而言，Python GIL 则更加限制了 Python 的执行性能。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/" class="post-title-link" itemprop="url">PEP 0492 Coroutines with async and await syntax 中文翻译</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/" class="post-title-link" itemprop="url">PEP 0492 Coroutines with async and await syntax 中文翻译</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2015-10-31 12:48:15" itemprop="dateCreated datePublished" datetime="2015-10-31T12:48:15+08:00">2015-10-31</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -968,12 +525,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>原文地址: <a href="https://www.python.org/dev/peps/pep-0492/" target="_blank" rel="noopener">PEP-0492</a></p>
+          <p>原文地址: <a href="https://www.python.org/dev/peps/pep-0492/" target="_blank" rel="noopener">PEP-0492</a></p>
 <table>
 <thead>
 <tr>
@@ -1053,160 +605,76 @@
 <li>新的协程定义语法：<figure class="highlight plain"><figcaption><span>def``` 和新的 ```await``` 关键字。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">2. ```Future-like``` 对象提供新的 ```__await__``` 方法和新的 ```PyTypeObject ``` 的 ```tp_as_async.am_await```。</span><br><span class="line">3. 新的异步上下文管理器语法： ```async with```，协议提供了 ```__aenter__``` 和 ```__aexit__``` 方法。</span><br><span class="line">4. 新的异步迭代语法：```async for```，协议提供了 ```__aiter```、```__aexit``` 和新的内置异常 ```StopAsyncIteration```。```PyTypeObject``` 提供了新的 ```tp_as_async.am_aiter``` 和 ```tp_as_async.am_anext```。</span><br><span class="line">5. 新的 AST 节点：```AsyncFunctionDef```，```AsyncFor```，```AsyncWith``` 和 ```Await```。</span><br><span class="line">6. 新函数 ```sys.set_coroutine_wrapper(callback)```，```sys.get_coroutine_wrapper()```，```types.coroutine(gen)```，```inspect.iscoroutinefunction(func)```，```inspect.iscoroutine(obj)```，```inspect.isawaitable(obj)```，```inspect.getcoroutinestate(coro)``` 和 ```inspect.getcoroutinelocals(coro)```。</span><br><span class="line">7. 新的代码对象标记 ```CO_COROUTINE``` 和 ```CO_ITERABLE_COROUTINE```。</span><br><span class="line">8. 新的抽象基类 ```collections.abc.Awaitable```，```collections.abc.Coroutine```，```collections.abc.AsyncIterable``` 和 ```collections.abc.AsyncIterator```。</span><br><span class="line">9. C API 变更：新的 ```PyCoro_Type```（将 Python 作为 ```types.CoroutineType``` 输出）和 ```PyCoroObject```。```PyCoro_CheckExact(*o)``` 用于检测 o 是否为原生协程。</span><br><span class="line"></span><br><span class="line">虽然变化和新内容列表并不短，但是重要的是理解：大部分用户不会直接使用这些特性。他的目的是在于框架和库能够使用这些为用户提供便捷的使用和明确的 API 用于 ```async def```，```await```，```async for``` 和 ```async with``` 语法。</span><br><span class="line"></span><br><span class="line">### &lt;a name=&quot;working-example&quot;&gt;&lt;/a&gt; 可以工作的实例</span><br><span class="line"></span><br><span class="line">本 PEP 提出的所有概念都 [已经实现](https://github.com/1st1/cpython/tree/await)，并且可以被测试。</span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line">import asyncio</span><br><span class="line"></span><br><span class="line">async def echo_server():</span><br><span class="line">    print(&apos;Serving on localhost:8000&apos;)</span><br><span class="line">    await asyncio.start_server(handle_connection,&apos;localhost&apos;, 8000)</span><br><span class="line"></span><br><span class="line">async def handle_connection(reader, writer):</span><br><span class="line">    print(&apos;New connection...&apos;)</span><br><span class="line"></span><br><span class="line">    while True:</span><br><span class="line">        data = await reader.read(8192)</span><br><span class="line"></span><br><span class="line">        if not data:</span><br><span class="line">            break</span><br><span class="line"></span><br><span class="line">        print(&apos;Sending &#123;:.10&#125;... back&apos;.format(repr(data)))</span><br><span class="line">        writer.write(data)</span><br><span class="line"></span><br><span class="line">loop = asyncio.get_event_loop()</span><br><span class="line">loop.run_until_complete(echo_server())</span><br><span class="line">try:</span><br><span class="line">    loop.run_forever()</span><br><span class="line">finally:</span><br><span class="line">    loop.close()</span><br></pre></td></tr></table></figure></li>
 </ol>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/" class="post-title-link" itemprop="url">从零实现一个 Redis 客户端（二）</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/" class="post-title-link" itemprop="url">从零实现一个 Redis 客户端（二）</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2015-10-30 23:11:15" itemprop="dateCreated datePublished" datetime="2015-10-30T23:11:15+08:00">2015-10-30</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1214,12 +682,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <h2 id="从-Call-到命令端"><a href="#从-Call-到命令端" class="headerlink" title="从 Call 到命令端"></a>从 Call 到命令端</h2><p>在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：</p>
+          <h2 id="从-Call-到命令端"><a href="#从-Call-到命令端" class="headerlink" title="从 Call 到命令端"></a>从 Call 到命令端</h2><p>在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">client = redis.StrictRedis()</span><br><span class="line">client.setex(<span class="string">"key"</span>, <span class="number">10</span>, <span class="string">"value"</span>)</span><br></pre></td></tr></table></figure>
 
 <p>接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 setex 方法：</p>
@@ -1243,160 +706,76 @@
 <p>至此，你已经可以实现一个基本的 Redis 客户端了，还在犹豫什么？快自己动手吧！</p>
 <p><strong>注: 文中 Redis 库参考了 aio-lib/aioredis 库。</strong></p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/" class="post-title-link" itemprop="url">零基础编写 Python Redis Client（一）</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/" class="post-title-link" itemprop="url">零基础编写 Python Redis Client（一）</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2015-10-10 18:11:15" itemprop="dateCreated datePublished" datetime="2015-10-10T18:11:15+08:00">2015-10-10</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1404,12 +783,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <h2 id="什么是-AIO"><a href="#什么是-AIO" class="headerlink" title="什么是 AIO"></a>什么是 AIO</h2><p>AIO 是 Asynchronous Input/Output 的简写，也就是异步 IO。不过在谈什么是 AIO 之前，我们可能要先介绍一下 BIO。那么什么是 BIO 呢？简单的说，BIO 是 Blocking Input/Output，也就是阻塞 IO，他实现的通常是在线程池中找出一个线程处理 IO，在 IO 过程中，其他线程都需要等待 IO 完成后才可以从中选取一个线程占用 IO。这样最大的问题是，当线程数量较多，并且需要大量的 IO 操作时，就会造成一个大量的阻塞，因为实际上每次只有一个线程在处理 IO。</p>
+          <h2 id="什么是-AIO"><a href="#什么是-AIO" class="headerlink" title="什么是 AIO"></a>什么是 AIO</h2><p>AIO 是 Asynchronous Input/Output 的简写，也就是异步 IO。不过在谈什么是 AIO 之前，我们可能要先介绍一下 BIO。那么什么是 BIO 呢？简单的说，BIO 是 Blocking Input/Output，也就是阻塞 IO，他实现的通常是在线程池中找出一个线程处理 IO，在 IO 过程中，其他线程都需要等待 IO 完成后才可以从中选取一个线程占用 IO。这样最大的问题是，当线程数量较多，并且需要大量的 IO 操作时，就会造成一个大量的阻塞，因为实际上每次只有一个线程在处理 IO。</p>
 <p>那么如何解决这个时候的问题呢？这时候就提出了 AIO 的概念。通常在 IO 处理过程中也会伴有一些其他的处理操作，假如把所有的操作都浪费在了等待 IO 释放上，线程池中的线程利用率也太低了，因此我们需要一种方式，在申请 IO 处理之后，就去继续做其他的事情，等 IO 操作完成了，然后通知我们已经 OK，我们可以继续处理了。这也就是我们常说的 AIO 的原型。</p>
 <p>AIO 的情况也说明了它适用的场景：长连接场景，或者重度的 IO 操作等等的情况。</p>
 <p>如果找软件来做案例，我们可以找一个可能大家熟知的：NGINX。正如我们所知，NGINX 采用了 <a href="http://nginx.com/blog/inside-nginx-how-we-designed-for-performance-scale/" target="_blank" rel="noopener">异步、事件驱动的方法来处理连接</a>。这种处理方式无需（像使用传统架构的服务器一样）为每个请求创建额外的专用进程或者线程，而是在一个工作进程中处理多个连接和请求。为此，NGINX 工作在非阻塞的 socket 模式下，并使用了 epoll 和 kqueue 这样有效的方法。</p>
@@ -1428,160 +802,76 @@
 
 <p>这样，连接部分的代码基本上已经处理完成了，接下来要做的就是实现基于这个连接的命令执行了，下面的内容会下一个文章中继续介绍，敬请期待。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/08/2015-08-14-introduction-to-async-and-await/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/08/2015-08-14-introduction-to-async-and-await/" class="post-title-link" itemprop="url">Python async/await 入门</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/08/2015-08-14-introduction-to-async-and-await/" class="post-title-link" itemprop="url">Python async/await 入门</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2015-08-14 18:11:15" itemprop="dateCreated datePublished" datetime="2015-08-14T18:11:15+08:00">2015-08-14</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2015/08/2015-08-14-introduction-to-async-and-await/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/08/2015-08-14-introduction-to-async-and-await/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/08/2015-08-14-introduction-to-async-and-await/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/08/2015-08-14-introduction-to-async-and-await/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1589,12 +879,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>在新版 Python3.5 中，引入了两个新关键字 async 和 await，用于解决在 Python 异步编程中无法有效<br>区分 yield 生成器与异步的关系的问题。</p>
+          <p>在新版 Python3.5 中，引入了两个新关键字 async 和 await，用于解决在 Python 异步编程中无法有效<br>区分 yield 生成器与异步的关系的问题。</p>
 <h2 id="异步是一个什么东西"><a href="#异步是一个什么东西" class="headerlink" title="异步是一个什么东西"></a>异步是一个什么东西</h2><p>异步的作用在于，对于 Python 这种拥有 GIL 的语言，某个线程在处理单个耗时较长的任务时（如 I/O<br>读取，RESTful API 调用）等操作时，不能有效的释放 CPU 资源，导致其他线程的等待时间随之增加。<br>异步的作用是，在等待这种花费大量时间的操作数，允许释放 CPU 资源执行其他的线程任务，从而提<br>高程序的执行效率。</p>
 <h2 id="3-4-之前如何实现异步"><a href="#3-4-之前如何实现异步" class="headerlink" title="3.4 之前如何实现异步"></a>3.4 之前如何实现异步</h2><p>在 3.5 版本以前的程序中，Python 程序通常是使用 yield 作为一个判断是否进入异步操作的关键词。<br>比如在 3.4.x 版本中，我们可以用这样的一个例子来看一下 (或者你也可以用一个 Tornado 的例子，这<br>样你的程序就也可以运行在 2.7.x 版本的 Python 中了)：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="meta">@asyncio.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">slow_operation</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">from</span> asyncio.sleep(<span class="number">1</span>)</span><br><span class="line">    print(<span class="string">"Slow operation &#123;&#125; complete"</span>.format(n))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@asyncio.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    start = time.time()</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">from</span> asyncio.wait([slow_operation(<span class="number">1</span>),</span><br><span class="line">        slow_operation(<span class="number">2</span>),</span><br><span class="line">        slow_operation(<span class="number">3</span>),</span><br><span class="line">    ])</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">'Complete in &#123;&#125; second(s)'</span>.format(end-start))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">loop = asyncio.get_event_loop()</span><br><span class="line">loop.run_until_complete(main())</span><br></pre></td></tr></table></figure>
@@ -1623,160 +908,76 @@
 <h2 id="更多的开发场景"><a href="#更多的开发场景" class="headerlink" title="更多的开发场景"></a>更多的开发场景</h2><p>现在 Tornado 正在开发的 4.3 版本已经支持了 Python3.5 的 async/await 关键字，在之后的开发中，可以替代 @gen.coroutine 和 yield 用于开发。根据作者的描述，如果是运行在 3.5 版本的 Python 上，建议使用关键字而不是 yield 方式，这样可以有更好的执行效率。当然，如果 3.5 只是一个可选版本，相信在相当长的一段时间之内，你还是需要使用原有的执行方式。</p>
 <h2 id="潜在的坑"><a href="#潜在的坑" class="headerlink" title="潜在的坑"></a>潜在的坑</h2><p>async 和 await 在 Python 3.5 与 3.6 版本中并不是关键字，Python 3.7 中会作为关键字。因此需要在现有的程序中替代掉已有的可能导致冲突的关键字。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/08/2015-08-07-jwt-basic/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/08/2015-08-07-jwt-basic/" class="post-title-link" itemprop="url">JWT 介绍</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/08/2015-08-07-jwt-basic/" class="post-title-link" itemprop="url">JWT 介绍</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2015-08-07 18:11:15" itemprop="dateCreated datePublished" datetime="2015-08-07T18:11:15+08:00">2015-08-07</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2015/08/2015-08-07-jwt-basic/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/08/2015-08-07-jwt-basic/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/08/2015-08-07-jwt-basic/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/08/2015-08-07-jwt-basic/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1784,12 +985,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <h2 id="JWT-是什么"><a href="#JWT-是什么" class="headerlink" title="JWT 是什么"></a>JWT 是什么</h2><p>JWT 全称是 JSON Web Tokens，是 RFC 7519 标准，用于安全校验两方可信性的安全措施。</p>
+          <h2 id="JWT-是什么"><a href="#JWT-是什么" class="headerlink" title="JWT 是什么"></a>JWT 是什么</h2><p>JWT 全称是 JSON Web Tokens，是 RFC 7519 标准，用于安全校验两方可信性的安全措施。</p>
 <h2 id="JWT-解决了哪些问题？"><a href="#JWT-解决了哪些问题？" class="headerlink" title="JWT 解决了哪些问题？"></a>JWT 解决了哪些问题？</h2><p>JWT 本身设计是用于解决 Session 机制不能够很好的在 SPA/API 类型 (restful) 应用中处理身份认证问题。通常 API 的调用是无状态（stateless）的，使用 Session 等形式会有上下文要求。如当用户登录完成后，可以通过下发 JWT 的形式进行无状态的 API 调用。在此之前通常是使用的方式包括不限于如 Basic Auth、Oauth2 或 Token 形式进行。</p>
 <p>JWT 相比是额外添加了签名校验方式，本质上来说对抗如暴力碰撞等形式有一些作用。但是由于本身长度的限制，存储的信息量有限。</p>
 <h2 id="JWT-处理方式"><a href="#JWT-处理方式" class="headerlink" title="JWT 处理方式"></a>JWT 处理方式</h2><p>JWT 内容主要分为三段，分别对应头部信息，存储数据和签名信息三部分，中间使用『.』符号连接，三段信息均进行 Base64 编码。</p>
@@ -1807,160 +1003,76 @@
 <li>JWT.io <a href="http://jwt.io/" target="_blank" rel="noopener">http://jwt.io/</a></li>
 </ol>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/07/2015-07-22-howto-make-your-own-permission-plugin/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/07/2015-07-22-howto-make-your-own-permission-plugin/" class="post-title-link" itemprop="url">如何用 Python 实现一个权限管理系列 (一)</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/07/2015-07-22-howto-make-your-own-permission-plugin/" class="post-title-link" itemprop="url">如何用 Python 实现一个权限管理系列 (一)</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2015-07-22 11:00:15" itemprop="dateCreated datePublished" datetime="2015-07-22T11:00:15+08:00">2015-07-22</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2015/07/2015-07-22-howto-make-your-own-permission-plugin/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/07/2015-07-22-howto-make-your-own-permission-plugin/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/07/2015-07-22-howto-make-your-own-permission-plugin/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/07/2015-07-22-howto-make-your-own-permission-plugin/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1968,12 +1080,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>最近在实现大型 B2B 系统之后，有很多细节需要考虑，其中一环就是权限控制。之前考虑的比较少，认为这一块框架可以 handle 问题不大，后来发现 Tornado 目前没有一个比较完善的权限管理模块，甚至连个包都没有… 于是只能自己动手，丰衣足食了。参考的方式也是通过 Flask-Principal 的类似实现方式。</p>
+          <p>最近在实现大型 B2B 系统之后，有很多细节需要考虑，其中一环就是权限控制。之前考虑的比较少，认为这一块框架可以 handle 问题不大，后来发现 Tornado 目前没有一个比较完善的权限管理模块，甚至连个包都没有… 于是只能自己动手，丰衣足食了。参考的方式也是通过 Flask-Principal 的类似实现方式。</p>
 <h2 id="原型"><a href="#原型" class="headerlink" title="原型"></a>原型</h2><p>一个权限管理模块应该有的功能应该有哪些呢？从基本角度出发，应该包含用户身份 (Identity)、用户角色（RoleNeed）、用户权限（Permission）这三个最基本的分类组成。那么从最开始，就需要定义这几个类：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RoleNeed</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Identity</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Permission</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
 
@@ -1989,160 +1096,76 @@
 
 <p>这里的 provides 是作为用户权限的声明，是一个每个权限的集合。可以在最开始登录等等时间进行加载。而 can 方法则是判断某个权限是否可以被执行。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/06/2015-06-17-something-about-python-decorator/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2015/06/2015-06-17-something-about-python-decorator/" class="post-title-link" itemprop="url">Python Decorator 修饰器简介</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/06/2015-06-17-something-about-python-decorator/" class="post-title-link" itemprop="url">Python Decorator 修饰器简介</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2015-06-17 18:00:15" itemprop="dateCreated datePublished" datetime="2015-06-17T18:00:15+08:00">2015-06-17</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2015/06/2015-06-17-something-about-python-decorator/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/2015-06-17-something-about-python-decorator/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/06/2015-06-17-something-about-python-decorator/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/2015-06-17-something-about-python-decorator/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -2150,12 +1173,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>很久没有写技术存档了，太过于罪恶。最近在智能硬件创业公司担任架构师，推广一些更新更酷的技术应用在各个方面，包括 Golang/Python/Docker 等，如果你有兴趣，也欢迎加入我们: kevin[at yeeuu[dot]com。广告时间结束。</p>
+          <p>很久没有写技术存档了，太过于罪恶。最近在智能硬件创业公司担任架构师，推广一些更新更酷的技术应用在各个方面，包括 Golang/Python/Docker 等，如果你有兴趣，也欢迎加入我们: kevin[at yeeuu[dot]com。广告时间结束。</p>
 <p>Python 的修饰器是比较常见的开发应用帮助工具，他可以实现一些批量的修饰工作，比如统一来添加一些小功能等等。但是这些功能对原有的函数不产生侵入，也就是说可以实现快速的修改和替换、移除。</p>
 <p>如果你使用过 Python 的 Web 框架，相信你对修饰器应该并不陌生：<a href="https://docs.djangoproject.com/en/1.8/topics/http/decorators/" target="_blank" rel="noopener">Django</a>、<a href="http://flask.pocoo.org/docs/0.10/patterns/viewdecorators/" target="_blank" rel="noopener">Flask</a>、<a href="http://tornado.readthedocs.org/en/latest/gen.html#decorators" target="_blank" rel="noopener">Tornado</a> 等常见的框架中都包含了修饰器的使用。</p>
 <p>那么 decorators 是怎么实现的呢？还是先从一个简单的例子开始。先看下 Tornado 中的 <a href>tornado.web.authenticated</a> 使用。</p>
@@ -2203,47 +1221,21 @@
 
 <p>还有一些案例可以看之前提供的几个框架的 API，比如路由组织，异步处理等等都是通过修饰器实现的。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
-  </section>
+  </div>
 
   
   <nav class="pagination">
@@ -2256,263 +1248,93 @@
           
 
         </div>
-        
           
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-  <aside id="sidebar" class="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-inner">
 
-      
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-      
-
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
-            
-              <p class="site-author-name" itemprop="name">ipfans</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">77</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">48</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
       </div>
+      <!--/noindex-->
 
-      
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ipfans"
+      src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+  <p class="site-author-name" itemprop="name">ipfans</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ipfans" title="GitHub → https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/janxin" title="Twitter → https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
 
-      
+
+
+      </div>
 
     </div>
   </aside>
-  
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
-    <footer id="footer" class="footer">
+    <footer class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
-  <span class="with-love" id="animate">
+        
+
+<div class="copyright">
+  
+  &copy; 2013 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">ipfans</span>
-
-  
-
-  
 </div>
-
-
-
-
-
-
-
-
 
         
 
@@ -2526,38 +1348,20 @@
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
   </div>
 
   
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
 
 
 
-
-
-
-
+  
 
 
 
@@ -2575,50 +1379,9 @@
 
 
   
-  <script src="/lib/jquery/index.js?v=3.4.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
 
   
 
-
-  <script src="/js/utils.js?v=7.2.0"></script>
-
-  <script src="/js/motion.js?v=7.2.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.2.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
-
-
-
-  
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.2.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-  
 <script>
   function loadCount() {
     var d = document, s = d.createElement('script');
@@ -2629,45 +1392,6 @@
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
 </script>
-
-
-
-
-
-
-
-  
-
-
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
 
   <script>
   var link = "" ;

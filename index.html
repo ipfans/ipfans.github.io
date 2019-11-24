@@ -1,98 +1,51 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
-
-<link rel="stylesheet" href="/css/main.css?v=7.2.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
+<script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
+    hostname: new URL('https://www.4async.com').hostname,
     root: '/',
-    scheme: 'Pisces',
-    version: '7.2.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
-    fastclick: false,
+    mediumzoom: false,
     lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    pangu: true,
     algolia: {
-      applicationID: '',
+      appID: '',
       apiKey: '',
       indexName: '',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
   };
 </script>
-
-
-  
-
-
-
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="ipfans&#39;s Blog">
@@ -102,21 +55,17 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ipfans&#39;s Blog">
 
+<link rel="canonical" href="https://www.4async.com/">
 
 
-  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
-
-
-
-  
-  
-  <link rel="canonical" href="https://www.4async.com/">
-
-
-
-<script id="page.configurations">
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome: true,
+    isPost: false,
+    isPage: false,
+    isArchive: false
   };
 </script>
 
@@ -124,19 +73,21 @@
   
 
 
-
-
-
-
-
-
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce941e79d34f1e138ac0ca9d45556db5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
 
   <noscript>
   <style>
-  .use-motion .motion-element,
   .use-motion .brand,
   .use-motion .menu-item,
   .sidebar-inner,
@@ -145,9 +96,8 @@
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .logo,
   .use-motion .site-title,
   .use-motion .site-subtitle {
     opacity: initial;
@@ -161,250 +111,128 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-meta">
-    
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">ipfans's Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-    
-    
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
-
 
 
 <nav class="site-nav">
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home menu-item-active">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
+        <li class="menu-item menu-item-about">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
+        <li class="menu-item menu-item-archives">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-sitemap">
+        <li class="menu-item menu-item-sitemap">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
 
   </li>
+  </ul>
 
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
-
-
-
-  
-
-
-
 </div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
-    <main id="main" class="main">
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
           
+
+          <div class="content">
             
 
-          
-          <div id="content" class="content">
-            
-  <section id="posts" class="posts-expand">
-    
-      
-
-  
-
+  <div class="posts-expand">
+        
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/11/2019-11-23-learning-go-from-3rd-library/" class="post-title-link" itemprop="url">从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/2019-11-23-learning-go-from-3rd-library/" class="post-title-link" itemprop="url">从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
+              <span class="post-meta-item-text">发表于</span>
               
 
               <time title="创建时间：2019-11-23 22:43:00 / 修改时间：22:46:54" itemprop="dateCreated datePublished" datetime="2019-11-23T22:43:00+08:00">2019-11-23</time>
             </span>
-          
 
           
-            
-
-            
-          
-
-          
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/11/2019-11-23-learning-go-from-3rd-library/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/11/2019-11-23-learning-go-from-3rd-library/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2019/11/2019-11-23-learning-go-from-3rd-library/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/11/2019-11-23-learning-go-from-3rd-library/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -412,173 +240,85 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           <h2 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h2><p>今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。</p>
           <!--noindex-->
-          
-            <div class="post-button text-center">
+            <div class="post-button">
               <a class="btn" href="/2019/11/2019-11-23-learning-go-from-3rd-library/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
-          
           <!--/noindex-->
         
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/03/2019-03-20-using-go-modules/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/03/2019-03-20-using-go-modules/" class="post-title-link" itemprop="url">使用Go Modules</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/03/2019-03-20-using-go-modules/" class="post-title-link" itemprop="url">使用Go Modules</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2019-03-20 14:22:00" itemprop="dateCreated datePublished" datetime="2019-03-20T14:22:00+08:00">2019-03-20</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/03/2019-03-20-using-go-modules/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/03/2019-03-20-using-go-modules/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2019/03/2019-03-20-using-go-modules/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/03/2019-03-20-using-go-modules/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -586,173 +326,85 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           <p>原文：<a href="https://blog.golang.org/using-go-modules" target="_blank" rel="noopener">Using Go Modules</a><br>作者：Tyler Bui-Palsulich、Eno Compton</p>
           <!--noindex-->
-          
-            <div class="post-button text-center">
+            <div class="post-button">
               <a class="btn" href="/2019/03/2019-03-20-using-go-modules/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
-          
           <!--/noindex-->
         
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/2019-01-28-python-typing-with-stub-files/" class="post-title-link" itemprop="url">利用Stub File标注Python文件</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/2019-01-28-python-typing-with-stub-files/" class="post-title-link" itemprop="url">利用Stub File标注Python文件</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2019-01-29 14:30:00" itemprop="dateCreated datePublished" datetime="2019-01-29T14:30:00+08:00">2019-01-29</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/01/2019-01-28-python-typing-with-stub-files/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/2019-01-28-python-typing-with-stub-files/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2019/01/2019-01-28-python-typing-with-stub-files/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/2019-01-28-python-typing-with-stub-files/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -760,177 +412,89 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           <p>在升级到<code>Python 3.5+</code>版本之后，最大的项目管理优化来自于<a href="https://www.python.org/dev/peps/pep-0484/" target="_blank" rel="noopener"><code>PEP-484 Type Hint</code></a>的引入。借助<code>Type Hint</code>，我们可以进一步提升<code>Python</code>代码的类型标注，保障在重构过程中避免出现一些低级失误。</p>
 <p>我们可以通过高版本<code>Python</code>新加的新语法启用这项特性，然后通过<code>mypy</code>等工具检查：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greeting</span><span class="params">(name: str)</span> -&gt; str:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello '</span> + name</span><br></pre></td></tr></table></figure>
 
 <p>然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：
           <!--noindex-->
-          
-            <div class="post-button text-center">
+            <div class="post-button">
               <a class="btn" href="/2019/01/2019-01-28-python-typing-with-stub-files/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
-          
           <!--/noindex-->
         
       
-    </p></div>
-
-    
+    </div>
 
     
     
     
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/2019-01-25-go-new-xerrors/" class="post-title-link" itemprop="url">聊聊新的Go语言错误处理方案</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/2019-01-25-go-new-xerrors/" class="post-title-link" itemprop="url">聊聊新的Go语言错误处理方案</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2019-01-25 23:20:00" itemprop="dateCreated datePublished" datetime="2019-01-25T23:20:00+08:00">2019-01-25</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/01/2019-01-25-go-new-xerrors/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/2019-01-25-go-new-xerrors/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2019/01/2019-01-25-go-new-xerrors/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/2019-01-25-go-new-xerrors/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -938,12 +502,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>今天早些时候，<code>golang/x/exp</code>中默默的更新了一个名曰<code>xerrors</code>的包，这个包和同样处于<code>golang/x/exp</code>下的另一个名叫<code>errors</code>的包名字十分相似，就连介绍也都一致：</p>
+          <p>今天早些时候，<code>golang/x/exp</code>中默默的更新了一个名曰<code>xerrors</code>的包，这个包和同样处于<code>golang/x/exp</code>下的另一个名叫<code>errors</code>的包名字十分相似，就连介绍也都一致：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> Package errors implements functions to manipulate errors.</span><br><span class="line"></span><br><span class="line">This package implements the Go 2 draft designs for error inspection and printing</span><br></pre></td></tr></table></figure>
 
 <p>从目前的情况来看，基本上错误的处理形式基本已经定型，处理方式则是类似于之前的另一个<code>github.com/pkg/errors</code>包，但是具体细节不尽相同。</p>
@@ -975,160 +534,76 @@
 <h2 id="落地使用"><a href="#落地使用" class="headerlink" title="落地使用"></a>落地使用</h2><p>在具体项目实现中，如对外提供的库文件中，我建议可以参考其他语言的实现方式，定义一个特殊的基础错误类型<code>ErrBase</code>，所有其他错误类型均由此类型派生，则后续外部在使用过程中，只需通过<code>xerros.Is</code>判定错误类型，则可以快速判定错误是否来自于本包，并且可以借助此功能统一单独处理来自于此第三方包的异常。</p>
 <p>如果你有其他的建议和疑问，也欢迎在留言区中留言讨论。另外，根据实际实现代码来看，其中还有一些边缘情况未考虑或者未做处理，由于是试验性库，本库在使用过程中需自行承担所带来的风险。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/2019-01-18-gin-toolkit-gini/" class="post-title-link" itemprop="url">gini：一个让你更方便使用Gin框架的库</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/2019-01-18-gin-toolkit-gini/" class="post-title-link" itemprop="url">gini：一个让你更方便使用Gin框架的库</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2019-01-18 23:20:00" itemprop="dateCreated datePublished" datetime="2019-01-18T23:20:00+08:00">2019-01-18</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/01/2019-01-18-gin-toolkit-gini/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/2019-01-18-gin-toolkit-gini/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2019/01/2019-01-18-gin-toolkit-gini/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/2019-01-18-gin-toolkit-gini/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1136,173 +611,85 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           <p><a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">Gin框架</a>是一个Go语言框架中非常受欢迎的一款。今天我们开放了一个<a href="https://github.com/ipfans/gini" target="_blank" rel="noopener">gini</a>库，结合了我们实际开发中的使用，描述一下我们为什么开发这个库，在开发过程中的权衡。</p>
           <!--noindex-->
-          
-            <div class="post-button text-center">
+            <div class="post-button">
               <a class="btn" href="/2019/01/2019-01-18-gin-toolkit-gini/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
-          
           <!--/noindex-->
         
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/12/2018-12-25-scm-security/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/12/2018-12-25-scm-security/" class="post-title-link" itemprop="url">漫谈代码安全：也来聊一聊AntD这档子事</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/12/2018-12-25-scm-security/" class="post-title-link" itemprop="url">漫谈代码安全：也来聊一聊AntD这档子事</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2018-12-25 23:20:00" itemprop="dateCreated datePublished" datetime="2018-12-25T23:20:00+08:00">2018-12-25</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:25:25" itemprop="dateModified" datetime="2019-07-04T11:25:25+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2018/12/2018-12-25-scm-security/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/2018-12-25-scm-security/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/12/2018-12-25-scm-security/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/2018-12-25-scm-security/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1310,170 +697,81 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>没想到今年突然有动力还能写一篇。可能来自于两个方面，有些东西需要整理，另外有一个事情我是感觉到很诧异的。今天技术圈最火的事情当属<a href="https://www.zhihu.com/question/306858501" target="_blank" rel="noopener">AntDesign彩蛋事件</a>了（以下简称AntD），很不幸的是，本司也是本次受害者之一。</p>
+          <p>没想到今年突然有动力还能写一篇。可能来自于两个方面，有些东西需要整理，另外有一个事情我是感觉到很诧异的。今天技术圈最火的事情当属<a href="https://www.zhihu.com/question/306858501" target="_blank" rel="noopener">AntDesign彩蛋事件</a>了（以下简称AntD），很不幸的是，本司也是本次受害者之一。</p>
 <p>考虑到AntD是一个使用十分广泛并且关注度非常高的国内项目，并且有阿里支付宝的背书效应，这一次我想影响的会在两个方面：一个是阿里开源本身的信用，一个是开源项目在国内的推广。当然，我们确实在引入AntD方面确实太过草率：我其实关注AntD了大概一年时间，考虑到issue情况和项目开发活跃度情况，要求团队引入此框架希望可以提升开发效率，没想到相关的项目1-2个月就出现了这种事情，真是令人实在痛心。</p>
 <p>这件事情也暴露出来，我们以前在使用开源项目时，太过信任</p>
 <p>另外，作为最后的一个建议，我们希望如果大家以后开源项目，如果做不到，请不要说自己是<strong>企业级项目</strong>，因为一般也就是放在自己企业里面用，这跟企业级项目是两个概念。至少我们具体到AntD这个项目上，这个项目无论代码开发和管控上，都是算不上的。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/06/2018-06-08-compatibility-in-golang-1-10/" class="post-title-link" itemprop="url">Go 1.10中的一处不兼容问题</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/06/2018-06-08-compatibility-in-golang-1-10/" class="post-title-link" itemprop="url">Go 1.10中的一处不兼容问题</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2018-06-08 12:20:00" itemprop="dateCreated datePublished" datetime="2018-06-08T12:20:00+08:00">2018-06-08</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2018/06/2018-06-08-compatibility-in-golang-1-10/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/2018-06-08-compatibility-in-golang-1-10/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/06/2018-06-08-compatibility-in-golang-1-10/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/2018-06-08-compatibility-in-golang-1-10/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1481,173 +779,85 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           <p>最近我们在把线上系统升级至Go 1.10版本时发现，在我们实现的某些接口中，出现了客户反馈调用失败提示参数缺失的情况。这种情况我们在测试过程中未能复线，后来经过了解，发现了故障原因为Go 1.10版本升级过程中更改了部分程序代码与验证逻辑导致的。</p>
           <!--noindex-->
-          
-            <div class="post-button text-center">
+            <div class="post-button">
               <a class="btn" href="/2018/06/2018-06-08-compatibility-in-golang-1-10/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
-          
           <!--/noindex-->
         
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/" class="post-title-link" itemprop="url">关于Golang过滤敏感信息的正确姿势</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/" class="post-title-link" itemprop="url">关于Golang过滤敏感信息的正确姿势</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2018-06-06 16:07:00" itemprop="dateCreated datePublished" datetime="2018-06-06T16:07:00+08:00">2018-06-06</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/2018-06-06-sensitive-info-filter-in-golang/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/2018-06-06-sensitive-info-filter-in-golang/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1655,174 +865,86 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           <p>今天正好看到一篇关于敏感信息过滤的<a href="https://hackernoon.com/keep-passwords-and-secrets-out-of-your-logs-with-go-a2294a9546ce" target="_blank" rel="noopener">文章</a>，这算做一个interface实际应用的一些举例和应用。</p>
 <p>例子中介绍了一种比较常见的使用场景：使用JSON保存数据时的对诸如用户密码等信息进行保护时候应该做的事情。作者以使用JSON格式保存用户账户和密码为例，讲解了使用<code>json.Unmarshaler</code>接口类型过滤敏感信息。</p>
           <!--noindex-->
-          
-            <div class="post-button text-center">
+            <div class="post-button">
               <a class="btn" href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
-          
           <!--/noindex-->
         
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/05/2018-05-10-consul-graceful-stop/" class="post-title-link" itemprop="url">Consul平滑升级的一点建议</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/05/2018-05-10-consul-graceful-stop/" class="post-title-link" itemprop="url">Consul平滑升级的一点建议</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2018-05-10 15:20:00" itemprop="dateCreated datePublished" datetime="2018-05-10T15:20:00+08:00">2018-05-10</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2018/05/2018-05-10-consul-graceful-stop/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/2018-05-10-consul-graceful-stop/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/05/2018-05-10-consul-graceful-stop/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/2018-05-10-consul-graceful-stop/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1830,12 +952,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>我们从 Consul 0.6.x 版本开始使用，中间也遇到的一些各种各样的问题，比较常见的操作问题就是 consul 的升级问题（比如解决 BUG，早期 Consul 的 BUG 也遇到了好几个）。</p>
+          <p>我们从 Consul 0.6.x 版本开始使用，中间也遇到的一些各种各样的问题，比较常见的操作问题就是 consul 的升级问题（比如解决 BUG，早期 Consul 的 BUG 也遇到了好几个）。</p>
 <p>平滑升级时，我们常见的方式一般为替换 consul 可执行文件，然后执行 Graceful 重启</p>
 <p>常见 Consul 的 Graceful leave 的方法有以下两种：</p>
 <ol>
@@ -1847,160 +964,76 @@
 
 <p>之后重新启动 consul 进程即可。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/05/2018-05-03-new-domain/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/05/2018-05-03-new-domain/" class="post-title-link" itemprop="url">配置新域名</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/05/2018-05-03-new-domain/" class="post-title-link" itemprop="url">配置新域名</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2018-05-03 11:20:00" itemprop="dateCreated datePublished" datetime="2018-05-03T11:20:00+08:00">2018-05-03</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2018/05/2018-05-03-new-domain/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/2018-05-03-new-domain/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/05/2018-05-03-new-domain/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/2018-05-03-new-domain/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -2008,56 +1041,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>感谢Github Page终于<a href="https://blog.github.com/2018-05-01-github-pages-custom-domains-https/" target="_blank" rel="noopener">支持了Let’s Encrypt的HTTPS</a>，很久之前购买的域名终于可以再次发光发热了。</p>
+          <p>感谢Github Page终于<a href="https://blog.github.com/2018-05-01-github-pages-custom-domains-https/" target="_blank" rel="noopener">支持了Let’s Encrypt的HTTPS</a>，很久之前购买的域名终于可以再次发光发热了。</p>
 <p>新的域名： <a href="https://www.4async.com">https://www.4async.com</a></p>
 <p>值得注意的是，在新的域名生效之后，HTTPS需要等待1-2个小时才能启用。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
-  </section>
+  </div>
 
   
   <nav class="pagination">
@@ -2070,263 +1072,93 @@
           
 
         </div>
-        
           
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-  <aside id="sidebar" class="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-inner">
 
-      
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-      
-
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
-            
-              <p class="site-author-name" itemprop="name">ipfans</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">77</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">48</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
       </div>
+      <!--/noindex-->
 
-      
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ipfans"
+      src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+  <p class="site-author-name" itemprop="name">ipfans</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ipfans" title="GitHub → https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/janxin" title="Twitter → https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
 
-      
+
+
+      </div>
 
     </div>
   </aside>
-  
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
-    <footer id="footer" class="footer">
+    <footer class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
-  <span class="with-love" id="animate">
+        
+
+<div class="copyright">
+  
+  &copy; 2013 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">ipfans</span>
-
-  
-
-  
 </div>
-
-
-
-
-
-
-
-
 
         
 
@@ -2340,38 +1172,20 @@
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
   </div>
 
   
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
 
 
 
-
-
-
-
+  
 
 
 
@@ -2389,50 +1203,9 @@
 
 
   
-  <script src="/lib/jquery/index.js?v=3.4.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
 
   
 
-
-  <script src="/js/utils.js?v=7.2.0"></script>
-
-  <script src="/js/motion.js?v=7.2.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.2.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
-
-
-
-  
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.2.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-  
 <script>
   function loadCount() {
     var d = document, s = d.createElement('script');
@@ -2443,45 +1216,6 @@
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
 </script>
-
-
-
-
-
-
-
-  
-
-
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
 
   <script>
   var link = "" ;

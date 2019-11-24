@@ -1,98 +1,51 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
-
-<link rel="stylesheet" href="/css/main.css?v=7.2.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
+<script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
+    hostname: new URL('https://www.4async.com').hostname,
     root: '/',
-    scheme: 'Pisces',
-    version: '7.2.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
-    fastclick: false,
+    mediumzoom: false,
     lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    pangu: true,
     algolia: {
-      applicationID: '',
+      appID: '',
       apiKey: '',
       indexName: '',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
   };
 </script>
-
-
-  
-
-
-
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="ipfans&#39;s Blog">
@@ -102,21 +55,17 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ipfans&#39;s Blog">
 
+<link rel="canonical" href="https://www.4async.com/page/8/">
 
 
-  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
-
-
-
-  
-  
-  <link rel="canonical" href="https://www.4async.com/page/8/">
-
-
-
-<script id="page.configurations">
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome: true,
+    isPost: false,
+    isPage: false,
+    isArchive: false
   };
 </script>
 
@@ -124,19 +73,21 @@
   
 
 
-
-
-
-
-
-
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce941e79d34f1e138ac0ca9d45556db5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
 
   <noscript>
   <style>
-  .use-motion .motion-element,
   .use-motion .brand,
   .use-motion .menu-item,
   .sidebar-inner,
@@ -145,9 +96,8 @@
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .logo,
   .use-motion .site-title,
   .use-motion .site-subtitle {
     opacity: initial;
@@ -161,260 +111,134 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-meta">
-    
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">ipfans's Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-    
-    
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
-
 
 
 <nav class="site-nav">
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
+        <li class="menu-item menu-item-about">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
+        <li class="menu-item menu-item-archives">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-sitemap">
+        <li class="menu-item menu-item-sitemap">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
 
   </li>
+  </ul>
 
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
-
-
-
-  
-
-
-
 </div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
-    <main id="main" class="main">
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
           
+
+          <div class="content">
             
 
-          
-          <div id="content" class="content">
-            
-  <section id="posts" class="posts-expand">
-    
-      
-
-  
-
+  <div class="posts-expand">
+        
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-12-something-details/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/01/2014-01-12-something-details/" class="post-title-link" itemprop="url">今天学到的几件事</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/01/2014-01-12-something-details/" class="post-title-link" itemprop="url">今天学到的几件事</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-01-12 00:20:00" itemprop="dateCreated datePublished" datetime="2014-01-12T00:20:00+08:00">2014-01-12</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/01/2014-01-12-something-details/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-12-something-details/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-12-something-details/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-12-something-details/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -422,12 +246,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <h2 id="权限的那点事儿"><a href="#权限的那点事儿" class="headerlink" title="权限的那点事儿"></a>权限的那点事儿</h2><p>检查程序问题，除了配置文件有没有错以外，还需要检查一下权限什么的原因。除了用户组以外，还需要关注文件描述的配置。两个命令分别是</p>
+          <h2 id="权限的那点事儿"><a href="#权限的那点事儿" class="headerlink" title="权限的那点事儿"></a>权限的那点事儿</h2><p>检查程序问题，除了配置文件有没有错以外，还需要检查一下权限什么的原因。除了用户组以外，还需要关注文件描述的配置。两个命令分别是</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chown</span><br><span class="line">chmod</span><br></pre></td></tr></table></figure>
 
 <p>多留点心眼总没坏处</p>
@@ -435,160 +254,76 @@
 <p>后来我灵机一动，虽然 so 文件在 ldcache 中了，但是重新使用 ldconfig 命令就重新 recache 一下就行了。</p>
 <p>看来不见得所有的都那么靠谱就是了。之前编译 zmap 也遇到了这个问题，一直很奇怪 json 库的 so 文件在 ldconf 文件中，为什么执行 zmap 却提示无法找到，看来也是相同的原因了。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-07-web-browser-cross-fuzz/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/01/2014-01-07-web-browser-cross-fuzz/" class="post-title-link" itemprop="url">浏览器 fuzz 工具 cross_fuzz</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/01/2014-01-07-web-browser-cross-fuzz/" class="post-title-link" itemprop="url">浏览器 fuzz 工具 cross_fuzz</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-01-07 15:00:00" itemprop="dateCreated datePublished" datetime="2014-01-07T15:00:00+08:00">2014-01-07</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/01/2014-01-07-web-browser-cross-fuzz/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-07-web-browser-cross-fuzz/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-07-web-browser-cross-fuzz/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-07-web-browser-cross-fuzz/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -596,12 +331,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>现在来写 cross_fuzz 似乎是有点晚了，毕竟基本上很多时候 cross_fuzz 已经广泛应用于 DOM fuzz 中了。比如 <a href="http://www.chromium.org/developers/testing/fuzzers" target="_blank" rel="noopener">Chromium 中就内置了 cross_fuzz 工具</a>。不过说回来，毕竟就是 Google 自己人做的不是。</p>
+          <p>现在来写 cross_fuzz 似乎是有点晚了，毕竟基本上很多时候 cross_fuzz 已经广泛应用于 DOM fuzz 中了。比如 <a href="http://www.chromium.org/developers/testing/fuzzers" target="_blank" rel="noopener">Chromium 中就内置了 cross_fuzz 工具</a>。不过说回来，毕竟就是 Google 自己人做的不是。</p>
 <p>最新的代码 (2011 年更新) 可以在：<a href="http://lcamtuf.coredump.cx/cross_fuzz/" target="_blank" rel="noopener">http://lcamtuf.coredump.cx/cross_fuzz/</a> 找到。</p>
 <h2 id="基本设计逻辑"><a href="#基本设计逻辑" class="headerlink" title="基本设计逻辑"></a>基本设计逻辑</h2><p>cross_fuzz 就是一个 HTML 文件，因此看起来其实并不麻烦：简单的说，就是不停的打开两个窗口显示不同的 HTML/XHTML/SVG/swf 等等内容（当然，可以自己添加），通过不同的 DOM 操作（访问对象、回收操作）等等尝试出发 UAF 之类的问题。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">1. Open two windows with documents of any (DOM-enabled) type. Simple HTML, XHTML, and SVG documents are randomly selected as targets by default – although any other, possibly plugin-supported formats could be targeted instead.</span><br><span class="line"></span><br><span class="line">2. Crawl DOM hierarchy of the first document, collecting encountered object references for later reuse. Visited objects and collected references are tagged using an injected property to avoid infinite recursion; a secondary blacklist is used to prevent navigating away or descending into the master window. Critically, random shuffling and recursion fanout control are used to ensure good coverage.</span><br><span class="line"></span><br><span class="line">3. Repeat DOM crawl, randomly tweaking encountered object properties by setting them to a one of the previously recorded references (or, with some probability, to one of a handful of hardcoded “interesting” values).</span><br><span class="line"></span><br><span class="line">4. Repeat DOM crawl, randomly calling encountered object methods. Call parameters are synthesized using collected references and “interesting” values, as noted above. If a method returns an object, its output is subsequently crawled and tweaked in a similar manner.</span><br><span class="line"></span><br><span class="line">5. Randomly destroy first document using one of the several possible methods, toggle garbage collection.</span><br><span class="line"></span><br><span class="line">6. Perform the same set of crawl &amp; tweak operations for the second document, but use references collected from the first document for overwriting properties and calling methods in the second one.</span><br><span class="line"></span><br><span class="line">7. Randomly destroy document windows, carry over a percentage of collected references to the next fuzzing cycle.</span><br></pre></td></tr></table></figure>
@@ -610,160 +340,76 @@
 <pre><code>chrome --disable-popup-blocking --no-first-run --user-data-dir=$TEMPDIR --allow-file-access-from-files --noerrdialogs --disable-hang-monitor file://`pwd`/third_party/cross_fuzz/cross_fuzz_randomized_20110105_seed.html#1234</code></pre><p>其中 1234 是随机的 seed，可以自行更换。ie 也是相同的使用方法，记得允许弹出窗口即可。</p>
 <h2 id="实际运行效果"><a href="#实际运行效果" class="headerlink" title="实际运行效果"></a>实际运行效果</h2><p>简单拿着跑了一下 XP/IE8，还是有一些少量 crash，并不是单纯的 IE 问题，但是说明发现效果还是不错的，对比了一下之前的 IE7 xday，恩，效果还是差一些才是。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-02-something-about-block-part-one/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/01/2014-01-02-something-about-block-part-one/" class="post-title-link" itemprop="url">谈谈 block Part 1</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/01/2014-01-02-something-about-block-part-one/" class="post-title-link" itemprop="url">谈谈 block Part 1</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-01-02 18:31:00" itemprop="dateCreated datePublished" datetime="2014-01-02T18:31:00+08:00">2014-01-02</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/01/2014-01-02-something-about-block-part-one/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-02-something-about-block-part-one/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-02-something-about-block-part-one/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-02-something-about-block-part-one/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -771,12 +417,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <h2 id="Block-概述"><a href="#Block-概述" class="headerlink" title="Block 概述"></a>Block 概述</h2><p>Block 是 Apple 提供的一种闭包实现，比较方便实现一些函数嵌套实现的功能。Block 分为三种类型：</p>
+          <h2 id="Block-概述"><a href="#Block-概述" class="headerlink" title="Block 概述"></a>Block 概述</h2><p>Block 是 Apple 提供的一种闭包实现，比较方便实现一些函数嵌套实现的功能。Block 分为三种类型：</p>
 <ul>
 <li>NSConcreteGlobalBlock</li>
 <li>NSConcreteStackBlock</li>
@@ -812,160 +453,76 @@
 <p>在 X64 平台上，off_100001050 中保存的就是 main_block_invoke（也就是我们使用的 block）的地址，而在 ARM 平台上，R1（main_block_invoke）地址是在 LDR R1, [R1,#(off_3028 - 0x301C)] 这一句赋值而来，其中 off_3028 指向的就是 main_block_invoke 的地址。</p>
 <p>&lt;未完待续&gt;</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/01/2014-01-03-something-about-block-part-two/" class="post-title-link" itemprop="url">谈谈 block Part 2</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/01/2014-01-03-something-about-block-part-two/" class="post-title-link" itemprop="url">谈谈 block Part 2</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-01-02 15:00:00" itemprop="dateCreated datePublished" datetime="2014-01-02T15:00:00+08:00">2014-01-02</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/01/2014-01-03-something-about-block-part-two/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-03-something-about-block-part-two/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-03-something-about-block-part-two/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-03-something-about-block-part-two/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -973,12 +530,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>前面看过的 NSConcreteGobalBlock 其实在实际应用里是并不是太多的情况，相对来说，接下来要提到的 NSConcreteStackBlock 则是会经常遇到的情况。</p>
+          <p>前面看过的 NSConcreteGobalBlock 其实在实际应用里是并不是太多的情况，相对来说，接下来要提到的 NSConcreteStackBlock 则是会经常遇到的情况。</p>
 <h2 id="从源码看-NSConcreteStackBlock"><a href="#从源码看-NSConcreteStackBlock" class="headerlink" title="从源码看 NSConcreteStackBlock"></a>从源码看 NSConcreteStackBlock</h2><p>还是先从代码来看：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    int a = 1;</span><br><span class="line">    int (^block)(void) = ^&#123;printf(&quot;%d\n&quot;, a);</span><br><span class="line">    	return a;</span><br><span class="line">    &#125;;</span><br><span class="line">    int b = block();</span><br><span class="line">    printf(&quot;%d\n&quot;, b);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -993,160 +545,76 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">__text:00002F0C _main</span><br><span class="line">__text:00002F0C</span><br><span class="line">__text:00002F0C var_34          = -0x34</span><br><span class="line">__text:00002F0C var_30          = -0x30</span><br><span class="line">__text:00002F0C var_2C          = -0x2C</span><br><span class="line">__text:00002F0C var_28          = -0x28</span><br><span class="line">__text:00002F0C var_24          = -0x24</span><br><span class="line">__text:00002F0C var_20          = -0x20</span><br><span class="line">__text:00002F0C var_1C          = -0x1C</span><br><span class="line">__text:00002F0C var_18          = -0x18</span><br><span class="line">__text:00002F0C var_14          = -0x14</span><br><span class="line">__text:00002F0C var_10          = -0x10</span><br><span class="line">__text:00002F0C var_C           = -0xC</span><br><span class="line">__text:00002F0C var_8           = -8</span><br><span class="line">__text:00002F0C</span><br><span class="line">__text:00002F0C                 PUSH            &#123;R4,R7,LR&#125;</span><br><span class="line">__text:00002F0E                 ADD             R7, SP, #4</span><br><span class="line">__text:00002F10                 SUB             SP, SP, #0x30</span><br><span class="line">__text:00002F12                 MOV             R0, #(aD - 0x2F1E) ; &quot;%d\n&quot;</span><br><span class="line">__text:00002F1A                 ADD             R0, PC  ; &quot;%d\n&quot;</span><br><span class="line">__text:00002F1C                 ADD             R1, SP, #0x34+var_28</span><br><span class="line">__text:00002F1E                 MOV             R2, #(___block_descriptor_tmp - 0x2F2A) ; ___block_descriptor_tmp</span><br><span class="line">__text:00002F26                 ADD             R2, PC ; ___block_descriptor_tmp</span><br><span class="line">__text:00002F28                 MOV             R3, #(___main_block_invoke+1 - 0x2F34) ; ___main_block_invoke</span><br><span class="line">__text:00002F30                 ADD             R3, PC ; ___main_block_invoke</span><br><span class="line">__text:00002F32                 MOV             R9, #0</span><br><span class="line">__text:00002F3A                 MOV             R12, #0x40000000</span><br><span class="line">__text:00002F42                 MOV             LR, #(__NSConcreteStackBlock_ptr - 0x2F4E) ; __NSConcreteStackBlock_ptr</span><br><span class="line">__text:00002F4A                 ADD             LR, PC ; __NSConcreteStackBlock_ptr</span><br><span class="line">__text:00002F4C                 LDR.W           LR, [LR] ; __NSConcreteStackBlock</span><br><span class="line">__text:00002F50                 MOVS            R4, #1</span><br><span class="line">__text:00002F56                 STR.W           R9, [SP,#0x34+var_8]</span><br><span class="line">__text:00002F5A                 STR             R4, [SP,#0x34+var_C]</span><br><span class="line">__text:00002F5C                 STR.W           LR, [SP,#0x34+var_28]</span><br><span class="line">__text:00002F60                 STR.W           R12, [SP,#0x34+var_24]</span><br><span class="line">__text:00002F64                 STR.W           R9, [SP,#0x34+var_20]</span><br><span class="line">__text:00002F68                 STR             R3, [SP,#0x34+var_1C]</span><br><span class="line">__text:00002F6A                 STR             R2, [SP,#0x34+var_18]</span><br><span class="line">__text:00002F6C                 LDR             R2, [SP,#0x34+var_C]</span><br><span class="line">__text:00002F6E                 STR             R2, [SP,#0x34+var_14]</span><br><span class="line">__text:00002F70                 STR             R1, [SP,#0x34+var_10]</span><br><span class="line">__text:00002F72                 LDR             R1, [SP,#0x34+var_10]</span><br><span class="line">__text:00002F74                 MOV             R2, R1</span><br><span class="line">__text:00002F76                 LDR             R1, [R1,#0xC]</span><br><span class="line">__text:00002F78                 STR             R0, [SP,#0x34+var_30]</span><br><span class="line">__text:00002F7A                 MOV             R0, R2</span><br><span class="line">__text:00002F7C                 BLX             R1</span><br><span class="line">__text:00002F7E                 STR             R0, [SP,#0x34+var_2C]</span><br><span class="line">__text:00002F80                 LDR             R1, [SP,#0x34+var_2C]</span><br><span class="line">__text:00002F82                 LDR             R0, [SP,#0x34+var_30] ; char *</span><br><span class="line">__text:00002F84                 BLX             _printf</span><br><span class="line">__text:00002F88                 MOVS            R1, #0</span><br><span class="line">__text:00002F8E                 STR             R0, [SP,#0x34+var_34]</span><br><span class="line">__text:00002F90                 MOV             R0, R1</span><br><span class="line">__text:00002F92                 ADD             SP, SP, #0x30</span><br><span class="line">__text:00002F94                 POP             &#123;R4,R7,PC&#125;</span><br><span class="line">__text:00002F94 ; End of function _main</span><br></pre></td></tr></table></figure>
 
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-01-build-lnmp-on-debian/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/01/2014-01-01-build-lnmp-on-debian/" class="post-title-link" itemprop="url">Debian 系统下配置 lnmp</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/01/2014-01-01-build-lnmp-on-debian/" class="post-title-link" itemprop="url">Debian 系统下配置 lnmp</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-01-01 18:31:00" itemprop="dateCreated datePublished" datetime="2014-01-01T18:31:00+08:00">2014-01-01</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/01/2014-01-01-build-lnmp-on-debian/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-01-build-lnmp-on-debian/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-01-build-lnmp-on-debian/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-01-build-lnmp-on-debian/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1154,170 +622,81 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>很早之前就写过一个 lnmp 的配置，后来因为发现了更好的 <a href="http://lnmp.org" target="_blank" rel="noopener">lnmp.org</a>，因此就改用了 lnmp 工具。不过已经很长时间军哥豆没更新这个工具了，很多需要进行更新，因此这也是本文诞生的原因了。全当做自己的记录吧。</p>
+          <p>很早之前就写过一个 lnmp 的配置，后来因为发现了更好的 <a href="http://lnmp.org" target="_blank" rel="noopener">lnmp.org</a>，因此就改用了 lnmp 工具。不过已经很长时间军哥豆没更新这个工具了，很多需要进行更新，因此这也是本文诞生的原因了。全当做自己的记录吧。</p>
 <script src="//gist.github.com/8206547.js"></script>
 
 <p>适用于 Debian 系统，没准 Ubuntu 系统也是适用的。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/" class="post-title-link" itemprop="url">Mac 下实现类 SecureCRT 的 session clone 功能</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/" class="post-title-link" itemprop="url">Mac 下实现类 SecureCRT 的 session clone 功能</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2013-12-27 19:06:00" itemprop="dateCreated datePublished" datetime="2013-12-27T19:06:00+08:00">2013-12-27</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1325,12 +704,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>一直以来，看着 SecureCRT 有一个十分有用的功能，clone session 可以免输入帐号密码重新开启一个 ssh 窗口，这样就在不方便使用公钥登录的时候非常有用。</p>
+          <p>一直以来，看着 SecureCRT 有一个十分有用的功能，clone session 可以免输入帐号密码重新开启一个 ssh 窗口，这样就在不方便使用公钥登录的时候非常有用。</p>
 <p>在 Mac 下面如何实现这个功能呢？也是十分的简单：</p>
 <p>进入~/.ssh 目录，创建名为 config 的文件（有则编辑）：</p>
 <p>添加以下内容</p>
@@ -1340,160 +714,76 @@
 <p>但是缺点是，第一个连接一旦关闭，所有的连接都会被关闭。</p>
 <p>具体的 config 文件内容，可以参考 <a href="http://linux.die.net/man/5/ssh_config" target="_blank" rel="noopener">http://linux.die.net/man/5/ssh_config</a>。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2013/12/2013-12-27-first-post/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2013/12/2013-12-27-first-post/" class="post-title-link" itemprop="url">测试页面</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2013/12/2013-12-27-first-post/" class="post-title-link" itemprop="url">测试页面</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2013-12-27 15:28:30" itemprop="dateCreated datePublished" datetime="2013-12-27T15:28:30+08:00">2013-12-27</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2013/12/2013-12-27-first-post/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2013/12/2013-12-27-first-post/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2013/12/2013-12-27-first-post/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2013/12/2013-12-27-first-post/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1501,56 +791,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>第一次试用 Github Pages 来做页面，感觉挺不错的，先试试咯。</p>
+          <p>第一次试用 Github Pages 来做页面，感觉挺不错的，先试试咯。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_hi</span><span class="params">(name)</span></span></span><br><span class="line"><span class="function">    <span class="title">print</span> "<span class="title">hi</span>"</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">print_hi</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
 
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
-  </section>
+  </div>
 
   
   <nav class="pagination">
@@ -1563,263 +822,93 @@
           
 
         </div>
-        
           
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-  <aside id="sidebar" class="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-inner">
 
-      
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-      
-
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
-            
-              <p class="site-author-name" itemprop="name">ipfans</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">77</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">48</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
       </div>
+      <!--/noindex-->
 
-      
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ipfans"
+      src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+  <p class="site-author-name" itemprop="name">ipfans</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ipfans" title="GitHub → https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/janxin" title="Twitter → https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
 
-      
+
+
+      </div>
 
     </div>
   </aside>
-  
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
-    <footer id="footer" class="footer">
+    <footer class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
-  <span class="with-love" id="animate">
+        
+
+<div class="copyright">
+  
+  &copy; 2013 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">ipfans</span>
-
-  
-
-  
 </div>
-
-
-
-
-
-
-
-
 
         
 
@@ -1833,38 +922,20 @@
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
   </div>
 
   
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
 
 
 
-
-
-
-
+  
 
 
 
@@ -1882,50 +953,9 @@
 
 
   
-  <script src="/lib/jquery/index.js?v=3.4.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
 
   
 
-
-  <script src="/js/utils.js?v=7.2.0"></script>
-
-  <script src="/js/motion.js?v=7.2.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.2.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
-
-
-
-  
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.2.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-  
 <script>
   function loadCount() {
     var d = document, s = d.createElement('script');
@@ -1936,45 +966,6 @@
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
 </script>
-
-
-
-
-
-
-
-  
-
-
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
 
   <script>
   var link = "" ;

@@ -1,98 +1,51 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
-
-<link rel="stylesheet" href="/css/main.css?v=7.2.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
+<script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
+    hostname: new URL('https://www.4async.com').hostname,
     root: '/',
-    scheme: 'Pisces',
-    version: '7.2.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
-    fastclick: false,
+    mediumzoom: false,
     lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    pangu: true,
     algolia: {
-      applicationID: '',
+      appID: '',
       apiKey: '',
       indexName: '',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
   };
 </script>
-
-
-  
-
-
-
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="ipfans&#39;s Blog">
@@ -102,21 +55,17 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ipfans&#39;s Blog">
 
+<link rel="canonical" href="https://www.4async.com/page/7/">
 
 
-  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
-
-
-
-  
-  
-  <link rel="canonical" href="https://www.4async.com/page/7/">
-
-
-
-<script id="page.configurations">
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome: true,
+    isPost: false,
+    isPage: false,
+    isArchive: false
   };
 </script>
 
@@ -124,19 +73,21 @@
   
 
 
-
-
-
-
-
-
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce941e79d34f1e138ac0ca9d45556db5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
 
   <noscript>
   <style>
-  .use-motion .motion-element,
   .use-motion .brand,
   .use-motion .menu-item,
   .sidebar-inner,
@@ -145,9 +96,8 @@
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .logo,
   .use-motion .site-title,
   .use-motion .site-subtitle {
     opacity: initial;
@@ -161,260 +111,134 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-meta">
-    
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">ipfans's Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-    
-    
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
-
 
 
 <nav class="site-nav">
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
+        <li class="menu-item menu-item-about">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
+        <li class="menu-item menu-item-archives">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-sitemap">
+        <li class="menu-item menu-item-sitemap">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
 
   </li>
+  </ul>
 
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
-
-
-
-  
-
-
-
 </div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
-    <main id="main" class="main">
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
           
+
+          <div class="content">
             
 
-          
-          <div id="content" class="content">
-            
-  <section id="posts" class="posts-expand">
-    
-      
-
-  
-
+  <div class="posts-expand">
+        
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-23-golang-rsa/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/03/2014-03-23-golang-rsa/" class="post-title-link" itemprop="url">Golang 的 RSA 公私钥方法实现</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/03/2014-03-23-golang-rsa/" class="post-title-link" itemprop="url">Golang 的 RSA 公私钥方法实现</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-03-23 20:25:52" itemprop="dateCreated datePublished" datetime="2014-03-23T20:25:52+08:00">2014-03-23</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/03/2014-03-23-golang-rsa/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-23-golang-rsa/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/03/2014-03-23-golang-rsa/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-23-golang-rsa/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -422,167 +246,78 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>话不多说，自己看吧，比较明白。</p>
+          <p>话不多说，自己看吧，比较明白。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"crypto"</span></span><br><span class="line">    <span class="string">"crypto/rand"</span></span><br><span class="line">    <span class="string">"crypto/rsa"</span></span><br><span class="line">    <span class="string">"crypto/sha256"</span></span><br><span class="line">    <span class="string">"crypto/x509"</span></span><br><span class="line">    <span class="string">"encoding/base64"</span></span><br><span class="line">    <span class="string">"encoding/pem"</span></span><br><span class="line">    <span class="string">"errors"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;signer, err := loadPrivateKey(<span class="string">"private.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"signer is damaged: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    toSign := <span class="string">"date: Thu, 05 Jan 2012 21:31:40 GMT"</span></span><br><span class="line"></span><br><span class="line">    signed, err := signer.Sign([]byte(toSign))</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line">    sig := base64.StdEncoding.EncodeToString(signed)</span><br><span class="line">    fmt.Printf(<span class="string">"Signature: %v\n"</span>, sig)</span><br><span class="line"></span><br><span class="line">    parser, perr := loadPublicKey(<span class="string">"public.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> perr != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    err = parser.Unsign([]byte(toSign), signed)</span><br><span class="line">    <span class="keyword">if</span> err != nil &#123;fmt.Errorf(<span class="string">"could not sign request: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"Unsign error: %v\n"</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPublicKey(path string) (Unsigner, error) &#123;<span class="keyword">return</span> parsePublicKey([]byte(`-----BEGIN PUBLIC KEY-----</span><br><span class="line">MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCFENGw33yGihy92pDjZQhl0C3</span><br><span class="line"><span class="number">6</span>rPJj+CvfSC8+q28hxA161QFNUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span></span><br><span class="line">Z4UMR7EOcpfdUE9Hf3m/hs+FUR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJw</span><br><span class="line">oYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">-----END PUBLIC KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePublicKey(pemBytes []byte) (Unsigner, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"PUBLIC KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKIXPublicKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> newUnsignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// loadPrivateKey loads an parses a PEM encoded private key file.</span><br><span class="line">func loadPrivateKey(path string) (Signer, error) &#123;<span class="keyword">return</span> parsePrivateKey([]byte(`-----BEGIN RSA PRIVATE KEY-----</span><br><span class="line">MIICXgIBAAKBgQDCFENGw33yGihy92pDjZQhl0C36rPJj+CvfSC8+q28hxA161QF</span><br><span class="line">NUd13wuCTUcq0Qd2qsBe/<span class="number">2</span>hFyc2DCJJg0h1L78+<span class="number">6</span>Z4UMR7EOcpfdUE9Hf3m/hs+F</span><br><span class="line">UR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc+<span class="number">2</span>xjJwoYi+<span class="number">1</span>hqp1fIekaxsyQIDAQAB</span><br><span class="line">AoGBAJR8ZkCUvx5kzv+utdl7T5MnordT1TvoXXJGXK7ZZ+UuvMNUCdN2QPc4sBiA</span><br><span class="line">QWvLw1cSKt5DsKZ8UETpYPy8pPYnnDEz2dDYiaew9+xEpubyeW2oH4Zx71wqBtOK</span><br><span class="line">kqwrXa/pzdpiucRRjk6vE6YY7EBBs/g7uanVpGibOVAEsqH1AkEA7DkjVH28WDUg</span><br><span class="line">f1nqvfn2Kj6CT7nIcE3jGJsZZ7zlZmBmHFDONMLUrXR/Zm3pR5m0tCmBqa5RK95u</span><br><span class="line"><span class="number">412j</span>t1dPIwJBANJT3v8pnkth48bQo/fKel6uEYyboRtA5/uHuHkZ6FQF7OUkGogc</span><br><span class="line">mSJluOdc5t6hI1VsLn0QZEjQZMEOWr+wKSMCQQCC4kXJEsHAve77oP6HtG/IiEn7</span><br><span class="line">kpyUXRNvFsDE0czpJJBvL/aRFUJxuRK91jhjC68sA7NsKMGg5OXb5I5Jj36xAkEA</span><br><span class="line">gIT7aFOYBFwGgQAQkWNKLvySgKbAZRTeLBacpHMuQdl1DfdntvAyqpAZ0lY0RKmW</span><br><span class="line">G6aFKaqQfOXKCyWoUiVknQJAXrlgySFci/<span class="number">2</span>ueKlIE1QqIiLSZ8V8OlpFLRnb1pzI</span><br><span class="line"><span class="number">7</span>U1yQXnTAEFYM560yJlzUpOb1V4cScGd365tiSMvxLOvTA==</span><br><span class="line">-----END RSA PRIVATE KEY-----`))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// parsePublicKey parses a PEM encoded private key.</span><br><span class="line">func parsePrivateKey(pemBytes []byte) (Signer, error) &#123;block, _ := pem.Decode(pemBytes)</span><br><span class="line">    <span class="keyword">if</span> block == nil &#123;<span class="keyword">return</span> nil, errors.New(<span class="string">"ssh: no key found"</span>)&#125;</span><br><span class="line"></span><br><span class="line">    var rawkey interface&#123;&#125;</span><br><span class="line">    switch block.Type &#123;case<span class="string">"RSA PRIVATE KEY"</span>:</span><br><span class="line">        rsa, err := x509.ParsePKCS1PrivateKey(block.Bytes)</span><br><span class="line">        <span class="keyword">if</span> err != nil &#123;<span class="keyword">return</span> nil, err&#125;</span><br><span class="line">        rawkey = rsa</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %q"</span>, block.Type)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> newSignerFromKey(rawkey)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Signer interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Sign(data []byte) ([]byte, error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// A Signer <span class="keyword">is</span> can create signatures that verify against a public key.</span><br><span class="line">type Unsigner interface &#123;</span><br><span class="line">    // Sign returns raw signature <span class="keyword">for</span> the given data. This method</span><br><span class="line">    // will apply the hash specified <span class="keyword">for</span> the keytype to the data.</span><br><span class="line">    Unsign(data[]byte, sig []byte) error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newSignerFromKey(k interface&#123;&#125;) (Signer, error) &#123;</span><br><span class="line">    var sshKey Signer</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PrivateKey:</span><br><span class="line">        sshKey = &amp;rsaPrivateKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func newUnsignerFromKey(k interface&#123;&#125;) (Unsigner, error) &#123;</span><br><span class="line">    var sshKey Unsigner</span><br><span class="line">    switch t := k.(type) &#123;</span><br><span class="line">    case *rsa.PublicKey:</span><br><span class="line">        sshKey = &amp;rsaPublicKey&#123;t&#125;</span><br><span class="line">    default:</span><br><span class="line">        <span class="keyword">return</span> nil, fmt.Errorf(<span class="string">"ssh: unsupported key type %T"</span>, k)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sshKey, nil</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type rsaPublicKey struct &#123;*rsa.PublicKey&#125;</span><br><span class="line"></span><br><span class="line">type rsaPrivateKey struct &#123;*rsa.PrivateKey&#125;</span><br><span class="line"></span><br><span class="line">// Sign signs data <span class="keyword">with</span> rsa-sha256</span><br><span class="line">func (r *rsaPrivateKey) Sign(data []byte) ([]byte, error) &#123;h := sha256.New()</span><br><span class="line">    h.Write(data)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.SignPKCS1v15(rand.Reader, r.PrivateKey, crypto.SHA256, d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Unsign verifies the message using a rsa-sha256 signature</span><br><span class="line">func (r *rsaPublicKey) Unsign(message []byte, sig []byte) error &#123;h := sha256.New()</span><br><span class="line">    h.Write(message)</span><br><span class="line">    d := h.Sum(nil)</span><br><span class="line">    <span class="keyword">return</span> rsa.VerifyPKCS1v15(r.PublicKey, crypto.SHA256, d, sig)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-23-python-celery-queue-first-step/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/03/2014-03-23-python-celery-queue-first-step/" class="post-title-link" itemprop="url">初识 Celery</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/03/2014-03-23-python-celery-queue-first-step/" class="post-title-link" itemprop="url">初识 Celery</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-03-23 19:58:42" itemprop="dateCreated datePublished" datetime="2014-03-23T19:58:42+08:00">2014-03-23</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/03/2014-03-23-python-celery-queue-first-step/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-23-python-celery-queue-first-step/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/03/2014-03-23-python-celery-queue-first-step/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-23-python-celery-queue-first-step/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -590,12 +325,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>以前一直写的是后台的业务系统，数据不需要直接的实时返回，经常不会有什么队列方面的需求。最近有个关于交互的演示项目需要实时返回结果，但是中间几个过程都需要大量的交互（网络通讯），因此这个时候就需要引入消息队列。相对来说，最简单的 Python 队列实现就是 Celery。</p>
+          <p>以前一直写的是后台的业务系统，数据不需要直接的实时返回，经常不会有什么队列方面的需求。最近有个关于交互的演示项目需要实时返回结果，但是中间几个过程都需要大量的交互（网络通讯），因此这个时候就需要引入消息队列。相对来说，最简单的 Python 队列实现就是 Celery。</p>
 <p>Celery 的使用比较简单，但是需要后端的数据库做消息队列存储机制，这个一直没想明白，看文档的时候想当然的以为不需要后端也行的。假如没有后端的话，很有可能会不能实现功能。</p>
 <p>比如我有一个上传文件的要求：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">r = requests.post(url, files=fh)</span><br></pre></td></tr></table></figure>
@@ -610,160 +340,76 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> task <span class="keyword">import</span> upload_file</span><br><span class="line"></span><br><span class="line">result = upload_file.delay(url, fh)  <span class="comment"># 延迟执行</span></span><br><span class="line"><span class="keyword">print</span> result.ready()  <span class="comment"># 获取运行状态</span></span><br><span class="line"><span class="keyword">print</span> result.get(timeout=<span class="number">10</span>)  <span class="comment"># 获取运行结果</span></span><br></pre></td></tr></table></figure>
 
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-13-python-base64-encode-utf-8error/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/03/2014-03-13-python-base64-encode-utf-8error/" class="post-title-link" itemprop="url">Python 中文 UTF-8 编码 base64 报错</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/03/2014-03-13-python-base64-encode-utf-8error/" class="post-title-link" itemprop="url">Python 中文 UTF-8 编码 base64 报错</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-03-13 21:50:29" itemprop="dateCreated datePublished" datetime="2014-03-13T21:50:29+08:00">2014-03-13</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:29:24" itemprop="dateModified" datetime="2019-07-04T11:29:24+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/03/2014-03-13-python-base64-encode-utf-8error/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-13-python-base64-encode-utf-8error/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/03/2014-03-13-python-base64-encode-utf-8error/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-13-python-base64-encode-utf-8error/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -771,172 +417,83 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>第一次用 python encode utf-8 的中文，结果发现了一个蛋疼的问题</p>
+          <p>第一次用 python encode utf-8 的中文，结果发现了一个蛋疼的问题</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">base64.b64encode(<span class="string">u' 你好世界 '</span>)</span><br><span class="line"></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">    File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    File <span class="string">"/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/base64.py"</span>, line <span class="number">53</span>, <span class="keyword">in</span> b64encode</span><br><span class="line">        encoded = binascii.b2a_base64(s)[:<span class="number">-1</span>]</span><br><span class="line">UnicodeEncodeError: <span class="string">'ascii'</span> codec can<span class="string">'t encode characters in position 0-3: ordinal not in range(128)</span></span><br></pre></td></tr></table></figure>
 
 <p>这个问题在 <a href="http://bugs.python.org/issue4329" target="_blank" rel="noopener">2008 年就提出来过</a>，这个 Base64 的这个库的实现是按照 RFC 3548 实现的，仅按照 byte 和 ascii 字符，所以会出现这个问题。如果修复这个问题的话，就是把 unicode 字符换成 byte 就可以正常了。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">_str = <span class="string">u"你好世界"</span></span><br><span class="line">encoded = base64.b64encode(_str.encode(<span class="string">'utf-8'</span>))</span><br><span class="line"><span class="keyword">print</span> encoded</span><br><span class="line"><span class="keyword">print</span> base64.b64decode(encoded).decode(<span class="string">'utf-8'</span>)</span><br></pre></td></tr></table></figure>
 
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-09-python-profile-using-cprofile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/03/2014-03-09-python-profile-using-cprofile/" class="post-title-link" itemprop="url">利用 cProfile 进行 Python 程序性能调优</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/03/2014-03-09-python-profile-using-cprofile/" class="post-title-link" itemprop="url">利用 cProfile 进行 Python 程序性能调优</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-03-09 23:04:00" itemprop="dateCreated datePublished" datetime="2014-03-09T23:04:00+08:00">2014-03-09</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:29:19" itemprop="dateModified" datetime="2019-07-04T11:29:19+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/03/2014-03-09-python-profile-using-cprofile/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-09-python-profile-using-cprofile/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/03/2014-03-09-python-profile-using-cprofile/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-09-python-profile-using-cprofile/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -944,12 +501,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是 C 语言扩展的实现。</p>
+          <p>在上一篇文章中，我提到过 cProfile 对 Python 进行调优，但是仅仅只是简单的一笔带过，这篇文章就针对这个内容，单独扩展一下。cProfile 是 Python 的性能测试工具，另外一个同类工具是 python 实现的 profile，不过 cProfile 是 C 语言扩展的实现。</p>
 <p>官方文档页面：<a href="http://docs.python.org/2/library/profile.html#module-cProfile" target="_blank" rel="noopener">http://docs.python.org/2/library/profile.html#module-cProfile</a>。</p>
 <p>先从一个例子开始：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delay</span><span class="params">()</span>:</span></span><br><span class="line">    time.sleep(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    delay()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"123"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
@@ -985,160 +537,76 @@ ncalls  tottime  percall  cumtime  percall filename:lineno(function)
 
 cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问题，你如果想解决，可以自己看一下:)</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-02-18-benchmark-python-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/03/2014-02-18-benchmark-python-2/" class="post-title-link" itemprop="url">Python 性能技巧 (二)</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/03/2014-02-18-benchmark-python-2/" class="post-title-link" itemprop="url">Python 性能技巧 (二)</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-03-03 20:30:00" itemprop="dateCreated datePublished" datetime="2014-03-03T20:30:00+08:00">2014-03-03</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/03/2014-02-18-benchmark-python-2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-02-18-benchmark-python-2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/03/2014-02-18-benchmark-python-2/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-02-18-benchmark-python-2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1146,12 +614,7 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>本来还想继续翻译：<a href="https://wiki.python.org/moin/PythonSpeed/PerformanceTips" target="_blank" rel="noopener">https://wiki.python.org/moin/PythonSpeed/PerformanceTips</a>，但是事情太多真的没时间，那么就简单的总结一下吧。</p>
+          <p>本来还想继续翻译：<a href="https://wiki.python.org/moin/PythonSpeed/PerformanceTips" target="_blank" rel="noopener">https://wiki.python.org/moin/PythonSpeed/PerformanceTips</a>，但是事情太多真的没时间，那么就简单的总结一下吧。</p>
 <h2 id="字符串拼接"><a href="#字符串拼接" class="headerlink" title="字符串拼接"></a>字符串拼接</h2><p>应该避免使用：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">""</span></span><br><span class="line"><span class="keyword">for</span> substring <span class="keyword">in</span> list:</span><br><span class="line">    s += substring</span><br></pre></td></tr></table></figure>
 
@@ -1206,160 +669,76 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
 <h2 id="xrange-替代-range"><a href="#xrange-替代-range" class="headerlink" title="xrange 替代 range"></a>xrange 替代 range</h2><p>恩，xrage 更快一些。</p>
 <h2 id="善用-cProfile"><a href="#善用-cProfile" class="headerlink" title="善用 cProfile"></a>善用 cProfile</h2><p>性能诊断的好工具</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/02/2014-02-18-benchmark-python/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/02/2014-02-18-benchmark-python/" class="post-title-link" itemprop="url">Python 性能技巧 (一)</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/02/2014-02-18-benchmark-python/" class="post-title-link" itemprop="url">Python 性能技巧 (一)</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-02-18 21:07:00" itemprop="dateCreated datePublished" datetime="2014-02-18T21:07:00+08:00">2014-02-18</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/02/2014-02-18-benchmark-python/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/02/2014-02-18-benchmark-python/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/02/2014-02-18-benchmark-python/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/02/2014-02-18-benchmark-python/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1367,12 +746,7 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>翻译自：<a href="https://wiki.python.org/moin/PythonSpeed/PerformanceTips" target="_blank" rel="noopener">https://wiki.python.org/moin/PythonSpeed/PerformanceTips</a></p>
+          <p>翻译自：<a href="https://wiki.python.org/moin/PythonSpeed/PerformanceTips" target="_blank" rel="noopener">https://wiki.python.org/moin/PythonSpeed/PerformanceTips</a></p>
 <p>该页面致力于提供帮助提高你的 Python 程序的性能各种技巧和窍门。无论信息来自何人, 我试图鉴别来源。</p>
 <p>Python 在我 1996 年写过 “fast python” 页面后已经发生了很多重要变化，这意味着一些命令会发生变化。我将这个页面迁移到 Python wiki, 希望其他人会帮助维护它。</p>
 <p>在使用这些技巧时你仍需进行针对特定版本 Python 和你程序的测试，而不是盲目的接受一个方法快于另外一种。在分析时你会看到更多的细节。</p>
@@ -1388,160 +762,76 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
 <p>一些优化方法是良好的编程风格, 因此你应该学习学习他们的方式。一个例子将是不通过循环移动计算的值。</p>
 <h2 id="选择正确的数据结构"><a href="#选择正确的数据结构" class="headerlink" title="选择正确的数据结构"></a>选择正确的数据结构</h2><p>TBD</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/02/2014-02-17-create-sign-quickly-python/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/02/2014-02-17-create-sign-quickly-python/" class="post-title-link" itemprop="url">Python 下快速创建签名</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/02/2014-02-17-create-sign-quickly-python/" class="post-title-link" itemprop="url">Python 下快速创建签名</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-02-17 17:12:00" itemprop="dateCreated datePublished" datetime="2014-02-17T17:12:00+08:00">2014-02-17</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/02/2014-02-17-create-sign-quickly-python/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/02/2014-02-17-create-sign-quickly-python/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/02/2014-02-17-create-sign-quickly-python/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/02/2014-02-17-create-sign-quickly-python/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1549,170 +839,81 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>作为一个土逼，我之前写个程序都是臃肿的，后来还被人嘲笑真不是一个那啥的程序。比如说关于算签名的问题，这个在很多 Oauth 环境下都会很常见的算法我写起来就很挫。后来找了一个更好的方法来解决这个问题：</p>
+          <p>作为一个土逼，我之前写个程序都是臃肿的，后来还被人嘲笑真不是一个那啥的程序。比如说关于算签名的问题，这个在很多 Oauth 环境下都会很常见的算法我写起来就很挫。后来找了一个更好的方法来解决这个问题：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设所有的都在一个 dict 中</span></span><br><span class="line">   items = adict.items()</span><br><span class="line">   items.sort()</span><br><span class="line">   sha1=hashlib.sha1()</span><br><span class="line">   map(sha1.update, items)</span><br><span class="line">   hashcode=sha1.hexdigest()</span><br><span class="line">   <span class="keyword">if</span> hashcode == signature:</span><br><span class="line">       <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 
 <p>不知道 Map 的用法，真的很挫….</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-26-unit-test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/01/2014-01-26-unit-test/" class="post-title-link" itemprop="url">关于写程序的一点想法：单元测试</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/01/2014-01-26-unit-test/" class="post-title-link" itemprop="url">关于写程序的一点想法：单元测试</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-01-26 16:21:00" itemprop="dateCreated datePublished" datetime="2014-01-26T16:21:00+08:00">2014-01-26</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/01/2014-01-26-unit-test/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-26-unit-test/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-26-unit-test/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-26-unit-test/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1720,12 +921,7 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>之前一直没有太过于关注过单元测试，感觉自己程序代码写了足够的实现逻辑和处理流程就应该完全可以满足需求，但是事实上在实现具体功能时，还是存在一些这样那样的问题，甚至通常情况下都是在代码写完可以跑通运行时发现的问题，通常这个时候已经很晚了。大家可以翻下我在 Github 上开放出来的大部分代码应该都存在一些或多或少的小问题，这些问题虽不致命，但是却是也是很烦躁的事情。</p>
+          <p>之前一直没有太过于关注过单元测试，感觉自己程序代码写了足够的实现逻辑和处理流程就应该完全可以满足需求，但是事实上在实现具体功能时，还是存在一些这样那样的问题，甚至通常情况下都是在代码写完可以跑通运行时发现的问题，通常这个时候已经很晚了。大家可以翻下我在 Github 上开放出来的大部分代码应该都存在一些或多或少的小问题，这些问题虽不致命，但是却是也是很烦躁的事情。</p>
 <h2 id="什么是单元测试"><a href="#什么是单元测试" class="headerlink" title="什么是单元测试"></a>什么是单元测试</h2><p>单元测试（unit testing），是指对软件中的最小可测试单元进行检查和验证。对于单元测试中单元的含义，一般来说，要根据实际情况去判定其具体含义，如 C 语言中单元指一个函数，Java 里单元指一个类，图形化的软件中可以指一个窗口或一个菜单等。总的来说，单元就是人为规定的最小的被测功能模块。单元测试是在软件开发过程中要进行的最低级别的测试活动，软件的独立单元将在与程序的其他部分相隔离的情况下进行测试。(via <a href="http://baike.baidu.com/view/106237.htm" target="_blank" rel="noopener">百度百科</a>)</p>
 <p>我对单元测试的理解，单元测试应该是保证程序功能模块的代码安全性和健壮性的保障性测试，主要是开发人员在对自己开发的代码进行测试。被测试模块可能包括多个功能点，在做测试时，设计测试用例要覆盖这些功能点，以保证这些功能点经过测试。很多文章在介绍单元测试常常会介绍一些 100% 的覆盖，考虑到一些异常情况情况的情况下，我个人觉得应该是覆盖异常的情况更多一点，分支覆盖一般常见参数传入测试功能是否正常，另外还是需要保证一些以前的 Bug 并不会出现的测试用例。</p>
 <h2 id="几种常见语言的-Unit-Test"><a href="#几种常见语言的-Unit-Test" class="headerlink" title="几种常见语言的 Unit Test"></a>几种常见语言的 Unit Test</h2><p>先说即种的，一种是 Python 的，一种是 Golang，还有一种是 Objective-C 的。</p>
@@ -1743,160 +939,76 @@ def tearDown(self):
 <h3 id="Objective-C"><a href="#Objective-C" class="headerlink" title="Objective-C"></a>Objective-C</h3><p>Xcode 原生内置了<a href="https://developer.apple.com/technologies/tools/" target="_blank" rel="noopener">一个单元测试工具</a>，在创建工程时勾选即可。只说说这个吧。生成测试用例是也是已 test 开头的函数，在编译时会自动进行。</p>
 <p>另外，也有人分享了一些 <a href="https://github.com/clarkware/ocunit-example" target="_blank" rel="noopener">单元测试的例子</a> 可供参考。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/" class="post-title-link" itemprop="url">通过 LaunchDaemon 实现 OSX 下的自动启动</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/" class="post-title-link" itemprop="url">通过 LaunchDaemon 实现 OSX 下的自动启动</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-01-23 15:00:00" itemprop="dateCreated datePublished" datetime="2014-01-23T15:00:00+08:00">2014-01-23</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-23-launch-daemons-configure-mac-os-x/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-23-launch-daemons-configure-mac-os-x/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1904,12 +1016,7 @@ def tearDown(self):
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>OSX 下面添加开机选项怎么加呢？这是个问题。系统提供了一个 LaunchDaemon 的玩意，用于提供这个功能。相关的命令是 launchd 和 launchctl 两个命令。</p>
+          <p>OSX 下面添加开机选项怎么加呢？这是个问题。系统提供了一个 LaunchDaemon 的玩意，用于提供这个功能。相关的命令是 launchd 和 launchctl 两个命令。</p>
 <p>launch daemon 的配置文件是保存在 / System/Library/LaunchDaemons / 和 / Library/LaunchDaemons / 文件夹下。如果需要指定特定用户的配置，则可以放在~/Library/LaunchAgents、/Library/LaunchAgents 或者 / System/Library/LaunchAgents 下。区别为，是否用户登录之后执行还是内核初始化完成后执行。</p>
 <p>具体的执行命令很简单</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo launchctl load &lt;plist file&gt; #加载配置</span><br><span class="line"></span><br><span class="line">sudo launchctl unload &lt;file&gt;</span><br><span class="line"></span><br><span class="line">sudo launchctl start &lt;bundleid&gt;</span><br><span class="line"></span><br><span class="line">sudo launchctl stop &lt;bundleid&gt;</span><br></pre></td></tr></table></figure>
@@ -1923,160 +1030,76 @@ def tearDown(self):
 <p>参考文档</p>
 <p>[1] <a href="https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html" target="_blank" rel="noopener">Daemons and Services Programming Guide</a></p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-15-openssl-and-pyopenssl/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/01/2014-01-15-openssl-and-pyopenssl/" class="post-title-link" itemprop="url">OpenSSL 和 pyOpenSSL 那点事</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/01/2014-01-15-openssl-and-pyopenssl/" class="post-title-link" itemprop="url">OpenSSL 和 pyOpenSSL 那点事</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-01-15 18:05:00" itemprop="dateCreated datePublished" datetime="2014-01-15T18:05:00+08:00">2014-01-15</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/01/2014-01-15-openssl-and-pyopenssl/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-15-openssl-and-pyopenssl/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-15-openssl-and-pyopenssl/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-15-openssl-and-pyopenssl/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -2084,12 +1107,7 @@ def tearDown(self):
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p><strong>[UPDATE 2014-01-23]</strong></p>
+          <p><strong>[UPDATE 2014-01-23]</strong></p>
 <p>解决 pyOpenSSL 的问题也不一定非得使用升级 OpenSSL 的方式，由于 OpenSSL 关联面太广，实际上可以采用安装新版 OpenSSL，在安装 pyOpenSSL 的时候指定 include 和 libs 的方式来指定使用版本的 OpenSSL。具体改一下 setup.py 中的具体对应参数即可。</p>
 <p><strong>PSS: 重要的放在开头，升级 OpenSSL 对系统影响较大，比如 OpenSSH 无法正常工作，算是得到的一个教训，记得同步更新相关使用到 OpenSSL 的软件</strong></p>
 <p>之前比较挫的很少在 64 位系统上编译东西，经常用的服务器都是 x86 的 VPS。今天因为项目需要安装 mitmproxy。这玩意对 pyOpenSSL 的需求是 0.13 以上版本，隐性要求 OpenSSL 为 0.9.8f 及以上版本。怎奈何服务器上是 0.9.8e 版本。因此需要对 OpenSSL 进行升级。因为各种原因，升级是在源码编译状态下进行的。</p>
@@ -2105,47 +1123,21 @@ def tearDown(self):
 <p>另外还有一个值得注意的地方是在 64 位系统下默认的 lib 目录是 lib64 而不是 lib，最开始我还替换错了，还好及时发现了。</p>
 <p>PS: 每次 Markdown 写文章，带下划线的总是忘记该，要回来修一下，蛋疼。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
-  </section>
+  </div>
 
   
   <nav class="pagination">
@@ -2158,263 +1150,93 @@ def tearDown(self):
           
 
         </div>
-        
           
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-  <aside id="sidebar" class="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-inner">
 
-      
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-      
-
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
-            
-              <p class="site-author-name" itemprop="name">ipfans</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">77</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">48</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
       </div>
+      <!--/noindex-->
 
-      
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ipfans"
+      src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+  <p class="site-author-name" itemprop="name">ipfans</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ipfans" title="GitHub → https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/janxin" title="Twitter → https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
 
-      
+
+
+      </div>
 
     </div>
   </aside>
-  
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
-    <footer id="footer" class="footer">
+    <footer class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
-  <span class="with-love" id="animate">
+        
+
+<div class="copyright">
+  
+  &copy; 2013 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">ipfans</span>
-
-  
-
-  
 </div>
-
-
-
-
-
-
-
-
 
         
 
@@ -2428,38 +1250,20 @@ def tearDown(self):
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
   </div>
 
   
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
 
 
 
-
-
-
-
+  
 
 
 
@@ -2477,50 +1281,9 @@ def tearDown(self):
 
 
   
-  <script src="/lib/jquery/index.js?v=3.4.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
 
   
 
-
-  <script src="/js/utils.js?v=7.2.0"></script>
-
-  <script src="/js/motion.js?v=7.2.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.2.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
-
-
-
-  
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.2.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-  
 <script>
   function loadCount() {
     var d = document, s = d.createElement('script');
@@ -2531,45 +1294,6 @@ def tearDown(self):
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
 </script>
-
-
-
-
-
-
-
-  
-
-
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
 
   <script>
   var link = "" ;

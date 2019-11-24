@@ -1,98 +1,51 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
-
-<link rel="stylesheet" href="/css/main.css?v=7.2.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
+<script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
+    hostname: new URL('https://www.4async.com').hostname,
     root: '/',
-    scheme: 'Pisces',
-    version: '7.2.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
-    fastclick: false,
+    mediumzoom: false,
     lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    pangu: true,
     algolia: {
-      applicationID: '',
+      appID: '',
       apiKey: '',
       indexName: '',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
   };
 </script>
-
-
-  
-
-
-
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="ipfans&#39;s Blog">
@@ -102,21 +55,17 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ipfans&#39;s Blog">
 
+<link rel="canonical" href="https://www.4async.com/page/6/">
 
 
-  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
-
-
-
-  
-  
-  <link rel="canonical" href="https://www.4async.com/page/6/">
-
-
-
-<script id="page.configurations">
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome: true,
+    isPost: false,
+    isPage: false,
+    isArchive: false
   };
 </script>
 
@@ -124,19 +73,21 @@
   
 
 
-
-
-
-
-
-
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ce941e79d34f1e138ac0ca9d45556db5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
 
   <noscript>
   <style>
-  .use-motion .motion-element,
   .use-motion .brand,
   .use-motion .menu-item,
   .sidebar-inner,
@@ -145,9 +96,8 @@
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .logo,
   .use-motion .site-title,
   .use-motion .site-subtitle {
     opacity: initial;
@@ -161,260 +111,134 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-meta">
-    
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">ipfans's Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-    
-    
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
-
 
 
 <nav class="site-nav">
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
+        <li class="menu-item menu-item-about">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
+        <li class="menu-item menu-item-archives">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-sitemap">
+        <li class="menu-item menu-item-sitemap">
 
-    
-    
-      
-    
-
-    
-
-    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
 
   </li>
+  </ul>
 
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
-
-
-
-  
-
-
-
 </div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
-    <main id="main" class="main">
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
           
+
+          <div class="content">
             
 
-          
-          <div id="content" class="content">
-            
-  <section id="posts" class="posts-expand">
-    
-      
-
-  
-
+  <div class="posts-expand">
+        
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-20-build-zbar-on-linux/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/05/2014-05-20-build-zbar-on-linux/" class="post-title-link" itemprop="url">Linux 系统上的 zbar 编译安装</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/05/2014-05-20-build-zbar-on-linux/" class="post-title-link" itemprop="url">Linux 系统上的 zbar 编译安装</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-05-20 15:33:35" itemprop="dateCreated datePublished" datetime="2014-05-20T15:33:35+08:00">2014-05-20</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/05/2014-05-20-build-zbar-on-linux/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/05/2014-05-20-build-zbar-on-linux/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/05/2014-05-20-build-zbar-on-linux/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/05/2014-05-20-build-zbar-on-linux/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -422,12 +246,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>因为系统不方便使用包升级，因此使用的源码方式安装，坑基本上都踩过了，做一下记录吧。</p>
+          <p>因为系统不方便使用包升级，因此使用的源码方式安装，坑基本上都踩过了，做一下记录吧。</p>
 <p>zbar 的安装依赖于 ImageMagick，ImageMagick 则依赖于 jpeg 提供 jpeg 图片支持，因此安装顺序为反序安装。</p>
 <h2 id="安装-jpeg-库"><a href="#安装-jpeg-库" class="headerlink" title="安装 jpeg 库"></a>安装 jpeg 库</h2><p>这个安装比较简单，没什么坑来的。先到 <a href="http://www.imagemagick.org/download/delegates/" target="_blank" rel="noopener">http://www.imagemagick.org/download/delegates/</a> 下载 jpeg 的库，比如我用的是 jpegsrc.v9a.tar.gz，执行下列执行进行安装：</p>
 <pre><code>/.configure
@@ -447,160 +266,76 @@ QR-Code:http://apk.hiapk.com/m/downloads?id=cn.ibuka.manga.ui&amp;vcode=16843778
 QR-Code:http://apk.hiapk.com/m/downloads?id=com.kugou.android&amp;vcode=4120
 QR-Code:http://apk.hiapk.com/m/downloads?id=com.kandian.vodapp4pad7in&amp;vcode=7
 scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-17-speed-python-code-with-cython/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/05/2014-05-17-speed-python-code-with-cython/" class="post-title-link" itemprop="url">利用 Cython 加速 Python 代码</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/05/2014-05-17-speed-python-code-with-cython/" class="post-title-link" itemprop="url">利用 Cython 加速 Python 代码</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-05-17 17:41:14" itemprop="dateCreated datePublished" datetime="2014-05-17T17:41:14+08:00">2014-05-17</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/05/2014-05-17-speed-python-code-with-cython/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/05/2014-05-17-speed-python-code-with-cython/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/05/2014-05-17-speed-python-code-with-cython/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/05/2014-05-17-speed-python-code-with-cython/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -608,12 +343,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>先从一个例子来说，一个斐波那契数列数列例子说起：</p>
+          <p>先从一个例子来说，一个斐波那契数列数列例子说起：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># fib.py</span></span><br><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(i)</span>:</span></span><br><span class="line">    a = <span class="number">0</span></span><br><span class="line">    b = <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> i &gt; <span class="number">0</span>:</span><br><span class="line">        i -= <span class="number">1</span></span><br><span class="line">        a, b = b, a+b</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># try_c.py</span></span><br><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> fib <span class="keyword">import</span> fib</span><br><span class="line"></span><br><span class="line">startTime = time.time()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">    fib(<span class="number">10</span>**<span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> time.time() - startTime</span><br></pre></td></tr></table></figure>
@@ -642,160 +372,76 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 <p>上面的结果不是同样条件测试的，会对结果有一定的影响。具体情况下的结果还请自行测试。</p>
 <p>除了利用 Cython 外，还有其他几种方法用来加速，这个可以自行搜索一下，比如 cffi，具体不在这里赘述。我个人比较倾向于 Cython 的方法，这种方法可以实现无需修改代码的加速（如上），同样也可以实现更高效的代码级别编译，效率更高。但是缺点是绕不开 python 的 GIL 问题，具体的可以看一下 <a href="http://developer.51cto.com/art/200910/156804.htm" target="_blank" rel="noopener">这篇文章</a> 介绍 GIL 问题。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-29-more-about-golang-channel/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/04/2014-04-29-more-about-golang-channel/" class="post-title-link" itemprop="url">更多关于 channel 的扯淡</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-29-more-about-golang-channel/" class="post-title-link" itemprop="url">更多关于 channel 的扯淡</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-04-29 15:57:46" itemprop="dateCreated datePublished" datetime="2014-04-29T15:57:46+08:00">2014-04-29</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/04/2014-04-29-more-about-golang-channel/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-29-more-about-golang-channel/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-29-more-about-golang-channel/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-29-more-about-golang-channel/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -803,12 +449,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>channel 是一个比较神奇的东西，以前很少研究，不过最近的项目有这方面的需求就看了一下。下面主要从 channel 的功能谈起。</p>
+          <p>channel 是一个比较神奇的东西，以前很少研究，不过最近的项目有这方面的需求就看了一下。下面主要从 channel 的功能谈起。</p>
 <h2 id="channel-的读取和写入问题"><a href="#channel-的读取和写入问题" class="headerlink" title="channel 的读取和写入问题"></a>channel 的读取和写入问题</h2><p>channel 的读取写入取决于当前的 channel 的状态，大家应该都知道下面的情况是一定会产生死锁：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">&lt;-ch</span><br></pre></td></tr></table></figure>
 
@@ -828,160 +469,76 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 <p>根据 MD5All 中的 defer close(done)，当函数 MD5All 返回时，会关闭 done 这个 channel，这样从 done 中取值就可以始终成功，select 在执行时就可以一直成功，这也对我之前想法中退出 channel 填值有可能比取值少导致阻塞的情况做了一个比较完美的解答。</p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>[1]. <a href="http://blog.golang.org/pipelines" target="_blank" rel="noopener">Go Concurrency Patterns: Pipelines and cancellation</a></p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-28-control-goroutines-by-channel-select/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/04/2014-04-28-control-goroutines-by-channel-select/" class="post-title-link" itemprop="url">channel 和 select 控制 goroutines</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-28-control-goroutines-by-channel-select/" class="post-title-link" itemprop="url">channel 和 select 控制 goroutines</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-04-28 20:57:20" itemprop="dateCreated datePublished" datetime="2014-04-28T20:57:20+08:00">2014-04-28</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/04/2014-04-28-control-goroutines-by-channel-select/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-28-control-goroutines-by-channel-select/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-28-control-goroutines-by-channel-select/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-28-control-goroutines-by-channel-select/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -989,12 +546,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>最近有一个需求是在一个常驻内存的程序中结束相关任务。在 Go 中，创建一个 goroutine 非常简单，只需要 go 一下就可以了，但是如果我创建了很多 goroutine，想要结束怎么办？</p>
+          <p>最近有一个需求是在一个常驻内存的程序中结束相关任务。在 Go 中，创建一个 goroutine 非常简单，只需要 go 一下就可以了，但是如果我创建了很多 goroutine，想要结束怎么办？</p>
 <p>比如说我有一个死循环的例子</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;queue := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">20</span>)</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// 就是一个死循环</span></span><br><span class="line">		queue &lt;- <span class="number">1</span></span><br><span class="line">		&lt;-queue</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt;<span class="number">10</span>; i++ &#123;wg.Add(<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="keyword">int</span>)</span></span> &#123;time.Sleep(<span class="number">5</span> * time.Second)</span><br><span class="line">				fmt.Println(<span class="string">"Sleep"</span>)</span><br><span class="line">				wg.Done()&#125;(i)</span><br><span class="line">		&#125;</span><br><span class="line">		wg.Wait()&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -1017,160 +569,76 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 
 <p>还有一个值得注意的事情就是，对 select 来说，整体的运行相当于一个循环分支处理的过程。对 case 来说，过程是一个 block 的过程，比如说在执行 default 过程中，即使收到了来自 EXIT 的信息，也不会中断执行 default 去跳转执行 EXIT，而是在 default 完成之后，进入条件分支选择使优先进入 channel 已经 ready 的 case。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/04/2014-04-22-build-your-private-git-serivce/" class="post-title-link" itemprop="url">基于 Gogs 实现的私密 Git 服务</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-22-build-your-private-git-serivce/" class="post-title-link" itemprop="url">基于 Gogs 实现的私密 Git 服务</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-04-22 20:09:46" itemprop="dateCreated datePublished" datetime="2014-04-22T20:09:46+08:00">2014-04-22</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/04/2014-04-22-build-your-private-git-serivce/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-22-build-your-private-git-serivce/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-22-build-your-private-git-serivce/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-22-build-your-private-git-serivce/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1178,12 +646,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>Github 是个好东西，最早接触 Git，就是因为 Github 接触的。上手简单，丰富的开源库，互动性等等功能都让 Github 充满魅力。</p>
+          <p>Github 是个好东西，最早接触 Git，就是因为 Github 接触的。上手简单，丰富的开源库，互动性等等功能都让 Github 充满魅力。</p>
 <p>当然了，一些私密的代码是不适合放在 Github 上的（比如工作代码），这个时候就不方便上传代码到 Github 了。当然了，如果 <a href="https://github.com/pricing" target="_blank" rel="noopener">购买 Github 的 Micro Plan</a> 就可以创建私密的 repo 了。</p>
 <p>不花钱有没有什么好方法？以前有一个 Github 功能大致相同的社区版 Gitlab，基于 Ruby 开发，可是配置实在是太过于复杂，也不适合一个人单独打包使用。不过后来遇到了 gogs，这个问题就解决了。其实刚开始知道 gogs 的时候，还不支持 SQLite3，最新的一个版本已经支持了，不过只有 x64 位版本，基于 golang 构建，因此也没有什么依赖需要安装，只需要简单的：下载、解压、打开、配置，然后你就可以使用 git 服务了。</p>
 <p>下载地址：<a href="https://github.com/gogits/gogs/wiki/Install-from-binary" target="_blank" rel="noopener">https://github.com/gogits/gogs/wiki/Install-from-binary</a></p>
@@ -1205,160 +668,76 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 <p><img src="http://ww3.sinaimg.cn/mw690/69e37fdbgw1efomiaj742j20eh0cpmxw.jpg" alt></p>
 <p>如果想修改样式或者翻译之类的，在 template 目录下的为 gogs 的模板文件，可以进行修改，我想要的可是和 Github 同样的效果：）</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-11-openssl-algorithm-speed-result/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/04/2014-04-11-openssl-algorithm-speed-result/" class="post-title-link" itemprop="url">几种常见加密 / hash 算法效率 (OpenSSL)</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-11-openssl-algorithm-speed-result/" class="post-title-link" itemprop="url">几种常见加密 / hash 算法效率 (OpenSSL)</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-04-11 13:19:46" itemprop="dateCreated datePublished" datetime="2014-04-11T13:19:46+08:00">2014-04-11</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/04/2014-04-11-openssl-algorithm-speed-result/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-11-openssl-algorithm-speed-result/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-11-openssl-algorithm-speed-result/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-11-openssl-algorithm-speed-result/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1366,12 +745,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>正好群里面有人在讨论这个，就单独拿出来记录一下，下次就不用单独跑了。结果只是包含常见的算法性能。</p>
+          <p>正好群里面有人在讨论这个，就单独拿出来记录一下，下次就不用单独跑了。结果只是包含常见的算法性能。</p>
 <p>说到常用的算法，之前 QQ 的协议中最早使用的是 xxTEA 算法 [^1]，运算效率高，但是同样的，被破解的几率随着系统硬件性能的提升和手段的进化破解难度大幅降低，所以后来更换成了 blowfish 的算法 [^2]，从效率上来说可以接受，并且强度也是可以接受的范围。当然了，至于密钥，那是另外一个话题了。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">OpenSSL 1.0.1g 7 Apr 2014</span><br><span class="line">built on: Mon Apr  7 19:24:10 BST 2014</span><br><span class="line">options:bn(64,64) rc4(ptr,char) des(idx,cisc,16,int) aes(partial) idea(int) blowfish(idx)</span><br><span class="line">compiler: clang -fPIC -fno-common -DOPENSSL_PIC -DZLIB_SHARED -DZLIB -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -arch x86_64 -O3 -DL_ENDIAN -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM</span><br><span class="line">The &apos;numbers&apos; are in 1000s of bytes per second processed.</span><br><span class="line">type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes</span><br><span class="line">md5              27012.47k    83668.96k   193662.90k   288870.40k   339611.95k</span><br><span class="line">hmac(md5)        22436.27k    72562.60k   176476.05k   277375.28k   337510.40k</span><br><span class="line">sha1             30214.31k    86946.66k   183855.45k   259266.33k   297429.61k</span><br><span class="line">rc4             196157.50k   211073.87k   232483.09k   233261.75k   235103.97k</span><br><span class="line">des cbc          36183.51k    37559.07k    38393.90k    38166.10k    38460.60k</span><br><span class="line">des ede3         14248.36k    14433.49k    14513.37k    14586.23k    14629.00k</span><br><span class="line">idea cbc         29515.76k    30455.99k    30819.81k    30886.49k    30909.05k</span><br><span class="line">seed cbc         42818.52k    46288.05k    47289.80k    47466.82k    47201.72k</span><br><span class="line">blowfish cbc     61676.43k    64869.07k    66887.52k    66720.19k    66823.31k</span><br><span class="line">aes-128 cbc      53756.63k    58966.27k    59666.27k   126935.19k   127531.60k</span><br><span class="line">aes-192 cbc      46063.28k    50037.52k    50891.14k   109122.65k   109760.48k</span><br><span class="line">aes-256 cbc      40039.57k    42316.96k    43542.15k    93052.84k    93731.72k</span><br><span class="line">sha256           24619.03k    53308.64k    90030.81k   109692.87k   117423.88k</span><br><span class="line">sha512           19076.43k    74213.38k   114250.08k   162023.40k   183772.75k</span><br><span class="line">whirlpool        15034.42k    31777.43k    52066.33k    61904.05k    56250.74k</span><br><span class="line">aes-128 ige      53897.17k    56852.04k    57523.48k    57741.98k    57742.06k</span><br><span class="line">aes-192 ige      45658.29k    47596.69k    48166.72k    48698.26k    48257.35k</span><br><span class="line">aes-256 ige      40110.70k    41541.96k    41726.01k    41792.81k    41839.56k</span><br><span class="line">                  sign    verify    sign/s verify/s</span><br><span class="line">rsa  512 bits 0.000169s 0.000015s   5921.3  64569.3</span><br><span class="line">rsa 1024 bits 0.000554s 0.000035s   1805.6  28181.2</span><br><span class="line">rsa 2048 bits 0.003531s 0.000112s    283.2   8923.1</span><br><span class="line">rsa 4096 bits 0.025068s 0.000405s     39.9   2466.8</span><br><span class="line">                  sign    verify    sign/s verify/s</span><br><span class="line">dsa  512 bits 0.000145s 0.000153s   6890.8   6518.5</span><br><span class="line">dsa 1024 bits 0.000338s 0.000393s   2961.0   2547.0</span><br><span class="line">dsa 2048 bits 0.001081s 0.001332s    925.1    750.6</span><br></pre></td></tr></table></figure>
 
@@ -1379,160 +753,76 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 <p>[^1] <a href="http://bbs.pediy.com/showthread.php?t=11312" target="_blank" rel="noopener">http://bbs.pediy.com/showthread.php?t=11312</a></p>
 <p>[^2] <a href="http://blog.csdn.net/qinggebuyao/article/details/7814499" target="_blank" rel="noopener">http://blog.csdn.net/qinggebuyao/article/details/7814499</a></p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/" class="post-title-link" itemprop="url">解决 Mavericks 系统上 Python 库 - mno-fused-madd 错误</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/" class="post-title-link" itemprop="url">解决 Mavericks 系统上 Python 库 - mno-fused-madd 错误</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-04-08 11:43:52" itemprop="dateCreated datePublished" datetime="2014-04-08T11:43:52+08:00">2014-04-08</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1540,12 +830,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>最近升级了一下 simplejson，发现 simplejson 的 speedup 模块报了一个错误：</p>
+          <p>最近升级了一下 simplejson，发现 simplejson 的 speedup 模块报了一个错误：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Installing collected packages: simplejson</span><br><span class="line">  Found existing installation: simplejson 3.3.1</span><br><span class="line">    Uninstalling simplejson:</span><br><span class="line">      Successfully uninstalled simplejson</span><br><span class="line">  Running setup.py install for simplejson</span><br><span class="line">    building &apos;simplejson._speedups&apos; extension</span><br><span class="line">    cc -fno-strict-aliasing -fno-common -dynamic -arch x86_64 -arch i386 -g -Os -pipe -fno-common -fno-strict-aliasing -fwrapv -mno-fused-madd -DENABLE_DTRACE -DMACOSX -DNDEBUG -Wall -Wstrict-prototypes -Wshorten-64-to-32 -DNDEBUG -g -fwrapv -Os -Wall -Wstrict-prototypes -DENABLE_DTRACE -arch x86_64 -arch i386 -pipe -I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -c simplejson/_speedups.c -o build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o</span><br><span class="line">    clang: error: unknown argument: &apos;-mno-fused-madd&apos; [-Wunused-command-line-argument-hard-error-in-future]</span><br><span class="line">    clang: note: this will be a hard error (cannot be downgraded to a warning) in the future</span><br><span class="line">    ***************************************************************************</span><br><span class="line">    WARNING: The C extension could not be compiled, speedups are not enabled.</span><br><span class="line">    Failure information, if any, is above.</span><br><span class="line">    I&apos;m retrying the build without the C extension now.</span><br><span class="line">    ***************************************************************************</span><br><span class="line"></span><br><span class="line">    ***************************************************************************</span><br><span class="line">    WARNING: The C extension could not be compiled, speedups are not enabled.</span><br><span class="line">    Plain-Python installation succeeded.</span><br><span class="line">    ***************************************************************************</span><br><span class="line">Successfully installed simplejson</span><br><span class="line">Cleaning up...</span><br></pre></td></tr></table></figure>
 
 <p>注意看 error 这里，有一个 <figure class="highlight plain"><figcaption><span>argument: '-mno-fused-madd'``` 的错误，应该是 Xcode 升级最新的版本之后，clang 替换带来的问题。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">解决方法也很简单，在编译之前 export 两个参数即可：</span><br></pre></td></tr></table></figure></p>
@@ -1568,160 +853,76 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ python json_speed.py</span><br><span class="line">by json: 0.000191926956177 seconds</span><br><span class="line">by simplejson: 0.000169992446899 seconds</span><br></pre></td></tr></table></figure>
 
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-02-falcon-web-framework/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/04/2014-04-02-falcon-web-framework/" class="post-title-link" itemprop="url">短小精悍 Falcon</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-02-falcon-web-framework/" class="post-title-link" itemprop="url">短小精悍 Falcon</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-04-02 19:47:51" itemprop="dateCreated datePublished" datetime="2014-04-02T19:47:51+08:00">2014-04-02</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/04/2014-04-02-falcon-web-framework/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-02-falcon-web-framework/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-02-falcon-web-framework/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-02-falcon-web-framework/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1729,12 +930,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>之前一直是 Flask 的忠实粉丝，然后嘲讽下 Django 党；结果被 falcon 打脸，恩，下面是我的真机实际测试（i5-3230M 2.6G 8G RAM, SSD。乱码的是什么呢….）：</p>
+          <p>之前一直是 Flask 的忠实粉丝，然后嘲讽下 Django 党；结果被 falcon 打脸，恩，下面是我的真机实际测试（i5-3230M 2.6G 8G RAM, SSD。乱码的是什么呢….）：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Benchmarking, Trial 1 of 3......done.</span><br><span class="line">Benchmarking, Trial 2 of 3......done.</span><br><span class="line">Benchmarking, Trial 3 of 3......done.</span><br><span class="line"></span><br><span class="line">Results:</span><br><span class="line"></span><br><span class="line">1. falcon.........34,165 req/sec or 29.27 渭 s/req (9x)</span><br><span class="line">2. falcon-ext.....25,752 req/sec or 38.83 渭 s/req (7x)</span><br><span class="line">3. bottle.........17,043 req/sec or 58.67 渭 s/req (5x)</span><br><span class="line">4. pecan...........7,915 req/sec or 126.34 渭 s/req (2x)</span><br><span class="line">5. werkzeug........6,241 req/sec or 160.24 渭 s/req (2x)</span><br><span class="line">6. flask...........3,762 req/sec or 265.81 渭 s/req (1x)</span><br></pre></td></tr></table></figure>
 
 <p>这样看起来，完全可以 flask 做前台，api 使用 falcon 来实现（或者 Beego，同时还能保证开发效率）。</p>
@@ -1743,160 +939,76 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 
 <p>这个框架目标是提供高效的 API 接口，非常合适大量并发的 API 接口开发，同时借助 Python 的开发效率，还是不错的选择。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-01-beego-tips/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/04/2014-04-01-beego-tips/" class="post-title-link" itemprop="url">Beego 的几个小 Tips</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-01-beego-tips/" class="post-title-link" itemprop="url">Beego 的几个小 Tips</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-04-01 18:46:51" itemprop="dateCreated datePublished" datetime="2014-04-01T18:46:51+08:00">2014-04-01</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/04/2014-04-01-beego-tips/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-01-beego-tips/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-01-beego-tips/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-01-beego-tips/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -1904,12 +1016,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>Beego 框架不错，个人比较喜欢，关键是还有一些开发工具很实用，封装了很多实现，不需要自己做很多工作，在不考虑效率的前提下，都是可以接受的范畴。</p>
+          <p>Beego 框架不错，个人比较喜欢，关键是还有一些开发工具很实用，封装了很多实现，不需要自己做很多工作，在不考虑效率的前提下，都是可以接受的范畴。</p>
 <h2 id="自定义错误页面"><a href="#自定义错误页面" class="headerlink" title="自定义错误页面"></a>自定义错误页面</h2><p>Beego 默认自己带了一些错误页面，在 error.go 文件中进行了定义。以 404 为例：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// show <span class="number">404</span> notfound error.</span><br><span class="line">func NotFound(rw http.ResponseWriter, r *http.Request) &#123;t, _ := template.New(<span class="string">"beegoerrortemp"</span>).Parse(errtpl)</span><br><span class="line">	data := make(map[string]interface&#123;&#125;)</span><br><span class="line">	data[<span class="string">"Title"</span>] = <span class="string">"Page Not Found"</span></span><br><span class="line">	data[<span class="string">"Content"</span>] = template.HTML(<span class="string">"&lt;br&gt;The page you have requested has flown the coop."</span>+<span class="string">"&lt;br&gt;Perhaps you are here because:"</span>+<span class="string">"&lt;br&gt;&lt;br&gt;&lt;ul&gt;"</span> +</span><br><span class="line">		<span class="string">"&lt;br&gt;The page has moved"</span>+<span class="string">"&lt;br&gt;The page no longer exists"</span>+<span class="string">"&lt;br&gt;You were looking for your puppy and got lost"</span>+<span class="string">"&lt;br&gt;You like 404 pages"</span>+<span class="string">"&lt;/ul&gt;"</span>)</span><br><span class="line">	data[<span class="string">"BeegoVersion"</span>] = VERSION</span><br><span class="line">	//rw.WriteHeader(http.StatusNotFound)</span><br><span class="line">	t.Execute(rw, data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -1920,160 +1027,76 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 <pre><code>BeegoServerName = &quot;beegoServer&quot;</code></pre><p>我最初是 fork 了一个 repo 改，后来发现，只需要在 app.conf 文件中定义一下就可以了：</p>
 <pre><code>BeegoServerName = ACGSOSERVER</code></pre><p>这样 Server 这个字段就更改掉了，其他的属性也可以用这种方式定义掉。</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
-
-    
-      
-
-  
-
   
   
   
 
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ipfans's Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/03/2014-03-28-python-distribute-building-part-one/" class="post-title-link" itemprop="url">Python 分发包制作（一）</a>
-              
-            
-          </h2>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/03/2014-03-28-python-distribute-building-part-one/" class="post-title-link" itemprop="url">Python 分发包制作（一）</a>
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
+              <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2014-03-28 11:33:51" itemprop="dateCreated datePublished" datetime="2014-03-28T11:33:51+08:00">2014-03-28</time>
             </span>
-          
-
-          
-            
-
-            
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
               </span>
-            
-          
 
           
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2014/03/2014-03-28-python-distribute-building-part-one/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-28-python-distribute-building-part-one/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/03/2014-03-28-python-distribute-building-part-one/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-28-python-distribute-building-part-one/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
@@ -2081,57 +1104,26 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>之前我在 <a href="http://www.acgso.com/2013/09/python-development-devops-usage/" target="_blank" rel="noopener">Python 开发实践</a> 中曾经提到过通过 python distribute 实现包分发。但是一直没有机会研究如何实现 (没错…)，今天就粗略的通过一个例子简单描述一下一个包的制作：</p>
+          <p>之前我在 <a href="http://www.acgso.com/2013/09/python-development-devops-usage/" target="_blank" rel="noopener">Python 开发实践</a> 中曾经提到过通过 python distribute 实现包分发。但是一直没有机会研究如何实现 (没错…)，今天就粗略的通过一个例子简单描述一下一个包的制作：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># setup.py</span></span><br><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> setuptools <span class="keyword">import</span> setup, find_packages</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="comment"># 兼容旧版本 setuptools</span></span><br><span class="line">extra = &#123;&#125;</span><br><span class="line"><span class="keyword">if</span> sys.version_info &gt;= (<span class="number">3</span>,):</span><br><span class="line">    extra[<span class="string">'use_2to3'</span>] = <span class="literal">True</span></span><br><span class="line">    extra[<span class="string">'convert_2to3_doctests'</span>] = [<span class="string">'src/your/module/README.txt'</span>]</span><br><span class="line">    extra[<span class="string">'use_2to3_fixers'</span>] = [<span class="string">'your.fixers'</span>]</span><br><span class="line"></span><br><span class="line">setup(</span><br><span class="line">    <span class="comment"># 包名称</span></span><br><span class="line">    name=<span class="string">'your.module'</span>,</span><br><span class="line">    <span class="comment"># 版本号</span></span><br><span class="line">    version = <span class="string">'1.0'</span>,</span><br><span class="line">    <span class="comment"># 包描述</span></span><br><span class="line">    description=<span class="string">'This is your awesome module'</span>,</span><br><span class="line">    <span class="comment"># 作者名称</span></span><br><span class="line">    author=<span class="string">'You'</span>,</span><br><span class="line">    <span class="comment"># 作者 URL</span></span><br><span class="line">    author_email=<span class="string">'your@email'</span>,</span><br><span class="line">    <span class="comment"># 如果有需要</span></span><br><span class="line">    license = <span class="string">"PSF"</span>,</span><br><span class="line">    <span class="comment"># 如果有需要</span></span><br><span class="line">    url = <span class="string">""</span>,</span><br><span class="line">    <span class="comment"># 依赖包</span></span><br><span class="line">    install_requires=[],</span><br><span class="line">    <span class="comment"># 源代码目录</span></span><br><span class="line">    package_dir = &#123;<span class="string">''</span>:<span class="string">'src'</span>&#125;,</span><br><span class="line">    <span class="comment"># 包文件</span></span><br><span class="line">    packages = find_packages(),</span><br><span class="line">    <span class="comment"># 包含其他必须文件，前面是文件夹，后面是扩展名，将会按此格式排列文件</span></span><br><span class="line">    package_data = &#123;<span class="comment"># include them:'': ['*.txt', '*.rst'],</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment"># 单元测试</span></span><br><span class="line">    test_suite = <span class="string">'your.module.tests'</span>,</span><br><span class="line">    **extra</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
 <p>在 setuptools &gt;= 0.7 的版本上，distribute 的功能已经被整合进入 Setuptools，例子也是适合于 0.7 以上版本的配置。上面这个例子适用于纯 Python 的包，很多时候我们需要做一些对 Python 的性能提升 (比如动态库 binding)，怎么做呢？这是下一篇文要写的了…</p>
 
-          
-        
       
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
-  </section>
+  </div>
 
   
   <nav class="pagination">
@@ -2144,263 +1136,93 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
           
 
         </div>
-        
           
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-  <aside id="sidebar" class="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-inner">
 
-      
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-      
-
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460" alt="ipfans">
-            
-              <p class="site-author-name" itemprop="name">ipfans</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">77</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">48</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/ipfans" title="GitHub &rarr; https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/janxin" title="Twitter &rarr; https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://www.yeeuu.com" title="https://www.yeeuu.com" rel="noopener" target="_blank">杭州云柚科技</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
       </div>
+      <!--/noindex-->
 
-      
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ipfans"
+      src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+  <p class="site-author-name" itemprop="name">ipfans</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ipfans" title="GitHub → https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/janxin" title="Twitter → https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
 
-      
+
+
+      </div>
 
     </div>
   </aside>
-  
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
-    <footer id="footer" class="footer">
+    <footer class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2013 – <span itemprop="copyrightYear">2019</span>
-  <span class="with-love" id="animate">
+        
+
+<div class="copyright">
+  
+  &copy; 2013 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">ipfans</span>
-
-  
-
-  
 </div>
-
-
-
-
-
-
-
-
 
         
 
@@ -2414,38 +1236,20 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
   </div>
 
   
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
 
 
 
-
-
-
-
+  
 
 
 
@@ -2463,50 +1267,9 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 
 
   
-  <script src="/lib/jquery/index.js?v=3.4.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
 
   
 
-
-  <script src="/js/utils.js?v=7.2.0"></script>
-
-  <script src="/js/motion.js?v=7.2.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.2.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
-
-
-
-  
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.2.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-  
 <script>
   function loadCount() {
     var d = document, s = d.createElement('script');
@@ -2517,45 +1280,6 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
 </script>
-
-
-
-
-
-
-
-  
-
-
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
 
   <script>
   var link = "" ;
