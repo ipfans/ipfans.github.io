@@ -9,7 +9,7 @@
 
     <url>
         <loc>https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/</loc>
-        <lastmod>2020-01-10T09:33:06.660Z</lastmod>
+        <lastmod>2020-01-10T09:33:43.903Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -56,7 +56,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/01/2014-01-01-build-lnmp-on-debian/</loc>
+        <loc>https://www.4async.com/2013/12/2013-12-27-first-post/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -64,7 +64,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2013/12/2013-12-27-first-post/</loc>
+        <loc>https://www.4async.com/2014/01/2014-01-01-build-lnmp-on-debian/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -128,7 +128,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/03/2014-02-18-benchmark-python-2/</loc>
+        <loc>https://www.4async.com/2014/02/2014-02-17-create-sign-quickly-python/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -136,7 +136,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/02/2014-02-17-create-sign-quickly-python/</loc>
+        <loc>https://www.4async.com/2014/03/2014-02-18-benchmark-python-2/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -152,7 +152,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/03/2014-03-23-python-celery-queue-first-step/</loc>
+        <loc>https://www.4async.com/2014/03/2014-03-23-golang-rsa/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -160,7 +160,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/03/2014-03-23-golang-rsa/</loc>
+        <loc>https://www.4async.com/2014/03/2014-03-23-python-celery-queue-first-step/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -184,7 +184,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/04/2014-04-02-falcon-web-framework/</loc>
+        <loc>https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -192,7 +192,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/</loc>
+        <loc>https://www.4async.com/2014/04/2014-04-02-falcon-web-framework/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -256,7 +256,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/08/2014-08-01-migrate-ollvm-into-ios-project/</loc>
+        <loc>https://www.4async.com/2014/06/2014-06-01-try-docker-with-coreos/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -264,7 +264,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2014/06/2014-06-01-try-docker-with-coreos/</loc>
+        <loc>https://www.4async.com/2014/08/2014-08-01-migrate-ollvm-into-ios-project/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -368,7 +368,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/</loc>
+        <loc>https://www.4async.com/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -376,7 +376,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/</loc>
+        <loc>https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -504,7 +504,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/</loc>
+        <loc>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -512,7 +512,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</loc>
+        <loc>https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -552,7 +552,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/</loc>
+        <loc>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -560,7 +560,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</loc>
+        <loc>https://www.4async.com/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -600,7 +600,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/</loc>
+        <loc>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -608,7 +608,7 @@
     </url>
 
     <url>
-        <loc>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</loc>
+        <loc>https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/</loc>
         <lastmod>2019-07-04T03:20:39.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>

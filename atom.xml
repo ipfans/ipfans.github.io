@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.4async.com/"/>
-  <updated>2020-01-10T09:33:06.660Z</updated>
+  <updated>2020-01-10T09:33:43.903Z</updated>
   <id>https://www.4async.com/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>从 Go 语言的依赖库讲起（1）Ginkgo、testify、GoMock和gotests</title>
+    <title>从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock</title>
     <link href="https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/"/>
     <id>https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/</id>
     <published>2020-01-10T09:30:00.000Z</published>
-    <updated>2020-01-10T09:33:06.660Z</updated>
+    <updated>2020-01-10T09:33:43.903Z</updated>
     
     <summary type="html">
     
