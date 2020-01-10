@@ -55,7 +55,7 @@
 <meta property="og:site_name" content="ipfans&#39;s Blog">
 <meta property="og:description" content="对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。 在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-01-10T09:31:00.941Z">
+<meta property="og:updated_time" content="2020-01-10T09:33:06.660Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从 Go 语言的依赖库讲起（1）Ginkgo、testify、GoMock和gotests">
 <meta name="twitter:description" content="对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。 在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲">
@@ -216,7 +216,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-01-10 17:30:00 / 修改时间：17:31:00" itemprop="dateCreated datePublished" datetime="2020-01-10T17:30:00+08:00">2020-01-10</time>
+              <time title="创建时间：2020-01-10 17:30:00 / 修改时间：17:33:06" itemprop="dateCreated datePublished" datetime="2020-01-10T17:30:00+08:00">2020-01-10</time>
             </span>
 
           
@@ -247,6 +247,8 @@
         <p>对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。</p>
 <p>在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲突，人员能力的残次不齐都有可能导致代码的腐化。在测试过程中，我们选择引入测试保障代码的质量</p>
 <p>Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用<code>Ginkgo</code>、<code>testify</code>和<code>GoMock</code>工具。</p>
+<a id="more"></a>
+
 <h2 id="GoMock"><a href="#GoMock" class="headerlink" title="GoMock"></a>GoMock</h2><p><a href="https://github.com/golang/mock" target="_blank" rel="noopener">GoMock工具</a>是Golang官方提供的针对接口的代码生成测试工具。在实际的单元测试过程中，通常会选择Mock掉数据库（DB/KV）、外部服务调用操作部分，将这部分功能留在集成测试中完成。</p>
 <p>比如我们将数据操作类型抽象成接口<code>Creator</code>、<code>Updater</code>、<code>Deleter</code>等，借助接口的组合功能，针对我们需要的功能进行组合开发。在测试过程中，我们可以借助GoMock工具生成对应的测试辅助代码。</p>
 <p>以对最简单的<code>io.ReadeCloser</code>使用代码为例：</p>
@@ -276,7 +278,7 @@
 <p><code>Ginkgo</code>工具提供了完善的<a href="https://onsi.github.io/ginkgo/#getting-started-writing-your-first-test" target="_blank" rel="noopener">文档介绍</a>，你可以参考工具官方文档了解具体的使用。另外一个<code>Ginkgo</code>非常有用的是它可以方便接入已有的测试日志捕获程序，比如你是JUnit的用户，你可以选择将日志格式输出成JUnit XML格式：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> foo_test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    . <span class="string">"github.com/onsi/ginkgo"</span></span><br><span class="line">    . <span class="string">"github.com/onsi/gomega"</span></span><br><span class="line"></span><br><span class="line">    <span class="string">"github.com/onsi/ginkgo/reporters"</span></span><br><span class="line">    <span class="string">"testing"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestFoo</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">    RegisterFailHandler(Fail)</span><br><span class="line">    junitReporter := reporters.NewJUnitReporter(<span class="string">"junit.xml"</span>)</span><br><span class="line">    RunSpecsWithDefaultAndCustomReporters(t, <span class="string">"Foo Suite"</span>, []Reporter&#123;junitReporter&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>文章总结了一些常见的涉及测试的工具，希望对你在实践过程中有所帮助。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>文章总结了一些常见的涉及测试的工具，希望对你在实践过程中有所帮助。顺带，我还没忘记要完成这个系列。:D</p>
 
     </div>
 
