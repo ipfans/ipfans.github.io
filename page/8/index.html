@@ -187,6 +187,99 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-15-openssl-and-pyopenssl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/01/2014-01-15-openssl-and-pyopenssl/" class="post-title-link" itemprop="url">OpenSSL 和 pyOpenSSL 那点事</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-01-15 18:05:00" itemprop="dateCreated datePublished" datetime="2014-01-15T18:05:00+08:00">2014-01-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/01/2014-01-15-openssl-and-pyopenssl/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-15-openssl-and-pyopenssl/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>[UPDATE 2014-01-23]</strong></p>
+<p>解决 pyOpenSSL 的问题也不一定非得使用升级 OpenSSL 的方式，由于 OpenSSL 关联面太广，实际上可以采用安装新版 OpenSSL，在安装 pyOpenSSL 的时候指定 include 和 libs 的方式来指定使用版本的 OpenSSL。具体改一下 setup.py 中的具体对应参数即可。</p>
+<p><strong>PSS: 重要的放在开头，升级 OpenSSL 对系统影响较大，比如 OpenSSH 无法正常工作，算是得到的一个教训，记得同步更新相关使用到 OpenSSL 的软件</strong></p>
+<p>之前比较挫的很少在 64 位系统上编译东西，经常用的服务器都是 x86 的 VPS。今天因为项目需要安装 mitmproxy。这玩意对 pyOpenSSL 的需求是 0.13 以上版本，隐性要求 OpenSSL 为 0.9.8f 及以上版本。怎奈何服务器上是 0.9.8e 版本。因此需要对 OpenSSL 进行升级。因为各种原因，升级是在源码编译状态下进行的。</p>
+<p>编译倒是挺顺畅的，./config 一下，然后直接 make &amp;&amp; make install，替换下系统的头文件和 lib 文件。</p>
+<p>然后开始安装 pyOpenSSL。这步也没什么错误提示，如果安装出错，那么肯定是 OpenSSL 的版本不对。</p>
+<p>然后执行以下 mitmproxy，提示 pyOpenSSL 的 SSL.so 无法找 “SSL_get_servername” 的引用。What？编译没问题运行却提示出错了，orz。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldd SSL.so</span><br></pre></td></tr></table></figure>
+
+<p>看下该文件的引用关系，发现引用了 lib64 的 libssl.so.6 和 libcrypto.so.6 文件，这两个文件是 openssl 的 shared library。切换到默认的 OpenSSL 目录下 / usr/local/ssl/lib / 文件下，发现并没有生成 so 文件。原因很明显了，是因为生成 OpenSSL 的方式是采用默认的 static 方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./config shared</span><br></pre></td></tr></table></figure>
+
+<p>这样就没有问题了。</p>
+<p>另外还有一个值得注意的地方是在 64 位系统下默认的 lib 目录是 lib64 而不是 lib，最开始我还替换错了，还好及时发现了。</p>
+<p>PS: 每次 Markdown 写文章，带下划线的总是忘记该，要回来修一下，蛋疼。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-12-something-details/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -859,7 +952,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -903,7 +996,7 @@
 <div class="copyright">
   
   &copy; 2013 – 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

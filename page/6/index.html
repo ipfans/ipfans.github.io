@@ -187,6 +187,116 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/05/2014-05-30-quick-Identify-python-object-struct/" class="post-title-link" itemprop="url">快速确认 Python 对象结构</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-05-30 00:10:15" itemprop="dateCreated datePublished" datetime="2014-05-30T00:10:15+08:00">2014-05-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/05/2014-05-30-quick-Identify-python-object-struct/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/05/2014-05-30-quick-Identify-python-object-struct/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>好吧，这个问题确实比较蛋疼的一个问题，也是最近经常遇到的问题。具体的原因是这样的，最近使用了一个开源的库实现功能，实现方法是使用的回调方式。这样就出现了一个问题，回调过来的对象是什么格式的我并不知道具体细节。有人说，看看文档不就行了么，问题是这个项目他就没个详细文档。其实读代码也是可以解决这个问题的，但是实际上这是一个时间的工作，并且很容易会把自己也绕进去。那怎么办呢？别急，往下看。</p>
+<ol>
+<li>直接 dir 输出属性</li>
+</ol>
+<hr>
+<p>这个很简单了，直接 print dir(对象名) 就可以打印对象的属性名称了。不过这个得来回测试一下，不能一次性把所有的想要的都能得到。</p>
+<ol start="2">
+<li>利用 pdb 快速定位</li>
+</ol>
+<hr>
+<p>pdb 是官方库中的 Python Debugger，使用方法也比较简单：在 Python 代码中 import pdb 库，然后在指定的位置添加一句：pdb.set_trace()。以我的代码为例，我需要了解 msg 的结构：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StickyMaster</span><span class="params">(controller.Master)</span>:</span></span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">handle_request</span><span class="params">(self, msg)</span>:</span></span><br><span class="line">        pdb.set_trace()</span><br><span class="line">        ......</span><br></pre></td></tr></table></figure>
+
+<p>然后正常执行这个程序，在执行到这句时，得到如下结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">✗ python pdbtest.py</span><br><span class="line">......</span><br><span class="line">&gt; pdbtest.py(63)handle_request()</span><br><span class="line">-&gt; if allow_check(msg) is False:</span><br><span class="line">(Pdb)</span><br></pre></td></tr></table></figure>
+
+<p>是不是看起来很像 gdb 一类的工具？这个时候输入命令查看对象了，输入 h 可以查看帮助：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) h</span><br><span class="line"></span><br><span class="line">Documented commands (type help &lt;topic&gt;):</span><br><span class="line">========================================</span><br><span class="line">EOF    bt         cont      enable  jump  pp       run      unt</span><br><span class="line">a      c          continue  exit    l     q        s        until</span><br><span class="line">alias  cl         d         h       list  quit     step     up</span><br><span class="line">args   clear      debug     help    n     r        tbreak   w</span><br><span class="line">b      commands   disable   ignore  next  restart  u        whatis</span><br><span class="line">break  condition  down      j       p     return   unalias  where</span><br><span class="line"></span><br><span class="line">Miscellaneous help topics:</span><br><span class="line">==========================</span><br><span class="line">exec  pdb</span><br><span class="line"></span><br><span class="line">Undocumented commands:</span><br><span class="line">======================</span><br><span class="line">retval  rv</span><br></pre></td></tr></table></figure>
+
+<p>接下来查看下当前变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) a</span><br><span class="line">self = &lt;__main__.StickyMaster instance at 0x107884128&gt;</span><br><span class="line">msg = &lt;libmproxy.flow.Request instance at 0x1080d5680&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后直接 dir 一下这个变量的属性名称，这个时候的好处是方便进行查看属性值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) dir(msg)</span><br><span class="line">[&apos;__doc__&apos;, &apos;__eq__&apos;, &apos;__hash__&apos;, &apos;__init__&apos;, &apos;__module__&apos;, &apos;_assemble&apos;, &apos;_assemble_head&apos;, &apos;_from_state&apos;, &apos;_get_state&apos;, &apos;_load_state&apos;, &apos;_set_replay&apos;, &apos;anticache&apos;, &apos;anticomp&apos;, &apos;client_conn&apos;, &apos;close&apos;, &apos;constrain_encoding&apos;, &apos;content&apos;, &apos;copy&apos;, &apos;decode&apos;, &apos;encode&apos;, &apos;get_content_type&apos;, &apos;get_cookies&apos;, &apos;get_decoded_content&apos;, &apos;get_form_urlencoded&apos;, &apos;get_header_size&apos;, &apos;get_path_components&apos;, &apos;get_query&apos;, &apos;get_transmitted_size&apos;, &apos;get_url&apos;, &apos;headers&apos;, &apos;host&apos;, &apos;httpversion&apos;, &apos;ip&apos;, &apos;is_live&apos;, &apos;is_replay&apos;, &apos;method&apos;, &apos;path&apos;, &apos;port&apos;, &apos;replace&apos;, &apos;reply&apos;, &apos;rfile&apos;, &apos;scheme&apos;, &apos;set_form_urlencoded&apos;, &apos;set_live&apos;, &apos;set_path_components&apos;, &apos;set_query&apos;, &apos;set_url&apos;, &apos;size&apos;, &apos;ssl_setup_timestamp&apos;, &apos;stickyauth&apos;, &apos;stickycookie&apos;, &apos;tcp_setup_timestamp&apos;, &apos;timestamp_end&apos;, &apos;timestamp_start&apos;, &apos;wfile&apos;]</span><br><span class="line">(Pdb) msg.path</span><br><span class="line">&apos;/&apos;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>借助工具直接确定</li>
+</ol>
+<hr>
+<p>这里我使用的是 WingIDE，很简单方便。首先下个断点，然后运行下程序，结果如下图：</p>
+<p><img src="http://ww1.sinaimg.cn/large/69e37fdbgw1egvlg1ocxqj20g7065myb.jpg" alt="WingIDE"></p>
+<p>就是这么简单！</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-20-build-zbar-on-linux/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1041,88 +1151,6 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2014/03/2014-03-28-python-distribute-building-part-one/" class="post-title-link" itemprop="url">Python 分发包制作（一）</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-03-28 11:33:51" itemprop="dateCreated datePublished" datetime="2014-03-28T11:33:51+08:00">2014-03-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2014/03/2014-03-28-python-distribute-building-part-one/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/03/2014-03-28-python-distribute-building-part-one/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>之前我在 <a href="http://www.acgso.com/2013/09/python-development-devops-usage/" target="_blank" rel="noopener">Python 开发实践</a> 中曾经提到过通过 python distribute 实现包分发。但是一直没有机会研究如何实现 (没错…)，今天就粗略的通过一个例子简单描述一下一个包的制作：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># setup.py</span></span><br><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> setuptools <span class="keyword">import</span> setup, find_packages</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="comment"># 兼容旧版本 setuptools</span></span><br><span class="line">extra = &#123;&#125;</span><br><span class="line"><span class="keyword">if</span> sys.version_info &gt;= (<span class="number">3</span>,):</span><br><span class="line">    extra[<span class="string">'use_2to3'</span>] = <span class="literal">True</span></span><br><span class="line">    extra[<span class="string">'convert_2to3_doctests'</span>] = [<span class="string">'src/your/module/README.txt'</span>]</span><br><span class="line">    extra[<span class="string">'use_2to3_fixers'</span>] = [<span class="string">'your.fixers'</span>]</span><br><span class="line"></span><br><span class="line">setup(</span><br><span class="line">    <span class="comment"># 包名称</span></span><br><span class="line">    name=<span class="string">'your.module'</span>,</span><br><span class="line">    <span class="comment"># 版本号</span></span><br><span class="line">    version = <span class="string">'1.0'</span>,</span><br><span class="line">    <span class="comment"># 包描述</span></span><br><span class="line">    description=<span class="string">'This is your awesome module'</span>,</span><br><span class="line">    <span class="comment"># 作者名称</span></span><br><span class="line">    author=<span class="string">'You'</span>,</span><br><span class="line">    <span class="comment"># 作者 URL</span></span><br><span class="line">    author_email=<span class="string">'your@email'</span>,</span><br><span class="line">    <span class="comment"># 如果有需要</span></span><br><span class="line">    license = <span class="string">"PSF"</span>,</span><br><span class="line">    <span class="comment"># 如果有需要</span></span><br><span class="line">    url = <span class="string">""</span>,</span><br><span class="line">    <span class="comment"># 依赖包</span></span><br><span class="line">    install_requires=[],</span><br><span class="line">    <span class="comment"># 源代码目录</span></span><br><span class="line">    package_dir = &#123;<span class="string">''</span>:<span class="string">'src'</span>&#125;,</span><br><span class="line">    <span class="comment"># 包文件</span></span><br><span class="line">    packages = find_packages(),</span><br><span class="line">    <span class="comment"># 包含其他必须文件，前面是文件夹，后面是扩展名，将会按此格式排列文件</span></span><br><span class="line">    package_data = &#123;<span class="comment"># include them:'': ['*.txt', '*.rst'],</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment"># 单元测试</span></span><br><span class="line">    test_suite = <span class="string">'your.module.tests'</span>,</span><br><span class="line">    **extra</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>在 setuptools &gt;= 0.7 的版本上，distribute 的功能已经被整合进入 Setuptools，例子也是适合于 0.7 以上版本的配置。上面这个例子适用于纯 Python 的包，很多时候我们需要做一些对 Python 的性能提升 (比如动态库 binding)，怎么做呢？这是下一篇文要写的了…</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1173,7 +1201,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1217,7 +1245,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
 <div class="copyright">
   
   &copy; 2013 – 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

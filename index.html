@@ -187,6 +187,111 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/2020-01-10-golang-test-driven-toolkit/" class="post-title-link" itemprop="url">从 Go 语言的依赖库讲起（1）Ginkgo、testify、GoMock和gotests</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-01-10 17:30:00 / 修改时间：17:31:00" itemprop="dateCreated datePublished" datetime="2020-01-10T17:30:00+08:00">2020-01-10</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/01/2020-01-10-golang-test-driven-toolkit/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/01/2020-01-10-golang-test-driven-toolkit/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。</p>
+<p>在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲突，人员能力的残次不齐都有可能导致代码的腐化。在测试过程中，我们选择引入测试保障代码的质量</p>
+<p>Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用<code>Ginkgo</code>、<code>testify</code>和<code>GoMock</code>工具。</p>
+<h2 id="GoMock"><a href="#GoMock" class="headerlink" title="GoMock"></a>GoMock</h2><p><a href="https://github.com/golang/mock" target="_blank" rel="noopener">GoMock工具</a>是Golang官方提供的针对接口的代码生成测试工具。在实际的单元测试过程中，通常会选择Mock掉数据库（DB/KV）、外部服务调用操作部分，将这部分功能留在集成测试中完成。</p>
+<p>比如我们将数据操作类型抽象成接口<code>Creator</code>、<code>Updater</code>、<code>Deleter</code>等，借助接口的组合功能，针对我们需要的功能进行组合开发。在测试过程中，我们可以借助GoMock工具生成对应的测试辅助代码。</p>
+<p>以对最简单的<code>io.ReadeCloser</code>使用代码为例：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> tdd</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"io"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Read</span><span class="params">(r io.ReadCloser, buf []<span class="keyword">byte</span>)</span> <span class="params">(n <span class="keyword">int</span>, err error)</span></span> &#123;</span><br><span class="line">	n, err = io.ReadFull(r, buf)</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>生成对应的mock方法，这里为了方便，我们使用<code>-package</code>参数定义包名，为了区分生成文件，添加了<code>_ten_test.go</code>后缀。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定生成io.ReadCloser的mock方法</span></span><br><span class="line"><span class="comment"># 如果有专门的文件定义对应接口定义，则可以通过-source方法指定一次性提取所有接口</span></span><br><span class="line">mockgen -package tdd io ReadCloser &gt; reader_gen_test.go</span><br></pre></td></tr></table></figure>
+
+<p>接下来就是使用这个方法进行操作了，我们可以在<code>reader_test.go</code>文件中进行：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> tdd</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"io"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">	<span class="string">"testing"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/golang/mock/gomock"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestRead</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	ctrl := gomock.NewController(t)</span><br><span class="line">	<span class="keyword">defer</span> ctrl.Finish()</span><br><span class="line"></span><br><span class="line">	r := NewMockReadCloser(ctrl)</span><br><span class="line">	r.EXPECT().</span><br><span class="line">		Read(gomock.AssignableToTypeOf([]<span class="keyword">byte</span>&#123;&#125;)).</span><br><span class="line">		SetArg(<span class="number">0</span>, []<span class="keyword">byte</span>&#123;<span class="number">0x0</span>, <span class="number">0x1</span>, <span class="number">0x2</span>, <span class="number">0x3</span>, <span class="number">0x4</span>&#125;). <span class="comment">// 设置参数值</span></span><br><span class="line">		Return(<span class="number">5</span>, io.EOF).                          <span class="comment">// 设置返回值</span></span><br><span class="line">		AnyTimes()                                  <span class="comment">// 执行次数</span></span><br><span class="line"></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">5</span>)</span><br><span class="line">	Read(r, buf)</span><br><span class="line">	want := []<span class="keyword">byte</span>&#123;<span class="number">0x0</span>, <span class="number">0x1</span>, <span class="number">0x2</span>, <span class="number">0x3</span>, <span class="number">0x4</span>&#125;</span><br><span class="line">	<span class="keyword">if</span> !reflect.DeepEqual(want, buf) &#123;</span><br><span class="line">		t.Errorf(<span class="string">"Read() failed. want=%v, got=%v."</span>, want, buf)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="testify"><a href="#testify" class="headerlink" title="testify"></a>testify</h2><p>我们在上面的例子中，会发现使用reflect.DeepEqual方式对比，然后调用t.Errorf方式输出错误信息。但是这里面其实相对来说要麻烦一点，另外一个则是对数据而言，如果内容较多，我们没办法一一对比可能出现的内容，这种情况下<a href="https://github.com/stretchr/testify" target="_blank" rel="noopener"><code>testify</code>工具</a>则可以提供一种更便捷的方式帮助我们进行测试的管理。</p>
+<p>为了方便对比这个测试内容，我们把上面<code>DeepEqual</code>的判断条件取反，获取的错误的内容对比验证一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># DeepEqual</span><br><span class="line">=== RUN   TestRead</span><br><span class="line">--- FAIL: TestRead (0.00s)</span><br><span class="line">    /Users/kevin/Desktop/tdd/reader_test.go:26: Read() failed. want=[0 1 2 3 4], got=[0 1 2 3 4].</span><br><span class="line">FAIL</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们将测试文件替换为<code>testify</code>方式进行：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> tdd</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"io"</span></span><br><span class="line">	<span class="string">"testing"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/golang/mock/gomock"</span></span><br><span class="line">	<span class="string">"github.com/stretchr/testify/assert"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestRead</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	ctrl := gomock.NewController(t)</span><br><span class="line">	<span class="keyword">defer</span> ctrl.Finish()</span><br><span class="line"></span><br><span class="line">	r := NewMockReadCloser(ctrl)</span><br><span class="line">	r.EXPECT().</span><br><span class="line">		Read(gomock.AssignableToTypeOf([]<span class="keyword">byte</span>&#123;&#125;)).</span><br><span class="line">		SetArg(<span class="number">0</span>, []<span class="keyword">byte</span>&#123;<span class="number">0x0</span>, <span class="number">0x1</span>, <span class="number">0x2</span>, <span class="number">0x3</span>, <span class="number">0x4</span>&#125;). <span class="comment">// 设置参数值</span></span><br><span class="line">		Return(<span class="number">5</span>, io.EOF).                          <span class="comment">// 设置返回值</span></span><br><span class="line">		AnyTimes()                                  <span class="comment">// 执行次数</span></span><br><span class="line"></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">5</span>)</span><br><span class="line">	Read(r, buf)</span><br><span class="line">	want := []<span class="keyword">byte</span>&#123;<span class="number">0x0</span>, <span class="number">0x1</span>, <span class="number">0x2</span>, <span class="number">0x3</span>&#125;</span><br><span class="line">	<span class="keyword">if</span> !assert.Equal(t, want, buf, <span class="string">"Read failed"</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>获取测试结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">=== RUN   TestRead</span><br><span class="line">--- FAIL: TestRead (0.00s)</span><br><span class="line">    /Users/kevin/Desktop/tdd/reader_test.go:25: </span><br><span class="line">        	Error Trace:	reader_test.go:25</span><br><span class="line">        	Error:      	Not equal: </span><br><span class="line">        	            	expected: []byte&#123;0x0, 0x1, 0x2, 0x3&#125;</span><br><span class="line">        	            	actual  : []byte&#123;0x0, 0x1, 0x2, 0x3, 0x4&#125;</span><br><span class="line">        	            	</span><br><span class="line">        	            	Diff:</span><br><span class="line">        	            	--- Expected</span><br><span class="line">        	            	+++ Actual</span><br><span class="line">        	            	@@ -1,3 +1,3 @@</span><br><span class="line">        	            	-([]uint8) (len=4) &#123;</span><br><span class="line">        	            	- 00000000  00 01 02 03                                       |....|</span><br><span class="line">        	            	+([]uint8) (len=5) &#123;</span><br><span class="line">        	            	+ 00000000  00 01 02 03 04                                    |.....|</span><br><span class="line">        	            	 &#125;</span><br><span class="line">        	Test:       	TestRead</span><br><span class="line">        	Messages:   	Read failed</span><br><span class="line">FAIL</span><br><span class="line">coverage: 100.0% of statements</span><br></pre></td></tr></table></figure>
+
+<p>另外，在<code>testify</code>工具中，还提供了<code>assert.JSONEq</code>等等非常有用的函数，可以自行研究一下。同时，<code>testify</code>工具还提供了<code>Testsuite</code>功能，用于方便的设置Setup和Teardown函数。</p>
+<p>你会发现<code>testify</code>工具还提供了<code>mock</code>功能，不过在实际过程中，<strong>不太建议使用该功能</strong>。</p>
+<h2 id="Ginkgo"><a href="#Ginkgo" class="headerlink" title="Ginkgo"></a>Ginkgo</h2><p><a href="https://onsi.github.io/ginkgo/" target="_blank" rel="noopener">Ginkgo</a>是针对Go程序进行BDD开发的工具，虽然它默认搭配使用<code>gomega</code>工具，不过我们还是建议你选择<code>testify</code>工具。你可以使用下面的方法快速接入<code>testify</code>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> foo_test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    . <span class="string">"github.com/onsi/ginkgo"</span></span><br><span class="line"></span><br><span class="line">    <span class="string">"github.com/stretchr/testify/assert"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">var _ = Describe(func("foo") &#123;</span><br><span class="line">    It(<span class="string">"should testify to its correctness"</span>, <span class="function"><span class="keyword">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">        assert.Equal(GinkgoT(), foo&#123;&#125;.Name(), <span class="string">"foo"</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><code>Ginkgo</code>工具提供了完善的<a href="https://onsi.github.io/ginkgo/#getting-started-writing-your-first-test" target="_blank" rel="noopener">文档介绍</a>，你可以参考工具官方文档了解具体的使用。另外一个<code>Ginkgo</code>非常有用的是它可以方便接入已有的测试日志捕获程序，比如你是JUnit的用户，你可以选择将日志格式输出成JUnit XML格式：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> foo_test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    . <span class="string">"github.com/onsi/ginkgo"</span></span><br><span class="line">    . <span class="string">"github.com/onsi/gomega"</span></span><br><span class="line"></span><br><span class="line">    <span class="string">"github.com/onsi/ginkgo/reporters"</span></span><br><span class="line">    <span class="string">"testing"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestFoo</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">    RegisterFailHandler(Fail)</span><br><span class="line">    junitReporter := reporters.NewJUnitReporter(<span class="string">"junit.xml"</span>)</span><br><span class="line">    RunSpecsWithDefaultAndCustomReporters(t, <span class="string">"Foo Suite"</span>, []Reporter&#123;junitReporter&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>文章总结了一些常见的涉及测试的工具，希望对你在实践过程中有所帮助。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -978,87 +1083,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/05/2018-05-03-new-domain/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/05/2018-05-03-new-domain/" class="post-title-link" itemprop="url">配置新域名</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-05-03 11:20:00" itemprop="dateCreated datePublished" datetime="2018-05-03T11:20:00+08:00">2018-05-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2018/05/2018-05-03-new-domain/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/2018-05-03-new-domain/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>感谢Github Page终于<a href="https://blog.github.com/2018-05-01-github-pages-custom-domains-https/" target="_blank" rel="noopener">支持了Let’s Encrypt的HTTPS</a>，很久之前购买的域名终于可以再次发光发热了。</p>
-<p>新的域名： <a href="https://www.4async.com">https://www.4async.com</a></p>
-<p>值得注意的是，在新的域名生效之后，HTTPS需要等待1-2个小时才能启用。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1109,7 +1133,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1153,7 +1177,7 @@
 <div class="copyright">
   
   &copy; 2013 – 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

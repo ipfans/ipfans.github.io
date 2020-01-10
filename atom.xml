@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.4async.com/"/>
-  <updated>2019-11-23T14:46:54.382Z</updated>
+  <updated>2020-01-10T09:31:00.941Z</updated>
   <id>https://www.4async.com/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>从 Go 语言的依赖库讲起（1）Ginkgo、testify、GoMock和gotests</title>
+    <link href="https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/"/>
+    <id>https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/</id>
+    <published>2020-01-10T09:30:00.000Z</published>
+    <updated>2020-01-10T09:31:00.941Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。&lt;/p&gt;
+&lt;p&gt;在我们开发过程的初期阶段，
+      
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
   
   <entry>
     <title>从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序</title>
@@ -410,32 +432,6 @@
       <category term="LoadBalance" scheme="https://www.4async.com/tags/LoadBalance/"/>
     
       <category term="configure" scheme="https://www.4async.com/tags/configure/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>利用 Type Hint 提升 Python 程序开发效率</title>
-    <link href="https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/"/>
-    <id>https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/</id>
-    <published>2016-07-13T12:00:00.000Z</published>
-    <updated>2019-07-04T03:20:39.000Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Type Hint（或者叫做 PEP-484）提供了一种针对 Python 程序的类型标注标准。&lt;/p&gt;
-&lt;p&gt;为什么使用 Type Hint？对于动态语言而言，常常出现的情况是当你写了一段代码后，隔段时间你可能忘记这个方法的原型是什么样子的了，你也不清楚具体应该传入什么类
-      
-    
-    </summary>
-    
-    
-      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
-    
-      <category term="TypeHint" scheme="https://www.4async.com/tags/TypeHint/"/>
-    
-      <category term="PEP0484" scheme="https://www.4async.com/tags/PEP0484/"/>
     
   </entry>
   
