@@ -187,6 +187,94 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-01-beego-tips/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-01-beego-tips/" class="post-title-link" itemprop="url">Beego 的几个小 Tips</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-04-01 18:46:51" itemprop="dateCreated datePublished" datetime="2014-04-01T18:46:51+08:00">2014-04-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-01-beego-tips/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-01-beego-tips/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Beego 框架不错，个人比较喜欢，关键是还有一些开发工具很实用，封装了很多实现，不需要自己做很多工作，在不考虑效率的前提下，都是可以接受的范畴。</p>
+<h2 id="自定义错误页面"><a href="#自定义错误页面" class="headerlink" title="自定义错误页面"></a>自定义错误页面</h2><p>Beego 默认自己带了一些错误页面，在 error.go 文件中进行了定义。以 404 为例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// show <span class="number">404</span> notfound error.</span><br><span class="line">func NotFound(rw http.ResponseWriter, r *http.Request) &#123;t, _ := template.New(<span class="string">"beegoerrortemp"</span>).Parse(errtpl)</span><br><span class="line">	data := make(map[string]interface&#123;&#125;)</span><br><span class="line">	data[<span class="string">"Title"</span>] = <span class="string">"Page Not Found"</span></span><br><span class="line">	data[<span class="string">"Content"</span>] = template.HTML(<span class="string">"&lt;br&gt;The page you have requested has flown the coop."</span>+<span class="string">"&lt;br&gt;Perhaps you are here because:"</span>+<span class="string">"&lt;br&gt;&lt;br&gt;&lt;ul&gt;"</span> +</span><br><span class="line">		<span class="string">"&lt;br&gt;The page has moved"</span>+<span class="string">"&lt;br&gt;The page no longer exists"</span>+<span class="string">"&lt;br&gt;You were looking for your puppy and got lost"</span>+<span class="string">"&lt;br&gt;You like 404 pages"</span>+<span class="string">"&lt;/ul&gt;"</span>)</span><br><span class="line">	data[<span class="string">"BeegoVersion"</span>] = VERSION</span><br><span class="line">	//rw.WriteHeader(http.StatusNotFound)</span><br><span class="line">	t.Execute(rw, data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实自己做一个修改也很容易：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func page_not_found(rw http.ResponseWriter, r *http.Request)&#123;t,_:= template.New(<span class="string">"404.html"</span>).ParseFiles(beego.ViewsPath+<span class="string">"/404.html"</span>)</span><br><span class="line">    data :=make(map[string]interface&#123;&#125;)</span><br><span class="line">    data[<span class="string">"content"</span>] = <span class="string">"page not found"</span></span><br><span class="line">    t.Execute(rw, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;beego.Errorhandler(<span class="string">"404"</span>,page_not_found)</span><br><span class="line">    beego.Router(<span class="string">"/"</span>, &amp;controllers.MainController&#123;&#125;)</span><br><span class="line">    beego.Run()&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Server-字段的修改"><a href="#Server-字段的修改" class="headerlink" title="Server 字段的修改"></a>Server 字段的修改</h2><p>HTTP 返回头中的 Server 总是显示的是 BeegoServer，太不专业了，定义在 config.go 文件中：</p>
+<pre><code>BeegoServerName = &quot;beegoServer&quot;</code></pre><p>我最初是 fork 了一个 repo 改，后来发现，只需要在 app.conf 文件中定义一下就可以了：</p>
+<pre><code>BeegoServerName = ACGSOSERVER</code></pre><p>这样 Server 这个字段就更改掉了，其他的属性也可以用这种方式定义掉。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/03/2014-03-28-python-distribute-building-part-one/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1035,97 +1123,6 @@ def tearDown(self):
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/" class="post-title-link" itemprop="url">通过 LaunchDaemon 实现 OSX 下的自动启动</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-01-23 15:00:00" itemprop="dateCreated datePublished" datetime="2014-01-23T15:00:00+08:00">2014-01-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2014/01/2014-01-23-launch-daemons-configure-mac-os-x/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-23-launch-daemons-configure-mac-os-x/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>OSX 下面添加开机选项怎么加呢？这是个问题。系统提供了一个 LaunchDaemon 的玩意，用于提供这个功能。相关的命令是 launchd 和 launchctl 两个命令。</p>
-<p>launch daemon 的配置文件是保存在 / System/Library/LaunchDaemons / 和 / Library/LaunchDaemons / 文件夹下。如果需要指定特定用户的配置，则可以放在~/Library/LaunchAgents、/Library/LaunchAgents 或者 / System/Library/LaunchAgents 下。区别为，是否用户登录之后执行还是内核初始化完成后执行。</p>
-<p>具体的执行命令很简单</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo launchctl load &lt;plist file&gt; #加载配置</span><br><span class="line"></span><br><span class="line">sudo launchctl unload &lt;file&gt;</span><br><span class="line"></span><br><span class="line">sudo launchctl start &lt;bundleid&gt;</span><br><span class="line"></span><br><span class="line">sudo launchctl stop &lt;bundleid&gt;</span><br></pre></td></tr></table></figure>
-
-<p>下面是一个配置的具体示例，用 shadowsocks 为例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;?xml version=&quot;1.0&quot;encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!DOCTYPE plist PUBLIC&quot;-//Apple//DTD PLIST 1.0//EN&quot;&quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</span><br><span class="line">&lt;plist version=&quot;1.0&quot;&gt;</span><br><span class="line">&lt;dict&gt;</span><br><span class="line">    &lt;key&gt;Label&lt;/key&gt;</span><br><span class="line">    &lt;string&gt;com.example.shadowsocks&lt;/string&gt;&lt;!-- 这个名字必须和文件名一致 --&gt;</span><br><span class="line">    &lt;key&gt;ProgramArguments&lt;/key&gt;</span><br><span class="line">    &lt;array&gt;</span><br><span class="line">        &lt;string&gt;/usr/local/bin/sslocal&lt;/string&gt;</span><br><span class="line">        &lt;string&gt;-c&lt;/string&gt;</span><br><span class="line">        &lt;string&gt;/Users/charles/Projects/shadowsocks-config/config.json&lt;/string&gt;</span><br><span class="line">    &lt;/array&gt;</span><br><span class="line">    &lt;key&gt;KeepAlive&lt;/key&gt;&lt;!-- 后台保持运行 --&gt;</span><br><span class="line">    &lt;true/&gt;</span><br><span class="line">    &lt;key&gt;RunAtLoad&lt;/key&gt;&lt;!-- 加载时候运行 --&gt;</span><br><span class="line">    &lt;true/&gt;</span><br><span class="line">    &lt;key&gt;UserName&lt;/key&gt;</span><br><span class="line">    &lt;string&gt;charles&lt;/string&gt;&lt;!-- 执行用户 --&gt;</span><br><span class="line">&lt;/dict&gt;</span><br><span class="line">&lt;/plist&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这个我们自己用户用的，放在~/Library/LaunchAgents 这个文件夹里。执行</p>
-<pre><code>launchctl load ~/Library/LaunchAgents/com.example.shadowsocks.plist</code></pre><p>即可。</p>
-<p>如果出现错误，则可以使用 plutil -lint 先判断文件格式是否正确。</p>
-<p>参考文档</p>
-<p>[1] <a href="https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html" target="_blank" rel="noopener">Daemons and Services Programming Guide</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1176,7 +1173,7 @@ def tearDown(self):
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

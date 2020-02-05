@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.4async.com/"/>
-  <updated>2020-01-10T09:33:43.903Z</updated>
+  <updated>2020-02-05T10:19:14.237Z</updated>
   <id>https://www.4async.com/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</title>
+    <link href="https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/"/>
+    <id>https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/</id>
+    <published>2020-02-05T10:30:00.000Z</published>
+    <updated>2020-02-05T10:19:14.237Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们&lt;a href&gt;前面一篇文章&lt;/a&gt;中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
   
   <entry>
     <title>从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock</title>
@@ -405,31 +423,6 @@
       <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
     
       <category term="dtrace" scheme="https://www.4async.com/tags/dtrace/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>traefik 简介</title>
-    <link href="https://www.4async.com/2016/08/2016-08-01-introduce-traefik-load-balance/"/>
-    <id>https://www.4async.com/2016/08/2016-08-01-introduce-traefik-load-balance/</id>
-    <published>2016-08-01T03:00:00.000Z</published>
-    <updated>2019-07-04T03:20:39.000Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;traefik(&lt;a href=&quot;https://traefik.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://traefik.io/&lt;/a&gt;) 是一款开源的反向代理与负载均衡工具。它最大的优点是能够与常见的微服务系统直接整合，可以
-      
-    
-    </summary>
-    
-    
-      <category term="traefik" scheme="https://www.4async.com/tags/traefik/"/>
-    
-      <category term="LoadBalance" scheme="https://www.4async.com/tags/LoadBalance/"/>
-    
-      <category term="configure" scheme="https://www.4async.com/tags/configure/"/>
     
   </entry>
   

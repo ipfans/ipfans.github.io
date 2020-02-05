@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="ipfans's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://www.4async.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: true,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监">
+<meta name="keywords" content="Golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志">
+<meta property="og:url" content="https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/index.html">
+<meta property="og:site_name" content="ipfans&#39;s Blog">
+<meta property="og:description" content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-05T10:19:14.237Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志">
+<meta name="twitter:description" content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监">
+
+<link rel="canonical" href="https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志 | ipfans's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b9862358b198078f40d7e1596b7c5968";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ipfans's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-05 18:30:00 / 修改时间：18:19:14" itemprop="dateCreated datePublished" datetime="2020-02-05T18:30:00+08:00">2020-02-05</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/02/2020-02-05-golang-debug-instrumental/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/02/2020-02-05-golang-debug-instrumental/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们<a href>前面一篇文章</a>中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。</p>
+<a id="more"></a>
+
+<h2 id="系统的可观察性"><a href="#系统的可观察性" class="headerlink" title="系统的可观察性"></a>系统的可观察性</h2><p>为了应对目前软件开发的复杂度带来的相关问题，可观察性(Observability) 这个概念被引入软件领域。传统的监控和报警主要关注系统的异常情况和失败因素，可观察性更关注的是从系统自身出发，去展现系统的运行状况，更像是一种对系统的自我审视。一个可观察的系统中更关注应用本身的状态，而不是所处的机器或者网络这样的间接证据。我们希望直接得到应用当前的吞吐和延迟信息，为了达到这个目的，我们就需要合理主动暴露更多应用运行信息。在当前的应用开发环境下，面对复杂系统我们的关注将逐渐由点到点线面体的结合，这能让我们更好的理解系统，不仅知道What，更能回答Why。</p>
+<p>可观察性目前主要包含以下三大支柱：</p>
+<ul>
+<li><p>度量(Metrics)：Metric 往往是一些聚合的信息，相比 Logging 丧失了一些具体信息，但是占用的空间要比完整日志小的多，可以用于监控和报警。</p>
+</li>
+<li><p>分布式追踪(Tracing)：Tracing 介于 Logging 和 Metric 之间， 以请求的维度，串联服务间的调用关系并记录调用耗时，即保留了必要的信息，又将分散的日志事件通过 Span 串联， 帮助我们更好的理解系统的行为、辅助调试和排查性能问题。</p>
+</li>
+<li><p>日志(Logging)：Logging 主要记录一些离散的事件，应用往往通过将定义好格式的日志信息输出到文件，然后用日志收集程序收集起来用于分析和聚合。</p>
+</li>
+</ul>
+<h2 id="故障发现：监控设施"><a href="#故障发现：监控设施" class="headerlink" title="故障发现：监控设施"></a>故障发现：监控设施</h2><p>监控设施虽然对程序而言各种各样，但是在我们实际落地过程中，我们也会对网络环境/物理设备/业务系统等等各种可能存在潜在问题的系统进行监控和报警。这里监控系统和报警系统一般是属于监控设施部分，这一部分的选型一般是公司整体选型设计的，这里不额外讨论。这里讨论的具体事项可能需要根据各公司情况自行判定。</p>
+<p>我们选型时则是选择了基于<a href="https://prometheus.io/" target="_blank" rel="noopener">Prometheus</a>+<a href="https://grafana.com/" target="_blank" rel="noopener">Grafana</a>进行业务系统监控，因此需要对应的客户端进行输出结果。Prometheus采用了pull模式，需要开启对应的HTTP端口方便进行采集。官方有一个<a href="https://prometheus.io/docs/guides/go-application/" target="_blank" rel="noopener">基础的入门教程</a>，可以用以参考。</p>
+<h2 id="故障追溯：分布式追踪"><a href="#故障追溯：分布式追踪" class="headerlink" title="故障追溯：分布式追踪"></a>故障追溯：分布式追踪</h2><p>分布式追踪我们目前采用的是<a href="https://www.jaegertracing.io/" target="_blank" rel="noopener">Jaeger系统</a>作为分布式追踪系统，我们可以根据用户反馈查看对应系统的请求，发现请求流经的系统和对应的处理时间。</p>
+<p>Jaeger提供了各种语言的丰富客户端格式，作为Go编写的应用，自然也提供了<a href="https://github.com/jaegertracing/jaeger-client-go" target="_blank" rel="noopener">Go语言的客户端库</a>。</p>
+<h2 id="故障追溯：日志"><a href="#故障追溯：日志" class="headerlink" title="故障追溯：日志"></a>故障追溯：日志</h2><p>日志采集系统大家常见的包含ELK(EFK)，后面更有性能更强资源占用更少的<a href="https://clickhouse.tech/docs/zh/" target="_blank" rel="noopener">ClickHouse</a>等等作为选择。这里我们重点不讨论外部系统的选择，更重要的将核心集中于常见库的选择中。</p>
+<p>在常见日志记录中，同分布式追踪相同，我们通常需要对请求的相关ID进行记录，保证在对对应数据进行分析时，能够尽快筛选对应的请求和相关数据内容。这里我推荐使用<a href="https://github.com/rs/zerolog" target="_blank" rel="noopener"><code>rs/zerolog</code></a>作为日志记录的日志库。虽然我们历史系统中大量的使用了<a href="https://github.com/uber-go/zap" target="_blank" rel="noopener"><code>zap</code></a>作为日志输出驱动，但是在实际开发中，借助<code>zerolog</code>提供的<a href="https://github.com/rs/zerolog#pass-a-sub-logger-by-context" target="_blank" rel="noopener"><code>WithContext</code></a>方法，我们可以有针对性的，对每次请求，部分请求、请求内参数等各方面进行详细定制，方便我们在诊断具体内容时动态调整日志级别、附带每次请求ID等等的需求。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ipfans
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/" title="从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志">https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/2020-01-10-golang-test-driven-toolkit/" rel="prev" title="从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock">
+      <i class="fa fa-chevron-left"></i> 从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments" id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统的可观察性"><span class="nav-number">1.</span> <span class="nav-text">系统的可观察性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#故障发现：监控设施"><span class="nav-number">2.</span> <span class="nav-text">故障发现：监控设施</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#故障追溯：分布式追踪"><span class="nav-number">3.</span> <span class="nav-text">故障追溯：分布式追踪</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#故障追溯：日志"><span class="nav-number">4.</span> <span class="nav-text">故障追溯：日志</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ipfans"
+      src="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+  <p class="site-author-name" itemprop="name">ipfans</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ipfans" title="GitHub → https://github.com/ipfans" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/janxin" title="Twitter → https://twitter.com/janxin" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2013 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ipfans</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://s1mbily.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  function loadComments() {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: {page: {
+            url: "https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/",
+            identifier: "2020/02/2020-02-05-golang-debug-instrumental/",
+            title: "从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志"
+          }
+        }
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://s1mbily.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  }
+    window.addEventListener('load', loadComments, false);
+</script>
+
+  <script>
+  var link = "" ;
+  // 遍历所有的img标签
+  $("img").each( (i,o) => {
+    var o = $(o);
+      // 判断图片的链接是否包含sinaimg关键字
+    if( o.attr("src").indexOf("sinaimg") > 0 ){
+          // 给这个标签加上referrerPlicy属性
+      o.attr("referrerpolicy","no-referrer");
+          // 备份图片的src
+      link = o.attr("src");
+          // 重新设置src，让页面重新加载一次图片
+      o.attr("src",link);
+    }
+  });
+  </script>
+</body>
+</html>

@@ -187,6 +187,115 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/08/2016-08-01-introduce-traefik-load-balance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/08/2016-08-01-introduce-traefik-load-balance/" class="post-title-link" itemprop="url">traefik 简介</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-08-01 11:00:00" itemprop="dateCreated datePublished" datetime="2016-08-01T11:00:00+08:00">2016-08-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2016/08/2016-08-01-introduce-traefik-load-balance/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/2016-08-01-introduce-traefik-load-balance/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>traefik(<a href="https://traefik.io/" target="_blank" rel="noopener">https://traefik.io/</a>) 是一款开源的反向代理与负载均衡工具。它最大的优点是能够与常见的微服务系统直接整合，可以实现自动化动态配置。目前支持 Docker, Swarm, Mesos/Marathon, Mesos, Kubernetes, Consul, Etcd, Zookeeper, BoltDB, Rest API 等等后端模型。</p>
+<p>traefik 的具体模型如下：<br><img src="https://github.com/containous/traefik/raw/master/docs/img/architecture.png" alt="traefik"></p>
+<h2 id="为什么选择-traefik？"><a href="#为什么选择-traefik？" class="headerlink" title="为什么选择 traefik？"></a>为什么选择 traefik？</h2><p>事实上在之前我对 LB 的选择一直更倾向于使用 <a href="http://www.haproxy.org" target="_blank" rel="noopener">HAProxy</a>。但是选择 traefik 主要是有以下特点让我们决定使用：</p>
+<ul>
+<li>Golang 编写，单文件部署，与系统无关，同时也提供小尺寸 Docker 镜像。</li>
+<li>支持 Docker/Etcd 后端，天然连接我们的微服务集群。</li>
+<li>内置 Web UI，管理相对方便。</li>
+<li>自动配置 ACME(Let’s Encrypt) 证书功能。</li>
+<li>性能尚可，我们也没有到压榨 LB 性能的阶段，易用性更重要。</li>
+</ul>
+<p>除了这些以外，traefik 还有以下特点：</p>
+<ul>
+<li>Restful API 支持。</li>
+<li>支持后端健康状态检查，根据状态自动配置。</li>
+<li>支持动态加载配置文件和 graceful 重启。</li>
+<li>支持 WebSocket 和 HTTP/2。</li>
+</ul>
+<p>除了上面提到的微服务化集群支持，一些 AB 测试阶段也可以通过 frontend 的路由特性进行动态分配，当然这些对 HAProxy 等软件都是标准支持的。</p>
+<h2 id="traefik-的配置"><a href="#traefik-的配置" class="headerlink" title="traefik 的配置"></a>traefik 的配置</h2><p>traefik 支持的配置方式支持文件方式进行配置，这个也是比较常见的配置方式，我们这里简单介绍一下。</p>
+<p>traefik 支持的 toml 方式进行配置，官方提供了一个 <a href="https://docs.traefik.io/toml/" target="_blank" rel="noopener">示例的 traefik.toml 文件</a> 用于演示配置。除此之外，后端服务一般是采用单独文件进行存储，比如演示配置中指定的 rules.toml。</p>
+<p>具体一个例子，如果我们有两个后端，127.0.0.1:7727，127.0.0.1:7728，我们希望所有的 Chrome 用户都可以访问 127.0.0.1:7727，其它人都访问 127.0.0.1:7728，这样这个 rules.toml 应该如何配置呢？</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># rules.toml</span></span><br><span class="line"><span class="section">[backends]</span></span><br><span class="line"><span class="section">  [backends.backend1]</span></span><br><span class="line"><span class="section">    [backends.backend1.servers.server1]</span></span><br><span class="line">    url = "http://127.0.0.1:7727"</span><br><span class="line"><span class="section">  [backends.backend2]</span></span><br><span class="line"><span class="section">    [backends.backend2.servers.server1]</span></span><br><span class="line">    url = "http://127.0.0.1:7728"</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="section">[frontends]</span></span><br><span class="line"><span class="section">  [frontends.frontend1]</span></span><br><span class="line">  entrypoints = ["http"]</span><br><span class="line">  backend = "backend1"</span><br><span class="line"><span class="section">    [frontends.frontend1.routes.test_1]</span></span><br><span class="line">    rule = "HeadersRegexp: User-Agent, Chrome"</span><br><span class="line"><span class="section">  [frontends.frontend2]</span></span><br><span class="line">  entrypoints = ["http"]</span><br><span class="line">  backend = "backend2"</span><br></pre></td></tr></table></figure>
+
+<p>首先定义两个后端服务，每个后端服务可以支持多个服务单元，这里我们只有一个。前端 frontends 用于匹配请求落到哪个后端服务中。我们这里定义一个规则 test_1，设置规则为根据 HTTP 请求头部正则进行分配：如果 UserAgent 中包含 Chrome 字样，则访问到 127.0.0.1:7727。匹配的规则方式包含了以下几种方式:</p>
+<ul>
+<li><code>Headers</code>/<code>HeaderRegexp</code>: 头部匹配方式，分别对应按值和正则表达式两种方式。</li>
+<li><code>Host</code>/<code>HostRegexp</code>: 按照请求主机名进行匹配，与头部信息相似。</li>
+<li><code>Method</code>: 按照请求方式区分。</li>
+<li><code>Path</code>/<code>PathStrip</code>/<code>PathPrefix</code>/<code>PathPrefixStrip</code>: 按照路径区分后端。</li>
+</ul>
+<h2 id="traefik-与微服务集群"><a href="#traefik-与微服务集群" class="headerlink" title="traefik 与微服务集群"></a>traefik 与微服务集群</h2><p>这个有人已经写过相关的文章了，我在这里简单推荐一下： <a href="http://blog.hypriot.com/post/microservices-bliss-with-docker-and-traefik/" target="_blank" rel="noopener">Microservices Bliss with Docker and Traefik</a>（<a href="http://dockone.io/article/1418" target="_blank" rel="noopener">中文译文</a>）。我就不做额外的描述了。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1070,97 +1179,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/01/2016-01-15-how-we-follow-python-style-guide/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/01/2016-01-15-how-we-follow-python-style-guide/" class="post-title-link" itemprop="url">我们是如何落实 Code Style Guide 的（Python 篇）</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2016-01-15 17:30:00" itemprop="dateCreated datePublished" datetime="2016-01-15T17:30:00+08:00">2016-01-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2016/01/2016-01-15-how-we-follow-python-style-guide/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/2016-01-15-how-we-follow-python-style-guide/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>我们是如何落实 Code Style Guide 的（Python 篇）</p>
-<p>最近年终，总是想谈谈过去一年的感悟和积累。接下来大概有几篇关于项目管理等等一些小方面的介绍，这篇文章主要介绍一下我们如何将 Python 编码规范真正落实到程序的实际开发过程中的。</p>
-<h2 id="编码规范选择"><a href="#编码规范选择" class="headerlink" title="编码规范选择"></a>编码规范选择</h2><p>Python 作为灵活的脚本语言，在格式方面并不存在太多的限制（相对编译语言）。这样会导致一个比较蛋疼的问题：在项目开发过程中，由于个人的习惯和编码风格，导致程序缺少一个统一的标准，每个人的代码表现形式也不同。因此，在实际项目由于新人加入、老人退出过程中会产生比较高的模块维护成本。因此，在实际的项目开发中，选择一个编码标准也是比较重要的。</p>
-<p>面对编码风格选择，比较常见的包括 <a href="https://www.python.org/dev/peps/pep-0008/" target="_blank" rel="noopener">PEP-8</a> 和 <a href="http://zh-google-styleguide.readthedocs.org/en/latest/google-python-styleguide/" target="_blank" rel="noopener">Google Python Style Guide</a>。在最后，我选择了 <code>PEP-8</code> 作为项目中的实际应用标准，要求程序需要在满足编码要求规范的前提下进行编码。</p>
-<p>除了对代码编码更个的要求以外，我们还对 import 等具体的细节进行了标准化。</p>
-<h2 id="尽量规范注释"><a href="#尽量规范注释" class="headerlink" title="尽量规范注释"></a>尽量规范注释</h2><p>在降低模块维护成本过程中，另外一个比较好的方式是尽量提供良好的代码注释。尽管这个算是一个和语言无关的老生常谈的问题，我只是想在这里提一下另外一个 PEP：<a href="https://www.python.org/dev/peps/pep-0257/" target="_blank" rel="noopener">PEP-0257</a>，这里介绍了一种约定的 docstring 编写方法，对于编辑器而言，可以通过插件快速实现注释。</p>
-<p>不过我考虑到对个人习惯的影响较大，这个 PEP 实际项目开发中并未作为实际开发规范，只是鼓励大家在项目中进行执行。</p>
-<h2 id="从规范到执行"><a href="#从规范到执行" class="headerlink" title="从规范到执行"></a>从规范到执行</h2><p>从代码开发最初的规范约定是一回事，当回到开发过程中，开发者难免会因为个人的习惯或者疏忽等各种原因导致程序开发过程中程序编码风格不统一问题。因此在实际开发过程中，我们又需要通过工具保证程序在实际过程中能够帮助规范化或者检查格式错误。</p>
-<p>借助社区的力量，我们最终选择了工具 <code>flake8</code>、<code>yapf</code> 和 <code>isort</code>。其中，<code>flake8</code> 用于检查我们的代码是否正确的执行了标准；<code>yapf</code> 工具用于快速进行 <code>PEP-8</code> 标准化，减少了人工修改的成本；<code>isort</code> 工具则是执行我们之前提到的 import 标准化工作。</p>
-<p><a href="https://github.com/google/yapf" target="_blank" rel="noopener"><code>yapf</code></a> 是 Google 员工开发的一个 Python 格式化工具，它支持 PEP8 与 Google 编码标准，一些具体的使用方式可以查看项目的主页。在实际的项目落地过程中，你应该会遇到的一个问题是关于 <code>flake8</code> 与 <code>yapf</code> 标准不一致导致一个通过另一个无法正常通过的问题。这一个方面，我们选择的方式是统一妥协成 <code>flake8</code> 的标准。对于 <code>yapf</code> 不支持的部分，我们建议活用 <code># yapf: disable</code> 标记。</p>
-<p>还有另一个问题是关于一些 <code>flake8</code> 本身的标准（或者说 PEP－8 标准）问题，比如 <code>flake8</code> 常见问题：<code>E501</code> 程序代码长度超过 79 个字符问题，我们实际编码过程中对这一标准做了适当妥协，允许最大单行字符串长度为 200。但是我们仍然建议缩小至 79 个字符内表示完。</p>
-<h2 id="从执行到检查"><a href="#从执行到检查" class="headerlink" title="从执行到检查"></a>从执行到检查</h2><p>在最后一关，是我们的上线前检查。我们设置了代码质量检查关卡和系统集成测试。</p>
-<p>在代码质量检查过程中，我们会对程序的实际代码质量进行评估。我们对代码质量进行打分，对于分值较低的代码不允许提交进入 <code>master</code> 分支。代码质量的检查，我们同样的采用了 <code>flake8</code> 工具作为统一标准。最后个人的代码质量，通过 Webhook 也会直接反馈在具体的项目管理工具中。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1211,7 +1229,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

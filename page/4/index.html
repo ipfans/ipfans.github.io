@@ -187,6 +187,97 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/01/2016-01-15-how-we-follow-python-style-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/01/2016-01-15-how-we-follow-python-style-guide/" class="post-title-link" itemprop="url">我们是如何落实 Code Style Guide 的（Python 篇）</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-01-15 17:30:00" itemprop="dateCreated datePublished" datetime="2016-01-15T17:30:00+08:00">2016-01-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2016/01/2016-01-15-how-we-follow-python-style-guide/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/2016-01-15-how-we-follow-python-style-guide/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>我们是如何落实 Code Style Guide 的（Python 篇）</p>
+<p>最近年终，总是想谈谈过去一年的感悟和积累。接下来大概有几篇关于项目管理等等一些小方面的介绍，这篇文章主要介绍一下我们如何将 Python 编码规范真正落实到程序的实际开发过程中的。</p>
+<h2 id="编码规范选择"><a href="#编码规范选择" class="headerlink" title="编码规范选择"></a>编码规范选择</h2><p>Python 作为灵活的脚本语言，在格式方面并不存在太多的限制（相对编译语言）。这样会导致一个比较蛋疼的问题：在项目开发过程中，由于个人的习惯和编码风格，导致程序缺少一个统一的标准，每个人的代码表现形式也不同。因此，在实际项目由于新人加入、老人退出过程中会产生比较高的模块维护成本。因此，在实际的项目开发中，选择一个编码标准也是比较重要的。</p>
+<p>面对编码风格选择，比较常见的包括 <a href="https://www.python.org/dev/peps/pep-0008/" target="_blank" rel="noopener">PEP-8</a> 和 <a href="http://zh-google-styleguide.readthedocs.org/en/latest/google-python-styleguide/" target="_blank" rel="noopener">Google Python Style Guide</a>。在最后，我选择了 <code>PEP-8</code> 作为项目中的实际应用标准，要求程序需要在满足编码要求规范的前提下进行编码。</p>
+<p>除了对代码编码更个的要求以外，我们还对 import 等具体的细节进行了标准化。</p>
+<h2 id="尽量规范注释"><a href="#尽量规范注释" class="headerlink" title="尽量规范注释"></a>尽量规范注释</h2><p>在降低模块维护成本过程中，另外一个比较好的方式是尽量提供良好的代码注释。尽管这个算是一个和语言无关的老生常谈的问题，我只是想在这里提一下另外一个 PEP：<a href="https://www.python.org/dev/peps/pep-0257/" target="_blank" rel="noopener">PEP-0257</a>，这里介绍了一种约定的 docstring 编写方法，对于编辑器而言，可以通过插件快速实现注释。</p>
+<p>不过我考虑到对个人习惯的影响较大，这个 PEP 实际项目开发中并未作为实际开发规范，只是鼓励大家在项目中进行执行。</p>
+<h2 id="从规范到执行"><a href="#从规范到执行" class="headerlink" title="从规范到执行"></a>从规范到执行</h2><p>从代码开发最初的规范约定是一回事，当回到开发过程中，开发者难免会因为个人的习惯或者疏忽等各种原因导致程序开发过程中程序编码风格不统一问题。因此在实际开发过程中，我们又需要通过工具保证程序在实际过程中能够帮助规范化或者检查格式错误。</p>
+<p>借助社区的力量，我们最终选择了工具 <code>flake8</code>、<code>yapf</code> 和 <code>isort</code>。其中，<code>flake8</code> 用于检查我们的代码是否正确的执行了标准；<code>yapf</code> 工具用于快速进行 <code>PEP-8</code> 标准化，减少了人工修改的成本；<code>isort</code> 工具则是执行我们之前提到的 import 标准化工作。</p>
+<p><a href="https://github.com/google/yapf" target="_blank" rel="noopener"><code>yapf</code></a> 是 Google 员工开发的一个 Python 格式化工具，它支持 PEP8 与 Google 编码标准，一些具体的使用方式可以查看项目的主页。在实际的项目落地过程中，你应该会遇到的一个问题是关于 <code>flake8</code> 与 <code>yapf</code> 标准不一致导致一个通过另一个无法正常通过的问题。这一个方面，我们选择的方式是统一妥协成 <code>flake8</code> 的标准。对于 <code>yapf</code> 不支持的部分，我们建议活用 <code># yapf: disable</code> 标记。</p>
+<p>还有另一个问题是关于一些 <code>flake8</code> 本身的标准（或者说 PEP－8 标准）问题，比如 <code>flake8</code> 常见问题：<code>E501</code> 程序代码长度超过 79 个字符问题，我们实际编码过程中对这一标准做了适当妥协，允许最大单行字符串长度为 200。但是我们仍然建议缩小至 79 个字符内表示完。</p>
+<h2 id="从执行到检查"><a href="#从执行到检查" class="headerlink" title="从执行到检查"></a>从执行到检查</h2><p>在最后一关，是我们的上线前检查。我们设置了代码质量检查关卡和系统集成测试。</p>
+<p>在代码质量检查过程中，我们会对程序的实际代码质量进行评估。我们对代码质量进行打分，对于分值较低的代码不允许提交进入 <code>master</code> 分支。代码质量的检查，我们同样的采用了 <code>flake8</code> 工具作为统一标准。最后个人的代码质量，通过 Webhook 也会直接反馈在具体的项目管理工具中。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/01/2016-01-06-rust-http-client/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1102,99 +1193,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2015/07/2015-07-22-howto-make-your-own-permission-plugin/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2015/07/2015-07-22-howto-make-your-own-permission-plugin/" class="post-title-link" itemprop="url">如何用 Python 实现一个权限管理系列 (一)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2015-07-22 11:00:15" itemprop="dateCreated datePublished" datetime="2015-07-22T11:00:15+08:00">2015-07-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2015/07/2015-07-22-howto-make-your-own-permission-plugin/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/07/2015-07-22-howto-make-your-own-permission-plugin/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>最近在实现大型 B2B 系统之后，有很多细节需要考虑，其中一环就是权限控制。之前考虑的比较少，认为这一块框架可以 handle 问题不大，后来发现 Tornado 目前没有一个比较完善的权限管理模块，甚至连个包都没有… 于是只能自己动手，丰衣足食了。参考的方式也是通过 Flask-Principal 的类似实现方式。</p>
-<h2 id="原型"><a href="#原型" class="headerlink" title="原型"></a>原型</h2><p>一个权限管理模块应该有的功能应该有哪些呢？从基本角度出发，应该包含用户身份 (Identity)、用户角色（RoleNeed）、用户权限（Permission）这三个最基本的分类组成。那么从最开始，就需要定义这几个类：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RoleNeed</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Identity</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Permission</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-
-<p>再考虑一下，其实 RoleNeed 更像一个权限的枚举数组，除此之外，比如用户可能存在的权限与分组和单独的用户权限都有关系，这里需要更加抽象一下。具体的可以分成 UserNeed 和 RoleNeed，分别对应用户权限与用户组权限。这样如果通过类实现还是比较麻烦，需要继承，但是实际上这也只是一个元组而已。所以可以选择下面的方式：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> partial。</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"></span><br><span class="line">Need = namedtuple(<span class="string">'Need'</span>, [<span class="string">'method'</span>, <span class="string">'value'</span>])</span><br><span class="line"></span><br><span class="line">UserNeed = partial(Need,<span class="string">'user'</span>)</span><br><span class="line">RoleNeed = partial(Need,<span class="string">'role'</span>)</span><br></pre></td></tr></table></figure>
-
-<p>namedtuple 是 Python 高级数据结构中的一个内容，在 collections 包中，其实实现的效果是生成带名称的元组。比如 Need = namedtuple(‘Need’, [‘method’, ‘value’]) 实际上就是生成了一个名字叫做 Need 的元组，你可以通过 Need(‘a’, ‘b’) 的方式设置对应的 method 和 value 的值。</p>
-<p>接下来的 partial 是和之前我另一篇文章中介绍的 wraps 在一个包中的功能，可以简单理解为方便填入一个初始化参数的方法，比如 partial(Need,’user’) 等同于 Need(‘user’, x)，但是 x 的这个参数需要在调用 parial 的返回值的时候才会传入，可以用来预定义一部分的环境参数。</p>
-<p>现在相当于我们定义了一个以用户为维度身份权限要求和以用户组为维度的身份要求。接下来就可以实现用户身份的一些功能了。</p>
-<p>用户身份或者权限保存我们应该交由上层的业务逻辑来实现，以保证最大的模块复用性，那么用户身份就剩下了，声明用户身份和判断用户是否有权限执行某项权限操作的内容。</p>
-<p>所以我们可以这样实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Identity(object):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    A set of needs provided by this user</span><br><span class="line"></span><br><span class="line">    example:</span><br><span class="line">        identity = Identity(&apos;ali&apos;)</span><br><span class="line">        identity.provides.add((&apos;role&apos;, &apos;admin&apos;))</span><br><span class="line">    &quot;&quot;&quot;def __init__(self, name):</span><br><span class="line">        self.name = name</span><br><span class="line">        self.provides = set()</span><br><span class="line"></span><br><span class="line">    def can(self, permission):</span><br><span class="line">        return permission.allows(self)</span><br></pre></td></tr></table></figure>
-
-<p>这里的 provides 是作为用户权限的声明，是一个每个权限的集合。可以在最开始登录等等时间进行加载。而 can 方法则是判断某个权限是否可以被执行。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1245,7 +1243,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

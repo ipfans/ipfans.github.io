@@ -187,6 +187,128 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/06/2014-06-01-try-docker-with-coreos/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/06/2014-06-01-try-docker-with-coreos/" class="post-title-link" itemprop="url">初识 Docker</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-06-10 11:52:15" itemprop="dateCreated datePublished" datetime="2014-06-10T11:52:15+08:00">2014-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/06/2014-06-01-try-docker-with-coreos/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/06/2014-06-01-try-docker-with-coreos/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Docker 是一个最近非常风行的轻量级应用容器。如果不知道的同学自行搜索去吧，这里不在赘述了。针对于 Docker，有个初创公司推出了适用于 Docker 专用的 Linux：CoreOS。一个号称系统运行内存只占用 161MB 的精简系统。这个 CoreOS 只提供了 Docker 需要的必须环境和管理功能，因此很轻量级，非常适合批量部署和我们这种用来研究学习目的的。</p>
+<p>值得一提的是里面的管理工具也是由 Golang 开发的，提供 json api 接口，有兴趣的话可以自行查看源代码。</p>
+<h2 id="安装必须软件"><a href="#安装必须软件" class="headerlink" title="安装必须软件"></a>安装必须软件</h2><p>必须软件需要 Vargrant 和 VirtualBox。Vargrant 可以当作是一个虚拟机和镜像管理器，VirtualBox 我就不用说了吧。安装下载就不说立刻，下载安装地址见下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://www.vagrantup.com/downloads.html</span><br><span class="line">https://www.virtualbox.org/wiki/Downloads</span><br></pre></td></tr></table></figure>
+
+<h2 id="CoreOS-配置"><a href="#CoreOS-配置" class="headerlink" title="CoreOS 配置"></a>CoreOS 配置</h2><p>CoreOS 的 Vargrant 脚本可以在 <a href="https://github.com/coreos/coreos-vagrant/" target="_blank" rel="noopener">https://github.com/coreos/coreos-vagrant/</a> 找到，下载下来的方法很简单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/coreos/coreos-vagrant/</span><br><span class="line">cd coreos-vagrant</span><br></pre></td></tr></table></figure>
+
+<p>然后执行命令直接开启虚拟机了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant up</span><br></pre></td></tr></table></figure>
+
+<p>如果第一次执行，会下载 CoreOS 的镜像，站点在国外，难免会慢一点，不过也没啥关系，稍微等一下吧，如果出现问题了，就重新执行一下。</p>
+<p>如果出现下面错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">You specified a box version constraint with a direct box file</span><br><span class="line">path. Box version constraints only work with boxes from Vagrant</span><br><span class="line">Cloud or a custom box host. Please remove the version constraint</span><br><span class="line">and try again.</span><br></pre></td></tr></table></figure>
+
+<p>注释掉 Vagrantfile 文件中的 config.vm.box_version 这行。</p>
+<p>执行完成上面的指令之后，CoreOS 就运行了，同时你也注意到有一些关于 ssh 的信息。这个时候怎么登陆到 CoreOS 呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant ssh</span><br></pre></td></tr></table></figure>
+
+<p>然后就登录到了 CoreOS 系统了。</p>
+<p>如果你有代理想要下载加速，也是可以的，在命令行中执行 (Windows)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set all_proxy=socks5://127.0.0.1:1080</span><br></pre></td></tr></table></figure>
+
+<h2 id="Docker-试用"><a href="#Docker-试用" class="headerlink" title="Docker 试用"></a>Docker 试用</h2><p>先来一个简单的 hello world：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run ubuntu /bin/echo hello world</span><br></pre></td></tr></table></figure>
+
+<p>嗯，据说国内以后会有源，不过现在还没有，所以镜像又得从国外下载，又是一个漫长的等待…. 经过一天一夜的下载，我的 repo 终于下载成功了….</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">core@core-01 / $ docker run ubuntu /bin/echo hello world</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
+
+<p>这样就表示一个 docker 模版安装成功了。不过这还早，怎么利用 docker 部署 python 应用呢？</p>
+<p>首先是创建一个 Docker 容器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -i -t -p 80:80 ubuntu /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>执行完成之后，你不仅会创建一个容器，并且会登录到这个容器内了。这样就可以当作一个简单的系统来应用了。退出容器的方法是按快捷键 CTRL+P 和 CTRL+Q。列举运行的 docker 可以使用 sudo docker ps 命令，然后 docker attach [id] 方式进入容器。</p>
+<p>根据之前提到的内容，我们现在可以执行 coreos 里面没有的命令了，比如说 apt-get:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get upgrade</span><br></pre></td></tr></table></figure>
+
+<p>接下来是安装必须的工具了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get install -y tar git curl nano wget dialog net-tools vim build-essential zlib1g-dev</span><br><span class="line">apt-get install -y python python-dev python-setuptools python-pip libxml2-dev libxslt-dev libffi-dev</span><br></pre></td></tr></table></figure>
+
+<p>接下来安装一些 python 依赖库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install cython gevent flask falcon sqlalchemy lxml cffi somplejson</span><br><span class="line">pip install --allow-external mysql-connector-python mysql-connector-python</span><br></pre></td></tr></table></figure>
+
+<p>下面就是开发一些的东西啦，每个人都不同，这里就不多说了。docker 自动化部署之类的东西就放在下个日志来讲好了。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/05/2014-05-30-quick-Identify-python-object-struct/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1063,94 +1185,6 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-01-beego-tips/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2014/04/2014-04-01-beego-tips/" class="post-title-link" itemprop="url">Beego 的几个小 Tips</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-04-01 18:46:51" itemprop="dateCreated datePublished" datetime="2014-04-01T18:46:51+08:00">2014-04-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2014/04/2014-04-01-beego-tips/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-01-beego-tips/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Beego 框架不错，个人比较喜欢，关键是还有一些开发工具很实用，封装了很多实现，不需要自己做很多工作，在不考虑效率的前提下，都是可以接受的范畴。</p>
-<h2 id="自定义错误页面"><a href="#自定义错误页面" class="headerlink" title="自定义错误页面"></a>自定义错误页面</h2><p>Beego 默认自己带了一些错误页面，在 error.go 文件中进行了定义。以 404 为例：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// show <span class="number">404</span> notfound error.</span><br><span class="line">func NotFound(rw http.ResponseWriter, r *http.Request) &#123;t, _ := template.New(<span class="string">"beegoerrortemp"</span>).Parse(errtpl)</span><br><span class="line">	data := make(map[string]interface&#123;&#125;)</span><br><span class="line">	data[<span class="string">"Title"</span>] = <span class="string">"Page Not Found"</span></span><br><span class="line">	data[<span class="string">"Content"</span>] = template.HTML(<span class="string">"&lt;br&gt;The page you have requested has flown the coop."</span>+<span class="string">"&lt;br&gt;Perhaps you are here because:"</span>+<span class="string">"&lt;br&gt;&lt;br&gt;&lt;ul&gt;"</span> +</span><br><span class="line">		<span class="string">"&lt;br&gt;The page has moved"</span>+<span class="string">"&lt;br&gt;The page no longer exists"</span>+<span class="string">"&lt;br&gt;You were looking for your puppy and got lost"</span>+<span class="string">"&lt;br&gt;You like 404 pages"</span>+<span class="string">"&lt;/ul&gt;"</span>)</span><br><span class="line">	data[<span class="string">"BeegoVersion"</span>] = VERSION</span><br><span class="line">	//rw.WriteHeader(http.StatusNotFound)</span><br><span class="line">	t.Execute(rw, data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其实自己做一个修改也很容易：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func page_not_found(rw http.ResponseWriter, r *http.Request)&#123;t,_:= template.New(<span class="string">"404.html"</span>).ParseFiles(beego.ViewsPath+<span class="string">"/404.html"</span>)</span><br><span class="line">    data :=make(map[string]interface&#123;&#125;)</span><br><span class="line">    data[<span class="string">"content"</span>] = <span class="string">"page not found"</span></span><br><span class="line">    t.Execute(rw, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;beego.Errorhandler(<span class="string">"404"</span>,page_not_found)</span><br><span class="line">    beego.Router(<span class="string">"/"</span>, &amp;controllers.MainController&#123;&#125;)</span><br><span class="line">    beego.Run()&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Server-字段的修改"><a href="#Server-字段的修改" class="headerlink" title="Server 字段的修改"></a>Server 字段的修改</h2><p>HTTP 返回头中的 Server 总是显示的是 BeegoServer，太不专业了，定义在 config.go 文件中：</p>
-<pre><code>BeegoServerName = &quot;beegoServer&quot;</code></pre><p>我最初是 fork 了一个 repo 改，后来发现，只需要在 app.conf 文件中定义一下就可以了：</p>
-<pre><code>BeegoServerName = ACGSOSERVER</code></pre><p>这样 Server 这个字段就更改掉了，其他的属性也可以用这种方式定义掉。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1201,7 +1235,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
