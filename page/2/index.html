@@ -187,6 +187,93 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/" class="post-title-link" itemprop="url">关于Golang过滤敏感信息的正确姿势</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-06 16:07:00" itemprop="dateCreated datePublished" datetime="2018-06-06T16:07:00+08:00">2018-06-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/2018-06-06-sensitive-info-filter-in-golang/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>今天正好看到一篇关于敏感信息过滤的<a href="https://hackernoon.com/keep-passwords-and-secrets-out-of-your-logs-with-go-a2294a9546ce" target="_blank" rel="noopener">文章</a>，这算做一个interface实际应用的一些举例和应用。</p>
+<p>例子中介绍了一种比较常见的使用场景：使用JSON保存数据时的对诸如用户密码等信息进行保护时候应该做的事情。作者以使用JSON格式保存用户账户和密码为例，讲解了使用<code>json.Unmarshaler</code>接口类型过滤敏感信息。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/06/2018-06-06-sensitive-info-filter-in-golang/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1359,128 +1446,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/09/2016-09-15-tracing-python-program-with-dtrace/" class="post-title-link" itemprop="url">使用 dtrace 跟踪 Python 应用</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2016-09-15 18:00:00" itemprop="dateCreated datePublished" datetime="2016-09-15T18:00:00+08:00">2016-09-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2016/09/2016-09-15-tracing-python-program-with-dtrace/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/09/2016-09-15-tracing-python-program-with-dtrace/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>今年在 Pycon China 上，来自饿了么的郭浩川分享了 <a href="http://ocgxshkaw.bkt.clouddn.com/4%20%E3%80%8A%E7%94%A8%E9%AB%98%E9%AD%94%E7%9A%84%E5%A7%BF%E5%8A%BF%E8%B0%83%20python%20%E7%A8%8B%E5%BA%8F%E3%80%8B%E9%83%AD%E6%B5%A9%E5%B7%9D.pdf" target="_blank" rel="noopener">利用 systemtap 进行 Python 执行情况分析</a> 的内容。分享利用 systemtap 在线上环境中实时监控 gevent patch 的 green thread 程序的执行状况。</p>
-<p>dtrace 和 systemtap 均支持在 Linux 上进行分析，在 macOS 系统上则只有 dtrace 使用。在 Python3.5 和之前版本中，需要使用手工 Patch 的方式进行埋点监控。在 Python 3.6 以上中 dtrace 和 systemtap 埋点支持功能可以通过编译参数 –with-dtrace 开启。</p>
-<h2 id="从-dtrace-开始"><a href="#从-dtrace-开始" class="headerlink" title="从 dtrace 开始"></a>从 dtrace 开始</h2><p>dtrace 是一个低开销的成本动态跟踪工具，可以通过埋点 probs 方式监控各项程序运行状态。dtrace 最初内置在 Solaris 系统中，因此我们可以借助 Solaris 系统的相关文档了解 dtrace 的基本操作。<a href="http://wenku.baidu.com/view/adb13ec7f61fb7360b4c65ad.html" target="_blank" rel="noopener">DTrace 用户指南</a> 是 Oracle 提供的基于 Solaris 系统的 dtrace 操作手册，操作基本与其它系统相同，推荐在最初开始阶段阅读该使用手册。</p>
-<p>在 macOS 上，已经很多系统底层功能和 framework 中已经集成了 dtrace 的功能。</p>
-<p>比如说我们需要监控 read 这个 syscall 的入口，可以通过下面这个命令实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ sudo dtrace -n syscall::read:entry</span><br><span class="line"></span><br><span class="line">dtrace: description &apos;syscall::read:entry&apos; matched 1 probe</span><br><span class="line"></span><br><span class="line">CPU     ID                    FUNCTION:NAME</span><br><span class="line">  0    156                       read:entry</span><br><span class="line">  0    156                       read:entry</span><br><span class="line">  0    156                       read:entry</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p>其中 <code>-n</code> 参数表示打印特定的 probs 内容的调用。现在这样仅仅显示了调用，但是调用的信息还是不详细的。这个时候就需要使用 dtrace 的脚本获取更多的信息。</p>
-<h2 id="dtrace-的脚本"><a href="#dtrace-的脚本" class="headerlink" title="dtrace 的脚本"></a>dtrace 的脚本</h2><p>dtrace 的名字暗示了自己的脚本，dtrace 使用了 D 语言作为脚本语言（WTF）。这个时候就需要学习一下基础的 D 语言内容。dtrace 中 D 语言的使用，可以在上面提到的 dtrace 用户指南中的对应章节。</p>
-<p>我们继续上一节中的例子，检测调用 read syscall 的参数内容。在进行操作之前，我们需要了解一下 read 的参数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">size_t</span> read(<span class="keyword">int</span> fildes, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbyte);</span><br></pre></td></tr></table></figure>
-
-<p>我们想知道调用来自于哪些进程，读取了多少字节。首先，我们需要创建一个叫 <code>syscall.d</code> 文件。</p>
-<figure class="highlight d"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">syscall::read:entry</span><br><span class="line">&#123;printf (<span class="string">"%s called read, asking for %d bytes\n"</span>, execname, arg2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后通过命令行执行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ sudo dtrace -s syscall.d</span><br><span class="line"></span><br><span class="line">dtrace: script &apos;syscall.d&apos; matched 1 probe</span><br><span class="line"></span><br><span class="line">CPU     ID                    FUNCTION:NAME</span><br><span class="line">  0    156                       read:entry steam_osx called read, asking for 128 bytes</span><br><span class="line">  0    156                       read:entry steam_osx called read, asking for 128 bytes</span><br><span class="line">  0    156                       read:entry steam_osx called read, asking for 128 bytes</span><br><span class="line">  0    156                       read:entry steam_osx called read, asking for 128 bytes</span><br><span class="line">  0    156                       read:entry iTerm2 called read, asking for 32 bytes</span><br><span class="line">  0    156                       read:entry iTerm2 called read, asking for 1024 bytes</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<h2 id="从-dtrace-到-Python-跟踪"><a href="#从-dtrace-到-Python-跟踪" class="headerlink" title="从 dtrace 到 Python 跟踪"></a>从 dtrace 到 Python 跟踪</h2><p>在 Pycon 上的分享上，提供了一种 CPython 虚拟机代码 Patch 方式进行跟踪的方案，这种方案需要系统支持，比如 REHL 系列系统默认支持，假如你是用了 Ubuntu 系统，除了重新编译 CPython 以外没有其他办法。不过除此之外，还有一种更简单的方式，就是使用 <code>Python USDT</code>。但是值得注意的是 <code>Python USDT</code> 是一种用户态修饰器监控方法，这种方式与 patch CPython 的方式相比差距较大，毕竟 USDT 无法监控一些系统底层的尤其是涉及到比如 gevent 导致的上下文切换时的混乱。同样的，systemtap 也有一个专门的库：<a href="https://github.com/wooparadog/python-systemtap" target="_blank" rel="noopener">python-systemtap</a>。</p>
-<p>不过还是从 USDT 开始。USDT 可以通过 pip 直接安装：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install usdt</span><br></pre></td></tr></table></figure>
-
-<p>接下来用 ipython 演示一下 usdt 的基础使用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ ipython</span><br><span class="line">Python 2.7.12 (default, Jul  4 2016, 11:33:35)</span><br><span class="line">Type &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.</span><br><span class="line"></span><br><span class="line">IPython 5.0.0 -- An enhanced Interactive Python.</span><br><span class="line">?         -&gt; Introduction and overview of IPython&apos;s features.</span><br><span class="line">%quickref -&gt; Quick reference.</span><br><span class="line">help      -&gt; Python&apos;s own help system.</span><br><span class="line">object?   -&gt; Details about &apos;object&apos;, use &apos;object??&apos; for extra details.</span><br><span class="line"></span><br><span class="line">In [1]: import os</span><br><span class="line"></span><br><span class="line">In [2]: os.getpid()</span><br><span class="line">Out[2]: 7777</span><br><span class="line"></span><br><span class="line">In [3]: from usdt.tracer import fbt</span><br><span class="line"></span><br><span class="line">In [4]: @fbt</span><br><span class="line">   ...: def example(v):</span><br><span class="line">   ...:     pass</span><br><span class="line">   ...:</span><br><span class="line"></span><br><span class="line">In [5]: example(&quot;hello&quot;)</span><br></pre></td></tr></table></figure>
-
-<p>我们使用监听进程的方式监控来自于 usdt 的探针：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ sudo dtrace -l -p 7777 -m fbt</span><br><span class="line"></span><br><span class="line">   ID   PROVIDER            MODULE                          FUNCTION NAME</span><br><span class="line"> 1206 python-fbt7777               fbt                           example entry</span><br><span class="line"> 1207 python-fbt7777               fbt                           example return</span><br></pre></td></tr></table></figure>
-
-<p>其中 <code>-p</code> 用于指定进程，<code>-m</code> 指定对应的模块。如果不进行模块过滤的话，你很有可能被很多相关的调试信息淹没。</p>
-<p>在新版的 Python 3.6 以上版本中通过开启 <code>--with-dtrace</code> 开关的方式可以获取详细的 Python 运行状态信息，包括：</p>
-<ul>
-<li>函数调用与返回</li>
-<li>GC 开始与结束</li>
-<li>执行代码行数</li>
-</ul>
-<p>首先运行一个 Python 3.6</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ ipython</span><br><span class="line">Python 3.6.0b1 (default, Sep 15 2016, 10:16:39)</span><br><span class="line">Type &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.</span><br><span class="line"></span><br><span class="line">IPython 5.1.0 -- An enhanced Interactive Python.</span><br><span class="line">?         -&gt; Introduction and overview of IPython&apos;s features.</span><br><span class="line">%quickref -&gt; Quick reference.</span><br><span class="line">help      -&gt; Python&apos;s own help system.</span><br><span class="line">object?   -&gt; Details about &apos;object&apos;, use &apos;object??&apos; for extra details.</span><br><span class="line"></span><br><span class="line">In [1]: import os</span><br><span class="line"></span><br><span class="line">In [2]: os.getpid()</span><br><span class="line">Out[2]: 33164</span><br><span class="line"></span><br><span class="line">In [3]:</span><br></pre></td></tr></table></figure>
-
-<p>接下来通过 dtrace 来获取所有的 Python 探针输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ sudo dtrace -l -m python3.6</span><br><span class="line"></span><br><span class="line">   ID   PROVIDER            MODULE                          FUNCTION NAME</span><br><span class="line">35775 python33164         python3.6          _PyEval_EvalFrameDefault function-entry</span><br><span class="line">35776 python33164         python3.6          _PyEval_EvalFrameDefault function-return</span><br><span class="line">35777 python33164         python3.6                           collect gc-done</span><br><span class="line">35778 python33164         python3.6                           collect gc-start</span><br><span class="line">35779 python33164         python3.6          _PyEval_EvalFrameDefault line</span><br></pre></td></tr></table></figure>
-
-<p>如果想要实现一个类似 pycon 中监控程序执行具体内容的 dtrace 脚本，请参考官方文档 <a href="https://docs.python.org/3.6/howto/instrumentation.html#instrumentation" target="_blank" rel="noopener">Instrumenting CPython with DTrace and SystemTap</a> 中的现成脚本即可。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>dtrace 提供了一种方便的、低干扰的 Python 内部执行探查方式。通过这种方式可以方便的了解目前 Python 的具体执行状况。同时，通过脚本，可以快速获取和定位相关想要了解的具体内容。当然，你也可以像郭浩川分享的那样，做一个比较炫酷的烈焰图。XD</p>
-<p>[^systemtap]: <a href="http://ocgxshkaw.bkt.clouddn.com/4%20%E3%80%8A%E7%94%A8%E9%AB%98%E9%AD%94%E7%9A%84%E5%A7%BF%E5%8A%BF%E8%B0%83%20python%20%E7%A8%8B%E5%BA%8F%E3%80%8B%E9%83%AD%E6%B5%A9%E5%B7%9D.pdf" target="_blank" rel="noopener">利用 systemtap 进行 Python 执行情况分析</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1531,7 +1496,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-count">80</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

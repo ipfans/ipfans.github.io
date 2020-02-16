@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.4async.com/"/>
-  <updated>2020-02-05T11:33:41.971Z</updated>
+  <updated>2020-02-16T13:53:52.970Z</updated>
   <id>https://www.4async.com/</id>
   
   <author>
@@ -17,11 +17,30 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>译：在Go中转向领域驱动设计</title>
+    <link href="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/"/>
+    <id>https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/</id>
+    <published>2020-02-16T13:52:00.000Z</published>
+    <updated>2020-02-16T13:53:52.970Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;原文：&lt;a href=&quot;https://www.calhoun.io/moving-towards-domain-driven-design-in-go/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Moving Towards Domain Driven Design in Go&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;本文的目的是帮助演示当应用程序随着时间不断推移不断演化时，我们如何利用领域驱动设计帮我们解决可能遇到的问题。为了实现这个目标，我们会通过一个琐碎的项目研究项目是如何随着时间一步步演化的。这不是一个完整的项目，示例代码并不能够直接编译，甚至有些导入以来没有全部列出。这只是一个简单的示例，也就是说，如果出现什么问题，你可以随时与我联系，我们将对问题进行调整或者你的问题及时解答（如果可以的话）。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
+  
+  <entry>
     <title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</title>
     <link href="https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/"/>
     <id>https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/</id>
     <published>2020-02-05T10:30:00.000Z</published>
-    <updated>2020-02-05T11:33:41.971Z</updated>
+    <updated>2020-02-05T12:00:03.901Z</updated>
     
     <summary type="html">
     
@@ -400,29 +419,6 @@
     
     
       <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用 dtrace 跟踪 Python 应用</title>
-    <link href="https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/"/>
-    <id>https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/</id>
-    <published>2016-09-15T10:00:00.000Z</published>
-    <updated>2019-07-04T03:20:39.000Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;今年在 Pycon China 上，来自饿了么的郭浩川分享了 &lt;a href=&quot;http://ocgxshkaw.bkt.clouddn.com/4%20%E3%80%8A%E7%94%A8%E9%AB%98%E9%AD%94%E7%9A%84%E5%A7%BF%E5%8A
-      
-    
-    </summary>
-    
-    
-      <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
-    
-      <category term="dtrace" scheme="https://www.4async.com/tags/dtrace/"/>
     
   </entry>
   

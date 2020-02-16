@@ -187,6 +187,92 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-02-falcon-web-framework/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-02-falcon-web-framework/" class="post-title-link" itemprop="url">短小精悍 Falcon</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-04-02 19:47:51" itemprop="dateCreated datePublished" datetime="2014-04-02T19:47:51+08:00">2014-04-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-02-falcon-web-framework/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-02-falcon-web-framework/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>之前一直是 Flask 的忠实粉丝，然后嘲讽下 Django 党；结果被 falcon 打脸，恩，下面是我的真机实际测试（i5-3230M 2.6G 8G RAM, SSD。乱码的是什么呢….）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Benchmarking, Trial 1 of 3......done.</span><br><span class="line">Benchmarking, Trial 2 of 3......done.</span><br><span class="line">Benchmarking, Trial 3 of 3......done.</span><br><span class="line"></span><br><span class="line">Results:</span><br><span class="line"></span><br><span class="line">1. falcon.........34,165 req/sec or 29.27 渭 s/req (9x)</span><br><span class="line">2. falcon-ext.....25,752 req/sec or 38.83 渭 s/req (7x)</span><br><span class="line">3. bottle.........17,043 req/sec or 58.67 渭 s/req (5x)</span><br><span class="line">4. pecan...........7,915 req/sec or 126.34 渭 s/req (2x)</span><br><span class="line">5. werkzeug........6,241 req/sec or 160.24 渭 s/req (2x)</span><br><span class="line">6. flask...........3,762 req/sec or 265.81 渭 s/req (1x)</span><br></pre></td></tr></table></figure>
+
+<p>这样看起来，完全可以 flask 做前台，api 使用 falcon 来实现（或者 Beego，同时还能保证开发效率）。</p>
+<p>Falcon 实在是太小巧了，没啥好讲的，一个例子就足够了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> falcon</span><br><span class="line"><span class="keyword">from</span> gevent.wsgi <span class="keyword">import</span> WSGIServer</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">URLApi</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_get</span><span class="params">(self, req, resp)</span>:</span></span><br><span class="line">        <span class="string">"""Handles GET requests"""</span></span><br><span class="line">        result = &#123;<span class="string">"errno"</span>: <span class="number">0</span>, <span class="string">"details"</span>: <span class="string">"hello"</span>&#125;</span><br><span class="line">        resp.status = falcon.HTTP_200</span><br><span class="line">        resp.body = json.dumps(result)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_post</span><span class="params">(self, req, resp)</span>:</span></span><br><span class="line">        <span class="string">"""Handles POST requests"""</span></span><br><span class="line">        data = json.load(req.stream,<span class="string">'utf-8'</span>)</span><br><span class="line">        result = &#123;<span class="string">"errno"</span>: <span class="number">0</span>, <span class="string">"details"</span>: <span class="string">"hello"</span>&#125;</span><br><span class="line">        resp.status = falcon.HTTP_200</span><br><span class="line">        resp.body = json.dumps(result)</span><br><span class="line"></span><br><span class="line">app = falcon.API()</span><br><span class="line">api = URLApi()</span><br><span class="line">app.add_route(<span class="string">'/url/'</span>, api)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    server = WSGIServer((<span class="string">'0.0.0.0'</span>, <span class="number">5000</span>), app)</span><br><span class="line">    server.serve_forever()</span><br></pre></td></tr></table></figure>
+
+<p>这个框架目标是提供高效的 API 接口，非常合适大量并发的 API 接口开发，同时借助 Python 的开发效率，还是不错的选择。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-01-beego-tips/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1028,101 +1114,6 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/01/2014-01-26-unit-test/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2014/01/2014-01-26-unit-test/" class="post-title-link" itemprop="url">关于写程序的一点想法：单元测试</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-01-26 16:21:00" itemprop="dateCreated datePublished" datetime="2014-01-26T16:21:00+08:00">2014-01-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2014/01/2014-01-26-unit-test/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/01/2014-01-26-unit-test/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>之前一直没有太过于关注过单元测试，感觉自己程序代码写了足够的实现逻辑和处理流程就应该完全可以满足需求，但是事实上在实现具体功能时，还是存在一些这样那样的问题，甚至通常情况下都是在代码写完可以跑通运行时发现的问题，通常这个时候已经很晚了。大家可以翻下我在 Github 上开放出来的大部分代码应该都存在一些或多或少的小问题，这些问题虽不致命，但是却是也是很烦躁的事情。</p>
-<h2 id="什么是单元测试"><a href="#什么是单元测试" class="headerlink" title="什么是单元测试"></a>什么是单元测试</h2><p>单元测试（unit testing），是指对软件中的最小可测试单元进行检查和验证。对于单元测试中单元的含义，一般来说，要根据实际情况去判定其具体含义，如 C 语言中单元指一个函数，Java 里单元指一个类，图形化的软件中可以指一个窗口或一个菜单等。总的来说，单元就是人为规定的最小的被测功能模块。单元测试是在软件开发过程中要进行的最低级别的测试活动，软件的独立单元将在与程序的其他部分相隔离的情况下进行测试。(via <a href="http://baike.baidu.com/view/106237.htm" target="_blank" rel="noopener">百度百科</a>)</p>
-<p>我对单元测试的理解，单元测试应该是保证程序功能模块的代码安全性和健壮性的保障性测试，主要是开发人员在对自己开发的代码进行测试。被测试模块可能包括多个功能点，在做测试时，设计测试用例要覆盖这些功能点，以保证这些功能点经过测试。很多文章在介绍单元测试常常会介绍一些 100% 的覆盖，考虑到一些异常情况情况的情况下，我个人觉得应该是覆盖异常的情况更多一点，分支覆盖一般常见参数传入测试功能是否正常，另外还是需要保证一些以前的 Bug 并不会出现的测试用例。</p>
-<h2 id="几种常见语言的-Unit-Test"><a href="#几种常见语言的-Unit-Test" class="headerlink" title="几种常见语言的 Unit Test"></a>几种常见语言的 Unit Test</h2><p>先说即种的，一种是 Python 的，一种是 Golang，还有一种是 Objective-C 的。</p>
-<h3 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h3><p>Python 提供了<a href="http://docs.python.org/2/library/unittest.html?highlight=unittest#unittest" target="_blank" rel="noopener">unittest 库</a>，用于进行单元测试。这个详细说一下，剩下的两个都有现成的代码 :)。</p>
-<p>下面是一个对 random 模块的单元测试代码，测试了 shuffle, choice 和 sample 函数功能，测试函数以 test 开头，并且没有返回和传入参数。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random  <span class="comment">#被测试模块</span></span><br><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestSequenceFunctions</span><span class="params">(unittest.TestCase)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setUp</span><span class="params">(self)</span>:</span></span><br><span class="line">        ``` 测试初始化</span><br></pre></td></tr></table></figure>
-
-<pre><code>    self.seq = range(10)
-    pass
-
-def tearDown(self):
-    <figure class="highlight plain"><figcaption><span>```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    def test_shuffle(self):</span><br><span class="line">        # make sure the shuffled sequence does not lose any elements</span><br><span class="line">        random.shuffle(self.seq)</span><br><span class="line">        self.seq.sort()</span><br><span class="line">        self.assertEqual(self.seq, range(10))</span><br><span class="line"></span><br><span class="line">        # should raise an exception for an immutable sequence</span><br><span class="line">        self.assertRaises(TypeError, random.shuffle, (1,2,3))</span><br><span class="line"></span><br><span class="line">    def test_choice(self):</span><br><span class="line">        element = random.choice(self.seq)</span><br><span class="line">        self.assertTrue(element in self.seq)</span><br><span class="line"></span><br><span class="line">    def test_sample(self):</span><br><span class="line">        with self.assertRaises(ValueError):</span><br><span class="line">            random.sample(self.seq, 20)</span><br><span class="line">        for element in random.sample(self.seq, 5):</span><br><span class="line">            self.assertTrue(element in self.seq)</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    unittest.main()</span><br></pre></td></tr></table></figure></code></pre><h3 id="Golang"><a href="#Golang" class="headerlink" title="Golang"></a>Golang</h3><p>Go 语言提供了 <a href="http://golang.org/pkg/testing/" target="_blank" rel="noopener">testing 包</a> 和 <a href="http://golang.org/pkg/testing/" target="_blank" rel="noopener">go test 命令</a> 用于单元测试。</p>
-<p>值得注意的是 Golang 的单元测试是和被测单元在相同文件夹下，使用 xxxx_test.go 方式命名文件，并且要求测试方法以 Test 开头。</p>
-<p>比如 md5 官方库的单元测试就可以在 <a href="http://golang.org/src/pkg/crypto/md5/" target="_blank" rel="noopener">http://golang.org/src/pkg/crypto/md5/</a> 找到。</p>
-<h3 id="Objective-C"><a href="#Objective-C" class="headerlink" title="Objective-C"></a>Objective-C</h3><p>Xcode 原生内置了<a href="https://developer.apple.com/technologies/tools/" target="_blank" rel="noopener">一个单元测试工具</a>，在创建工程时勾选即可。只说说这个吧。生成测试用例是也是已 test 开头的函数，在编译时会自动进行。</p>
-<p>另外，也有人分享了一些 <a href="https://github.com/clarkware/ocunit-example" target="_blank" rel="noopener">单元测试的例子</a> 可供参考。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1173,7 +1164,7 @@ def tearDown(self):
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-count">80</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

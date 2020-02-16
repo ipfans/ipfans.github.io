@@ -187,6 +187,117 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/08/2014-08-01-migrate-ollvm-into-ios-project/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/08/2014-08-01-migrate-ollvm-into-ios-project/" class="post-title-link" itemprop="url">整合 ollvm 进入项目</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-08-01 15:52:15" itemprop="dateCreated datePublished" datetime="2014-08-01T15:52:15+08:00">2014-08-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/08/2014-08-01-migrate-ollvm-into-ios-project/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/08/2014-08-01-migrate-ollvm-into-ios-project/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>ollvm 的项目我再这里就不做介绍了。整合进入项目的不过两种：一种是 Theos，另外一种是 Xcode。</p>
+<p>不过值得注意的是 ollvm 主要有效的还是 c 的函数，对 OC 对抗效果不明显。对抗分析的问题，请参考半仙的《软件反分析》。</p>
+<h2 id="Theos-整合"><a href="#Theos-整合" class="headerlink" title="Theos 整合"></a>Theos 整合</h2><p>Theos 主要依赖于 Makefile，因此需要 Makefile 文件来实现功能了。首先在文件里添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TARGET_CC = path_to_clang/clang</span><br><span class="line">TARGET_CXX = path_to_clang/clang++</span><br><span class="line">TARGET_LD = path_to_clang/clang++</span><br></pre></td></tr></table></figure>
+
+<p>然后修改 (项目名)_CFLAGS 参数，如果没有则添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxx_CFLAGS = -fobjc-arc -mllvm -fla</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以在项目中应用 ollvm 了。</p>
+<h2 id="Xcode-整合"><a href="#Xcode-整合" class="headerlink" title="Xcode 整合"></a>Xcode 整合</h2><p>集成进入 Xcode 需要修改几个文件，根据现有的插件进行修改。</p>
+<p>具体修改步骤如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ cd /Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Xcode/Plug-ins/</span><br><span class="line">$ sudo cp -r Clang\ LLVM\ 1.0.xcplugin/ Obfuscator.xcplugin</span><br><span class="line">$ cd Obfuscator.xcplugin/Contents/</span><br><span class="line">$ sudo plutil -convert xml1 Info.plist</span><br><span class="line">$ sudo vim Info.plist</span><br></pre></td></tr></table></figure>
+
+<p>修改文件内容（修改前 -&gt; 修改后）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;string&gt;com.apple.compilers.clang&lt;/string&gt; -&gt; &lt;string&gt;com.apple.compilers.obfuscator&lt;/string&gt;</span><br><span class="line">&lt;string&gt;Clang LLVM 1.0 Compiler Xcode Plug-in&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator Xcode Plug-in&lt;/string&gt;</span><br></pre></td></tr></table></figure>
+
+<p>接下来修改 Info.plist</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo plutil -convert binary1 Info.plist</span><br><span class="line">$ cd Resources/</span><br><span class="line">$ sudo mv Clang\ LLVM\ 1.0.xcspec Obfuscator.xcspec</span><br><span class="line">$ sudo vim Obfuscator.xcspec</span><br></pre></td></tr></table></figure>
+
+<p>修改为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Identifier = &quot;com.apple.compilers.llvm.clang.1_0&quot;; -&gt; Identifier = &quot;com.apple.compilers.llvm.obfuscator.3_4&quot;;</span><br><span class="line">Name = &quot;Apple LLVM 5.1&quot;; -&gt; Name = &quot;Obfuscator 3.4&quot;;</span><br><span class="line">Description = &quot;Apple LLVM 5.1 compiler&quot;; -&gt; Description = &quot;Obfuscator 3.4&quot;;</span><br><span class="line">Vendor = Apple; -&gt; Vendor = HEIG-VD;</span><br><span class="line">Version = &quot;5.0&quot;; -&gt; Version = &quot;3.4&quot;;</span><br><span class="line">ExecPath = &quot;clang&quot;; -&gt; ExecPath = &quot;/path/to/obfuscator_bin/clang&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>接下来修改显示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd English.lproj/</span><br><span class="line">$ sudo mv Apple\ LLVM\ 5.1.strings &quot;Obfuscator 3.4.strings&quot;</span><br><span class="line">$ sudo vim Obfuscator\ 3.4.strings</span><br></pre></td></tr></table></figure>
+
+<p>修改为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;Name&quot; = &quot;Apple LLVM 5.0&quot;; -&gt; &quot;Name&quot; = &quot;Obfuscator 3.4&quot;;</span><br><span class="line">&quot;Description&quot; = &quot;Apple LLVM 5.0 Compiler&quot;; -&gt; &quot;Description&quot; = &quot;Obfuscator 3.4&quot;;</span><br><span class="line">&quot;Version&quot; = &quot;5.0&quot;; -&gt; &quot;Version&quot; = &quot;3.4&quot;;</span><br><span class="line">&quot;Vendor&quot; = &quot;Apple&quot;; -&gt; &quot;Vendor&quot; = &quot;HEIG-VD&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>重启一下你的 Xcode，然后再 Build Options 里面，可以设置 Compiler for C/C++/Objective-C 为 Obfuscator 3.4。</p>
+<p>如果想要添加 cflag，可以在 CustomFlags 中自行添加。</p>
+<h2 id="目前的问题"><a href="#目前的问题" class="headerlink" title="目前的问题"></a>目前的问题</h2><p>如果你用起来，现在 ARM64 解决还有问题，我正在研究，如果你知道如何解决，欢迎指出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  xxx  make</span><br><span class="line">Making all for tweak xxx...</span><br><span class="line"> Preprocessing xxx.x...</span><br><span class="line"> Compiling xxx.x...</span><br><span class="line">clang-3.4: error: invalid arch name &apos;-arch arm64&apos;</span><br><span class="line">make[2]: *** [xxx.x.585e736e.o] Error 1</span><br><span class="line">make[1]: *** [internal-library-all_] Error 2</span><br><span class="line">make: *** [xxx.all.tweak.variables] Error 2</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/06/2014-06-01-try-docker-with-coreos/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1099,92 +1210,6 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-02-falcon-web-framework/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2014/04/2014-04-02-falcon-web-framework/" class="post-title-link" itemprop="url">短小精悍 Falcon</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-04-02 19:47:51" itemprop="dateCreated datePublished" datetime="2014-04-02T19:47:51+08:00">2014-04-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2014/04/2014-04-02-falcon-web-framework/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-02-falcon-web-framework/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>之前一直是 Flask 的忠实粉丝，然后嘲讽下 Django 党；结果被 falcon 打脸，恩，下面是我的真机实际测试（i5-3230M 2.6G 8G RAM, SSD。乱码的是什么呢….）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Benchmarking, Trial 1 of 3......done.</span><br><span class="line">Benchmarking, Trial 2 of 3......done.</span><br><span class="line">Benchmarking, Trial 3 of 3......done.</span><br><span class="line"></span><br><span class="line">Results:</span><br><span class="line"></span><br><span class="line">1. falcon.........34,165 req/sec or 29.27 渭 s/req (9x)</span><br><span class="line">2. falcon-ext.....25,752 req/sec or 38.83 渭 s/req (7x)</span><br><span class="line">3. bottle.........17,043 req/sec or 58.67 渭 s/req (5x)</span><br><span class="line">4. pecan...........7,915 req/sec or 126.34 渭 s/req (2x)</span><br><span class="line">5. werkzeug........6,241 req/sec or 160.24 渭 s/req (2x)</span><br><span class="line">6. flask...........3,762 req/sec or 265.81 渭 s/req (1x)</span><br></pre></td></tr></table></figure>
-
-<p>这样看起来，完全可以 flask 做前台，api 使用 falcon 来实现（或者 Beego，同时还能保证开发效率）。</p>
-<p>Falcon 实在是太小巧了，没啥好讲的，一个例子就足够了：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> falcon</span><br><span class="line"><span class="keyword">from</span> gevent.wsgi <span class="keyword">import</span> WSGIServer</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">URLApi</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_get</span><span class="params">(self, req, resp)</span>:</span></span><br><span class="line">        <span class="string">"""Handles GET requests"""</span></span><br><span class="line">        result = &#123;<span class="string">"errno"</span>: <span class="number">0</span>, <span class="string">"details"</span>: <span class="string">"hello"</span>&#125;</span><br><span class="line">        resp.status = falcon.HTTP_200</span><br><span class="line">        resp.body = json.dumps(result)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_post</span><span class="params">(self, req, resp)</span>:</span></span><br><span class="line">        <span class="string">"""Handles POST requests"""</span></span><br><span class="line">        data = json.load(req.stream,<span class="string">'utf-8'</span>)</span><br><span class="line">        result = &#123;<span class="string">"errno"</span>: <span class="number">0</span>, <span class="string">"details"</span>: <span class="string">"hello"</span>&#125;</span><br><span class="line">        resp.status = falcon.HTTP_200</span><br><span class="line">        resp.body = json.dumps(result)</span><br><span class="line"></span><br><span class="line">app = falcon.API()</span><br><span class="line">api = URLApi()</span><br><span class="line">app.add_route(<span class="string">'/url/'</span>, api)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    server = WSGIServer((<span class="string">'0.0.0.0'</span>, <span class="number">5000</span>), app)</span><br><span class="line">    server.serve_forever()</span><br></pre></td></tr></table></figure>
-
-<p>这个框架目标是提供高效的 API 接口，非常合适大量并发的 API 接口开发，同时借助 Python 的开发效率，还是不错的选择。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1235,7 +1260,7 @@ scanned 4 barcode symbols from 1 images in 0.05 seconds</code></pre>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-count">80</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
