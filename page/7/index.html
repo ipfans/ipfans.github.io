@@ -187,6 +187,106 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+      <meta itemprop="name" content="ipfans">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ipfans's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/" class="post-title-link" itemprop="url">解决 Mavericks 系统上 Python 库 - mno-fused-madd 错误</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-04-08 11:43:52" itemprop="dateCreated datePublished" datetime="2014-04-08T11:43:52+08:00">2014-04-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/04/2014-04-08-fix-build-python-ext-on-mac-os-x-mavericks-with-error-mno-fused-madd/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>最近升级了一下 simplejson，发现 simplejson 的 speedup 模块报了一个错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Installing collected packages: simplejson</span><br><span class="line">  Found existing installation: simplejson 3.3.1</span><br><span class="line">    Uninstalling simplejson:</span><br><span class="line">      Successfully uninstalled simplejson</span><br><span class="line">  Running setup.py install for simplejson</span><br><span class="line">    building &apos;simplejson._speedups&apos; extension</span><br><span class="line">    cc -fno-strict-aliasing -fno-common -dynamic -arch x86_64 -arch i386 -g -Os -pipe -fno-common -fno-strict-aliasing -fwrapv -mno-fused-madd -DENABLE_DTRACE -DMACOSX -DNDEBUG -Wall -Wstrict-prototypes -Wshorten-64-to-32 -DNDEBUG -g -fwrapv -Os -Wall -Wstrict-prototypes -DENABLE_DTRACE -arch x86_64 -arch i386 -pipe -I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -c simplejson/_speedups.c -o build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o</span><br><span class="line">    clang: error: unknown argument: &apos;-mno-fused-madd&apos; [-Wunused-command-line-argument-hard-error-in-future]</span><br><span class="line">    clang: note: this will be a hard error (cannot be downgraded to a warning) in the future</span><br><span class="line">    ***************************************************************************</span><br><span class="line">    WARNING: The C extension could not be compiled, speedups are not enabled.</span><br><span class="line">    Failure information, if any, is above.</span><br><span class="line">    I&apos;m retrying the build without the C extension now.</span><br><span class="line">    ***************************************************************************</span><br><span class="line"></span><br><span class="line">    ***************************************************************************</span><br><span class="line">    WARNING: The C extension could not be compiled, speedups are not enabled.</span><br><span class="line">    Plain-Python installation succeeded.</span><br><span class="line">    ***************************************************************************</span><br><span class="line">Successfully installed simplejson</span><br><span class="line">Cleaning up...</span><br></pre></td></tr></table></figure>
+
+<p>注意看 error 这里，有一个 <figure class="highlight plain"><figcaption><span>argument: '-mno-fused-madd'``` 的错误，应该是 Xcode 升级最新的版本之后，clang 替换带来的问题。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">解决方法也很简单，在编译之前 export 两个参数即可：</span><br></pre></td></tr></table></figure></p>
+<p>$ export CFLAGS=-Qunused-arguments<br>$ export CPPFLAGS=-Qunused-arguments<br>$ pip install simplejson<br>Downloading/unpacking simplejson<br>  Downloading simplejson-3.4.0.tar.gz (68kB): 68kB downloaded<br>  Running setup.py egg_info for package simplejson</p>
+<p>Installing collected packages: simplejson<br>  Running setup.py install for simplejson<br>    building ‘simplejson._speedups’ extension<br>    cc -DNDEBUG -g -fwrapv -Os -Wall -Wstrict-prototypes -Qunused-arguments -Qunused-arguments -arch x86_64 -arch i386 -pipe -I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -c simplejson/_speedups.c -o build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o<br>    cc -bundle -undefined dynamic_lookup -arch x86_64 -arch i386 -Wl,-F. -Qunused-arguments -Qunused-arguments build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o -o build/lib.macosx-10.9-intel-2.7/simplejson/_speedups.so</p>
+<p>Successfully installed simplejson<br>Cleaning up…</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">后来查了一下具体的原因，在 [Xcode5.1 的 release note](https://developer.apple.com/library/mac/releasenotes/DeveloperTools/RN-Xcode/Introduction/Introduction.html) 中有提及：</span><br></pre></td></tr></table></figure>
+
+<p>The Apple LLVM compiler in Xcode 5.1 treats unrecognized command-line options as errors. This issue has been seen when building both Python native extensions and Ruby Gems, where some invalid compiler options are currently specified.</p>
+<p>Projects using invalid compiler options will need to be changed to remove those options. To help ease that transition, the compiler will temporarily accept an option to downgrade the error to a warning:</p>
+<p>-Wno-error=unused-command-line-argument-hard-error-in-future</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">官方推荐的方法是：</span><br></pre></td></tr></table></figure>
+
+<p>$ ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install simplejson<br>Downloading/unpacking simplejson<br>  Downloading simplejson-3.4.0.tar.gz (68kB): 68kB downloaded<br>  Running setup.py egg_info for package simplejson</p>
+<p>Installing collected packages: simplejson<br>  Running setup.py install for simplejson<br>    building ‘simplejson._speedups’ extension<br>    cc -fno-strict-aliasing -fno-common -dynamic -g -Os -pipe -fno-common -fno-strict-aliasing -fwrapv -mno-fused-madd -DENABLE_DTRACE -DMACOSX -DNDEBUG -Wall -Wstrict-prototypes -Wshorten-64-to-32 -DNDEBUG -g -fwrapv -Os -Wall -Wstrict-prototypes -DENABLE_DTRACE -Wno-error=unused-command-line-argument-hard-error-in-future -pipe -Wno-error=unused-command-line-argument-hard-error-in-future -I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -c simplejson/_speedups.c -o build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o<br>    clang: warning: unknown argument: ‘-mno-fused-madd’ [-Wunused-command-line-argument-hard-error-in-future]<br>    clang: note: this will be a hard error (cannot be downgraded to a warning) in the future<br>    clang: warning: argument unused during compilation: ‘-mno-fused-madd’<br>    cc -bundle -undefined dynamic_lookup -Wl,-F. -Wno-error=unused-command-line-argument-hard-error-in-future -Wno-error=unused-command-line-argument-hard-error-in-future build/temp.macosx-10.9-intel-2.7/simplejson/_speedups.o -o build/lib.macosx-10.9-intel-2.7/simplejson/_speedups.so</p>
+<p>Successfully installed simplejson<br>Cleaning up…</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">最后来个轻量级的性能测试 (python 2.7.5)：</span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">from timeit import Timer</span><br><span class="line">import json</span><br><span class="line">import simplejson</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def by_json():</span><br><span class="line">    a = &#123;&quot;a&quot;: 1, &quot;b&quot;: &quot;2&quot;, &quot;c&quot;: [1, 2, 3], &quot;d&quot;: [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;]&#125;</span><br><span class="line">    b = json.dumps(a)</span><br><span class="line">    a = json.loads(b)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def by_simplejson():</span><br><span class="line">    a = &#123;&quot;a&quot;: 1, &quot;b&quot;: &quot;2&quot;, &quot;c&quot;: [1, 2, 3], &quot;d&quot;: [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;]&#125;</span><br><span class="line">    b = simplejson.dumps(a)</span><br><span class="line">    a = simplejson.loads(b)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    t = Timer(stmt=&quot;by_json()&quot;, setup=&quot;from __main__ import by_json&quot;)</span><br><span class="line">    print &apos;by json: %s seconds&apos; % t.timeit(number=3)</span><br><span class="line">    t = Timer(stmt=&quot;by_simplejson()&quot;, setup=&quot;from __main__ import by_simplejson&quot;)</span><br><span class="line">    print &apos;by simplejson: %s seconds&apos; % t.timeit(number=3)</span><br></pre></td></tr></table></figure>
+
+<p>测试结果表明：恩，实际上不用 simplejson 也可以，不会有很大性能差异：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ python json_speed.py</span><br><span class="line">by json: 0.000191926956177 seconds</span><br><span class="line">by simplejson: 0.000169992446899 seconds</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/04/2014-04-02-falcon-web-framework/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1032,93 +1132,11 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.4async.com/2014/02/2014-02-17-create-sign-quickly-python/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-      <meta itemprop="name" content="ipfans">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ipfans's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2014/02/2014-02-17-create-sign-quickly-python/" class="post-title-link" itemprop="url">Python 下快速创建签名</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-02-17 17:12:00" itemprop="dateCreated datePublished" datetime="2014-02-17T17:12:00+08:00">2014-02-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-04 11:20:39" itemprop="dateModified" datetime="2019-07-04T11:20:39+08:00">2019-07-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2014/02/2014-02-17-create-sign-quickly-python/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/02/2014-02-17-create-sign-quickly-python/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>作为一个土逼，我之前写个程序都是臃肿的，后来还被人嘲笑真不是一个那啥的程序。比如说关于算签名的问题，这个在很多 Oauth 环境下都会很常见的算法我写起来就很挫。后来找了一个更好的方法来解决这个问题：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设所有的都在一个 dict 中</span></span><br><span class="line">   items = adict.items()</span><br><span class="line">   items.sort()</span><br><span class="line">   sha1=hashlib.sha1()</span><br><span class="line">   map(sha1.update, items)</span><br><span class="line">   hashcode=sha1.hexdigest()</span><br><span class="line">   <span class="keyword">if</span> hashcode == signature:</span><br><span class="line">       <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-
-<p>不知道 Map 的用法，真的很挫….</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1164,7 +1182,7 @@ cprofilev profile_output</code></pre><p>如果在 Windows 安装默认有点问�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">81</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

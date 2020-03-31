@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.4async.com/"/>
-  <updated>2020-02-16T13:53:52.970Z</updated>
+  <updated>2020-03-31T03:13:11.996Z</updated>
   <id>https://www.4async.com/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>OpenTelemetry入门</title>
+    <link href="https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/"/>
+    <id>https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/</id>
+    <published>2020-03-31T03:10:00.000Z</published>
+    <updated>2020-03-31T03:13:11.996Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;今天早些时候，&lt;a href=&quot;https://opentelemetry.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;OpenTelemetry&lt;/a&gt;正式&lt;a href=&quot;https://medium.com/opentelemetry/op
+      
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
+    
+  </entry>
   
   <entry>
     <title>译：在Go中转向领域驱动设计</title>
@@ -398,27 +419,6 @@
       <category term="Python" scheme="https://www.4async.com/tags/Python/"/>
     
       <category term="Pandas" scheme="https://www.4async.com/tags/Pandas/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>更优雅的 Golang 错误处理</title>
-    <link href="https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/"/>
-    <id>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</id>
-    <published>2017-02-08T10:00:00.000Z</published>
-    <updated>2019-07-04T03:20:39.000Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Golang 中的错误处理是一个被大家经常拿出来讨论的 &lt;a href=&quot;http://www.infoq.com/cn/news/2012/11/go-error-handle&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;话题&lt;/a&gt;(另外一个是 &lt;a
-      
-    
-    </summary>
-    
-    
-      <category term="Golang" scheme="https://www.4async.com/tags/Golang/"/>
     
   </entry>
   
