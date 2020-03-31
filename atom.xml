@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.4async.com/"/>
-  <updated>2020-03-31T03:13:11.996Z</updated>
+  <updated>2020-03-31T03:27:20.447Z</updated>
   <id>https://www.4async.com/</id>
   
   <author>
@@ -21,14 +21,11 @@
     <link href="https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/"/>
     <id>https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/</id>
     <published>2020-03-31T03:10:00.000Z</published>
-    <updated>2020-03-31T03:13:11.996Z</updated>
+    <updated>2020-03-31T03:27:20.447Z</updated>
     
     <summary type="html">
     
-      
-      
-        &lt;p&gt;今天早些时候，&lt;a href=&quot;https://opentelemetry.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;OpenTelemetry&lt;/a&gt;正式&lt;a href=&quot;https://medium.com/opentelemetry/op
-      
+      &lt;p&gt;今天早些时候，&lt;a href=&quot;https://opentelemetry.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;OpenTelemetry&lt;/a&gt;正式&lt;a href=&quot;https://medium.com/opentelemetry/opentelemetry-is-officially-in-beta-352fa859db10&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;进入Beta版本阶段&lt;/a&gt;，这标志着OpenTelemetry的基本模型已经正式确定，可以开始将OpenTelemetry集成到应用程序和客户端库中，以捕获应用程序级指标和分布式跟踪。&lt;/p&gt;
     
     </summary>
     
