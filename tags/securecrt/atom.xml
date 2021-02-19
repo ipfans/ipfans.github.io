@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>SecureCRT on ipfans's Blog</title><link>https://www.4async.com/tags/securecrt/</link><description>Recent content in SecureCRT on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 27 Dec 2013 19:06:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/securecrt/atom.xml" rel="self" type="application/rss+xml"/><item><title>Mac 下实现类 SecureCRT 的 session clone 功能</title><link>https://www.4async.com/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/</link><pubDate>Fri, 27 Dec 2013 19:06:00 +0000</pubDate><guid>https://www.4async.com/2013/12/2013-12-27-mac-ssh-scurecrt-clone-session/</guid><description>一直以来，看着 SecureCRT 有一个十分有用的功能，clone session 可以免输入帐号密码重新开启一个 ssh 窗口，这样就在不方便使用公钥登录的时候非常有用。
+在 Mac 下面如何实现这个功能呢？也是十分的简单：
+进入~/.ssh 目录，创建名为 config 的文件（有则编辑）：
+添加以下内容
+host * ControlMaster auto ControlPath ~/.ssh/master-%r@%h:%p 这样在创建一个连接之后，再次连接就可以实现免输入帐号了。
+但是缺点是，第一个连接一旦关闭，所有的连接都会被关闭。
+具体的 config 文件内容，可以参考 http://linux.die.net/man/5/ssh_config。</description></item></channel></rss>

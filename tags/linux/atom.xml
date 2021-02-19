@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on ipfans's Blog</title><link>https://www.4async.com/tags/linux/</link><description>Recent content in Linux on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 15 Jan 2014 18:05:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/linux/atom.xml" rel="self" type="application/rss+xml"/><item><title>OpenSSL 和 pyOpenSSL 那点事</title><link>https://www.4async.com/2014/01/2014-01-15-openssl-and-pyopenssl/</link><pubDate>Wed, 15 Jan 2014 18:05:00 +0000</pubDate><guid>https://www.4async.com/2014/01/2014-01-15-openssl-and-pyopenssl/</guid><description>[UPDATE 2014-01-23]
+解决 pyOpenSSL 的问题也不一定非得使用升级 OpenSSL 的方式，由于 OpenSSL 关联面太广，实际上可以采用安装新版 OpenSSL，在安装 pyOpenSSL 的时候指定 include 和 libs 的方式来指定使用版本的 OpenSSL。具体改一下 setup.py 中的具体对应参数即可。
+PSS: 重要的放在开头，升级 OpenSSL 对系统影响较大，比如 OpenSSH 无法正常工作，算是得到的一个教训，记得同步更新相关使用到 OpenSSL 的软件
+之前比较挫的很少在 64 位系统上编译东西，经常用的服务器都是 x86 的 VPS。今天因为项目需要安装 mitmproxy。这玩意对 pyOpenSSL 的需求是 0.13 以上版本，隐性要求 OpenSSL 为 0.9.8f 及以上版本。怎奈何服务器上是 0.9.8e 版本。因此需要对 OpenSSL 进行升级。因为各种原因，升级是在源码编译状态下进行的。
+编译倒是挺顺畅的，./config 一下，然后直接 make &amp;amp;&amp;amp; make install，替换下系统的头文件和 lib 文件。
+然后开始安装 pyOpenSSL。这步也没什么错误提示，如果安装出错，那么肯定是 OpenSSL 的版本不对。
+然后执行以下 mitmproxy，提示 pyOpenSSL 的 SSL.so 无法找 “SSL_get_servername” 的引用。What？编译没问题运行却提示出错了，orz。
+ldd SSL.so 看下该文件的引用关系，发现引用了 lib64 的 libssl.</description></item></channel></rss>

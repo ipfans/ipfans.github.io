@@ -1,0 +1,97 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="今年在 Pycon China 上，来自饿了么的郭浩川分享了 利用 systemtap 进行 Python 执行情况分析 的内容。分享利用 systemtap 在线上环境中实时监控 gevent patch 的 green thread 程序的执行状况。
+dtrace 和 systemtap 均支持在 Linux 上进行分析，在 macOS 系统上则只有 dtrace 使用。在 Python3.5 和之前版本中，需要使用手工 Patch 的方式进行埋点监控。在 Python 3.6 以上中 dtrace 和 systemtap 埋点支持功能可以通过编译参数 &amp;ndash;with-dtrace 开启。
+从 dtrace 开始 dtrace 是一个低开销的成本动态跟踪工具，可以通过埋点 probs 方式监控各项程序运行状态。dtrace 最初内置在 Solaris 系统中，因此我们可以借助 Solaris 系统的相关文档了解 dtrace 的基本操作。DTrace 用户指南 是 Oracle 提供的基于 Solaris 系统的 dtrace 操作手册，操作基本与其它系统相同，推荐在最初开始阶段阅读该使用手册。
+在 macOS 上，已经很多系统底层功能和 framework 中已经集成了 dtrace 的功能。"><title>使用 dtrace 跟踪 Python 应用</title><link rel=canonical href=https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/><link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="使用 dtrace 跟踪 Python 应用"><meta property="og:description" content="今年在 Pycon China 上，来自饿了么的郭浩川分享了 利用 systemtap 进行 Python 执行情况分析 的内容。分享利用 systemtap 在线上环境中实时监控 gevent patch 的 green thread 程序的执行状况。
+dtrace 和 systemtap 均支持在 Linux 上进行分析，在 macOS 系统上则只有 dtrace 使用。在 Python3.5 和之前版本中，需要使用手工 Patch 的方式进行埋点监控。在 Python 3.6 以上中 dtrace 和 systemtap 埋点支持功能可以通过编译参数 &amp;ndash;with-dtrace 开启。
+从 dtrace 开始 dtrace 是一个低开销的成本动态跟踪工具，可以通过埋点 probs 方式监控各项程序运行状态。dtrace 最初内置在 Solaris 系统中，因此我们可以借助 Solaris 系统的相关文档了解 dtrace 的基本操作。DTrace 用户指南 是 Oracle 提供的基于 Solaris 系统的 dtrace 操作手册，操作基本与其它系统相同，推荐在最初开始阶段阅读该使用手册。
+在 macOS 上，已经很多系统底层功能和 framework 中已经集成了 dtrace 的功能。"><meta property="og:url" content="https://www.4async.com/2016/09/2016-09-15-tracing-python-program-with-dtrace/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Python"><meta property="article:tag" content="dtrace"><meta property="article:published_time" content="2016-09-15T18:00:00+00:00"><meta property="article:modified_time" content="2016-09-15T18:00:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="janxin"><meta name=twitter:title content="使用 dtrace 跟踪 Python 应用"><meta name=twitter:description content="今年在 Pycon China 上，来自饿了么的郭浩川分享了 利用 systemtap 进行 Python 执行情况分析 的内容。分享利用 systemtap 在线上环境中实时监控 gevent patch 的 green thread 程序的执行状况。
+dtrace 和 systemtap 均支持在 Linux 上进行分析，在 macOS 系统上则只有 dtrace 使用。在 Python3.5 和之前版本中，需要使用手工 Patch 的方式进行埋点监控。在 Python 3.6 以上中 dtrace 和 systemtap 埋点支持功能可以通过编译参数 &amp;ndash;with-dtrace 开启。
+从 dtrace 开始 dtrace 是一个低开销的成本动态跟踪工具，可以通过埋点 probs 方式监控各项程序运行状态。dtrace 最初内置在 Solaris 系统中，因此我们可以借助 Solaris 系统的相关文档了解 dtrace 的基本操作。DTrace 用户指南 是 Oracle 提供的基于 Solaris 系统的 dtrace 操作手册，操作基本与其它系统相同，推荐在最初开始阶段阅读该使用手册。
+在 macOS 上，已经很多系统底层功能和 framework 中已经集成了 dtrace 的功能。"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"></head><body><script>(function(){const colorSchemeKey='StackColorScheme';if(!localStorage.getItem(colorSchemeKey)){localStorage.setItem(colorSchemeKey,"auto");}})();</script><script>(function(){const colorSchemeKey='StackColorScheme';const colorSchemeItem=localStorage.getItem(colorSchemeKey);const supportDarkMode=window.matchMedia('(prefers-color-scheme: dark)').matches===true;if(colorSchemeItem=='dark'||colorSchemeItem==='auto'&&supportDarkMode){document.body.dataset.scheme='dark';}else{document.body.dataset.scheme='light';}})();</script><div class="container main-container flex on-phone--column extended article-page with-toolbar"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header class=site-info><figure class=site-avatar><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></figure><h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1><h2 class=site-description></h2></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></ol></aside><main class="main full-width"><div id=article-toolbar><a href=https://www.4async.com class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg><span>Back</span></a></div><article class=main-article><header class=article-header><div class=article-details><h2 class=article-title><a href=../../../2016/09/2016-09-15-tracing-python-program-with-dtrace/>使用 dtrace 跟踪 Python 应用</a></h2><footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--published>Sep 15, 2016</time></footer></div></header><section class=article-content><p>今年在 Pycon China 上，来自饿了么的郭浩川分享了 <a class=link href=http://ocgxshkaw.bkt.clouddn.com/4%20%E3%80%8A%E7%94%A8%E9%AB%98%E9%AD%94%E7%9A%84%E5%A7%BF%E5%8A%BF%E8%B0%83%20python%20%E7%A8%8B%E5%BA%8F%E3%80%8B%E9%83%AD%E6%B5%A9%E5%B7%9D.pdf target=_blank rel=noopener>利用 systemtap 进行 Python 执行情况分析</a> 的内容。分享利用 systemtap 在线上环境中实时监控 gevent patch 的 green thread 程序的执行状况。</p><p>dtrace 和 systemtap 均支持在 Linux 上进行分析，在 macOS 系统上则只有 dtrace 使用。在 Python3.5 和之前版本中，需要使用手工 Patch 的方式进行埋点监控。在 Python 3.6 以上中 dtrace 和 systemtap 埋点支持功能可以通过编译参数 &ndash;with-dtrace 开启。</p><h2 id=从-dtrace-开始>从 dtrace 开始</h2><p>dtrace 是一个低开销的成本动态跟踪工具，可以通过埋点 probs 方式监控各项程序运行状态。dtrace 最初内置在 Solaris 系统中，因此我们可以借助 Solaris 系统的相关文档了解 dtrace 的基本操作。<a class=link href=http://wenku.baidu.com/view/adb13ec7f61fb7360b4c65ad.html target=_blank rel=noopener>DTrace 用户指南</a> 是 Oracle 提供的基于 Solaris 系统的 dtrace 操作手册，操作基本与其它系统相同，推荐在最初开始阶段阅读该使用手册。</p><p>在 macOS 上，已经很多系统底层功能和 framework 中已经集成了 dtrace 的功能。</p><p>比如说我们需要监控 read 这个 syscall 的入口，可以通过下面这个命令实现：</p><pre><code>➜  ~ sudo dtrace -n syscall::read:entry
+
+dtrace: description 'syscall::read:entry' matched 1 probe
+
+CPU     ID                    FUNCTION:NAME
+  0    156                       read:entry
+  0    156                       read:entry
+  0    156                       read:entry
+...
+</code></pre><p>其中 <code>-n</code> 参数表示打印特定的 probs 内容的调用。现在这样仅仅显示了调用，但是调用的信息还是不详细的。这个时候就需要使用 dtrace 的脚本获取更多的信息。</p><h2 id=dtrace-的脚本>dtrace 的脚本</h2><p>dtrace 的名字暗示了自己的脚本，dtrace 使用了 D 语言作为脚本语言（WTF）。这个时候就需要学习一下基础的 D 语言内容。dtrace 中 D 语言的使用，可以在上面提到的 dtrace 用户指南中的对应章节。</p><p>我们继续上一节中的例子，检测调用 read syscall 的参数内容。在进行操作之前，我们需要了解一下 read 的参数：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c>size_t <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>int</span> fildes, <span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>buf, size_t nbyte);
+</code></pre></div><p>我们想知道调用来自于哪些进程，读取了多少字节。首先，我们需要创建一个叫 <code>syscall.d</code> 文件。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-d data-lang=d>syscall:<span style=color:#f92672>:</span>read<span style=color:#f92672>:</span>entry
+<span style=color:#f92672>{</span>printf <span style=color:#f92672>(</span><span style=color:#e6db74>&#34;%s called read, asking for %d bytes\n&#34;</span><span style=color:#f92672>,</span> execname<span style=color:#f92672>,</span> arg2<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>然后通过命令行执行：</p><pre><code>➜  ~ sudo dtrace -s syscall.d
+
+dtrace: script 'syscall.d' matched 1 probe
+
+CPU     ID                    FUNCTION:NAME
+  0    156                       read:entry steam_osx called read, asking for 128 bytes
+  0    156                       read:entry steam_osx called read, asking for 128 bytes
+  0    156                       read:entry steam_osx called read, asking for 128 bytes
+  0    156                       read:entry steam_osx called read, asking for 128 bytes
+  0    156                       read:entry iTerm2 called read, asking for 32 bytes
+  0    156                       read:entry iTerm2 called read, asking for 1024 bytes
+...
+</code></pre><h2 id=从-dtrace-到-python-跟踪>从 dtrace 到 Python 跟踪</h2><p>在 Pycon 上的分享上，提供了一种 CPython 虚拟机代码 Patch 方式进行跟踪的方案，这种方案需要系统支持，比如 REHL 系列系统默认支持，假如你是用了 Ubuntu 系统，除了重新编译 CPython 以外没有其他办法。不过除此之外，还有一种更简单的方式，就是使用 <code>Python USDT</code>。但是值得注意的是 <code>Python USDT</code> 是一种用户态修饰器监控方法，这种方式与 patch CPython 的方式相比差距较大，毕竟 USDT 无法监控一些系统底层的尤其是涉及到比如 gevent 导致的上下文切换时的混乱。同样的，systemtap 也有一个专门的库：<a class=link href=https://github.com/wooparadog/python-systemtap target=_blank rel=noopener>python-systemtap</a>。</p><p>不过还是从 USDT 开始。USDT 可以通过 pip 直接安装：</p><pre><code>pip install usdt
+</code></pre><p>接下来用 ipython 演示一下 usdt 的基础使用：</p><pre><code>➜  ~ ipython
+Python 2.7.12 (default, Jul  4 2016, 11:33:35)
+Type &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+
+IPython 5.0.0 -- An enhanced Interactive Python.
+?         -&gt; Introduction and overview of IPython's features.
+%quickref -&gt; Quick reference.
+help      -&gt; Python's own help system.
+object?   -&gt; Details about 'object', use 'object??' for extra details.
+
+In [1]: import os
+
+In [2]: os.getpid()
+Out[2]: 7777
+
+In [3]: from usdt.tracer import fbt
+
+In [4]: @fbt
+   ...: def example(v):
+   ...:     pass
+   ...:
+
+In [5]: example(&quot;hello&quot;)
+</code></pre><p>我们使用监听进程的方式监控来自于 usdt 的探针：</p><pre><code>➜  ~ sudo dtrace -l -p 7777 -m fbt
+
+   ID   PROVIDER            MODULE                          FUNCTION NAME
+ 1206 python-fbt7777               fbt                           example entry
+ 1207 python-fbt7777               fbt                           example return
+</code></pre><p>其中 <code>-p</code> 用于指定进程，<code>-m</code> 指定对应的模块。如果不进行模块过滤的话，你很有可能被很多相关的调试信息淹没。</p><p>在新版的 Python 3.6 以上版本中通过开启 <code>--with-dtrace</code> 开关的方式可以获取详细的 Python 运行状态信息，包括：</p><ul><li>函数调用与返回</li><li>GC 开始与结束</li><li>执行代码行数</li></ul><p>首先运行一个 Python 3.6</p><pre><code>➜  ~ ipython
+Python 3.6.0b1 (default, Sep 15 2016, 10:16:39)
+Type &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+
+IPython 5.1.0 -- An enhanced Interactive Python.
+?         -&gt; Introduction and overview of IPython's features.
+%quickref -&gt; Quick reference.
+help      -&gt; Python's own help system.
+object?   -&gt; Details about 'object', use 'object??' for extra details.
+
+In [1]: import os
+
+In [2]: os.getpid()
+Out[2]: 33164
+
+In [3]:
+</code></pre><p>接下来通过 dtrace 来获取所有的 Python 探针输出：</p><pre><code>➜  ~ sudo dtrace -l -m python3.6
+
+   ID   PROVIDER            MODULE                          FUNCTION NAME
+35775 python33164         python3.6          _PyEval_EvalFrameDefault function-entry
+35776 python33164         python3.6          _PyEval_EvalFrameDefault function-return
+35777 python33164         python3.6                           collect gc-done
+35778 python33164         python3.6                           collect gc-start
+35779 python33164         python3.6          _PyEval_EvalFrameDefault line
+</code></pre><p>如果想要实现一个类似 pycon 中监控程序执行具体内容的 dtrace 脚本，请参考官方文档 <a class=link href=https://docs.python.org/3.6/howto/instrumentation.html#instrumentation target=_blank rel=noopener>Instrumenting CPython with DTrace and SystemTap</a> 中的现成脚本即可。</p><h2 id=总结>总结</h2><p>dtrace 提供了一种方便的、低干扰的 Python 内部执行探查方式。通过这种方式可以方便的了解目前 Python 的具体执行状况。同时，通过脚本，可以快速获取和定位相关想要了解的具体内容。当然，你也可以像郭浩川分享的那样，做一个比较炫酷的烈焰图。XD</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/python/>Python</a>
+<a href=../../../tags/dtrace/>dtrace</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper></aside><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"s1mbily"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener('onColorSchemeChange',(e)=>{if(DISQUS){DISQUS.reset({reload:true});}})</script><footer class=site-footer><section class=copyright>&copy;
+2013 -
+2021 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script><script>(function(){const customFont=document.createElement('link');customFont.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";customFont.type="text/css";customFont.rel="stylesheet";document.head.appendChild(customFont);}());</script></body></html>

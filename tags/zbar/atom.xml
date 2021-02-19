@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>zbar on ipfans's Blog</title><link>https://www.4async.com/tags/zbar/</link><description>Recent content in zbar on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 20 May 2014 15:33:35 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/zbar/atom.xml" rel="self" type="application/rss+xml"/><item><title>Linux 系统上的 zbar 编译安装</title><link>https://www.4async.com/2014/05/2014-05-20-build-zbar-on-linux/</link><pubDate>Tue, 20 May 2014 15:33:35 +0000</pubDate><guid>https://www.4async.com/2014/05/2014-05-20-build-zbar-on-linux/</guid><description>因为系统不方便使用包升级，因此使用的源码方式安装，坑基本上都踩过了，做一下记录吧。
+zbar 的安装依赖于 ImageMagick，ImageMagick 则依赖于 jpeg 提供 jpeg 图片支持，因此安装顺序为反序安装。
+安装 jpeg 库 这个安装比较简单，没什么坑来的。先到 http://www.imagemagick.org/download/delegates/ 下载 jpeg 的库，比如我用的是 jpegsrc.v9a.tar.gz，执行下列执行进行安装：
+/.configure make &amp;amp;&amp;amp; make install 安装 ImageMagick 这个安装稍微麻烦一点，还是差不多开始的：
+./configure make &amp;amp;&amp;amp; make install 下面是需要配置一些参数，否则 zbar 安装会不成功：
+export MAGICK_CFLAGS=&amp;quot;/usr/local/include/ImageMagick-6/&amp;quot; export MAGICK_LIBS=&amp;quot;/usr/local/lib/libMagickWand-6.Q16.so&amp;quot; 安装 zbar 接下来编译 zbar 了，这个之前配置好了会方便一点，同时禁用一些不用的功能：
+./configure --enable-shared --without-gtk --without-qt --without-python CPPFLAGS=-I/usr/local/include/ImageMagick-6 make &amp;amp;&amp;amp; make install 接下来添加 ldconfig 文件让 libzbar.so 生效。
+ldconfig 测试安装 测试一下 zbar 是否安装成功：
+wget http://i1.hexunimg.cn/2012-03-13/139256375.jpg /usr/local/bin/zbarimg 139256375.</description></item></channel></rss>

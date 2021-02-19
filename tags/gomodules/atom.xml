@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>GoModules on ipfans's Blog</title><link>https://www.4async.com/tags/gomodules/</link><description>Recent content in GoModules on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 19 Feb 2021 10:16:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/gomodules/atom.xml" rel="self" type="application/rss+xml"/><item><title>Go 1.16 中Module功能新变化</title><link>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</link><pubDate>Fri, 19 Feb 2021 10:16:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</guid><description>原文地址：https://blog.golang.org/go116-module-changes 原文作者：Jay Conrod 译者：Kevin 希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。发行说明中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。
+Module功能默认开启 go命令现在默认以module-aware模式构建包，即使没有go.mod文件存在。这是向在所有项目中使用Module功能迈出的一大步。
+通过设置GO111MODULE环境变量为off，仍然可以在GOPATH模式下构建包。你也可以将GO111MODULE设置为auto，只有当当前目录或任何父目录中存在go.mod文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用go env -w来永久地设置GO111MODULE和其他变量。
+go env -w GO111MODULE=auto 我们计划在 Go 1.17 中放弃对GOPATH模式的支持。换句话说，Go 1.17将忽略GO111MODULE。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交问题或体验报告。
+不会自动更改 go.mod 和 go.sum 在之前的版本中，当go命令发现go.mod或go.sum有问题时，比如缺少require指令或缺少sum，它会尝试自动修复问题。我们收到了很多反馈，认为这种行为是出乎大家意料的，尤其是对于像go list这样通常不会产生副作用的命令。自动修复并不总是可取的：如果一个导入的包没有被任何需要的Module提供，go命令会添加一个新的依赖关系，可能会触发普通依赖关系的升级。即使是拼写错误的导入路径也会导致（失败的）网络查找。
+在 Go 1.16 中，module-aware命令在发现go.mod或go.sum中的问题后会报告一个错误，而不是尝试自动修复问题。在大多数情况下，错误信息建议使用命令来修复问题。
+$ go build example.go:3:8: no required module provides package golang.org/x/net/html; to add it: go get golang.org/x/net/html $ go get golang.org/x/net/html $ go build 和之前一样，如果存在vendor目录，go命令可能会使用该目录（详见Vendoring）。像go get和go mod tidy这样的命令仍然会修改go.mod和go.sum，因为它们的主要目的是管理依赖关系。
+在特定版本上安装可执行文件 go install命令现在可以通过指定@version后缀来安装特定版本的可执行文件。
+go install golang.org/x/tools/gopls@v0.6.5 当使用这种语法时，go install命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)
+我们曾经推荐使用go get -u程序来安装可执行文件，但这种使用方式对go.</description></item><item><title>使用Go Modules</title><link>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</link><pubDate>Wed, 20 Mar 2019 14:22:00 +0000</pubDate><guid>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</guid><description>原文：Using Go Modules 作者：Tyler Bui-Palsulich、Eno Compton
+介绍 Go 1.11和1.12包含了初步的modules支持，Go的新版本管理系统用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。
+modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中。go.mod文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。
+在Go 1.11开始，go命令行会再当前目录或者上层目录中存在go.mod文件并且在 $GOPATH/src目录外时自动启用modules功能。（当目录位于$GOPATH/src中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在go.mod文件。具体请参考Go命令行文档）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。
+这篇博客会演示使用modules开发Go代码的一系列的常用操作：
+创建一个模块 添加依赖 升级依赖 添加一个依赖的新主版本 升级一个依赖到新主版本 移除无用依赖 创建一个新的模块 让我门从创建一个新模块开始。
+在$GOPATH/src外创建一个新的空文件夹，使用cd切换进入这个目录，然后创建一个名叫hello.go的新源码文件：
+package hello func Hello() string { return &amp;#34;Hello, world.&amp;#34; } 让我们同样创建一个名叫hello_test.go的测试文件：
+package hello import &amp;#34;testing&amp;#34; func TestHello(t *testing.T) { want := &amp;#34;Hello, world.&amp;#34; if got := Hello(); got != want { t.Errorf(&amp;#34;Hello() = %q, want %q&amp;#34;, got, want) } } 现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有go.mod文件。如果你文件创建在 /home/gopher/hello目录下，执行go test命令时，我们可以看到结果：
+$ go test PASS ok _/home/gopher/hello 0.</description></item></channel></rss>

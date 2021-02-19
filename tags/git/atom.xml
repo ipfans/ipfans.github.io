@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Git on ipfans's Blog</title><link>https://www.4async.com/tags/git/</link><description>Recent content in Git on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 29 Apr 2014 15:57:46 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/git/atom.xml" rel="self" type="application/rss+xml"/><item><title>更多关于 channel 的扯淡</title><link>https://www.4async.com/2014/04/2014-04-29-more-about-golang-channel/</link><pubDate>Tue, 29 Apr 2014 15:57:46 +0000</pubDate><guid>https://www.4async.com/2014/04/2014-04-29-more-about-golang-channel/</guid><description>channel 是一个比较神奇的东西，以前很少研究，不过最近的项目有这方面的需求就看了一下。下面主要从 channel 的功能谈起。
+channel 的读取和写入问题 channel 的读取写入取决于当前的 channel 的状态，大家应该都知道下面的情况是一定会产生死锁：
+ch := make(chan int) &amp;lt;-ch 但是针对于 close 掉的 channel，则是一定可以读取成功的：
+ch := make(chan int) close(ch) i:=&amp;lt;-ch //i=0 对于这种情况，golang 添加了一个结果类型判断 i, succ :=&amp;lt;-ch //i=0,succ=false，若结果为 false，说明该 channel 已经关闭了。但是 close 过的 channel 再写入，是会 panic 的。
+有时可能还有一些时间上的要求，比如说判断是否超时。这个时候可以结合上一篇文章中的 select 来解决这个问题：case &amp;lt;- time.After(time.Second*2): 这样就可以设置一个超时时间，解决这个问题。这个问题我们之前有探讨过，select 会判断 channel 的状态是否 ready。超时时，需要取得数据的 channel 应该是未完成的，这个时候就可以进入超时 block。
+但是对于在上一篇文章中的另外一种情况，还需要在解决问题时根据具体情况确定具体的解决方案。
+利用 channel 实现去异步化 比如一个比较经典的生产者消费者模型：
+package main import (&amp;#34;fmt&amp;#34; &amp;#34;time&amp;#34; ) // 生产者 func Producer(id int, item chan int) { for i:=0; i&amp;lt;10; i++ { item &amp;lt;- i fmt.</description></item><item><title>基于 Gogs 实现的私密 Git 服务</title><link>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</link><pubDate>Tue, 22 Apr 2014 20:09:46 +0000</pubDate><guid>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</guid><description>Github 是个好东西，最早接触 Git，就是因为 Github 接触的。上手简单，丰富的开源库，互动性等等功能都让 Github 充满魅力。
+当然了，一些私密的代码是不适合放在 Github 上的（比如工作代码），这个时候就不方便上传代码到 Github 了。当然了，如果 购买 Github 的 Micro Plan 就可以创建私密的 repo 了。
+不花钱有没有什么好方法？以前有一个 Github 功能大致相同的社区版 Gitlab，基于 Ruby 开发，可是配置实在是太过于复杂，也不适合一个人单独打包使用。不过后来遇到了 gogs，这个问题就解决了。其实刚开始知道 gogs 的时候，还不支持 SQLite3，最新的一个版本已经支持了，不过只有 x64 位版本，基于 golang 构建，因此也没有什么依赖需要安装，只需要简单的：下载、解压、打开、配置，然后你就可以使用 git 服务了。
+下载地址：https://github.com/gogits/gogs/wiki/Install-from-binary
+打开压缩包，以 Windows/SQLite3 为例演示安装步骤：
+解压压缩包，双击执行 start.bat 文件（Linux/Mac 下是 start.sh） 打开浏览器，浏览 http://127.0.0.1:3000 打开自动跳转至安装界面，内容一共只有下图这么多！很简单，我就不说啥了。如果你想多机同步，建议你将 SQLite 数据库和 repo 地址放在网盘内，比如我就放在 Dropbox 下了。 点击 Install Gogs，安装完成～ 比如我现在是自己在用，可能需要一些单独的配置：
+打开 gogs 的目录，custom/conf/app.ini 文件，使用 SublimeText 之类的编辑器打开，不要使用记事本，这是个教训&amp;hellip; 按照下面修改之后就只允许本机访问了（反正只有我自己用），注意 Mac 和 Linux 下开 80 需要 root： [server] PROTOCOL = http DOMAIN = localhost ROOT_URL = `http://localhost/` HTTP_ADDR = 127.</description></item></channel></rss>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>gRPC on ipfans's Blog</title><link>https://www.4async.com/tags/grpc/</link><description>Recent content in gRPC on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 20 Apr 2018 12:00:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/grpc/atom.xml" rel="self" type="application/rss+xml"/><item><title>gRPC性能优化</title><link>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</link><pubDate>Fri, 20 Apr 2018 12:00:00 +0000</pubDate><guid>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</guid><description>背景介绍 我们在项目中逐渐切换使用了gRPC作为服务间调用的主要手段，逐步替换RESTful API在目前我们项目中的使用。在使用过程中，gRPC的效率是我们想对比较关心并且从目前来看相对难以优化的组件，所以本文就是探讨如何能够在不修改gRPC源码的前提下尽量提升gRPC的性能。
+grpc官方提供了性能benchmark可以供大家查看，具体的链接可以在 gRPC Performance Dashboard 中查看。
+性能测试 性能测试采用我们的线上标配，目前由于业务量原因，其实性能并不高，这里只是对比参考，建议你在后续处理过程中自行测试。其实最简单的处理方式就是创建多个gRPC client。
+单Client处理：
+➜ client ./client -n 100000 -c 1 2017/08/04 16:49:39 concurrency: 1 requests per client: 100000 2017/08/04 15:59:39 message size: 581 bytes 2017/08/04 16:00:04 took 24467 ms for 100000 requests 2017/08/04 16:00:04 sent requests : 100000 2017/08/04 16:00:04 received requests : 100000 2017/08/04 16:00:04 received requests_OK : 100000 2017/08/04 16:00:04 throughput (TPS) : 4087 2017/08/04 16:00:04 mean: 244283 ns, median: 241106 ns, max: 6107692 ns, min: 138633 ns, p99: 678374 ns 2017/08/04 16:00:04 mean: 0 ms, median: 0 ms, max: 6 ms, min: 0 ms, p99: 0 ms 修改Client数目为10：</description></item><item><title>gRPC 调用超时控制</title><link>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</link><pubDate>Thu, 06 Apr 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</guid><description>我们在进行服务间调用时广泛采用 gRPC 作为主要的调用协议，借助 gRPC 的模块化与语言无关的特性，可以在我们拓展多语言模块之间提供更好的支持。但是我们在使用 gRPC 之中也出现了一些问题，这些问题会做一些记录，希望可以与大家一起沟通与交流。
+某日，我们的客服反馈，我们的基础设施操作工具出现了长时间无响应的问题。该问题出现在我们对某些设备进行 OTA 升级时，操作长时间无返回，与之前预期的 10 秒内返回存在较大出入。经过我们的工程师分析，我们发现在 gRPC 处理过程中，我们的操作工具通过 gRPC 调用远程服务端接口时，接口长时间没有返回结果。
+我们首先怀疑是 gRPC 调用过程中出现了连接问题。gRPC 过程中可能由于多种原因导致连接断开或者服务器无法连接。在调用 gRPC 方法过程中，我们可以通过 FailFast(true) 方式进行快速失败。实际上，这个值默认情况下为 true。
+那么接下来我们就需要从调用从使用角度上寻找问题。我们使用过程中默许服务端在处理某些操作时进行较长时间操作（如长时间操作），但是从客户端角度而言，部分操作正常情况下我们是希望可以在有预定特定环境下达到某些时间仍旧未返回结果可以标记为结果失败。这样就需要通过 gRPC 的机制进行调控。由于目前我们的接口很多情况下调用接口实际为硬件接口，因此，我们采用通过控制 gRPC 客户端接口超时的方法控制。
+在 gRPC 中，提供了 MethodConfig 用于控制每个方法的超时时间，这样可以对不同的 RPC 方法设置超时。
+下面，我们用 官方的 gRPC 示例 演示如何进行调用超时控制。
+首先，我们在 examples/helloworld/greeter_server/main.go 中的 SayHello 中添加一个长时间操作模拟：time.Sleep(10*time.Second)。
+这时，如果我们需要客户端在 5 秒以内返回结果，应该如何操作呢？
+那么我们修改 examples/helloworld/greeter_client/main.go 中的 main，添加超时处理内容：
+func main() { // Set up method timeout configure. var wg sync.WaitGroup wg.Add(1) ch := make(chan grpc.</description></item></channel></rss>
