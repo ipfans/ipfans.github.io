@@ -13,20 +13,20 @@ AIO 的情况也说明了它适用的场景：长连接场景，或者重度的 
 AIO 的情况也说明了它适用的场景：长连接场景，或者重度的 IO 操作等等的情况。
 如果找软件来做案例，我们可以找一个可能大家熟知的：NGINX。正如我们所知，NGINX 采用了 异步、事件驱动的方法来处理连接。这种处理方式无需（像使用传统架构的服务器一样）为每个请求创建额外的专用进程或者线程，而是在一个工作进程中处理多个连接和请求。为此，NGINX 工作在非阻塞的 socket 模式下，并使用了 epoll 和 kqueue 这样有效的方法。
 这部分的内容，在 NGINX 引入线程池 性能提升 9 倍 中进行了详细的介绍，包含了 NGINX 的异步应用经验，同时介绍了 NGINX 中引入了阻塞的线程池用于解决某些特定场景问题下的效率。
-如何实现 Python 的异步 IO 这篇文章会以最新的 Python 3."><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body><script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.body.dataset.scheme='dark':document.body.dataset.scheme='light'})()</script><div class="container main-container flex on-phone--column extended article-page with-toolbar"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+如何实现 Python 的异步 IO 这篇文章会以最新的 Python 3."><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body><script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.body.dataset.scheme='dark':document.body.dataset.scheme='light'})()</script><div class="container main-container flex on-phone--column extended article-page with-toolbar"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header class=site-info><figure class=site-avatar><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></figure><h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1><h2 class=site-description></h2></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></ol></aside><main class="main full-width"><div id=article-toolbar><a href=https://www.4async.com class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg><span>Back</span></a></div><article class=main-article><header class=article-header><div class=article-details><h2 class=article-title><a href=../../../2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/>零基础编写 Python Redis Client（一）</a></h2><footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--published>Oct 10, 2015</time></footer></div></header><section class=article-content><h2 id=什么是-aio>什么是 AIO</h2><p>AIO 是 Asynchronous Input/Output 的简写，也就是异步 IO。不过在谈什么是 AIO 之前，我们可能要先介绍一下 BIO。那么什么是 BIO 呢？简单的说，BIO 是 Blocking Input/Output，也就是阻塞 IO，他实现的通常是在线程池中找出一个线程处理 IO，在 IO 过程中，其他线程都需要等待 IO 完成后才可以从中选取一个线程占用 IO。这样最大的问题是，当线程数量较多，并且需要大量的 IO 操作时，就会造成一个大量的阻塞，因为实际上每次只有一个线程在处理 IO。</p><p>那么如何解决这个时候的问题呢？这时候就提出了 AIO 的概念。通常在 IO 处理过程中也会伴有一些其他的处理操作，假如把所有的操作都浪费在了等待 IO 释放上，线程池中的线程利用率也太低了，因此我们需要一种方式，在申请 IO 处理之后，就去继续做其他的事情，等 IO 操作完成了，然后通知我们已经 OK，我们可以继续处理了。这也就是我们常说的 AIO 的原型。</p><p>AIO 的情况也说明了它适用的场景：长连接场景，或者重度的 IO 操作等等的情况。</p><p>如果找软件来做案例，我们可以找一个可能大家熟知的：NGINX。正如我们所知，NGINX 采用了 <a class=link href=http://nginx.com/blog/inside-nginx-how-we-designed-for-performance-scale/ target=_blank rel=noopener>异步、事件驱动的方法来处理连接</a>。这种处理方式无需（像使用传统架构的服务器一样）为每个请求创建额外的专用进程或者线程，而是在一个工作进程中处理多个连接和请求。为此，NGINX 工作在非阻塞的 socket 模式下，并使用了 epoll 和 kqueue 这样有效的方法。</p><p>这部分的内容，在 <a class=link href=http://www.infoq.com/cn/articles/thread-pools-boost-performance-9x target=_blank rel=noopener>NGINX 引入线程池 性能提升 9 倍</a> 中进行了详细的介绍，包含了 NGINX 的异步应用经验，同时介绍了 NGINX 中引入了阻塞的线程池用于解决某些特定场景问题下的效率。</p><h2 id=如何实现-python-的异步-io>如何实现 Python 的异步 IO</h2><p>这篇文章会以最新的 Python 3.5 为基础来介绍实现一个异步的 Python Redis Client。不过在此之前，我们先来看一下，怎么实现 Python 的 aio。</p><p>Python 的 aio 官方封装了一个比较合适的基础库 <code>asyncio</code>。</p><p>从一个例子开始简单认识一下如何实现一个异步的 aio client。这里以官方文档中的例子为例：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>import</span> asyncio
 
-async <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>tcp_echo_client</span>(message, loop):
-    reader, writer <span style=color:#f92672>=</span> await asyncio<span style=color:#f92672>.</span>open_connection(<span style=color:#e6db74>&#39;127.0.0.1&#39;</span>, <span style=color:#ae81ff>8888</span>,
+<span style=color:#66d9ef>async</span> <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>tcp_echo_client</span>(message, loop):
+    reader, writer <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> asyncio<span style=color:#f92672>.</span>open_connection(<span style=color:#e6db74>&#39;127.0.0.1&#39;</span>, <span style=color:#ae81ff>8888</span>,
                                                    loop<span style=color:#f92672>=</span>loop)
 
-    <span style=color:#66d9ef>print</span>(<span style=color:#e6db74>&#39;Send: </span><span style=color:#e6db74>%r</span><span style=color:#e6db74>&#39;</span> <span style=color:#f92672>%</span> message)
+    print(<span style=color:#e6db74>&#39;Send: </span><span style=color:#e6db74>%r</span><span style=color:#e6db74>&#39;</span> <span style=color:#f92672>%</span> message)
     writer<span style=color:#f92672>.</span>write(message<span style=color:#f92672>.</span>encode())
 
-    data <span style=color:#f92672>=</span> await reader<span style=color:#f92672>.</span>read(<span style=color:#ae81ff>100</span>)
-    <span style=color:#66d9ef>print</span>(<span style=color:#e6db74>&#39;Received: </span><span style=color:#e6db74>%r</span><span style=color:#e6db74>&#39;</span> <span style=color:#f92672>%</span> data<span style=color:#f92672>.</span>decode())
+    data <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> reader<span style=color:#f92672>.</span>read(<span style=color:#ae81ff>100</span>)
+    print(<span style=color:#e6db74>&#39;Received: </span><span style=color:#e6db74>%r</span><span style=color:#e6db74>&#39;</span> <span style=color:#f92672>%</span> data<span style=color:#f92672>.</span>decode())
 
-    <span style=color:#66d9ef>print</span>(<span style=color:#e6db74>&#39;Close the socket&#39;</span>)
+    print(<span style=color:#e6db74>&#39;Close the socket&#39;</span>)
     writer<span style=color:#f92672>.</span>close()
 
 message <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;Hello World!&#39;</span>
@@ -35,8 +35,8 @@ loop<span style=color:#f92672>.</span>run_until_complete(tcp_echo_client(message
 loop<span style=color:#f92672>.</span>close()
 </code></pre></div><p>这里面用到的 Python 3.5 中引入的 <code>async/await</code> 关键字，还有 <code>asyncio</code> 库。这里面 <code>asyncio.open_connection</code> 会返回一个 coroutine，这个可以使用 await 进行一个 aio 的调用，即，在收到返回信号之前，程序可以继续去处理其他的任务。这里面真正核心的就是 <code>EventLoop</code>，它负责监视发送这些信号，并且返回数据，它可以通过 <code>asyncio.get_event_loop</code> 获取到。然后他会真正返回的数据是一个读取 <code>StreamReader</code> 和写入 <code>StreamWriter</code> 的对象。</p><p>接下来，就可以通过这个 <code>reader</code> 和 <code>writer</code> 进行数据的读取和写入。<code>writer</code> 是可以直接写入的，如果是 <code>reader</code> 的话，就需要 aio 的方式等待受到数据后返回。这样看起来更接近于普通的 socket 编程。不过关闭连接时，仅仅需要关闭 <code>writer</code> 就足够了。</p><h2 id=从-socket-通讯到-redis-通讯>从 socket 通讯到 redis 通讯</h2><p>本质上来说，所有的网络请求都可以看成是 SocketIO 的请求，因此，我们可以把 Redis 的请求当做是一个 socket 的通讯来进行，这样就很方便了。</p><p>不过先等一等，那么通讯的数据格式怎么办？没关系，这里我们使用 <code>hiredis-py</code> 来解决协议解析的问题。不过，从库设计的角度来说，我们需要封装一个 RedisConnection 的类出来解决 Redis 的通讯协议。它可能传入的参数包含，一个 <code>StreamReader</code>、一个 <code>StreamWriter</code>，一个 <code>EventLoop</code>，哦，别忘记还有编码 <code>encoding</code>。其他的我们就用一个 <code>*</code> 来表示好了。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>RedisConnection</span>(object):
     <span style=color:#e6db74>&#39;&#39;&#39;Redis Connection&#39;&#39;&#39;</span>
-    <span style=color:#66d9ef>def</span> __init__(self, reader, writer, <span style=color:#f92672>*</span>, encoding<span style=color:#f92672>=</span>None, loop<span style=color:#f92672>=</span>None):
-        <span style=color:#66d9ef>if</span> loop <span style=color:#f92672>is</span> None:
+    <span style=color:#66d9ef>def</span> __init__(self, reader, writer, <span style=color:#f92672>*</span>, encoding<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>, loop<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
+        <span style=color:#66d9ef>if</span> loop <span style=color:#f92672>is</span> <span style=color:#66d9ef>None</span>:
             loop <span style=color:#f92672>=</span> asyncio<span style=color:#f92672>.</span>get_event_loop()
         self<span style=color:#f92672>.</span>_reader <span style=color:#f92672>=</span> reader
         self<span style=color:#f92672>.</span>_writer <span style=color:#f92672>=</span> writer
@@ -45,31 +45,31 @@ loop<span style=color:#f92672>.</span>close()
         self<span style=color:#f92672>.</span>_db <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
 
     <span style=color:#66d9ef>def</span> __repr__(self):
-        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;&lt;RedisConnection [db:{}]&gt;&#39;</span><span style=color:#f92672>.</span>format(self<span style=color:#f92672>.</span>_db)
+        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;&lt;RedisConnection [db:</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>]&gt;&#39;</span><span style=color:#f92672>.</span>format(self<span style=color:#f92672>.</span>_db)
 </code></pre></div><p>记得加上 <code>__repr__</code> 用来描述这个对象，这个可是一个好习惯。接下来就需要完善这个类了，比如，我们需要添加一个关闭连接的方法，这需要至少一个参数用于标记连接是否关闭，一个用于执行关闭操作，比如我们需要这样子的：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>close</span>(self):
         <span style=color:#e6db74>&#34;&#34;&#34;Close connection.&#34;&#34;&#34;</span>
-        self<span style=color:#f92672>.</span>_do_close(None)
+        self<span style=color:#f92672>.</span>_do_close(<span style=color:#66d9ef>None</span>)
 
     <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_do_close</span>(self, exc):
         <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>_closed:
             <span style=color:#66d9ef>return</span>
-        self<span style=color:#f92672>.</span>_closed <span style=color:#f92672>=</span> True
-        self<span style=color:#f92672>.</span>_closing <span style=color:#f92672>=</span> False
+        self<span style=color:#f92672>.</span>_closed <span style=color:#f92672>=</span> <span style=color:#66d9ef>True</span>
+        self<span style=color:#f92672>.</span>_closing <span style=color:#f92672>=</span> <span style=color:#66d9ef>False</span>
         <span style=color:#75715e># 关闭写入</span>
         self<span style=color:#f92672>.</span>_writer<span style=color:#f92672>.</span>transport<span style=color:#f92672>.</span>close()
         <span style=color:#75715e># 取消读取任务</span>
         self<span style=color:#f92672>.</span>_reader_task<span style=color:#f92672>.</span>cancel()
-        self<span style=color:#f92672>.</span>_reader_task <span style=color:#f92672>=</span> None
-        self<span style=color:#f92672>.</span>_writer <span style=color:#f92672>=</span> None
-        self<span style=color:#f92672>.</span>_reader <span style=color:#f92672>=</span> None
+        self<span style=color:#f92672>.</span>_reader_task <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
+        self<span style=color:#f92672>.</span>_writer <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
+        self<span style=color:#f92672>.</span>_reader <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
 
     <span style=color:#a6e22e>@property</span>
     <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>closed</span>(self):
         <span style=color:#e6db74>&#34;&#34;&#34;True if connection is closed.&#34;&#34;&#34;</span>
         closed <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_closing <span style=color:#f92672>or</span> self<span style=color:#f92672>.</span>_closed
         <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> closed <span style=color:#f92672>and</span> self<span style=color:#f92672>.</span>_reader <span style=color:#f92672>and</span> self<span style=color:#f92672>.</span>_reader<span style=color:#f92672>.</span>at_eof():
-            self<span style=color:#f92672>.</span>_closing <span style=color:#f92672>=</span> closed <span style=color:#f92672>=</span> True
-            self<span style=color:#f92672>.</span>_loop<span style=color:#f92672>.</span>call_soon(self<span style=color:#f92672>.</span>_do_close, None)
+            self<span style=color:#f92672>.</span>_closing <span style=color:#f92672>=</span> closed <span style=color:#f92672>=</span> <span style=color:#66d9ef>True</span>
+            self<span style=color:#f92672>.</span>_loop<span style=color:#f92672>.</span>call_soon(self<span style=color:#f92672>.</span>_do_close, <span style=color:#66d9ef>None</span>)
         <span style=color:#66d9ef>return</span> closed
 </code></pre></div><p>连接这类的方法已经处理完了，接下来就应该是执行 Redis 命令了，我们可以叫它 <code>execute</code>。那他需要几个东西，一个是执行的指令 <code>command</code>，一个是指令参数 <code>*args</code>，还有一些其他的，比如编码 <code>encoding</code>。这里为了节省时间，只是考虑一些 Set 和 Get 的基本操作。哦，不过等等，那么 Redis 的数据结构是什么样子的呢？我们还需要先把它编译成 Redis-server 可以识别的形式，那么需要一个 <code>encode_command</code> 方法。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>_converters <span style=color:#f92672>=</span> {
     bytes: <span style=color:#66d9ef>lambda</span> val: val,
@@ -95,9 +95,9 @@ loop<span style=color:#f92672>.</span>close()
             add(<span style=color:#e6db74>b</span><span style=color:#e6db74>&#39;$&#39;</span><span style=color:#f92672>+</span> _bytes_len(barg))
             add(barg)
         <span style=color:#66d9ef>else</span>:
-            <span style=color:#66d9ef>raise</span> <span style=color:#a6e22e>TypeError</span>(<span style=color:#e6db74>&#34;Argument {!r} expected to be of bytes,&#34;&#34;str, int or float type&#34;</span><span style=color:#f92672>.</span>format(arg))
+            <span style=color:#66d9ef>raise</span> <span style=color:#a6e22e>TypeError</span>(<span style=color:#e6db74>&#34;Argument </span><span style=color:#e6db74>{!r}</span><span style=color:#e6db74> expected to be of bytes,&#34;&#34;str, int or float type&#34;</span><span style=color:#f92672>.</span>format(arg))
     <span style=color:#66d9ef>return</span> buf
-</code></pre></div><p>这样可以转化为可以识别的形式了，接下来还有一个问题，那么怎么让程序可以等待信号的生效呢？这里介绍一下 <code>asyncio.Future</code>。这个 <code>asyncio.Future</code> 类是用于封装回调函数的类，包含了一些更加方便使用的方法。通过这个类，可以实现 aio 的通知机制，也就是回调。这个类实例可以通过 <code>await</code> 返回我们需要的结果。不过这样就还需要在项目中添加一些更多的变量，比如所有等待返回的 <code>self._waiters</code>。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>execute</span>(self, command, <span style=color:#f92672>*</span>args, encoding<span style=color:#f92672>=</span>None):
+</code></pre></div><p>这样可以转化为可以识别的形式了，接下来还有一个问题，那么怎么让程序可以等待信号的生效呢？这里介绍一下 <code>asyncio.Future</code>。这个 <code>asyncio.Future</code> 类是用于封装回调函数的类，包含了一些更加方便使用的方法。通过这个类，可以实现 aio 的通知机制，也就是回调。这个类实例可以通过 <code>await</code> 返回我们需要的结果。不过这样就还需要在项目中添加一些更多的变量，比如所有等待返回的 <code>self._waiters</code>。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>execute</span>(self, command, <span style=color:#f92672>*</span>args, encoding<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
         <span style=color:#e6db74>&#34;&#34;&#34;Executes redis command and returns Future waiting for the answer.
 </span><span style=color:#e6db74>        Raises:
 </span><span style=color:#e6db74>        * TypeError if any of args can not be encoded as bytes.
@@ -105,49 +105,49 @@ loop<span style=color:#f92672>.</span>close()
 </span><span style=color:#e6db74>        * ProtocolError when response can not be decoded meaning connection
 </span><span style=color:#e6db74>          is broken.
 </span><span style=color:#e6db74>        &#34;&#34;&#34;</span><span style=color:#66d9ef>assert</span> self<span style=color:#f92672>.</span>_reader <span style=color:#f92672>and</span> <span style=color:#f92672>not</span> self<span style=color:#f92672>.</span>_reader<span style=color:#f92672>.</span>at_eof(), (<span style=color:#e6db74>&#34;Connection closed or corrupted&#34;</span>)
-        <span style=color:#66d9ef>if</span> command <span style=color:#f92672>is</span> None:
+        <span style=color:#66d9ef>if</span> command <span style=color:#f92672>is</span> <span style=color:#66d9ef>None</span>:
             <span style=color:#66d9ef>raise</span> <span style=color:#a6e22e>TypeError</span>(<span style=color:#e6db74>&#34;command must not be None&#34;</span>)
-        <span style=color:#66d9ef>if</span> None <span style=color:#f92672>in</span> set(args):
+        <span style=color:#66d9ef>if</span> <span style=color:#66d9ef>None</span> <span style=color:#f92672>in</span> set(args):
             <span style=color:#66d9ef>raise</span> <span style=color:#a6e22e>TypeError</span>(<span style=color:#e6db74>&#34;args must not contain None&#34;</span>)
         <span style=color:#75715e># 这样小写也没有问题了</span>
         command <span style=color:#f92672>=</span> command<span style=color:#f92672>.</span>upper()<span style=color:#f92672>.</span>strip()
-        <span style=color:#66d9ef>if</span> encoding <span style=color:#f92672>is</span> None:
+        <span style=color:#66d9ef>if</span> encoding <span style=color:#f92672>is</span> <span style=color:#66d9ef>None</span>:
             encoding <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_encoding
         fut <span style=color:#f92672>=</span> asyncio<span style=color:#f92672>.</span>Future(loop<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_loop)
         self<span style=color:#f92672>.</span>_writer<span style=color:#f92672>.</span>write(encode_command(command, <span style=color:#f92672>*</span>args))
         self<span style=color:#f92672>.</span>_waiters<span style=color:#f92672>.</span>append((fut, encoding, cb))
         <span style=color:#66d9ef>return</span> fut
-</code></pre></div><p>现在所有的命令都已经发送到了 redis-server，接下来就需要读取对应的结果了。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    async <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_read_data</span>(self):
+</code></pre></div><p>现在所有的命令都已经发送到了 redis-server，接下来就需要读取对应的结果了。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#66d9ef>async</span> <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_read_data</span>(self):
         <span style=color:#e6db74>&#34;&#34;&#34;Response reader task.&#34;&#34;&#34;</span>
         <span style=color:#66d9ef>while</span> <span style=color:#f92672>not</span> self<span style=color:#f92672>.</span>_reader<span style=color:#f92672>.</span>at_eof():
             <span style=color:#66d9ef>try</span>:
-                data <span style=color:#f92672>=</span> await self<span style=color:#f92672>.</span>_reader<span style=color:#f92672>.</span>read(<span style=color:#ae81ff>65536</span>)
+                data <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> self<span style=color:#f92672>.</span>_reader<span style=color:#f92672>.</span>read(<span style=color:#ae81ff>65536</span>)
             <span style=color:#66d9ef>except</span> asyncio<span style=color:#f92672>.</span>CancelledError:
                 <span style=color:#66d9ef>break</span>
             <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> exc:
                 <span style=color:#75715e># XXX: for QUIT command connection error can be received</span>
                 <span style=color:#75715e>#       before response</span>
-                logger<span style=color:#f92672>.</span>error(<span style=color:#e6db74>&#34;Exception on data read </span><span style=color:#e6db74>%r</span><span style=color:#e6db74>&#34;</span>, exc, exc_info<span style=color:#f92672>=</span>True)
+                logger<span style=color:#f92672>.</span>error(<span style=color:#e6db74>&#34;Exception on data read </span><span style=color:#e6db74>%r</span><span style=color:#e6db74>&#34;</span>, exc, exc_info<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
                 <span style=color:#66d9ef>break</span>
             self<span style=color:#f92672>.</span>_parser<span style=color:#f92672>.</span>feed(data)
-            <span style=color:#66d9ef>while</span> True:
+            <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
                 <span style=color:#66d9ef>try</span>:
                     obj <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_parser<span style=color:#f92672>.</span>gets()
                 <span style=color:#66d9ef>except</span> ProtocolError <span style=color:#66d9ef>as</span> exc:
                     <span style=color:#75715e># ProtocolError is fatal</span>
                     <span style=color:#75715e># so connection must be closed</span>
-                    self<span style=color:#f92672>.</span>_closing <span style=color:#f92672>=</span> True
+                    self<span style=color:#f92672>.</span>_closing <span style=color:#f92672>=</span> <span style=color:#66d9ef>True</span>
                     self<span style=color:#f92672>.</span>_loop<span style=color:#f92672>.</span>call_soon(self<span style=color:#f92672>.</span>_do_close, exc)
                     <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>_in_transaction:
                         self<span style=color:#f92672>.</span>_transaction_error <span style=color:#f92672>=</span> exc
                     <span style=color:#66d9ef>return</span>
                 <span style=color:#66d9ef>else</span>:
-                    <span style=color:#66d9ef>if</span> obj <span style=color:#f92672>is</span> False:
+                    <span style=color:#66d9ef>if</span> obj <span style=color:#f92672>is</span> <span style=color:#66d9ef>False</span>:
                         <span style=color:#66d9ef>break</span>
                     <span style=color:#66d9ef>else</span>:
                         self<span style=color:#f92672>.</span>_process_data(obj)
-        self<span style=color:#f92672>.</span>_closing <span style=color:#f92672>=</span> True
-        self<span style=color:#f92672>.</span>_loop<span style=color:#f92672>.</span>call_soon(self<span style=color:#f92672>.</span>_do_close, None)
+        self<span style=color:#f92672>.</span>_closing <span style=color:#f92672>=</span> <span style=color:#66d9ef>True</span>
+        self<span style=color:#f92672>.</span>_loop<span style=color:#f92672>.</span>call_soon(self<span style=color:#f92672>.</span>_do_close, <span style=color:#66d9ef>None</span>)
 
     <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_process_data</span>(self, obj):
         <span style=color:#e6db74>&#34;&#34;&#34;Processes command results.&#34;&#34;&#34;</span>
@@ -161,17 +161,17 @@ loop<span style=color:#f92672>.</span>close()
             <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>_in_transaction:
                 self<span style=color:#f92672>.</span>_transaction_error <span style=color:#f92672>=</span> obj
         <span style=color:#66d9ef>else</span>:
-            <span style=color:#66d9ef>if</span> encoding <span style=color:#f92672>is</span> <span style=color:#f92672>not</span> None:
+            <span style=color:#66d9ef>if</span> encoding <span style=color:#f92672>is</span> <span style=color:#f92672>not</span> <span style=color:#66d9ef>None</span>:
                 <span style=color:#66d9ef>try</span>:
                     obj <span style=color:#f92672>=</span> decode(obj, encoding)
                 <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> exc:
                     waiter<span style=color:#f92672>.</span>set_exception(exc)
                     <span style=color:#66d9ef>return</span>
             waiter<span style=color:#f92672>.</span>set_result(obj)
-            <span style=color:#66d9ef>if</span> cb <span style=color:#f92672>is</span> <span style=color:#f92672>not</span> None:
+            <span style=color:#66d9ef>if</span> cb <span style=color:#f92672>is</span> <span style=color:#f92672>not</span> <span style=color:#66d9ef>None</span>:
                 cb(obj)
-</code></pre></div><p>有了这些之后，我们就可以简单创建一个连接了：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>async <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>create_connection</span>(address, <span style=color:#f92672>*</span>, db<span style=color:#f92672>=</span>None, password<span style=color:#f92672>=</span>None,
-                      encoding<span style=color:#f92672>=</span>None, loop<span style=color:#f92672>=</span>None):
+</code></pre></div><p>有了这些之后，我们就可以简单创建一个连接了：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>async</span> <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>create_connection</span>(address, <span style=color:#f92672>*</span>, db<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>, password<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>,
+                      encoding<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>, loop<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
     <span style=color:#e6db74>&#34;&#34;&#34;Creates redis connection.
 </span><span style=color:#e6db74>    Opens connection to Redis server specified by address argument.
 </span><span style=color:#e6db74>    Address argument is similar to socket address argument, ie:
@@ -186,16 +186,16 @@ loop<span style=color:#f92672>.</span>close()
 
     <span style=color:#66d9ef>if</span> isinstance(address, (list, tuple)):
         host, port <span style=color:#f92672>=</span> address
-        reader, writer <span style=color:#f92672>=</span> await asyncio<span style=color:#f92672>.</span>open_connection(host, port, loop<span style=color:#f92672>=</span>loop)
+        reader, writer <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> asyncio<span style=color:#f92672>.</span>open_connection(host, port, loop<span style=color:#f92672>=</span>loop)
     <span style=color:#66d9ef>else</span>:
-        reader, writer <span style=color:#f92672>=</span> await asyncio<span style=color:#f92672>.</span>open_unix_connection(address, loop<span style=color:#f92672>=</span>loop)
+        reader, writer <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> asyncio<span style=color:#f92672>.</span>open_unix_connection(address, loop<span style=color:#f92672>=</span>loop)
     conn <span style=color:#f92672>=</span> RedisConnection(reader, writer, encoding<span style=color:#f92672>=</span>encoding, loop<span style=color:#f92672>=</span>loop)
 
     <span style=color:#66d9ef>try</span>:
-        <span style=color:#66d9ef>if</span> password <span style=color:#f92672>is</span> <span style=color:#f92672>not</span> None:
-            <span style=color:#66d9ef>yield</span> <span style=color:#f92672>from</span> conn.auth(password)
-        <span style=color:#66d9ef>if</span> db <span style=color:#f92672>is</span> <span style=color:#f92672>not</span> None:
-            <span style=color:#66d9ef>yield</span> <span style=color:#f92672>from</span> conn.select(db)
+        <span style=color:#66d9ef>if</span> password <span style=color:#f92672>is</span> <span style=color:#f92672>not</span> <span style=color:#66d9ef>None</span>:
+            <span style=color:#66d9ef>yield from</span> conn<span style=color:#f92672>.</span>auth(password)
+        <span style=color:#66d9ef>if</span> db <span style=color:#f92672>is</span> <span style=color:#f92672>not</span> <span style=color:#66d9ef>None</span>:
+            <span style=color:#66d9ef>yield from</span> conn<span style=color:#f92672>.</span>select(db)
     <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span>:
         conn<span style=color:#f92672>.</span>close()
     <span style=color:#66d9ef>return</span> conn
