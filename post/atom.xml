@@ -1,4 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 15 May 2021 18:38:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>构建属于你自己的dapr绑定组件</title><link>https://www.4async.com/2021/05/building-your-own-dapr-binding/</link><pubDate>Sat, 15 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-binding/</guid><description>在上一篇文章中，吐槽了拖延症的危害，因此这次我来分享一下我最新推送到dapr的最新的一个新的绑定组件，通过这个来看一下如何实现自己的绑定组件。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 06 Jul 2021 11:41:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>什么是事件建模Event Modeling?</title><link>https://www.4async.com/2021/07/introducing-event-modeling/</link><pubDate>Tue, 06 Jul 2021 11:41:00 +0000</pubDate><guid>https://www.4async.com/2021/07/introducing-event-modeling/</guid><description>基本概念 事件建模（Event Modeling）是一种描述系统的方法，展示信息如何随时间变化的例子。具体来说，这种方式省略了瞬息万变的细节，而着眼于在任何特定的时间点上的持久化存储和用户所见数据的变化。这些时间轴上的事件，构成了对系统的描述。
+近年来，很多系统使用事件通过事件存储数据库或者使用特定方式使用常规数据库构建了状态和信息传播的模块。然而，大多数方法仍然依赖于通过SQL数据库、文档数据库或者其他技术实现严格意义上的当前时间点信息的视图。
+对很多系统而言，特别是对于非小型系统而言，随着系统复杂性的增加，变更成本将会随着时间的推移难度指数级上升。与现有的设计和建模方式对比，事件建模可以在短时间内创建一个基础蓝图，将返工工作量降到最低。
+从过去谈起 讲故事自古以来就是人类能够将知识传递给后代的方法，它在很大程度上依赖于我们如何存储记忆-无论是逻辑的、视觉的、听觉的还是其他的。这一点很重要，因为这与信息系统的构建方式有相似之处。 用具体的例子说明某物应该如何工作是一种常见的方式。这种方式可以在软件开发的成功实践中看到，如行为驱动开发。这种方式很有效，因为我们通过故事来沟通更有效。将它和讲故事联系在一起，是一种保持社会信息的方式。我们的大脑是为它而建的，而不是为流程图和其他格式而建的。 而事件建模模型就是遵循这种讲故事模式而建立的产品建模方式。
+事件建模模式 时间线是最好描述故事主线的方式，对我们的系统而言，时间线也是描述我们系统核心部分概念的重要组成部分。我们可以通过在一条时间线上，系统从开始到结束，在没有分支情况下应该做什么方式展示我们系统的一部分功能。这就是一个典型的事件模型的组成。我们可以用这种方式跟踪所有UI界面中字段值如何存储和如何展示的。比如在上面的示例图中，我们使用了3种不同模块的内容和传统的线框模型就展示了整个系统的模型。但是简单性是我们重要的一个目标，因此我们只依赖于4种模式构建这种模型图。
+保持简单性 当我们想采用某些做法或流程来帮助彼此理解和沟通时，它与个人为熟练掌握这些方法而进行的学习量成反比。换句话说，如果我们可以更快的掌握一个名叫X的方法时，我们就可以更好的通过这种方式进行知识分享和互动；反之，无论这种方法多么好，昂贵的学习成本总会搞砸一切。
+当一本书是团队中的必读书目时，每个人都会说他们读过；只有一半的人会真正读过；这些真正读过的人中一半的人会声称他们理解了这本书；而这些声称理解的人中只有一半的人真正的理解了这本书；而这些真正理解了这本书的人只有一半的人能够使用它。
+这就是为什么使用3个模块和基于2个想法的4种模式进行事件建模。因为这只需要几分钟就可以将所有的东西向所有人解释清楚。其他的学习则可以在实践中进行。即便理解出现了不足和错误，也可以很快在实践中得到纠正。
+事件 假设我们想为连锁酒店设计一个酒店网站，让我们的客户可以在线预订房间，并让我们安排清洁和任何其他酒店问题。 我们可以显示在该业务的年度时间线上存储了哪些事件。 我们可以假装我们已经有了这个系统，然后问自己随着时间的推移存储了哪些事件。
+线框图 让我们看一下在图片的最上面的部分的第一个模块。为了让讲故事这个事情更加可视化，我们可以在顶部显示功能的线框图或者网页模拟图。这也可以被具象化为具体的泳道图，以方便不同的人（也可以是系统）与我们的系统进行互动。这里一些自动化的内容可以用齿轮表示，同时说明系统正在做什么。通过这种方式，我们可以非常容易的展示出系统需要实现的功能列表，执行流程和项目完成标记。这里的图是示例了一个酒店的预订、支付和通知系统的过程，我们可以重点关注一下所有相关高亮显示的内容。
+借助这个模块，我们可以很方便的和设计师一起沟通设计系统，当然，这里需要注意在设计中，两个重要的内容需要添加到整个设计中：用户所拥有的权限和用户可以获取的信息。
+命令 大多数信息系统必须给用户一种影响系统的状态的能力，而这种能力就是命令。在我们的例子中，我们必须允许房间预订改变系统状态，这样我们就不会发生超额预订情况。当那个人在未来的预订日期到达时，他们就有一个为他们准备的房间。
+改变系统状态的意图会被封装在一个命令中。相对于简单地将表单数据保存到数据库中的一个表中，这可以让我们以非技术性的方式来显示意图，同时允许任何实现 - 尽管我们可以看到某些方法更具优势。
+从UI和UX的角度来看，这就是一个&amp;quot;命令响应式用户界面&amp;quot;，对帮助制作可组合的UI大有帮助。使用这种模式，从技术和商业的角度来看，交易的界限就更清楚了。以酒店入住为例，酒店的客人要么登记成功，要么没有。
+当命令成功的前提条件有细微的差别时，它们会在&amp;quot;Given-When-Then&amp;quot;风格的描述方式中进行阐述。这种方式也是行为测试模式惯用的描述方式，也是一种成功的讲述故事的方式。实际执行过程中，可能会有几个这样的故事来说明一个命令如何能成功执行和不能成功执行。
+这里我们可以用一个例子来描述一下：
+Given：我们已经注册并添加了一个支付方式 When：我们试图预订一个房间 Then：一个房间被预订了
+这种描述方式也通常被叫做“安排、行动、断言”，在UI/UX的世界中，也被称为“情景、统计、价值”。 在图中我们也可以发现，所有的命令都是用蓝色进行标记的。
+视图（或者叫读模型） 任何信息系统的一个重要能力是将系统中保存的状态告知用户。我们的酒店客人需要知道他们感兴趣的某些类型的房间在哪一天可以入住。这通常有很多种情况，需要支持信息系统的多个模型。
+随着这些新事件的存储，系统中的视图也会一直变化。在我们的酒店系统中，这个日历视图随着影响库存的新事件的发生而被更新。其他视图中清洁团队可以在客户离店事件存储后在其他视图中看到房间已经可以被清理了。
+指定视图的行为方式与我们指定接受命令的方式非常相似，但有一处不同。视图是被动的，并且不能在事件被存储到系统中之后撤销事件。
+举个例子：
+Given：酒店设置了12间海景房，海景房从4月4日到12日被预订 Then：日历上应该显示除4月4日到12日以外的所有海景房的日期
+从上面图中我们也可以注意到，所有的读都是用绿色进行标记的。
+集成 我们刚刚介绍了描述大多数系统所需的 4 种模式中的前 2 种模式。 系统可以从其他系统获取信息并且将信息发送到其他系统。 强迫这 2 个模式成为前 2 个模式的扩展并共享相同的空间是很诱人的选择。 然而这会让交流变得更加困难，因为它们没有人类可见的方面，并且需要一些更高级别的模式。
+翻译 当我们有一个为我们提供信息的外部系统时，将这些信息转换成我们自己系统中的更熟悉的形式会很有帮助。 在我们的酒店系统中，如果选择让我们的清洁人员反应更加灵敏，我们可以从客人的 GPS 坐标中获取事件。 我们不想使用经度和纬度对作为事件来指定我们系统中的先决条件。 我们宁愿选择对我们有意义的活动，例如“客人离开酒店”、“客人回到酒店房间”。
+通常，翻译很简单，可以表示为从外部事件中获取信息的视图。如果我们不将它们用作测试的任何“Given”部分，则它们存储在该视图模型中的值仅在我们的状态更改测试中的命令参数中表示。</description></item><item><title>构建属于你自己的dapr绑定组件</title><link>https://www.4async.com/2021/05/building-your-own-dapr-binding/</link><pubDate>Sat, 15 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-binding/</guid><description>在上一篇文章中，吐槽了拖延症的危害，因此这次我来分享一下我最新推送到dapr的最新的一个新的绑定组件，通过这个来看一下如何实现自己的绑定组件。
 文中提到的PR可以在 dapr/components-contrib#872 查看对应的具体代码。
 什么是 dapr 的绑定组件？ 在dapr中，绑定是用于使用外部系统功能（比如事件或者接口）的扩展组件。它的优势在于：
 免除连接到消息传递系统(如队列和消息总线)并进行轮询的复杂性； 聚焦于业务逻辑，而不是如何与系统交互的实现细节； 使代码不受 SDK 或库的跟踪； 处理重试和故障恢复； 在运行时在绑定之间切换； 构建具有特定于环境的绑定的可移植应用程序，不需要进行代码更改； 在官方文档中，也提到了一个具体的例子：以twilio发送短信为例，一般开发过程中应用程序需要依赖Twilio SDK才可以实现功能，但是借助绑定组件，你可以将SDK的绑定转移至dapr程序领域内，在本身应用程序中不再绑定对应的SDK，不用担心未来SDK过期或者变更带来的重复工作（仅需要更新dapr即可）。
@@ -83,8 +109,4 @@ var ( ErrBase = xerrors.New(&amp;#34;a new error&amp;#34;) ) func main() { err :
 这件事情也暴露出来，我们以前在使用开源项目时，太过信任
 另外，作为最后的一个建议，我们希望如果大家以后开源项目，如果做不到，请不要说自己是__企业级项目__，因为一般也就是放在自己企业里面用，这跟企业级项目是两个概念。至少我们具体到AntD这个项目上，这个项目无论代码开发和管控上，都是算不上的。</description></item><item><title>Go 1.10中的一处不兼容问题</title><link>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</link><pubDate>Fri, 08 Jun 2018 12:20:00 +0000</pubDate><guid>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</guid><description>&lt;p>最近我们在把线上系统升级至Go 1.10版本时发现，在我们实现的某些接口中，出现了客户反馈调用失败提示参数缺失的情况。这种情况我们在测试过程中未能复线，后来经过了解，发现了故障原因为Go 1.10版本升级过程中更改了部分程序代码与验证逻辑导致的。&lt;/p></description></item><item><title>关于Golang过滤敏感信息的正确姿势</title><link>https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/</link><pubDate>Wed, 06 Jun 2018 16:07:00 +0000</pubDate><guid>https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/</guid><description>&lt;p>今天正好看到一篇关于敏感信息过滤的&lt;a class="link" href="https://hackernoon.com/keep-passwords-and-secrets-out-of-your-logs-with-go-a2294a9546ce" target="_blank" rel="noopener"
 >文章&lt;/a>，这算做一个interface实际应用的一些举例和应用。&lt;/p>
-&lt;p>例子中介绍了一种比较常见的使用场景：使用JSON保存数据时的对诸如用户密码等信息进行保护时候应该做的事情。作者以使用JSON格式保存用户账户和密码为例，讲解了使用&lt;code>json.Unmarshaler&lt;/code>接口类型过滤敏感信息。&lt;/p></description></item><item><title>Consul平滑升级的一点建议</title><link>https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/</link><pubDate>Thu, 10 May 2018 15:20:00 +0000</pubDate><guid>https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/</guid><description>我们从 Consul 0.6.x 版本开始使用，中间也遇到的一些各种各样的问题，比较常见的操作问题就是 consul 的升级问题（比如解决 BUG，早期 Consul 的 BUG 也遇到了好几个）。
-平滑升级时，我们常见的方式一般为替换 consul 可执行文件，然后执行 Graceful 重启
-常见 Consul 的 Graceful leave 的方法有以下两种：
-发送 SIGINT 信号至 Consul； 连接要升级的 consul，使用命令 consul leave 发送离开命令； 这两种方式都会让该节点主动退出集群并结束进程，如下：
-[INFO] agent: Caught signal: terminated [INFO] agent: Graceful shutdown disabled. Exiting [INFO] agent: Requesting shutdown [INFO] consul: shutting down server [WARN] serf: Shutdown without a Leave [ERR] agent: Coordinate update error: No cluster leader [ERR] agent: failed to sync remote state: No cluster leader [WARN] serf: Shutdown without a Leave [INFO] manager: shutting down [INFO] agent: consul server down [INFO] agent: shutdown complete [INFO] agent: Stopping DNS server 10.</description></item></channel></rss>
+&lt;p>例子中介绍了一种比较常见的使用场景：使用JSON保存数据时的对诸如用户密码等信息进行保护时候应该做的事情。作者以使用JSON格式保存用户账户和密码为例，讲解了使用&lt;code>json.Unmarshaler&lt;/code>接口类型过滤敏感信息。&lt;/p></description></item></channel></rss>
