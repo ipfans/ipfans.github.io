@@ -68,4 +68,62 @@ Package errors implements functions to manipulate errors. This package implement
 package main import ( &amp;#34;fmt&amp;#34; &amp;#34;golang.org/x/exp/xerrors&amp;#34; ) func raiseError() error { return xerrors.New(&amp;#34;a new error&amp;#34;) } func main() { err := xerrors.Errorf(&amp;#34;raiseError: %w&amp;#34;, raiseError()) fmt.Println(err) } 输出结果：
 raiseError: a new error 看起来非常类似于之前github.com/pkg/errors的显示内容。而其中xerrors.Errorf则充当了之前errors.Wrap的功能。 其中值得一提的是%w，这个用于包装错误，后续验证错误中也会用到其中的值。
 同时，这个包中也包含了几个非常有用的辅助函数，分别是：验证错误类型方法Is、错误类型转换方法As、错误关系链解除方法Opaque和提取内层错误方法Unwrap。我们可以用一个简单的演示来说明这种关系：
-var ( ErrBase = xerrors.New(&amp;#34;a new error&amp;#34;) ) func main() { err := xerrors.</description></item></channel></rss>
+var ( ErrBase = xerrors.New(&amp;#34;a new error&amp;#34;) ) func main() { err := xerrors.</description></item><item><title>Consul平滑升级的一点建议</title><link>https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/</link><pubDate>Thu, 10 May 2018 15:20:00 +0000</pubDate><guid>https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/</guid><description>我们从 Consul 0.6.x 版本开始使用，中间也遇到的一些各种各样的问题，比较常见的操作问题就是 consul 的升级问题（比如解决 BUG，早期 Consul 的 BUG 也遇到了好几个）。
+平滑升级时，我们常见的方式一般为替换 consul 可执行文件，然后执行 Graceful 重启
+常见 Consul 的 Graceful leave 的方法有以下两种：
+发送 SIGINT 信号至 Consul； 连接要升级的 consul，使用命令 consul leave 发送离开命令； 这两种方式都会让该节点主动退出集群并结束进程，如下：
+[INFO] agent: Caught signal: terminated [INFO] agent: Graceful shutdown disabled. Exiting [INFO] agent: Requesting shutdown [INFO] consul: shutting down server [WARN] serf: Shutdown without a Leave [ERR] agent: Coordinate update error: No cluster leader [ERR] agent: failed to sync remote state: No cluster leader [WARN] serf: Shutdown without a Leave [INFO] manager: shutting down [INFO] agent: consul server down [INFO] agent: shutdown complete [INFO] agent: Stopping DNS server 10.</description></item><item><title>OSX 下安装 face_recognition</title><link>https://www.4async.com/2017/08/2017-08-02-install-face-recognition-on-osx/</link><pubDate>Wed, 02 Aug 2017 18:30:00 +0000</pubDate><guid>https://www.4async.com/2017/08/2017-08-02-install-face-recognition-on-osx/</guid><description>face_recognition 是一个热门的人脸识别库，常年占据 Github Trending Python 子类的 Top10。
+在官方文档中，介绍安装 face_recognition 步骤非常简单，只需要执行 pip install face_recognition 就可以了，实际在安装过程中 face_recognition 有一些非 Python 依赖，需要单独安装，本文就对内容进行一个简单介绍，权作记录，方便大家手动安装时提前规避。文章基于 OSX 10.12.6+pyenv+python3.6.2 介绍。
+问题在哪里？ face_recognition 的依赖大部分都比较好安装，只有一个库例外，那就是 dlib 这个依赖。这个依赖需要安装 boost 和 boost-python 两个非 Python 依赖。
+安装 Boost 和 boost-python 这两个库可以通过 Homebrew 快速安装，使用如下命令进行安装：
+brew install boost brew install boost-python --with-python3 需要注意的是，如果是 Python3 使用，需要额外参数，使用源码编译安装。如果使用 Python2 可以使用 Homebrew 的预编译包。
+确认 Python dlib 要求 Python 编译时使用 --enable-shared 参数编译，默认情况下，pyenv 未启用该参数，因此编译需要使用下面参数进行 Python 重新编译
+PYTHON_CONFIGURE_OPTS=&amp;quot;--with-dtrace --enable-shared&amp;quot; pyenv install 3.6.2 前面一个参数是我一直编译 Python 3.</description></item><item><title>gRPC 调用超时控制</title><link>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</link><pubDate>Thu, 06 Apr 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</guid><description>我们在进行服务间调用时广泛采用 gRPC 作为主要的调用协议，借助 gRPC 的模块化与语言无关的特性，可以在我们拓展多语言模块之间提供更好的支持。但是我们在使用 gRPC 之中也出现了一些问题，这些问题会做一些记录，希望可以与大家一起沟通与交流。
+某日，我们的客服反馈，我们的基础设施操作工具出现了长时间无响应的问题。该问题出现在我们对某些设备进行 OTA 升级时，操作长时间无返回，与之前预期的 10 秒内返回存在较大出入。经过我们的工程师分析，我们发现在 gRPC 处理过程中，我们的操作工具通过 gRPC 调用远程服务端接口时，接口长时间没有返回结果。
+我们首先怀疑是 gRPC 调用过程中出现了连接问题。gRPC 过程中可能由于多种原因导致连接断开或者服务器无法连接。在调用 gRPC 方法过程中，我们可以通过 FailFast(true) 方式进行快速失败。实际上，这个值默认情况下为 true。
+那么接下来我们就需要从调用从使用角度上寻找问题。我们使用过程中默许服务端在处理某些操作时进行较长时间操作（如长时间操作），但是从客户端角度而言，部分操作正常情况下我们是希望可以在有预定特定环境下达到某些时间仍旧未返回结果可以标记为结果失败。这样就需要通过 gRPC 的机制进行调控。由于目前我们的接口很多情况下调用接口实际为硬件接口，因此，我们采用通过控制 gRPC 客户端接口超时的方法控制。
+在 gRPC 中，提供了 MethodConfig 用于控制每个方法的超时时间，这样可以对不同的 RPC 方法设置超时。
+下面，我们用 官方的 gRPC 示例 演示如何进行调用超时控制。
+首先，我们在 examples/helloworld/greeter_server/main.go 中的 SayHello 中添加一个长时间操作模拟：time.Sleep(10*time.Second)。
+这时，如果我们需要客户端在 5 秒以内返回结果，应该如何操作呢？
+那么我们修改 examples/helloworld/greeter_client/main.go 中的 main，添加超时处理内容：
+func main() { // Set up method timeout configure. var wg sync.WaitGroup wg.Add(1) ch := make(chan grpc.</description></item><item><title>traefik 简介</title><link>https://www.4async.com/2016/08/2016-08-01-introduce-traefik-load-balance/</link><pubDate>Mon, 01 Aug 2016 11:00:00 +0000</pubDate><guid>https://www.4async.com/2016/08/2016-08-01-introduce-traefik-load-balance/</guid><description>traefik(https://traefik.io/) 是一款开源的反向代理与负载均衡工具。它最大的优点是能够与常见的微服务系统直接整合，可以实现自动化动态配置。目前支持 Docker, Swarm, Mesos/Marathon, Mesos, Kubernetes, Consul, Etcd, Zookeeper, BoltDB, Rest API 等等后端模型。
+traefik 的具体模型如下： 为什么选择 traefik？ 事实上在之前我对 LB 的选择一直更倾向于使用 HAProxy。但是选择 traefik 主要是有以下特点让我们决定使用：
+Golang 编写，单文件部署，与系统无关，同时也提供小尺寸 Docker 镜像。 支持 Docker/Etcd 后端，天然连接我们的微服务集群。 内置 Web UI，管理相对方便。 自动配置 ACME(Let&amp;rsquo;s Encrypt) 证书功能。 性能尚可，我们也没有到压榨 LB 性能的阶段，易用性更重要。 除了这些以外，traefik 还有以下特点：
+Restful API 支持。 支持后端健康状态检查，根据状态自动配置。 支持动态加载配置文件和 graceful 重启。 支持 WebSocket 和 HTTP/2。 除了上面提到的微服务化集群支持，一些 AB 测试阶段也可以通过 frontend 的路由特性进行动态分配，当然这些对 HAProxy 等软件都是标准支持的。
+traefik 的配置 traefik 支持的配置方式支持文件方式进行配置，这个也是比较常见的配置方式，我们这里简单介绍一下。
+traefik 支持的 toml 方式进行配置，官方提供了一个 示例的 traefik.</description></item><item><title>利用 Type Hint 提升 Python 程序开发效率</title><link>https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/</link><pubDate>Wed, 13 Jul 2016 20:00:00 +0000</pubDate><guid>https://www.4async.com/2016/07/2016-07-13-type-hint-improve-python-programming/</guid><description>Type Hint（或者叫做 PEP-484）提供了一种针对 Python 程序的类型标注标准。
+为什么使用 Type Hint？对于动态语言而言，常常出现的情况是当你写了一段代码后，隔段时间你可能忘记这个方法的原型是什么样子的了，你也不清楚具体应该传入什么类型的参数，这样往往需要你去阅读代码才能定义每个类型具体是什么。或者当你使用一个文档并不是特别完全的第三方库，你不知道这个库应该如何使用，这都会很痛苦。
+现在，借助 Type Hint，你可以实现：
+实现类型检查，防止运行时出现的类型不符合情况。 作为文档附加属性，方便开发者调用时传入传出的参数类型。 提升 IDE 的检查机制，在智能提示时更快给出提示和类型检查结果。 实现这个过程中，你需要使用 Python 3.5+ 中提供的新模块 typing。值得注意的是，这个改动并不会影响程序运行，仅仅是为了方便类型检查器实现的。
+Type Hint 类型检查器 目前，比如 JetBrains 家的 PyCharm 已经支持 Type Hint 语法检查功能，如果你使用了这个 IDE，可以通过 IDE 功能进行实现。如果你像我一样，使用了 SublimeText 编辑器，那么第三方工具 mypy 可以帮助到你。AnacondaST3 最近要发布的 2.0 版本也内置了 mypy 功能的支持，具体的进度可以看一下 这个 issue。一些其它的 Python 工具 (比如 代码提示工具 jedi 0.10+) 也支持了 Type Hint 功能。
+从简单的例子开始 从简单的例子开始，我们先从一个简单的程序开始，运行环境为 Python 3.5.2，使用 mypy 工具进行检查。
+首先通过 pip install mypy-lang 命令安装 mypy 工具。注意是 mypy-lang，之所以是这样，是因为在 pypi 里 mypy 这个名字已经被占用掉了。</description></item><item><title>CoreOS 折腾笔记（三）了解 Etcd</title><link>https://www.4async.com/2016/05/2016-05-31-learning-coreos-part3/</link><pubDate>Tue, 31 May 2016 09:13:00 +0000</pubDate><guid>https://www.4async.com/2016/05/2016-05-31-learning-coreos-part3/</guid><description>服务发现是微服务化架构中重要的一环，服务的配置信息需要有一种可靠高效的发现机制，保证服务上线时可以及时被使用，服务失效中断时可以及时切走。服务发现工具 Etcd 就是为了这种需求开发的。
+什么是 Etcd？ Etcd 是一个分布式 KV 数据库，通过将数据分散存储在多台独立的设备上，从而提高数据的可靠性或读写性能。Etcd 是几个比较常见的服务发现应用之一，它支持 TTL 的支持和 HTTP Restful API，同时通过 Raft 一致性算法处理日志复制以保证强一致性。关于 Raft 算法，请参考 这篇文章，这里不多介绍。Etcd 本来就是 CoreOS 团队开发支持的，因此也是原生存在在 CoreOS 系统中。
+Etcd 中提供了订阅通知机制，同时提供了一个线上服务 https://discovery.etcd.io/，这个服务可以用于发现集群中的机器。比如 Fleet 等等工具也是基于 Etcd 去发现网络中的节点服务器。在 CoreOS 机器部署之后，系统中一个叫做 cloud-init 的服务会根据之前的 user-data 文件去启动 Etcd。Etcd 会更新对应的自己的节点信息，并且获取其它的节点信息。
+另外比较常见的服务发现还有 ZooKeeper（应用最广泛）、Consul 等等，如果有兴趣，可以自己在进行研究。
+Etcdctl 使用 工具 etcdctl 是 etcd 的控制程序，我们可以通过执行命令查看所有键值：
+core@core-01 ~ $ etcdctl ls / --recursive /coreos.com /coreos.com/network /coreos.com/network/config /coreos.com/network/subnets /coreos.com/network/subnets/10.1.64.0-24 /coreos.com/network/subnets/10.1.48.0-24 /coreos.com/network/subnets/10.1.10.0-24 /coreos.com/updateengine /coreos.com/updateengine/rebootlock /coreos.com/updateengine/rebootlock/semaphore 还可以通过类似 Redis 的 get 等命令获取具体存储内容：</description></item><item><title>CoreOS 折腾笔记（二）Fleet 进阶</title><link>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part2/</link><pubDate>Sat, 28 May 2016 18:00:00 +0000</pubDate><guid>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part2/</guid><description>如果要说什么样子的分布式集群对用户是最友好的，那无疑是对客户来说，像本地执行命令一样方便的执行集群命令肯定是最舒服的了。这个我们在上一节 集群部署 里面就提到了一个叫做 &amp;ldquo;fleetctl&amp;rdquo; 的命令，这个命令是做什么用的呢？
+fleet 是什么 工具 fleet 是一个在集群层面上的 systemd 管理工具。它的配置文件语法基于 systemd 的语法，另外添加了一些自有的属性。如果你希望在集群中运行你的服务，那么使用 fleet 管理 systemd 单元是再有必要不过的了。
+在比较新的系统 (CentOS 7+、Ubuntu 16+、Debian 8+) 中均采用了 systemd 作为启动项管理工具。如果你对 systemd 有疑问的话，请到其 官方网站 查看具体的介绍，这里不做赘述。
+之前使用的 fleetctl 就是 fleet 的管理工具，默认是在集群中的某台机器上进行管理。当然，fleetctl 同样也可以通过远程进行管理，可以通过如下命令连接远程集群。
+FLEETCTL_ENDPOINT=http://&amp;lt;IP:[PORT]&amp;gt; fleetctl list-units fleetctl 常见命令 比较常见的 fleetctl 命令有：
+core@core-01 ~ $ fleetctl -h ... COMMANDS: cat 查看已经提交的单元文件内容 destroy 销毁集群中的一个或多个单元 fd-forward 将标准输入输出转向到一个 unix socket 中 journal 将集群中的某个 unit 的日志输出到当前 list-machines 查看集群中的已知机器 list-unit-files 查看集群中存在的单元 list-units 查看集群中的单元状态 load 将一个或多个单元加载到集群中，必要时会先执行 submit 功能 ssh 连接到集群中的某台机器 start 启动集群中一个或多个单元，必要时会先执行 submit 和 load 功能 status 输出集群中一个或多个单元的状态 stop 停止集群中一个或多个单元 submit 上传一个或多个单元到集群中，并不会加载执行 unload 卸载集群中的一个或多个单元 fleet 单元文件 以一个 Hello World 程序作为演示来讲解：</description></item><item><title>CoreOS 折腾笔记（一）集群部署</title><link>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part1/</link><pubDate>Sat, 28 May 2016 17:00:00 +0000</pubDate><guid>https://www.4async.com/2016/05/2016-05-28-learning-coreos-part1/</guid><description>最近在技改完成之后打算进行大量的微服务化改造，而方便进行微服务化的步骤之一，就是将现有的系统移植进入 Docker 环境之中。在标准容器系统的选择上，我把目光放在了 CoreOS 上。实际上，我在 CoreOS 版本还是 2 开头的时候就有简单研究过，但是当时主要作为研究 Docker 的途径，现在则是作为集群化部署的基准系统。从本文开始的一系列折腾则是我在研究 CoreOS 集群化使用的一些纪录，而本文就是介绍一个本地实现容器化机群的步骤。
+安装 Vagrant 略，因为太简单了。另外还需要 VirtualBox，不要忘记装。
+配置 CoreOS-vagrant 执行以下命令：
+git clone https://github.com/coreos/coreos-vagrant.git cd coreos-vagrant 下载 CoreOS 的 vagrant 配置。值得在进入正式配置之前一提的是，CoreOS 本身是没有默认密码或者安装密码机制的，也就是说，现有的所有认证登录需要通过 SSH 进行。如果是通过 vagrant 安装，会自动生成登录需要的 SSH 密钥，这个是需要额外注意的内容。
+首先，将仓库中提供的两个模版配置文件复制成正式，接下来需要修改对应的文件：
+cp config.rb.sample config.rb cp user-data.sample user-data 首先修改 config.rb 文件。这里重点是两个参数，一个是启动的实例数量，另外一个是升级的版本，我修改成了
+$num_instances=4 $update_channel=&amp;#39;stable&amp;#39; 启动 4 个实例，升级选择的版本则是月度升级版。另外一个 user-data 暂时不作修改。
+接下来执行：
+vagrant up 在一堆输出之后，生成的 4 个实例就已经在运行了。也可以通过命令 vagrant status 查看运行状态。
+➜ coreos-vagrant git:(master) vagrant status Current machine states: core-01 running (virtualbox) core-02 running (virtualbox) core-03 running (virtualbox) core-04 running (virtualbox) This environment represents multiple VMs.</description></item><item><title>Docker for Mac 尝鲜</title><link>https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</link><pubDate>Tue, 26 Apr 2016 18:00:00 +0000</pubDate><guid>https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</guid><description>之前作为 Docker beta 的第一批用户获得了 beta 的授权，但是因为邮件进了垃圾邮件，所以一直没有发现。今天给 Docker 发邮件申请 beta 测试才知道已经通过了，赶紧尝鲜起来。如果你没有权限，可以尝试到 Docker Beta 申请测试资格。
+测试版本可能存在风险，请自行判断。
+安装之前 Docker for Mac 需要一些前置要求，官方文档提供的数据如下：
+2010 年之后的 Intel Mac 机型，支持 MMU(Memory Management Unit) 虚拟化、EPT(Extended Page Table) 等特性 OSX 10.10.3 以上系统 至少 4GB 内存 VirtualBox 4.x 与 Docker for Mac 冲突，因此如果你安装这个系列的 Virtualbox 需要卸载。 如果之前装过 Docker Toolbox 的话，需要一些额外的操作去与 Docker Toolbox 兼容。（我选择了直接卸载现有的 Docker Toolbox。XD ）
+安装 Docker for Mac Docker for Mac 是一个 98.3M(Mac 显示为 103.1MB) 的 DMG 文件，下载下来之后双击文件，将鲸鱼拖拽到 Applications 文件夹中即可。</description></item><item><title>从 asyncio 简单实现看异步是如何工作的</title><link>https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/</link><pubDate>Wed, 03 Feb 2016 15:40:00 +0000</pubDate><guid>https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/</guid><description>从 asyncio 简单实现看异步是如何工作的
+by ipfans
+注：请使用 Python 3.5+ 版本运行以下代码。
+先从例子看起 首先我们来看一个 socket 通讯的例子，这个例子我们可以在官方 socket 模块的文档中找到部分原型代码：
+# echo.py from socket import * # 是的，这是一个不好的写法 def echo_server(address): sock = socket(AF_INET, SOCK_STREAM) sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) sock.bind(address) sock.listen(5) while True: client, addr = sock.accept() print(&amp;#34;connect from&amp;#34;, addr) echo_handler(client) def echo_handler(client): while True: data = client.recv(10000) if not data: break client.send(str.encode(&amp;#34;Got: &amp;#34;) + data) print(&amp;#34;connection closed.&amp;#34;) if __name__ == &amp;#39;__main__&amp;#39;: echo_server((&amp;#39;&amp;#39;, 25000)) 但是同步模式会有一个问题，当进行通讯是阻塞的，当一个连接占用时就会阻碍其他连接的继续，这个时候应该怎么更快的运行呢？
+回顾历史 在 asyncio 出现之前，我们都是怎么提高效率的呢？首先想到的方法就是多线程处理：</description></item></channel></rss>

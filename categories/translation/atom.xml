@@ -24,4 +24,11 @@ modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中�
 在$GOPATH/src外创建一个新的空文件夹，使用cd切换进入这个目录，然后创建一个名叫hello.go的新源码文件：
 package hello func Hello() string { return &amp;#34;Hello, world.&amp;#34; } 让我们同样创建一个名叫hello_test.go的测试文件：
 package hello import &amp;#34;testing&amp;#34; func TestHello(t *testing.T) { want := &amp;#34;Hello, world.&amp;#34; if got := Hello(); got != want { t.Errorf(&amp;#34;Hello() = %q, want %q&amp;#34;, got, want) } } 现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有go.mod文件。如果你文件创建在 /home/gopher/hello目录下，执行go test命令时，我们可以看到结果：
-$ go test PASS ok _/home/gopher/hello 0.</description></item></channel></rss>
+$ go test PASS ok _/home/gopher/hello 0.</description></item><item><title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title><link>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</link><pubDate>Sun, 19 Feb 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</guid><description>这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。
+本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 Pronto Cycle Share 的数据分析挑战。
+你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 NumPy，Pandas，Matplotlib 和 Seaborn 与其他可用的数据源。
+这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 对应的 Notebook 文件，并通过 Jupyter 打开。
+下载 Pronto 的数据 我们可以从 Pronto 官网 下载对应的 数据文件。总下载大约 70MB，解压缩的文件大约 900MB。
+接下来我们需要导入一些 Python 包：
+In [2]:
+%matplotlib inline import matplotlib.pyplot as plt import pandas as pd import numpy as np import seaborn as sns; sns.set() 现在我们使用 Pandas 加载所有的行程记录：</description></item></channel></rss>
