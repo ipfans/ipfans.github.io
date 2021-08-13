@@ -22,7 +22,7 @@ DRY引入了耦合 强耦合十分常见，因为我们很早就学到了不要�
 最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
 if err != nil { return err } 但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。
 最终，大家都接受了Go的工作方式。它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。
-单一数据模型带来的应用耦合 **Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。**这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
+单一数据模型带来的应用耦合 Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
 这里有一个流行的方式保存单个User模型的方法：
 type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;` FirstName string `json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;` LastName string `json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;` DisplayName string `json:&amp;#34;display_name&amp;#34;` Email string `json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;` Emails []Email `json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;` PasswordHash string `json:&amp;#34;-&amp;#34;` LastIP string `json:&amp;#34;-&amp;#34;` CreatedAt *time.</description></item><item><title>上下文Context与结构体Struct</title><link>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</link><pubDate>Thu, 25 Feb 2021 10:30:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</guid><description>原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
 在context的文档中写道。

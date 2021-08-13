@@ -22,7 +22,7 @@ DRY引入了耦合 强耦合十分常见，因为我们很早就学到了不要�
 最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
 if err != nil { return err } 但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。
 最终，大家都接受了Go的工作方式。它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。
-单一数据模型带来的应用耦合 **Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。**这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
+单一数据模型带来的应用耦合 Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
 这里有一个流行的方式保存单个User模型的方法：
 type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;` FirstName string `json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;` LastName string `json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;` DisplayName string `json:&amp;#34;display_name&amp;#34;` Email string `json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;` Emails []Email `json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;` PasswordHash string `json:&amp;#34;-&amp;#34;` LastIP string `json:&amp;#34;-&amp;#34;` CreatedAt *time.</description></item><item><title>什么是事件建模Event Modeling?</title><link>https://www.4async.com/2021/07/introducing-event-modeling/</link><pubDate>Tue, 06 Jul 2021 11:41:00 +0000</pubDate><guid>https://www.4async.com/2021/07/introducing-event-modeling/</guid><description>基本概念 事件建模（Event Modeling）是一种描述系统的方法，展示信息如何随时间变化的例子。具体来说，这种方式省略了瞬息万变的细节，而着眼于在任何特定的时间点上的持久化存储和用户所见数据的变化。这些时间轴上的事件，构成了对系统的描述。
 近年来，很多系统使用事件通过事件存储数据库或者使用特定方式使用常规数据库构建了状态和信息传播的模块。然而，大多数方法仍然依赖于通过SQL数据库、文档数据库或者其他技术实现严格意义上的当前时间点信息的视图。

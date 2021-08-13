@@ -24,7 +24,7 @@ Web应用面临的最大挑战不是变成了一个无法维护的屎山，而�
 最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
 if err != nil { return err } 但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。
 最终，大家都接受了Go的工作方式。它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。
-单一数据模型带来的应用耦合 **Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。**这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
+单一数据模型带来的应用耦合 Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
 这里有一个流行的方式保存单个User模型的方法：
 type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;` FirstName string `json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;` LastName string `json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;` DisplayName string `json:&amp;#34;display_name&amp;#34;` Email string `json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;` Emails []Email `json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;` PasswordHash string `json:&amp;#34;-&amp;#34;` LastIP string `json:&amp;#34;-&amp;#34;` CreatedAt *time."><title>Go Web应用中常见的反模式</title>
 <link rel=canonical href=https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/>
@@ -53,7 +53,7 @@ Web应用面临的最大挑战不是变成了一个无法维护的屎山，而�
 最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
 if err != nil { return err } 但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。
 最终，大家都接受了Go的工作方式。它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。
-单一数据模型带来的应用耦合 **Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。**这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
+单一数据模型带来的应用耦合 Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
 这里有一个流行的方式保存单个User模型的方法：
 type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;` FirstName string `json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;` LastName string `json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;` DisplayName string `json:&amp;#34;display_name&amp;#34;` Email string `json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;` Emails []Email `json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;` PasswordHash string `json:&amp;#34;-&amp;#34;` LastIP string `json:&amp;#34;-&amp;#34;` CreatedAt *time.">
 <meta property="og:url" content="https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/">
@@ -85,7 +85,7 @@ Web应用面临的最大挑战不是变成了一个无法维护的屎山，而�
 最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
 if err != nil { return err } 但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。
 最终，大家都接受了Go的工作方式。它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。
-单一数据模型带来的应用耦合 **Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。**这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
+单一数据模型带来的应用耦合 Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
 这里有一个流行的方式保存单个User模型的方法：
 type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;` FirstName string `json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;` LastName string `json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;` DisplayName string `json:&amp;#34;display_name&amp;#34;` Email string `json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;` Emails []Email `json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;` PasswordHash string `json:&amp;#34;-&amp;#34;` LastIP string `json:&amp;#34;-&amp;#34;` CreatedAt *time."><meta name=twitter:card content="summary">
 <meta name=twitter:image content="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg">
@@ -205,7 +205,7 @@ Software Architecture
 </code></pre></div><p>但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。</p>
 <p>最终，大家都接受了Go的工作方式。<strong>它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。</strong></p>
 <h2 id=单一数据模型带来的应用耦合>单一数据模型带来的应用耦合</h2>
-<p>**Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。**这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。</p>
+<p><strong>Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。</strong> 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。</p>
 <p>这里有一个流行的方式保存单个<code>User</code>模型的方法：</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>User</span> <span style=color:#66d9ef>struct</span> {
 	<span style=color:#a6e22e>ID</span>           <span style=color:#66d9ef>int</span>        <span style=color:#e6db74>`json:&#34;id&#34; gorm:&#34;autoIncrement primaryKey&#34;`</span>
@@ -325,7 +325,7 @@ Software Architecture
 }
 </code></pre></div><p>完整代码： <a class=link href=https://github.com/ThreeDotsLabs/go-web-app-antipatterns/blob/ab94d47350756716a7fed42b7ae546c51c11406a/01-coupling/02-loosely-coupled/internal/http.go#L210 target=_blank rel=noopener>github.com/ThreeDotsLabs/go-web-app-antipatterns/01-coupling/02-loosely-coupled/internal/http.go</a></p>
 <p>这就是所有你需要的代码：将一种类型映射到另一种类型的函数。编写这种平淡无奇的代码可能看起来十分无聊，但是它对解耦至关重要。</p>
-<p>创建一个使用序列化或者<code>reflect</code>实现用于映射结构体的通用解决方案看上去十分诱人。**请抵制它。编写模版比调试映射的边缘情况会更节省时间和精力。**简单的函数对团队中每个人都更容易理解。魔法转换器会在一段时间后变得难以理解，即使对你而言也是如此。</p>
+<p>创建一个使用序列化或者<code>reflect</code>实现用于映射结构体的通用解决方案看上去十分诱人。<strong>请抵制它。编写模版比调试映射的边缘情况会更节省时间和精力。</strong> 简单的函数对团队中每个人都更容易理解。魔法转换器会在一段时间后变得难以理解，即使对你而言也是如此。</p>
 <blockquote>
 <p>✅ 策略：模型单一责任。 <br>
 通过使用单独的模型来实现松耦合。编写简单明了的函数用以在它们之间进行转换。</p>
@@ -467,7 +467,7 @@ Software Architecture
 不要将你的应用程序逻辑与实现细节混在一起。</p>
 </blockquote>
 <p>商业逻辑需要单独的层。更改实现（数据库引擎、HTTP 库、基础架构、Pub/Sub 等）应是可能的，而无需对逻辑部件进行任何更改。</p>
-<p>你做这种分离并不是因为你想要更改数据库引擎，这种情况很少会发生。**但是，关注点的分离可以让你的代码更容易理解和修改。你知道你在修改什么，并且有没有副作用。**这样就很难在关键部分引入bug。</p>
+<p>你做这种分离并不是因为你想要更改数据库引擎，这种情况很少会发生。<strong>但是，关注点的分离可以让你的代码更容易理解和修改。你知道你在修改什么，并且有没有副作用。</strong> 这样就很难在关键部分引入bug。</p>
 <p>要分离应用层，我们需要添加额外的模型和映射。</p>
 <p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/application-layer.png alt></p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>User</span> <span style=color:#66d9ef>struct</span> {
@@ -700,7 +700,7 @@ Software Architecture
 <h2 id=你的网络应用程序不是单纯的crud>你的网络应用程序不是单纯的CRUD</h2>
 <p>教程通常都是以"简单的 CRUD"为特色，因此它们似乎是任何 Web 应用的基础构建模块。这是个虚无缥缈的传说。如果你所有的产品需要的是CRUD，你就是在浪费时间和金钱从零开始构建。</p>
 <p>框架和无代码工具使得启动 CRUD 变得更容易，但我们仍然向开发人员支付构建自定义软件的费用。即使是 GitHub Copilot 也不知道你的产品除了模版之外是如何工作的。</p>
-<p>**正是特殊的规则和奇怪的细节使你的应用程序与众不同。这不是你分散在四个CRUD操作之上的逻辑。**它是你销售的产品的核心。</p>
+<p><strong>正是特殊的规则和奇怪的细节使你的应用程序与众不同。这不是你分散在四个CRUD操作之上的逻辑。</strong> 它是你销售的产品的核心。</p>
 <p>在 MVP 阶段，从 CRUD 开始快速构建可工作版本是很诱人的。但这就像使用电子表格而不是专用软件。一开始，你会获得类似的效果，但每个新功能都需要更多的hack。</p>
 <blockquote>
 <p>反模式❌：从 CRUD 开始 <br>
