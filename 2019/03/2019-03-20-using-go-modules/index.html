@@ -1,4 +1,6 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="原文：Using Go Modules 作者：Tyler Bui-Palsulich、Eno Compton
+<!doctype html><html lang=en>
+<head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="原文：Using Go Modules 作者：Tyler Bui-Palsulich、Eno Compton
 介绍 Go 1.11和1.12包含了初步的modules支持，Go的新版本管理系统用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。
 modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中。go.mod文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。
 在Go 1.11开始，go命令行会再当前目录或者上层目录中存在go.mod文件并且在 $GOPATH/src目录外时自动启用modules功能。（当目录位于$GOPATH/src中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在go.mod文件。具体请参考Go命令行文档）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。
@@ -7,7 +9,10 @@ modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中�
 在$GOPATH/src外创建一个新的空文件夹，使用cd切换进入这个目录，然后创建一个名叫hello.go的新源码文件：
 package hello func Hello() string { return &amp;#34;Hello, world.&amp;#34; } 让我们同样创建一个名叫hello_test.go的测试文件：
 package hello import &amp;#34;testing&amp;#34; func TestHello(t *testing.T) { want := &amp;#34;Hello, world.&amp;#34; if got := Hello(); got != want { t.Errorf(&amp;#34;Hello() = %q, want %q&amp;#34;, got, want) } } 现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有go.mod文件。如果你文件创建在 /home/gopher/hello目录下，执行go test命令时，我们可以看到结果：
-	$ go test PASS ok _/home/gopher/hello	0."><title>使用Go Modules</title><link rel=canonical href=https://www.4async.com/2019/03/2019-03-20-using-go-modules/><link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="使用Go Modules"><meta property="og:description" content="原文：Using Go Modules 作者：Tyler Bui-Palsulich、Eno Compton
+	$ go test PASS ok _/home/gopher/hello	0."><title>使用Go Modules</title>
+<link rel=canonical href=https://www.4async.com/2019/03/2019-03-20-using-go-modules/>
+<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="使用Go Modules">
+<meta property="og:description" content="原文：Using Go Modules 作者：Tyler Bui-Palsulich、Eno Compton
 介绍 Go 1.11和1.12包含了初步的modules支持，Go的新版本管理系统用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。
 modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中。go.mod文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。
 在Go 1.11开始，go命令行会再当前目录或者上层目录中存在go.mod文件并且在 $GOPATH/src目录外时自动启用modules功能。（当目录位于$GOPATH/src中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在go.mod文件。具体请参考Go命令行文档）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。
@@ -16,7 +21,13 @@ modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中�
 在$GOPATH/src外创建一个新的空文件夹，使用cd切换进入这个目录，然后创建一个名叫hello.go的新源码文件：
 package hello func Hello() string { return &amp;#34;Hello, world.&amp;#34; } 让我们同样创建一个名叫hello_test.go的测试文件：
 package hello import &amp;#34;testing&amp;#34; func TestHello(t *testing.T) { want := &amp;#34;Hello, world.&amp;#34; if got := Hello(); got != want { t.Errorf(&amp;#34;Hello() = %q, want %q&amp;#34;, got, want) } } 现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有go.mod文件。如果你文件创建在 /home/gopher/hello目录下，执行go test命令时，我们可以看到结果：
-	$ go test PASS ok _/home/gopher/hello	0."><meta property="og:url" content="https://www.4async.com/2019/03/2019-03-20-using-go-modules/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="GoModules"><meta property="article:published_time" content="2019-03-20T14:22:00+00:00"><meta property="article:modified_time" content="2019-03-20T14:22:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="使用Go Modules"><meta name=twitter:description content="原文：Using Go Modules 作者：Tyler Bui-Palsulich、Eno Compton
+	$ go test PASS ok _/home/gopher/hello	0.">
+<meta property="og:url" content="https://www.4async.com/2019/03/2019-03-20-using-go-modules/">
+<meta property="og:site_name" content="ipfans's Blog">
+<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="GoModules"><meta property="article:published_time" content="2019-03-20T14:22:00+00:00"><meta property="article:modified_time" content="2019-03-20T14:22:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+<meta name=twitter:site content="@janxin">
+<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="使用Go Modules">
+<meta name=twitter:description content="原文：Using Go Modules 作者：Tyler Bui-Palsulich、Eno Compton
 介绍 Go 1.11和1.12包含了初步的modules支持，Go的新版本管理系统用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。
 modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中。go.mod文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。
 在Go 1.11开始，go命令行会再当前目录或者上层目录中存在go.mod文件并且在 $GOPATH/src目录外时自动启用modules功能。（当目录位于$GOPATH/src中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在go.mod文件。具体请参考Go命令行文档）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。
@@ -25,16 +36,98 @@ modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中�
 在$GOPATH/src外创建一个新的空文件夹，使用cd切换进入这个目录，然后创建一个名叫hello.go的新源码文件：
 package hello func Hello() string { return &amp;#34;Hello, world.&amp;#34; } 让我们同样创建一个名叫hello_test.go的测试文件：
 package hello import &amp;#34;testing&amp;#34; func TestHello(t *testing.T) { want := &amp;#34;Hello, world.&amp;#34; if got := Hello(); got != want { t.Errorf(&amp;#34;Hello() = %q, want %q&amp;#34;, got, want) } } 现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有go.mod文件。如果你文件创建在 /home/gopher/hello目录下，执行go test命令时，我们可以看到结果：
-	$ go test PASS ok _/home/gopher/hello	0."><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script></head><body class=article-page><script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script><div class="container main-container flex
-on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box><span class=hamburger-inner></span></span></button><header class=site-info><figure class=site-avatar><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></figure><h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1><h2 class=site-description></h2></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=../../../categories/golang/>Golang</a>
-<a href=../../../categories/translation/>Translation</a></header><h2 class=article-title><a href=../../../2019/03/2019-03-20-using-go-modules/>使用Go Modules</a></h2><footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--published>Mar 20, 2019</time></footer></div></header><section class=article-content><p>原文：<a class=link href=https://blog.golang.org/using-go-modules target=_blank rel=noopener>Using Go Modules</a>
-作者：Tyler Bui-Palsulich、Eno Compton</p><h2 id=介绍>介绍</h2><p>Go 1.11和1.12包含了初步的<a class=link href=https://golang.org/doc/go1.11#modules target=_blank rel=noopener>modules支持</a>，Go的<a class=link href=https://blog.golang.org/versioning-proposal target=_blank rel=noopener>新版本管理系统</a>用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。</p><p>modules是Go包的集合，保存在顶层目录一个名叫<code>go.mod</code>的文件中。<code>go.mod</code>文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。</p><p>在Go 1.11开始，go命令行会再当前目录或者上层目录中存在<code>go.mod</code>文件并且在 <code>$GOPATH/src</code>目录外时自动启用modules功能。（当目录位于<code>$GOPATH/src</code>中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在<code>go.mod</code>文件。具体请参考<a class=link href=https://golang.org/cmd/go/#hdr-Preliminary_module_support target=_blank rel=noopener>Go命令行文档</a>）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。</p><p>这篇博客会演示使用modules开发Go代码的一系列的常用操作：</p><ul><li>创建一个模块</li><li>添加依赖</li><li>升级依赖</li><li>添加一个依赖的新主版本</li><li>升级一个依赖到新主版本</li><li>移除无用依赖</li></ul><h2 id=创建一个新的模块>创建一个新的模块</h2><p>让我门从创建一个新模块开始。</p><p>在<code>$GOPATH/src</code>外创建一个新的空文件夹，使用<code>cd</code>切换进入这个目录，然后创建一个名叫<code>hello.go</code>的新源码文件：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
+	$ go test PASS ok _/home/gopher/hello	0."><meta name=twitter:card content="summary">
+<meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
+</head>
+<body class=article-page>
+<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
+<div class="container main-container flex
+on-phone--column extended">
+<aside class="sidebar left-sidebar sticky">
+<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box>
+<span class=hamburger-inner></span>
+</span>
+</button>
+<header class=site-info>
+<figure class=site-avatar>
+<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</figure>
+<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
+<h2 class=site-description></h2>
+</header>
+<ol class=menu id=main-menu>
+<li>
+<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span>
+</a>
+</li>
+<li>
+<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span>
+</a>
+</li>
+<li>
+<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
+<span>Feed</span>
+</a>
+</li>
+<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span>
+</li>
+</ol>
+</aside>
+<main class="main full-width">
+<article class=main-article>
+<header class=article-header>
+<div class=article-details>
+<header class=article-category>
+<a href=../../../categories/golang/>
+Golang
+</a>
+<a href=../../../categories/translation/>
+Translation
+</a>
+</header>
+<h2 class=article-title>
+<a href=../../../2019/03/2019-03-20-using-go-modules/>使用Go Modules</a>
+</h2>
+<footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--published>Mar 20, 2019</time>
+</footer></div>
+</header>
+<section class=article-content>
+<p>原文：<a class=link href=https://blog.golang.org/using-go-modules target=_blank rel=noopener>Using Go Modules</a>
+作者：Tyler Bui-Palsulich、Eno Compton</p>
+<h2 id=介绍>介绍</h2>
+<p>Go 1.11和1.12包含了初步的<a class=link href=https://golang.org/doc/go1.11#modules target=_blank rel=noopener>modules支持</a>，Go的<a class=link href=https://blog.golang.org/versioning-proposal target=_blank rel=noopener>新版本管理系统</a>用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。</p>
+<p>modules是Go包的集合，保存在顶层目录一个名叫<code>go.mod</code>的文件中。<code>go.mod</code>文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。</p>
+<p>在Go 1.11开始，go命令行会再当前目录或者上层目录中存在<code>go.mod</code>文件并且在 <code>$GOPATH/src</code>目录外时自动启用modules功能。（当目录位于<code>$GOPATH/src</code>中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在<code>go.mod</code>文件。具体请参考<a class=link href=https://golang.org/cmd/go/#hdr-Preliminary_module_support target=_blank rel=noopener>Go命令行文档</a>）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。</p>
+<p>这篇博客会演示使用modules开发Go代码的一系列的常用操作：</p>
+<ul>
+<li>创建一个模块</li>
+<li>添加依赖</li>
+<li>升级依赖</li>
+<li>添加一个依赖的新主版本</li>
+<li>升级一个依赖到新主版本</li>
+<li>移除无用依赖</li>
+</ul>
+<h2 id=创建一个新的模块>创建一个新的模块</h2>
+<p>让我门从创建一个新模块开始。</p>
+<p>在<code>$GOPATH/src</code>外创建一个新的空文件夹，使用<code>cd</code>切换进入这个目录，然后创建一个名叫<code>hello.go</code>的新源码文件：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
 
 <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Hello</span>() <span style=color:#66d9ef>string</span> {
 	<span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#34;Hello, world.&#34;</span>
 }
-</code></pre></div><p>让我们同样创建一个名叫<code>hello_test.go</code>的测试文件：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
+</code></pre></div><p>让我们同样创建一个名叫<code>hello_test.go</code>的测试文件：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
 
 <span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;testing&#34;</span>
 
@@ -44,29 +137,39 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 		<span style=color:#a6e22e>t</span>.<span style=color:#a6e22e>Errorf</span>(<span style=color:#e6db74>&#34;Hello() = %q, want %q&#34;</span>, <span style=color:#a6e22e>got</span>, <span style=color:#a6e22e>want</span>)
 	}
 }
-</code></pre></div><p>现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有<code>go.mod</code>文件。如果你文件创建在 <code>/home/gopher/hello</code>目录下，执行<code>go test</code>命令时，我们可以看到结果：</p><pre><code>	$ go test
+</code></pre></div><p>现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有<code>go.mod</code>文件。如果你文件创建在 <code>/home/gopher/hello</code>目录下，执行<code>go test</code>命令时，我们可以看到结果：</p>
+<pre><code>	$ go test
 	PASS
 	ok  	_/home/gopher/hello	0.020s
 	$
-</code></pre><p>最后一行表示了整个包测试的汇总信息。因为我们现在在 <code>$GOPATH</code>外，并且不属于任何模块，因此 <code>go</code>命令不知道当前目录的引用路径，因此采用当前文件夹名生成了一个伪路径。</p><p>现在让我们使用<code>go mod init</code>命令将当前目录设置成为模块的根目录，然后重新试试<code>go test</code>命令：</p><pre><code>	$ go mod init example.com/hello
+</code></pre><p>最后一行表示了整个包测试的汇总信息。因为我们现在在 <code>$GOPATH</code>外，并且不属于任何模块，因此 <code>go</code>命令不知道当前目录的引用路径，因此采用当前文件夹名生成了一个伪路径。</p>
+<p>现在让我们使用<code>go mod init</code>命令将当前目录设置成为模块的根目录，然后重新试试<code>go test</code>命令：</p>
+<pre><code>	$ go mod init example.com/hello
 	go: creating new go.mod: module example.com/hello
 	$ go test
 	PASS
 	ok  	example.com/hello	0.020s
 	$
-</code></pre><p>恭喜你！你已经编写和测试了你的第一个模块。</p><p><code>go mod init</code>命令会创建一个<code>go.mod</code>文件：</p><pre><code>	$ cat go.mod
+</code></pre><p>恭喜你！你已经编写和测试了你的第一个模块。</p>
+<p><code>go mod init</code>命令会创建一个<code>go.mod</code>文件：</p>
+<pre><code>	$ cat go.mod
 	module example.com/hello
 
 	go 1.12
 	$
-</code></pre><p><code>go.mod</code>文件仅出现在模块的根目录下。子目录中的包引用路径会使用模块的引用路径加上子目录路径的形式。举个例子，如果我们创建了一个名叫<code>world</code>的子目录，我们不需要在子目录中使用<code>go mod init</code>命令。包会自动识别作为<code>example.com/hello</code> 中的一部分，引用路径为<code>example.com/hello/world</code>。</p><h2 id=添加一个依赖>添加一个依赖</h2><p>Go modules 功能的主要动机就是提升使用其他开发者代码(或者说添加一个依赖项)时的体验。</p><p>让我们更新一下<code>hello.go</code>，引入<code>rsc.io/quote</code>并且使用它实现<code>Hello</code>：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
+</code></pre><p><code>go.mod</code>文件仅出现在模块的根目录下。子目录中的包引用路径会使用模块的引用路径加上子目录路径的形式。举个例子，如果我们创建了一个名叫<code>world</code>的子目录，我们不需要在子目录中使用<code>go mod init</code>命令。包会自动识别作为<code>example.com/hello</code> 中的一部分，引用路径为<code>example.com/hello/world</code>。</p>
+<h2 id=添加一个依赖>添加一个依赖</h2>
+<p>Go modules 功能的主要动机就是提升使用其他开发者代码(或者说添加一个依赖项)时的体验。</p>
+<p>让我们更新一下<code>hello.go</code>，引入<code>rsc.io/quote</code>并且使用它实现<code>Hello</code>：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
 
 	<span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;rsc.io/quote&#34;</span>
 
 	<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Hello</span>() <span style=color:#66d9ef>string</span> {
 		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>quote</span>.<span style=color:#a6e22e>Hello</span>()
 	}
-</code></pre></div><p>现在让我们再次执行测试：</p><pre><code>	$ go test
+</code></pre></div><p>现在让我们再次执行测试：</p>
+<pre><code>	$ go test
 	go: finding rsc.io/quote v1.5.2
 	go: downloading rsc.io/quote v1.5.2
 	go: extracting rsc.io/quote v1.5.2
@@ -79,24 +182,31 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	PASS
 	ok  	example.com/hello	0.023s
 	$
-</code></pre><p><code>go</code>命令会自动处理<code>go.mod</code>中制定的依赖版本。当包中<code>import</code>指向的模块没有在 <code>go.mod</code>文件中， <code>go</code>命令会自动搜索这个模块，并且将最新版本添加到 <code>go.mod</code>文件中。（“最新版本”是指最新的标签<a class=link href=https://semver.org/#spec-item-9 target=_blank rel=noopener>非预发布</a>的稳定版本。）在我们的例子中，<code>go test</code>解析了新的引用路径<code>rsc.io/quote</code>为对应的模块，版本为<code>v1.5.2</code>。它同样下载了<code>rsc.io/quote</code>中使用的两个依赖，名为<code>rsc.io/sampler</code>和<code>golang.org/x/text</code>。不过，只有直接使用的依赖会被记录在<code>go.mod</code>文件中。</p><pre><code>	$ cat go.mod
+</code></pre><p><code>go</code>命令会自动处理<code>go.mod</code>中制定的依赖版本。当包中<code>import</code>指向的模块没有在 <code>go.mod</code>文件中， <code>go</code>命令会自动搜索这个模块，并且将最新版本添加到 <code>go.mod</code>文件中。（“最新版本”是指最新的标签<a class=link href=https://semver.org/#spec-item-9 target=_blank rel=noopener>非预发布</a>的稳定版本。）在我们的例子中，<code>go test</code>解析了新的引用路径<code>rsc.io/quote</code>为对应的模块，版本为<code>v1.5.2</code>。它同样下载了<code>rsc.io/quote</code>中使用的两个依赖，名为<code>rsc.io/sampler</code>和<code>golang.org/x/text</code>。不过，只有直接使用的依赖会被记录在<code>go.mod</code>文件中。</p>
+<pre><code>	$ cat go.mod
 	module example.com/hello
 
 	go 1.12
 
 	require rsc.io/quote v1.5.2
 	$
-</code></pre><p>第二次执行<code>go test</code>命令时不会重复这个工作，因为 <code>go.mod</code> 已经最新并且所有的下载模块都会缓存到本地（保存在<code>$GOPATH/pkg/mod</code>目录中）：</p><pre><code>	$ go test
+</code></pre><p>第二次执行<code>go test</code>命令时不会重复这个工作，因为 <code>go.mod</code> 已经最新并且所有的下载模块都会缓存到本地（保存在<code>$GOPATH/pkg/mod</code>目录中）：</p>
+<pre><code>	$ go test
 	PASS
 	ok  	example.com/hello	0.020s
 	$
-</code></pre><p>值得注意的是，虽然<code>go</code>命令添加新依赖简单便捷，但是它并不是没有成本的。你的模块递归依赖新的依赖时可能会有正确性、安全性和非正当授权等等问题。更多的思考，可以参考Russ Cox的博客<a class=link href=https://research.swtch.com/deps target=_blank rel=noopener>我们的软件依赖问题</a>。</p><p>如同我们上面看到的那样，添加一新的依赖通常会带来新的间接依赖。命令<code>go list -m all</code>会列出虽有的当前依赖和他们的依赖</p><pre><code>	$ go list -m all
+</code></pre><p>值得注意的是，虽然<code>go</code>命令添加新依赖简单便捷，但是它并不是没有成本的。你的模块递归依赖新的依赖时可能会有正确性、安全性和非正当授权等等问题。更多的思考，可以参考Russ Cox的博客<a class=link href=https://research.swtch.com/deps target=_blank rel=noopener>我们的软件依赖问题</a>。</p>
+<p>如同我们上面看到的那样，添加一新的依赖通常会带来新的间接依赖。命令<code>go list -m all</code>会列出虽有的当前依赖和他们的依赖</p>
+<pre><code>	$ go list -m all
 	example.com/hello
 	golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c
 	rsc.io/quote v1.5.2
 	rsc.io/sampler v1.3.0
 	$
-</code></pre><p>在<code>go list</code>输出中，当前模块，或者叫做主模块，通常是第一行，接下来是根据依赖路径排序的依赖。</p><p><code>golang.org/x/text</code>的版本<code>v0.0.0-20170915032832-14c0d48ead0c</code>是<a class=link href=https://golang.org/cmd/go/#hdr-Pseudo_versions target=_blank rel=noopener>伪版本</a>的例子，是<code>go</code>命令的版本语法用于标记未打标签的提交。</p><p>同时，<code>go.mod</code>和<code>go</code>命令维护了一个名叫<code>go.sum</code>的文件包含了指定模块版本的期望的<a class=link href=https://golang.org/cmd/go/#hdr-Module_downloading_and_verification target=_blank rel=noopener>加密hash</a>：</p><pre><code>	$ cat go.sum
+</code></pre><p>在<code>go list</code>输出中，当前模块，或者叫做主模块，通常是第一行，接下来是根据依赖路径排序的依赖。</p>
+<p><code>golang.org/x/text</code>的版本<code>v0.0.0-20170915032832-14c0d48ead0c</code>是<a class=link href=https://golang.org/cmd/go/#hdr-Pseudo_versions target=_blank rel=noopener>伪版本</a>的例子，是<code>go</code>命令的版本语法用于标记未打标签的提交。</p>
+<p>同时，<code>go.mod</code>和<code>go</code>命令维护了一个名叫<code>go.sum</code>的文件包含了指定模块版本的期望的<a class=link href=https://golang.org/cmd/go/#hdr-Module_downloading_and_verification target=_blank rel=noopener>加密hash</a>：</p>
+<pre><code>	$ cat go.sum
 	golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c h1:qgOY6WgZO...
 	golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:Nq...
 	rsc.io/quote v1.5.2 h1:w5fcysjrx7yqtD/aO+QwRjYZOKnaM9Uh2b40tElTs3...
@@ -104,7 +214,12 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	rsc.io/sampler v1.3.0 h1:7uVkIFmeBqHfdjD+gZwtXXI+RODJ2Wc4O7MPEh/Q...
 	rsc.io/sampler v1.3.0/go.mod h1:T1hPZKmBbMNahiBKFy5HrXp6adAjACjK9...
 	$
-</code></pre><p><code>go</code>命令使用<code>go.sum</code>文件保证之后的模块下载会下载到跟第一次下载相同的文件内容，保证你的项目依赖不会发生预期外的恶意修改、意外问题和其他问题。<code>go.mod</code> 和 <code>go.sum</code>都需要放进版本管理中。</p><h2 id=升级依赖>升级依赖</h2><p>在Go modules中，版本采用语义化版本标签标记版本。语义化版本包含三部分：主要版本、次要版本和修订版本。举一个例子，比如，<code>v0.1.2</code>，主要版本为0，次要版本为1，修订版本为2.</p><p>让我们在这一节中先升级一下次要版本，下一节中我们再尝试升级一下主要版本。</p><p>从<code>go list -m all</code>的输出中，我们可以看到我们使用了 <code>golang.org/x/text</code>的一个没有标签的版本，让我们吧这个版本升级成最新版本，然后测试一下所有的功能是否正常工作：</p><pre><code>	$ go get golang.org/x/text
+</code></pre><p><code>go</code>命令使用<code>go.sum</code>文件保证之后的模块下载会下载到跟第一次下载相同的文件内容，保证你的项目依赖不会发生预期外的恶意修改、意外问题和其他问题。<code>go.mod</code> 和 <code>go.sum</code>都需要放进版本管理中。</p>
+<h2 id=升级依赖>升级依赖</h2>
+<p>在Go modules中，版本采用语义化版本标签标记版本。语义化版本包含三部分：主要版本、次要版本和修订版本。举一个例子，比如，<code>v0.1.2</code>，主要版本为0，次要版本为1，修订版本为2.</p>
+<p>让我们在这一节中先升级一下次要版本，下一节中我们再尝试升级一下主要版本。</p>
+<p>从<code>go list -m all</code>的输出中，我们可以看到我们使用了 <code>golang.org/x/text</code>的一个没有标签的版本，让我们吧这个版本升级成最新版本，然后测试一下所有的功能是否正常工作：</p>
+<pre><code>	$ go get golang.org/x/text
 	go: finding golang.org/x/text v0.3.0
 	go: downloading golang.org/x/text v0.3.0
 	go: extracting golang.org/x/text v0.3.0
@@ -112,7 +227,9 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	PASS
 	ok  	example.com/hello	0.013s
 	$
-</code></pre><p>哇哦，所有的功能都正常工作。</p><p>让我们看一下<code>go list -m all</code>和<code>go.mod</code>文件：</p><pre><code>	$ go list -m all
+</code></pre><p>哇哦，所有的功能都正常工作。</p>
+<p>让我们看一下<code>go list -m all</code>和<code>go.mod</code>文件：</p>
+<pre><code>	$ go list -m all
 	example.com/hello
 	golang.org/x/text v0.3.0
 	rsc.io/quote v1.5.2
@@ -127,7 +244,9 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 		rsc.io/quote v1.5.2
 	)
 	$
-</code></pre><p><code>golang.org/x/text</code>文件被更新到了最新的标签版本<code>v0.3.0</code>。 <code>go.mod</code>文件中的记录也被更新成了<code>v0.3.0</code>。<code>indirect</code> 注释标记了依赖不是被当前模块直接使用的，只是在其他依赖项中被间接引用。具体内容可以通过<code>go help modules</code>查看更多介绍。</p><p>现在，我们可以尝试升级<code>rsc.io/sampler</code>的小版本，同样的，我们使用<code>go get</code>指令后执行测试：</p><pre><code>	$ go get rsc.io/sampler
+</code></pre><p><code>golang.org/x/text</code>文件被更新到了最新的标签版本<code>v0.3.0</code>。 <code>go.mod</code>文件中的记录也被更新成了<code>v0.3.0</code>。<code>indirect</code> 注释标记了依赖不是被当前模块直接使用的，只是在其他依赖项中被间接引用。具体内容可以通过<code>go help modules</code>查看更多介绍。</p>
+<p>现在，我们可以尝试升级<code>rsc.io/sampler</code>的小版本，同样的，我们使用<code>go get</code>指令后执行测试：</p>
+<pre><code>	$ go get rsc.io/sampler
 	go: finding rsc.io/sampler v1.99.99
 	go: downloading rsc.io/sampler v1.99.99
 	go: extracting rsc.io/sampler v1.99.99
@@ -138,10 +257,12 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	exit status 1
 	FAIL	example.com/hello	0.014s
 	$
-</code></pre><p>噢，不！测试显示最新版的 <code>rsc.io/sampler</code>不兼容我们的使用方式，让我们看一下这个模块所有可用的标签版本：</p><pre><code>	$ go list -m -versions rsc.io/sampler
+</code></pre><p>噢，不！测试显示最新版的 <code>rsc.io/sampler</code>不兼容我们的使用方式，让我们看一下这个模块所有可用的标签版本：</p>
+<pre><code>	$ go list -m -versions rsc.io/sampler
 	rsc.io/sampler v1.0.0 v1.2.0 v1.2.1 v1.3.0 v1.3.1 v1.99.99
 	$
-</code></pre><p>我们在使用的版本是v1.3.0，看上去v1.99.99明显不能使用，或许我们可以使用v1.3.1版本：</p><pre><code>	$ go get rsc.io/sampler@v1.3.1
+</code></pre><p>我们在使用的版本是v1.3.0，看上去v1.99.99明显不能使用，或许我们可以使用v1.3.1版本：</p>
+<pre><code>	$ go get rsc.io/sampler@v1.3.1
 	go: finding rsc.io/sampler v1.3.1
 	go: downloading rsc.io/sampler v1.3.1
 	go: extracting rsc.io/sampler v1.3.1
@@ -149,7 +270,11 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	PASS
 	ok  	example.com/hello	0.022s
 	$
-</code></pre><p>注意<code>go get</code>命令中我们使用了<code>@v1.3.1</code>作为参数。通常情况下<code>go get</code>可以指定参数标记使用的版本，这个默认值为<code>@latest</code>，对应会尝试使用最新的版本。</p><h2 id=添加一个依赖的主要版本>添加一个依赖的主要版本</h2><p>让我们添加一个新的函数到我们的包中：<code>func Proverb</code> 会返回Go的并发箴言，这个功能是在<code>rsc.io/quote/v3</code>模块中通过调用 <code>quote.Concurrency</code>实现的。</p><p>现在，我们来更新<code>hello.go</code> 添加新的函数：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
+</code></pre><p>注意<code>go get</code>命令中我们使用了<code>@v1.3.1</code>作为参数。通常情况下<code>go get</code>可以指定参数标记使用的版本，这个默认值为<code>@latest</code>，对应会尝试使用最新的版本。</p>
+<h2 id=添加一个依赖的主要版本>添加一个依赖的主要版本</h2>
+<p>让我们添加一个新的函数到我们的包中：<code>func Proverb</code> 会返回Go的并发箴言，这个功能是在<code>rsc.io/quote/v3</code>模块中通过调用 <code>quote.Concurrency</code>实现的。</p>
+<p>现在，我们来更新<code>hello.go</code> 添加新的函数：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
 
 	<span style=color:#f92672>import</span> (
 		<span style=color:#e6db74>&#34;rsc.io/quote&#34;</span>
@@ -163,24 +288,32 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Proverb</span>() <span style=color:#66d9ef>string</span> {
 		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>quoteV3</span>.<span style=color:#a6e22e>Concurrency</span>()
 	}
-</code></pre></div><p>现在，我们来添加对应的测试：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>TestProverb</span>(<span style=color:#a6e22e>t</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>testing</span>.<span style=color:#a6e22e>T</span>) {
+</code></pre></div><p>现在，我们来添加对应的测试：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>TestProverb</span>(<span style=color:#a6e22e>t</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>testing</span>.<span style=color:#a6e22e>T</span>) {
 		<span style=color:#a6e22e>want</span> <span style=color:#f92672>:=</span> <span style=color:#e6db74>&#34;Concurrency is not parallelism.&#34;</span>
 		<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>got</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>Proverb</span>(); <span style=color:#a6e22e>got</span> <span style=color:#f92672>!=</span> <span style=color:#a6e22e>want</span> {
 			<span style=color:#a6e22e>t</span>.<span style=color:#a6e22e>Errorf</span>(<span style=color:#e6db74>&#34;Proverb() = %q, want %q&#34;</span>, <span style=color:#a6e22e>got</span>, <span style=color:#a6e22e>want</span>)
 		}
 	}
-</code></pre></div><p>现在让我们测试一下：</p><pre><code>	$ go test
+</code></pre></div><p>现在让我们测试一下：</p>
+<pre><code>	$ go test
 	go: finding rsc.io/quote/v3 v3.1.0
 	go: downloading rsc.io/quote/v3 v3.1.0
 	go: extracting rsc.io/quote/v3 v3.1.0
 	PASS
 	ok  	example.com/hello	0.024s
 	$
-</code></pre><p>注意，我们同时使用了<code>rsc.io/quote</code>和<code>rsc.io/quote/v3</code>：</p><pre><code>	$ go list -m rsc.io/q...
+</code></pre><p>注意，我们同时使用了<code>rsc.io/quote</code>和<code>rsc.io/quote/v3</code>：</p>
+<pre><code>	$ go list -m rsc.io/q...
 	rsc.io/quote v1.5.2
 	rsc.io/quote/v3 v3.1.0
 	$
-</code></pre><p>每个不同主要版本（<code>v1</code>, <code>v2</code>等等）可以使用不用的引用路径：路径采用主要版本结尾。在这个例子中，我们使用的<code>rsc.io/quote</code>的<code>v3</code> 版本不再是<code>rsc.io/quote</code>，而是<code>rsc.io/quote/v3</code>。这个叫做<a class=link href>语义化引用版本</a>，可以让不兼容的包（通常是不同主版本）拥有不同的路径。在差异中<code>rsc.io/quote</code>的<code>v1.6.0</code>版本需要向前兼容<code>v1.5.2</code>，这样就可以重用<code>rsc.io/quote</code>名称。（在前一节中， <code>rsc.io/sampler</code>的<code>v1.99.99</code>应该需要兼容<code>rsc.io/sampler</code>的<code>v1.3.0</code>版本，但是Bug或者其他原因都可能导致这种问题的出现。）</p><p><code>go</code>命令允许一个构建包含一个指定模块路径的最多一个版本，以为着每个主要版本都可以包含最多一个版本：一个<code>rsc.io/quote</code>，一个<code>rsc.io/quote/v2</code>和一个<code>rsc.io/quote/v3</code>等等。</p><p>这规定了模块作者一个清晰的单一模块路径的规则：可以一个程序既可以在<code>rsc.io/quote</code>的<code>v1.5.2</code>和<code>v1.6.0</code>版本下构建通过。同时，允许不同的模块主版本（因为有不同路径）让模块的消费者能够增量升级至新主版本中。在这个例子中，我们希望使用<code>rsc/quote/v3 v3.1.0</code>中的<code>quote.Concurrency</code>，但是我们没做好合并我们<code>rsc.io/quote v1.5.2</code>的使用方式时，这个能力可以帮助到我们。这个能力在大型代码的项目中的增量更新中尤为重要。</p><h2 id=升级一个依赖到新主版本>升级一个依赖到新主版本</h2><p>现在，让我们完成将使用<code>rsc.io/quote</code>转换为仅使用<code>rsc.io/quote/v3</code>。因为主版本的变化，我们可以预计到一些API已经删除，改名或者发生了一些不兼容的变化。阅读一下文档我们可以知道，<code>Hello</code>现在已经变为了<code>HelloV3</code>：</p><pre><code>	$ go doc rsc.io/quote/v3
+</code></pre><p>每个不同主要版本（<code>v1</code>, <code>v2</code>等等）可以使用不用的引用路径：路径采用主要版本结尾。在这个例子中，我们使用的<code>rsc.io/quote</code>的<code>v3</code> 版本不再是<code>rsc.io/quote</code>，而是<code>rsc.io/quote/v3</code>。这个叫做<a class=link href>语义化引用版本</a>，可以让不兼容的包（通常是不同主版本）拥有不同的路径。在差异中<code>rsc.io/quote</code>的<code>v1.6.0</code>版本需要向前兼容<code>v1.5.2</code>，这样就可以重用<code>rsc.io/quote</code>名称。（在前一节中， <code>rsc.io/sampler</code>的<code>v1.99.99</code>应该需要兼容<code>rsc.io/sampler</code>的<code>v1.3.0</code>版本，但是Bug或者其他原因都可能导致这种问题的出现。）</p>
+<p><code>go</code>命令允许一个构建包含一个指定模块路径的最多一个版本，以为着每个主要版本都可以包含最多一个版本：一个<code>rsc.io/quote</code>，一个<code>rsc.io/quote/v2</code>和一个<code>rsc.io/quote/v3</code>等等。</p>
+<p>这规定了模块作者一个清晰的单一模块路径的规则：可以一个程序既可以在<code>rsc.io/quote</code>的<code>v1.5.2</code>和<code>v1.6.0</code>版本下构建通过。同时，允许不同的模块主版本（因为有不同路径）让模块的消费者能够增量升级至新主版本中。在这个例子中，我们希望使用<code>rsc/quote/v3 v3.1.0</code>中的<code>quote.Concurrency</code>，但是我们没做好合并我们<code>rsc.io/quote v1.5.2</code>的使用方式时，这个能力可以帮助到我们。这个能力在大型代码的项目中的增量更新中尤为重要。</p>
+<h2 id=升级一个依赖到新主版本>升级一个依赖到新主版本</h2>
+<p>现在，让我们完成将使用<code>rsc.io/quote</code>转换为仅使用<code>rsc.io/quote/v3</code>。因为主版本的变化，我们可以预计到一些API已经删除，改名或者发生了一些不兼容的变化。阅读一下文档我们可以知道，<code>Hello</code>现在已经变为了<code>HelloV3</code>：</p>
+<pre><code>	$ go doc rsc.io/quote/v3
 	package quote // import &quot;rsc.io/quote&quot;
 
 	Package quote collects pithy sayings.
@@ -191,7 +324,9 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	func HelloV3() string
 	func OptV3() string
 	$
-</code></pre><p>（这里输出中有一个<a class=link href=https://golang.org/issue/30778 target=_blank rel=noopener>已知BUG</a>，显示内容中引用路径错误的丢弃了<code>/v3</code>。）</p><p>我们可以更新我们<code>hello.go</code>文件中的<code>quote.Hello()</code>为<code>quoteV3.Hello()</code>：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
+</code></pre><p>（这里输出中有一个<a class=link href=https://golang.org/issue/30778 target=_blank rel=noopener>已知BUG</a>，显示内容中引用路径错误的丢弃了<code>/v3</code>。）</p>
+<p>我们可以更新我们<code>hello.go</code>文件中的<code>quote.Hello()</code>为<code>quoteV3.Hello()</code>：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
 
 	<span style=color:#f92672>import</span> <span style=color:#a6e22e>quoteV3</span> <span style=color:#e6db74>&#34;rsc.io/quote/v3&#34;</span>
 
@@ -202,7 +337,8 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Proverb</span>() <span style=color:#66d9ef>string</span> {
 		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>quoteV3</span>.<span style=color:#a6e22e>Concurrency</span>()
 	}
-</code></pre></div><p>这时，我们已经不再需要重命名引用了，我们可以移除掉这些：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
+</code></pre></div><p>这时，我们已经不再需要重命名引用了，我们可以移除掉这些：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#f92672>package</span> <span style=color:#a6e22e>hello</span>
 
 	<span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;rsc.io/quote/v3&#34;</span>
 
@@ -213,10 +349,13 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Proverb</span>() <span style=color:#66d9ef>string</span> {
 		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>quote</span>.<span style=color:#a6e22e>Concurrency</span>()
 	}
-</code></pre></div><p>现在我们重新运行一下测试，确保所有的功能都能够正常运行。</p><pre><code>	$ go test
+</code></pre></div><p>现在我们重新运行一下测试，确保所有的功能都能够正常运行。</p>
+<pre><code>	$ go test
 	PASS
 	ok      example.com/hello       0.014s
-</code></pre><h2 id=移除无用依赖>移除无用依赖</h2><p>我们已经移除了所有<code>rsc.io/quote</code>的使用，但是当我们执行<code>go list -m all</code>命令时，我们仍旧可以看到它出现在我们的<code>go.mod</code>文件中。</p><pre><code>	$ go list -m all
+</code></pre><h2 id=移除无用依赖>移除无用依赖</h2>
+<p>我们已经移除了所有<code>rsc.io/quote</code>的使用，但是当我们执行<code>go list -m all</code>命令时，我们仍旧可以看到它出现在我们的<code>go.mod</code>文件中。</p>
+<pre><code>	$ go list -m all
 	example.com/hello
 	golang.org/x/text v0.3.0
 	rsc.io/quote v1.5.2
@@ -234,7 +373,9 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 		rsc.io/sampler v1.3.1 // indirect
 	)
 	$
-</code></pre><p>为什么呢？因为当我们构建一个单独的包时，如执行<code>go build</code>或者<code>go test</code>时，很容易得知哪些包遗失了或者需要被添加，但是很难确认哪些包可以被安全移除。只有在检查完模块所有的包和可能的构建标签组合之后，才能移除一个依赖。普通的构建命令不会夹在这些信息，因此无法安全的移除依赖。</p><p><code>go mod tidy</code>命令则可以帮助清理无用依赖：</p><pre><code>	$ go mod tidy
+</code></pre><p>为什么呢？因为当我们构建一个单独的包时，如执行<code>go build</code>或者<code>go test</code>时，很容易得知哪些包遗失了或者需要被添加，但是很难确认哪些包可以被安全移除。只有在检查完模块所有的包和可能的构建标签组合之后，才能移除一个依赖。普通的构建命令不会夹在这些信息，因此无法安全的移除依赖。</p>
+<p><code>go mod tidy</code>命令则可以帮助清理无用依赖：</p>
+<pre><code>	$ go mod tidy
 	$ go list -m all
 	example.com/hello
 	golang.org/x/text v0.3.0
@@ -255,11 +396,141 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	PASS
 	ok  	example.com/hello	0.020s
 	$
-</code></pre><h2 id=总结>总结</h2><p>Go modules功能是Go中依赖管理的未来。模块功能现在已经在目前受技术支持的Go版本中可用（目前是Go1.11和Go1.12）。</p><p>这篇文章介绍了使用Go modules的一些工作流：</p><ul><li><code>go mod init</code>创建一个新的模块，初始化<code>go.mod</code>文件。</li><li><code>go build</code>和<code>go test</code>命令和其他一些包构建命令添加必要新依赖到<code>go.mod</code>文件。</li><li><code>go list -m all</code>打印当前模块依赖。</li><li><code>go get</code>命令修改依赖的版本（或者新增依赖）。</li><li><code>go mod tidy</code>移除无用依赖。</li></ul><p>我们鼓励你从现在开始在你的本地开发中启用modules功能，并且添加<code>go.mod</code> 和 <code>go.sum</code>文件到项目中。你可以给我们发送<a class=link href=https://golang.org/issue/new target=_blank rel=noopener>BUG反馈</a>或者是<a class=link href=https://golang.org/wiki/ExperienceReports target=_blank rel=noopener>体验报告</a>，反馈和帮助Go依赖管理的未来演进。</p><p>感谢你们的反馈帮助提升modules功能。</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/golang/>Golang</a>
-<a href=../../../tags/gomodules/>GoModules</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article class=has-image><a href=../../../2021/02/2021-02-19-go116-module-changes/><div class=article-image><img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA=="></div><div class=article-details><h2 class=article-title>Go 1.16 中Module功能新变化</h2></div></a></article><article class=has-image><a href=../../../2021/02/2021-02-25-context-and-structs/><div class=article-image><img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_2.png width=250 height=150 loading=lazy data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA=="></div><div class=article-details><h2 class=article-title>上下文Context与结构体Struct</h2></div></a></article><article class=has-image><a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/><div class=article-image><img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ=="></div><div class=article-details><h2 class=article-title>译：在Go中转向领域驱动设计</h2></div></a></article><article class=has-image><a href=../../../2020/03/2020-03-31-intro-opentelemetry/><div class=article-image><img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_2.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ=="></div><div class=article-details><h2 class=article-title>OpenTelemetry入门</h2></div></a></article><article><a href=../../../2020/02/2020-02-05-golang-debug-instrumental/><div class=article-details><h2 class=article-title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+</code></pre><h2 id=总结>总结</h2>
+<p>Go modules功能是Go中依赖管理的未来。模块功能现在已经在目前受技术支持的Go版本中可用（目前是Go1.11和Go1.12）。</p>
+<p>这篇文章介绍了使用Go modules的一些工作流：</p>
+<ul>
+<li><code>go mod init</code>创建一个新的模块，初始化<code>go.mod</code>文件。</li>
+<li><code>go build</code>和<code>go test</code>命令和其他一些包构建命令添加必要新依赖到<code>go.mod</code>文件。</li>
+<li><code>go list -m all</code>打印当前模块依赖。</li>
+<li><code>go get</code>命令修改依赖的版本（或者新增依赖）。</li>
+<li><code>go mod tidy</code>移除无用依赖。</li>
+</ul>
+<p>我们鼓励你从现在开始在你的本地开发中启用modules功能，并且添加<code>go.mod</code> 和 <code>go.sum</code>文件到项目中。你可以给我们发送<a class=link href=https://golang.org/issue/new target=_blank rel=noopener>BUG反馈</a>或者是<a class=link href=https://golang.org/wiki/ExperienceReports target=_blank rel=noopener>体验报告</a>，反馈和帮助Go依赖管理的未来演进。</p>
+<p>感谢你们的反馈帮助提升modules功能。</p>
+</section>
+<footer class=article-footer>
+<section class=article-tags>
+<a href=../../../tags/golang/>Golang</a>
+<a href=../../../tags/gomodules/>GoModules</a>
+</section>
+<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span>
+</section>
+</footer>
+</article>
+<aside class=related-contents--wrapper>
+<h2 class=section-title>相关文章</h2>
+<div class=related-contents>
+<div class="flex article-list--tile">
+<article class=has-image>
+<a href=../../../2021/02/2021-02-19-go116-module-changes/>
+<div class=article-image>
+<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
+</div>
+<div class=article-details>
+<h2 class=article-title>Go 1.16 中Module功能新变化</h2>
+</div>
+</a>
+</article>
+<article class=has-image>
+<a href=../../../2021/02/2021-02-25-context-and-structs/>
+<div class=article-image>
+<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
+</div>
+<div class=article-details>
+<h2 class=article-title>上下文Context与结构体Struct</h2>
+</div>
+</a>
+</article>
+<article class=has-image>
+<a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
+<div class=article-image>
+<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
+</div>
+<div class=article-details>
+<h2 class=article-title>译：在Go中转向领域驱动设计</h2>
+</div>
+</a>
+</article>
+<article class=has-image>
+<a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
+<div class=article-image>
+<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
+</div>
+<div class=article-details>
+<h2 class=article-title>OpenTelemetry入门</h2>
+</div>
+</a>
+</article>
+<article>
+<a href=../../../2020/02/2020-02-05-golang-debug-instrumental/>
+<div class=article-details>
+<h2 class=article-title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</h2>
+</div>
+</a>
+</article>
+</div>
+</div>
+</aside>
+<div class=disqus-container>
+<div id=disqus_thread></div>
+<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+<style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style>
+<script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script>
+<footer class=site-footer>
+<section class=copyright>
+&copy;
 2013 -
-2021 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2021 ipfans's Blog
+</section>
+<section class=powerby>
+Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+</section>
+</footer>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script><script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script></body></html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
+</main>
+</div>
+<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
+</body>
+</html>

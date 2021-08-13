@@ -1,14 +1,101 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="原文：Moving Towards Domain Driven Design in Go
+<!doctype html><html lang=en>
+<head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="原文：Moving Towards Domain Driven Design in Go
 本文的目的是帮助演示当应用程序随着时间不断推移不断演化时，我们如何利用领域驱动设计帮我们解决可能遇到的问题。为了实现这个目标，我们会通过一个琐碎的项目研究项目是如何随着时间一步步演化的。这不是一个完整的项目，示例代码并不能够直接编译，甚至有些导入以来没有全部列出。这只是一个简单的示例，也就是说，如果出现什么问题，你可以随时与我联系，我们将对问题进行调整或者你的问题及时解答（如果可以的话）。
-"><title>译：在Go中转向领域驱动设计</title><link rel=canonical href=https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/><link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="译：在Go中转向领域驱动设计"><meta property="og:description" content="原文：Moving Towards Domain Driven Design in Go
+"><title>译：在Go中转向领域驱动设计</title>
+<link rel=canonical href=https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
+<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="译：在Go中转向领域驱动设计">
+<meta property="og:description" content="原文：Moving Towards Domain Driven Design in Go
 本文的目的是帮助演示当应用程序随着时间不断推移不断演化时，我们如何利用领域驱动设计帮我们解决可能遇到的问题。为了实现这个目标，我们会通过一个琐碎的项目研究项目是如何随着时间一步步演化的。这不是一个完整的项目，示例代码并不能够直接编译，甚至有些导入以来没有全部列出。这只是一个简单的示例，也就是说，如果出现什么问题，你可以随时与我联系，我们将对问题进行调整或者你的问题及时解答（如果可以的话）。
-"><meta property="og:url" content="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="DDD"><meta property="article:published_time" content="2020-02-16T21:52:00+00:00"><meta property="article:modified_time" content="2020-02-16T21:52:00+00:00"><meta property="og:image" content="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.jpg"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="译：在Go中转向领域驱动设计"><meta name=twitter:description content="原文：Moving Towards Domain Driven Design in Go
+">
+<meta property="og:url" content="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/">
+<meta property="og:site_name" content="ipfans's Blog">
+<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="DDD"><meta property="article:published_time" content="2020-02-16T21:52:00+00:00"><meta property="article:modified_time" content="2020-02-16T21:52:00+00:00"><meta property="og:image" content="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.jpg">
+<meta name=twitter:site content="@janxin">
+<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="译：在Go中转向领域驱动设计">
+<meta name=twitter:description content="原文：Moving Towards Domain Driven Design in Go
 本文的目的是帮助演示当应用程序随着时间不断推移不断演化时，我们如何利用领域驱动设计帮我们解决可能遇到的问题。为了实现这个目标，我们会通过一个琐碎的项目研究项目是如何随着时间一步步演化的。这不是一个完整的项目，示例代码并不能够直接编译，甚至有些导入以来没有全部列出。这只是一个简单的示例，也就是说，如果出现什么问题，你可以随时与我联系，我们将对问题进行调整或者你的问题及时解答（如果可以的话）。
-"><meta name=twitter:card content="summary"><meta name=twitter:image content="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.jpg"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script></head><body class=article-page><script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script><div class="container main-container flex
-on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box><span class=hamburger-inner></span></span></button><header class=site-info><figure class=site-avatar><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></figure><h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1><h2 class=site-description></h2></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></ol></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/><img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_800x0_resize_q75_box.jpg srcset="../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_800x0_resize_q75_box.jpg 800w, ../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg 1600w" width=800 height=335 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计"></a></div><div class=article-details><header class=article-category><a href=../../../categories/translation/>Translation</a>
-<a href=../../../categories/golang/>Golang</a>
-<a href=../../../categories/software-architecture/>Software Architecture</a></header><h2 class=article-title><a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>译：在Go中转向领域驱动设计</a></h2><footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--published>Feb 16, 2020</time></footer></div></header><section class=article-content><p>原文：<a class=link href=https://www.calhoun.io/moving-towards-domain-driven-design-in-go/ target=_blank rel=noopener>Moving Towards Domain Driven Design in Go</a></p><p>本文的目的是帮助演示当应用程序随着时间不断推移不断演化时，我们如何利用领域驱动设计帮我们解决可能遇到的问题。为了实现这个目标，我们会通过一个琐碎的项目研究项目是如何随着时间一步步演化的。这不是一个完整的项目，示例代码并不能够直接编译，甚至有些导入以来没有全部列出。这只是一个简单的示例，也就是说，如果出现什么问题，你可以随时与我联系，我们将对问题进行调整或者你的问题及时解答（如果可以的话）。</p><p>首先，让我们讨论一下这个项目的背景。想象一下你在工作，老板要求你创建一种通过GitHub API对用户进行身份验证的方法。具体上说，你需要利用用户个人访问令牌，查找该用户及其所有组织。 这样，你以后就可以根据他们所属的组织来限制他们的访问。</p><p><em>注意：我们这里使用访问令牌来简化示例。</em></p><p>这听起来很容易，所以你启动编辑器并实现提供此功能的<code>github</code>包。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>github</span>
+"><meta name=twitter:card content="summary">
+<meta name=twitter:image content="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.jpg">
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
+</head>
+<body class=article-page>
+<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
+<div class="container main-container flex
+on-phone--column extended">
+<aside class="sidebar left-sidebar sticky">
+<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box>
+<span class=hamburger-inner></span>
+</span>
+</button>
+<header class=site-info>
+<figure class=site-avatar>
+<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</figure>
+<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
+<h2 class=site-description></h2>
+</header>
+<ol class=menu id=main-menu>
+<li>
+<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span>
+</a>
+</li>
+<li>
+<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span>
+</a>
+</li>
+<li>
+<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
+<span>Feed</span>
+</a>
+</li>
+<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span>
+</li>
+</ol>
+</aside>
+<main class="main full-width">
+<article class="has-image main-article">
+<header class=article-header>
+<div class=article-image>
+<a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
+<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_800x0_resize_q75_box.jpg srcset="../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_800x0_resize_q75_box.jpg 800w, ../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg 1600w" width=800 height=335 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计">
+</a>
+</div>
+<div class=article-details>
+<header class=article-category>
+<a href=../../../categories/translation/>
+Translation
+</a>
+<a href=../../../categories/golang/>
+Golang
+</a>
+<a href=../../../categories/software-architecture/>
+Software Architecture
+</a>
+</header>
+<h2 class=article-title>
+<a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>译：在Go中转向领域驱动设计</a>
+</h2>
+<footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--published>Feb 16, 2020</time>
+</footer></div>
+</header>
+<section class=article-content>
+<p>原文：<a class=link href=https://www.calhoun.io/moving-towards-domain-driven-design-in-go/ target=_blank rel=noopener>Moving Towards Domain Driven Design in Go</a></p>
+<p>本文的目的是帮助演示当应用程序随着时间不断推移不断演化时，我们如何利用领域驱动设计帮我们解决可能遇到的问题。为了实现这个目标，我们会通过一个琐碎的项目研究项目是如何随着时间一步步演化的。这不是一个完整的项目，示例代码并不能够直接编译，甚至有些导入以来没有全部列出。这只是一个简单的示例，也就是说，如果出现什么问题，你可以随时与我联系，我们将对问题进行调整或者你的问题及时解答（如果可以的话）。</p>
+<p>首先，让我们讨论一下这个项目的背景。想象一下你在工作，老板要求你创建一种通过GitHub API对用户进行身份验证的方法。具体上说，你需要利用用户个人访问令牌，查找该用户及其所有组织。 这样，你以后就可以根据他们所属的组织来限制他们的访问。</p>
+<p><em>注意：我们这里使用访问令牌来简化示例。</em></p>
+<p>这听起来很容易，所以你启动编辑器并实现提供此功能的<code>github</code>包。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>github</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>User</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>ID</span>    <span style=color:#66d9ef>string</span>
@@ -23,7 +110,9 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 <span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>User</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>) {
   <span style=color:#75715e>// 与Github API进行交互，并返回用户。如果他们在一个组织中，返回组织的c.OrgID
 </span><span style=color:#75715e></span>}
-</code></pre></div><p><em>注意：这里不是使用真实的Github API - 这只是一个演示例子。</em></p><p>接下来，你需要给<code>github</code>包编写一些中间件，这样你就可以在需要保护的HTTP handler中使用这个包。在中间件中，你通过头部中的basic auth中获得用户的访问令牌，然后调用Github的代码查找用户，检查他们是否是所提供组织的一部分，然后相应地授予权限或拒绝访问。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mw</span>
+</code></pre></div><p><em>注意：这里不是使用真实的Github API - 这只是一个演示例子。</em></p>
+<p>接下来，你需要给<code>github</code>包编写一些中间件，这样你就可以在需要保护的HTTP handler中使用这个包。在中间件中，你通过头部中的basic auth中获得用户的访问令牌，然后调用Github的代码查找用户，检查他们是否是所提供组织的一部分，然后相应地授予权限或拒绝访问。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mw</span>
 
 <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>AuthMiddleware</span>(<span style=color:#a6e22e>client</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>github</span>.<span style=color:#a6e22e>Client</span>, <span style=color:#a6e22e>reqOrgID</span> <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>next</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Handler</span>) <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Handler</span> {
   <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>HandlerFunc</span>(<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>w</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>ResponseWriter</span>, <span style=color:#a6e22e>r</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Request</span>) {
@@ -52,7 +141,8 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 </span><span style=color:#75715e></span>    <span style=color:#a6e22e>next</span>.<span style=color:#a6e22e>ServeHTTP</span>(<span style=color:#a6e22e>w</span>, <span style=color:#a6e22e>r</span>)
   })
 }
-</code></pre></div><p>你将这些代码给你的同事看，他们担心缺乏测试。具体的说，没有一种方法能够验证<code>AuthMiddleware</code>能否按照预期工作。“没有问题”，你说，“我们可以使用interface保证我们可以方便的测试它！”</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mw</span>
+</code></pre></div><p>你将这些代码给你的同事看，他们担心缺乏测试。具体的说，没有一种方法能够验证<code>AuthMiddleware</code>能否按照预期工作。“没有问题”，你说，“我们可以使用interface保证我们可以方便的测试它！”</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mw</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserService</span> <span style=color:#66d9ef>interface</span> {
   <span style=color:#a6e22e>User</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>github</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>)
@@ -85,7 +175,8 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 </span><span style=color:#75715e></span>    <span style=color:#a6e22e>next</span>.<span style=color:#a6e22e>ServeHTTP</span>(<span style=color:#a6e22e>w</span>, <span style=color:#a6e22e>r</span>)
   })
 }
-</code></pre></div><p>现在，你可以使用模拟用户服务测试此代码。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mock</span>
+</code></pre></div><p>现在，你可以使用模拟用户服务测试此代码。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mock</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserService</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>UserFn</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>github</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>)
@@ -94,7 +185,13 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 <span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>us</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>UserService</span>) <span style=color:#a6e22e>Authenticate</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>github</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>) {
   <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>us</span>.<span style=color:#a6e22e>UserFn</span>(<span style=color:#a6e22e>token</span>)
 }
-</code></pre></div><p>创建模拟用户服务有很多方式，但是这个通常需要测试认证正常通过时和认证出现问题时的不同情况。</p><p>现在，我们对认证中间件完成测试、发布，生活似乎很愉快。</p><p>然后，悲剧发生了。你的CEO听说哥斯拉（译者注：哥斯拉毁灭世界？）正在前往旧金山，你的公司无法在未来不确定的情况下继续依赖Github。如果Github整个办公室被摧毁了，没有工程师继续维护该产品怎么办？不，完全不能接受！</p><p>幸运的是，还有一家名为GitLab的替代公司，似乎做了很多类似GitHub的功能，不同的是他们是一个远程工作团队。这意味着哥斯拉永远无法同时消灭所有工程师，对吗？ 🎉</p><p>高层似乎认同这个逻辑，他们开始进行迁移。你的工作？你的任务是保证所有认证代码能够在新系统上正常运行！</p><p>你花了一些时间查看GitLab API文档，好消息是，看起来他们采用了和Github类似的策略。GitLab同样也有个人访问令牌，组织，你只需要重新实现客户端即可。中间件中的代码完全不需要更改，因为你是一个聪明人，你使用了接口！ 😁 现在你只需要创建一个Github客户端…</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>gitlab</span>
+</code></pre></div><p>创建模拟用户服务有很多方式，但是这个通常需要测试认证正常通过时和认证出现问题时的不同情况。</p>
+<p>现在，我们对认证中间件完成测试、发布，生活似乎很愉快。</p>
+<p>然后，悲剧发生了。你的CEO听说哥斯拉（译者注：哥斯拉毁灭世界？）正在前往旧金山，你的公司无法在未来不确定的情况下继续依赖Github。如果Github整个办公室被摧毁了，没有工程师继续维护该产品怎么办？不，完全不能接受！</p>
+<p>幸运的是，还有一家名为GitLab的替代公司，似乎做了很多类似GitHub的功能，不同的是他们是一个远程工作团队。这意味着哥斯拉永远无法同时消灭所有工程师，对吗？ 🎉</p>
+<p>高层似乎认同这个逻辑，他们开始进行迁移。你的工作？你的任务是保证所有认证代码能够在新系统上正常运行！</p>
+<p>你花了一些时间查看GitLab API文档，好消息是，看起来他们采用了和Github类似的策略。GitLab同样也有个人访问令牌，组织，你只需要重新实现客户端即可。中间件中的代码完全不需要更改，因为你是一个聪明人，你使用了接口！ 😁 现在你只需要创建一个Github客户端…</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>gitlab</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>User</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>ID</span>    <span style=color:#66d9ef>string</span>
@@ -109,11 +206,25 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 <span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>User</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>) {
   <span style=color:#75715e>// 与Gitlab API交互，返回用户和对应的组织c.OrgID
 </span><span style=color:#75715e></span>}
-</code></pre></div><p>现在，把这个功能放入<code>AuthMiddleware</code>中，但是，它却不能正常工作了！</p><p>事实证明，即使接口也可能成为耦合的受害者。在这种情况下，这是因为你的接口期望通过<code>User</code>方法返回<code>github.User</code> 。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserService</span> <span style=color:#66d9ef>interface</span> {
+</code></pre></div><p>现在，把这个功能放入<code>AuthMiddleware</code>中，但是，它却不能正常工作了！</p>
+<p>事实证明，即使接口也可能成为耦合的受害者。在这种情况下，这是因为你的接口期望通过<code>User</code>方法返回<code>github.User</code> 。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserService</span> <span style=color:#66d9ef>interface</span> {
   <span style=color:#a6e22e>User</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>github</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>)
                       ^^^^^^^^^^^
 }
-</code></pre></div><p>怎么办？老板希望明天就要发布了！</p><p>现在，你有几种选择：</p><ol><li>修改中间件，以便<code>UserService</code>接口返回<code>gitlab.User</code>而不是<code>github.User</code>；</li><li>创建一个新的专门用于GitLab的身份验证中间件。</li><li>创建一个通用的用户类型，能够在<code>AuthMiddleware</code>中可以自由切换你的github和gitlab实现。</li></ol><p>如果你确信自己的公司以后继续使用GitLab，则方案1就有意义。当然，你需要同时更改用户服务接口和mock，但是如果是一次性的修改，那么这种方案并不坏。</p><p>当然，你并不真正知道你们是否会坚持使用GitLab。也许哥斯拉会改变它的攻击计划？</p><p>如果程序中很多代码都依赖此程序包返回的<code>github.User</code>类型，这个方案也会带来很多麻烦。</p><p>方案2也是可行的，但是它看起来有点傻傻的。当逻辑不变时，为什么我们需要重写一遍所有的代码和测试？当然，一定有一种接口可以按照你最初的意图实现功能。毕竟，中间件不关心查询的用户，我们只是需要处理其中一些重要信息。</p><p>现在，你决定尝试一下方案3。你创建了一个<code>mw</code>包，定义了一个<code>User</code>类型，然后准备编写一个适配器将其与Github和Gitlab客户端连接。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mw</span>
+</code></pre></div><p>怎么办？老板希望明天就要发布了！</p>
+<p>现在，你有几种选择：</p>
+<ol>
+<li>修改中间件，以便<code>UserService</code>接口返回<code>gitlab.User</code>而不是<code>github.User</code>；</li>
+<li>创建一个新的专门用于GitLab的身份验证中间件。</li>
+<li>创建一个通用的用户类型，能够在<code>AuthMiddleware</code>中可以自由切换你的github和gitlab实现。</li>
+</ol>
+<p>如果你确信自己的公司以后继续使用GitLab，则方案1就有意义。当然，你需要同时更改用户服务接口和mock，但是如果是一次性的修改，那么这种方案并不坏。</p>
+<p>当然，你并不真正知道你们是否会坚持使用GitLab。也许哥斯拉会改变它的攻击计划？</p>
+<p>如果程序中很多代码都依赖此程序包返回的<code>github.User</code>类型，这个方案也会带来很多麻烦。</p>
+<p>方案2也是可行的，但是它看起来有点傻傻的。当逻辑不变时，为什么我们需要重写一遍所有的代码和测试？当然，一定有一种接口可以按照你最初的意图实现功能。毕竟，中间件不关心查询的用户，我们只是需要处理其中一些重要信息。</p>
+<p>现在，你决定尝试一下方案3。你创建了一个<code>mw</code>包，定义了一个<code>User</code>类型，然后准备编写一个适配器将其与Github和Gitlab客户端连接。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mw</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>User</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>OrgIDs</span> []<span style=color:#66d9ef>string</span>
@@ -122,7 +233,9 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserService</span> <span style=color:#66d9ef>interface</span> {
   <span style=color:#a6e22e>User</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>)
 }
-</code></pre></div><p>当你编写代码时，你意识到，你实际上并不关心用户ID或者电子邮件等等其他信息，因此你完全可以从<code>mw.User</code>中删除这些字段，你只需要制定你关心的字段，这样就可以让代码更容易维护和测试。棒极了！</p><p>接下来，你需要创建一个适配器，以便你可以对其进行操作。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// Package adapter probably isn’t a great package name, but this is a
+</code></pre></div><p>当你编写代码时，你意识到，你实际上并不关心用户ID或者电子邮件等等其他信息，因此你完全可以从<code>mw.User</code>中删除这些字段，你只需要制定你关心的字段，这样就可以让代码更容易维护和测试。棒极了！</p>
+<p>接下来，你需要创建一个适配器，以便你可以对其进行操作。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// Package adapter probably isn’t a great package name, but this is a
 </span><span style=color:#75715e>// demo so deal with it.
 </span><span style=color:#75715e></span><span style=color:#f92672>package</span> <span style=color:#a6e22e>adapter</span>
 
@@ -153,7 +266,8 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
     <span style=color:#a6e22e>OrgIDs</span>: <span style=color:#a6e22e>glUser</span>.<span style=color:#a6e22e>OrgIDs</span>,
   }, <span style=color:#66d9ef>nil</span>
 }
-</code></pre></div><p>你也需要更新你的mock，不过这是一个相当快的修改。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mock</span>
+</code></pre></div><p>你也需要更新你的mock，不过这是一个相当快的修改。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mock</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserService</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>UserFn</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>mw</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>)
@@ -162,7 +276,8 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 <span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>us</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>UserService</span>) <span style=color:#a6e22e>Authenticate</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>mw</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>) {
   <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>us</span>.<span style=color:#a6e22e>UserFn</span>(<span style=color:#a6e22e>token</span>)
 }
-</code></pre></div><p>现在，如果你想将我们的<code>AuthMiddleware</code>与GitHub或GitLab一起使用，则可以使用如下代码进行操作：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>myHandler</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Handler</span>
+</code></pre></div><p>现在，如果你想将我们的<code>AuthMiddleware</code>与GitHub或GitLab一起使用，则可以使用如下代码进行操作：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>myHandler</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Handler</span>
 <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>us</span> <span style=color:#a6e22e>mw</span>.<span style=color:#a6e22e>UserService</span>
 <span style=color:#a6e22e>us</span> = <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>GitLabUserservice</span>{
   <span style=color:#a6e22e>Client</span>: <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>gitlab</span>.<span style=color:#a6e22e>Client</span>{
@@ -171,8 +286,15 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 }
 <span style=color:#75715e>// This protects your handler
 </span><span style=color:#75715e></span><span style=color:#a6e22e>myHandler</span> = <span style=color:#a6e22e>mw</span>.<span style=color:#a6e22e>AuthMiddleware</span>(<span style=color:#a6e22e>us</span>, <span style=color:#960050;background-color:#1e0010>“</span><span style=color:#a6e22e>my</span><span style=color:#f92672>-</span><span style=color:#a6e22e>org</span><span style=color:#f92672>-</span><span style=color:#a6e22e>id</span><span style=color:#960050;background-color:#1e0010>”</span>, <span style=color:#a6e22e>myHandler</span>)
-</code></pre></div><p>我们终于有了一个完全解耦的解决方案。我们可以轻松地在GitHub和GitLab之间切换，并且当新的源码管理公司出现时，我们也可以很快跟上潮流。</p><h2 id=寻找中间方案>寻找中间方案</h2><p>在前面的示例中，我们一步步看到了代码从紧密耦合到完全解耦的过程。我们使用<code>adapter</code>包来完成处理这些解耦后的<code>mw</code>和<code>github/gitlab</code>包之间的转换。</p><p>这样做的主要好处是我们在最后的时候看到的：我们可以在自由选择使用GitHub或GitLab认证策略，而不需要修改handlers和认证中间件。</p><p>尽管这些好处非常棒，但在不考虑成本的情况下探索这些好处是不公平的。 所有这些更改提供了越来越多的代码，如果你回过头去查看<code>gitlab</code>和<code>mw</code>软件包的原始版本，你会发现它们比需要使用adapter软件包的最终版本要简单得多。这样也会也可能导致更多的设置项，因为在我们代码的某个地方，我们需要实例化所有这些适配器并将它们连接在一起。</p><p>如果沿这条路线继续演进，我们可能会很快发现我们也需要许多不同的User类型。例如，我们可能需要在GitHub（或GitLab）等服务中将内部用户类型与外部用户ID关联。 这可能导致在我们的数据库包中定义一个<code>ExternalUser</code> ，然后编写一个适配器将<code>github.User</code>转换为这种类型，以便我们的数据库代码与我们正在使用的服务解耦。</p><p>I actually tried doing this on one project with my HTTP handlers just to see how it turned out. Specifically, I isolated every endpoint in my web application to its own package with no external dependencies specific to my web application and ended up with packages like this:
-实际上，为了证明这个结果，我在一个项目上的HTTP处理程序上进行过尝试。具体来说，我将Web应用程序中的每个端点隔离到其自己的程序包中，而没有特定于Web应用程序的外部依赖关系，最终得到了像这样的程序包：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// Package enroll provides HTTP handlers for enrolling a user into a new
+</code></pre></div><p>我们终于有了一个完全解耦的解决方案。我们可以轻松地在GitHub和GitLab之间切换，并且当新的源码管理公司出现时，我们也可以很快跟上潮流。</p>
+<h2 id=寻找中间方案>寻找中间方案</h2>
+<p>在前面的示例中，我们一步步看到了代码从紧密耦合到完全解耦的过程。我们使用<code>adapter</code>包来完成处理这些解耦后的<code>mw</code>和<code>github/gitlab</code>包之间的转换。</p>
+<p>这样做的主要好处是我们在最后的时候看到的：我们可以在自由选择使用GitHub或GitLab认证策略，而不需要修改handlers和认证中间件。</p>
+<p>尽管这些好处非常棒，但在不考虑成本的情况下探索这些好处是不公平的。 所有这些更改提供了越来越多的代码，如果你回过头去查看<code>gitlab</code>和<code>mw</code>软件包的原始版本，你会发现它们比需要使用adapter软件包的最终版本要简单得多。这样也会也可能导致更多的设置项，因为在我们代码的某个地方，我们需要实例化所有这些适配器并将它们连接在一起。</p>
+<p>如果沿这条路线继续演进，我们可能会很快发现我们也需要许多不同的User类型。例如，我们可能需要在GitHub（或GitLab）等服务中将内部用户类型与外部用户ID关联。 这可能导致在我们的数据库包中定义一个<code>ExternalUser</code> ，然后编写一个适配器将<code>github.User</code>转换为这种类型，以便我们的数据库代码与我们正在使用的服务解耦。</p>
+<p>I actually tried doing this on one project with my HTTP handlers just to see how it turned out. Specifically, I isolated every endpoint in my web application to its own package with no external dependencies specific to my web application and ended up with packages like this:
+实际上，为了证明这个结果，我在一个项目上的HTTP处理程序上进行过尝试。具体来说，我将Web应用程序中的每个端点隔离到其自己的程序包中，而没有特定于Web应用程序的外部依赖关系，最终得到了像这样的程序包：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// Package enroll provides HTTP handlers for enrolling a user into a new
 </span><span style=color:#75715e>// course.
 </span><span style=color:#75715e>// This package is entirely for demonstrative purposes and hasn’t been tested,
 </span><span style=color:#75715e>// but if you do see obvious bugs feel free to let me know and I’ll address
@@ -321,15 +443,25 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
     <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Redirect</span>(<span style=color:#a6e22e>w</span>, <span style=color:#a6e22e>r</span>, <span style=color:#960050;background-color:#1e0010>“</span><span style=color:#f92672>/</span><span style=color:#a6e22e>courses</span><span style=color:#960050;background-color:#1e0010>”</span>, <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>StatusFound</span>)
 	}
 }
-</code></pre></div><p>从理论上讲，这个想法听起来很酷。 现在，我可以单独定义所有HTTP处理程序，不必担心应用程序的其余部分的影响。 每个包都可以轻松测试，当我编写这些独立的作品时，我发现自己的工作效率非常高。 我甚至有一个名为<code>Executor</code>的接口，谁不想在他们的代码中使用自定义的执行器？！</p><p>在实践中，这个想法对我的特定用例而言太糟糕了。是的，这种方法确实有好处，但是它们并没有超过编写所有这些代码的成本。 在创建<code>enroll</code>和类似软件包的内部组件时，我的工作效率很高，但是我花了很多时间编写适配器并将各个部分连接在一起，这使我的整体生产率下降了。 我找不到一种无需编写自定义<code>UserFn</code> ， <code>LicenseFn</code>的快速方法就可以将其引入到代码中的方案，而且我发现自己为带有HTTP处理程序的每个程序包编写了一堆几乎相同的<code>UserFn</code>变种。</p><p>这引出了本节的主题- <strong>是否有办法实现可接受的中间方案？</strong></p><p>我喜欢将我的代码与第三方依赖项解耦。我也喜欢编写可测试的代码。但是我不喜欢通过加倍的编码工作来实现这一目标。当然，这里必然有一个中间方案，可以在没有所有额外代码的情况下为我们提供大多数好处，对吗？</p><p><strong>是的，是有中间方案的</strong>，找到它的关键不是消除所有耦合，而是有意地选择代码所耦合的内容。</p><p>让我们回到<code>github</code>和<code>gitlab</code>包的原始示例。在我们的第一个版本（紧密耦合版本）中，我们有一个<code>mw</code>包所依赖的<code>github.User</code>类型。 它满足使用，并且我们甚至可以围绕它构建接口，但是我们仍然与<code>github</code>包紧密耦合。</p><p>在第二个版本（解耦版本）中，我们有一个<code>github.User</code> ，<code>gitlab.User</code>和<code>mw.User</code>。 这使我们能够解耦所有内容，但是我们必须创建将这些解耦的代码连接在一起的适配器。</p><p>The middle ground, and the third version we will explore, is to intentionally define a User type that every package is allowed to be tightly coupled to. By doing this, we are intentionally choosing where that coupling happens and can make that decision in a way that still makes it easy to test, swap implementations, and do everything else we desire from decoupled code.
-我们即将探索的第三种中间方案，是有意允许定义每个包紧密耦合的<code>User</code>类型。通过这种操作，我们刻意选择发生耦合的位置，并且保证易于测试、方便实现交换和易于其他为解耦代码实现的一切方式。</p><p>首先是我们的<code>User</code>类型。 这将在<code>domain</code>包中创建，我们应用中的任何其他包都可以导入。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>domain</span>
+</code></pre></div><p>从理论上讲，这个想法听起来很酷。 现在，我可以单独定义所有HTTP处理程序，不必担心应用程序的其余部分的影响。 每个包都可以轻松测试，当我编写这些独立的作品时，我发现自己的工作效率非常高。 我甚至有一个名为<code>Executor</code>的接口，谁不想在他们的代码中使用自定义的执行器？！</p>
+<p>在实践中，这个想法对我的特定用例而言太糟糕了。是的，这种方法确实有好处，但是它们并没有超过编写所有这些代码的成本。 在创建<code>enroll</code>和类似软件包的内部组件时，我的工作效率很高，但是我花了很多时间编写适配器并将各个部分连接在一起，这使我的整体生产率下降了。 我找不到一种无需编写自定义<code>UserFn</code> ， <code>LicenseFn</code>的快速方法就可以将其引入到代码中的方案，而且我发现自己为带有HTTP处理程序的每个程序包编写了一堆几乎相同的<code>UserFn</code>变种。</p>
+<p>这引出了本节的主题- <strong>是否有办法实现可接受的中间方案？</strong></p>
+<p>我喜欢将我的代码与第三方依赖项解耦。我也喜欢编写可测试的代码。但是我不喜欢通过加倍的编码工作来实现这一目标。当然，这里必然有一个中间方案，可以在没有所有额外代码的情况下为我们提供大多数好处，对吗？</p>
+<p><strong>是的，是有中间方案的</strong>，找到它的关键不是消除所有耦合，而是有意地选择代码所耦合的内容。</p>
+<p>让我们回到<code>github</code>和<code>gitlab</code>包的原始示例。在我们的第一个版本（紧密耦合版本）中，我们有一个<code>mw</code>包所依赖的<code>github.User</code>类型。 它满足使用，并且我们甚至可以围绕它构建接口，但是我们仍然与<code>github</code>包紧密耦合。</p>
+<p>在第二个版本（解耦版本）中，我们有一个<code>github.User</code> ，<code>gitlab.User</code>和<code>mw.User</code>。 这使我们能够解耦所有内容，但是我们必须创建将这些解耦的代码连接在一起的适配器。</p>
+<p>The middle ground, and the third version we will explore, is to intentionally define a User type that every package is allowed to be tightly coupled to. By doing this, we are intentionally choosing where that coupling happens and can make that decision in a way that still makes it easy to test, swap implementations, and do everything else we desire from decoupled code.
+我们即将探索的第三种中间方案，是有意允许定义每个包紧密耦合的<code>User</code>类型。通过这种操作，我们刻意选择发生耦合的位置，并且保证易于测试、方便实现交换和易于其他为解耦代码实现的一切方式。</p>
+<p>首先是我们的<code>User</code>类型。 这将在<code>domain</code>包中创建，我们应用中的任何其他包都可以导入。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>domain</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>User</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>ID</span>    <span style=color:#66d9ef>string</span>
   <span style=color:#a6e22e>Email</span> <span style=color:#66d9ef>string</span>
   <span style=color:#a6e22e>OrgIDs</span> []<span style=color:#66d9ef>string</span>
 }
-</code></pre></div><p>接下来，我们将重写<code>github</code>和<code>gitlab</code>软件包以利用此<code>domain.User</code>类型。 这些基本相同，因为我去除了所有的真实逻辑，只展示其中一个。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>gitlab</span> <span style=color:#75715e>// github is the same basically
+</code></pre></div><p>接下来，我们将重写<code>github</code>和<code>gitlab</code>软件包以利用此<code>domain.User</code>类型。 这些基本相同，因为我去除了所有的真实逻辑，只展示其中一个。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>gitlab</span> <span style=color:#75715e>// github is the same basically
 </span><span style=color:#75715e></span>
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Client</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>Key</span>   <span style=color:#66d9ef>string</span>
@@ -340,7 +472,8 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 </span><span style=color:#75715e></span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>User</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>domain</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>) {
   <span style=color:#75715e>// … interact with the gitlab API, and return a user if they are in an org with the c.OrgID
 </span><span style=color:#75715e></span>}
-</code></pre></div><p>最后，我们有了<code>mw</code>软件包。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mw</span>
+</code></pre></div><p>最后，我们有了<code>mw</code>软件包。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mw</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserService</span> <span style=color:#66d9ef>interface</span> {
   <span style=color:#a6e22e>User</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>domain</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>)
@@ -349,7 +482,8 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>AuthMiddleware</span>(<span style=color:#a6e22e>us</span> <span style=color:#a6e22e>UserService</span>, <span style=color:#a6e22e>reqOrgID</span> <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>next</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Handler</span>) <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Handler</span> {
   <span style=color:#75715e>// unchanged
 </span><span style=color:#75715e></span>}
-</code></pre></div><p>我们甚至可以使用此编写一个模拟包。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mock</span>
+</code></pre></div><p>我们甚至可以使用此编写一个模拟包。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>mock</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserService</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>UserFn</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>domain</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>)
@@ -358,21 +492,30 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 <span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>us</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>UserService</span>) <span style=color:#a6e22e>Authenticate</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>domain</span>.<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>) {
   <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>us</span>.<span style=color:#a6e22e>UserFn</span>(<span style=color:#a6e22e>token</span>)
 }
-</code></pre></div><h2 id=领域驱动设计>领域驱动设计</h2><p>到目前为止，我一直努力避免使用任何令人困惑的术语，因为我发现它们通常会使问题变得复杂而不是简化它们。如果你不相信我，请尝试阅读有关域驱动设计（DDD）的任何文章，书籍或其他资源。他们几乎总是使你在代码中实际实现想法带来更多的疑问和更少的明确答案。</p><p>我不是在说明DDD没有用，也不是在建议你不要读那些书。我的意思是，我的很多（大多数）读者在这里是为了寻求有关如何改进其代码的更实用建议，而不是讨论软件开发理论。</p><p>从实际的执行角度来看，领域驱动设计的主要好处是编写可以随时间变化而变化的软件。我发现在Go中实现此目标的最佳方法是清楚地定义你的领域类型，然后编写依赖于这些类型的实现。这仍然会导致代码耦合，但是由于你的领域与问题紧密相关，因此你解决这种耦合并不困难。实际上，我经常发现，需要对领域模型进行清晰的定义是有启发性的，而不是麻烦的。</p><p><em>注意：定义具体领域类型并将代码耦合到它们的想法并不是独创的或新颖的。本·约翰逊在<a class=link href=https://medium.com/@benbjohnson/standard-package-layout-7cdbc8391fc1 target=_blank rel=noopener>2016年撰写的</a> 这篇文章，对于任何新入门的Gopher来说仍然是非常有价值的文章。</em></p><p>回到前面的示例，我们看到在<code>domain</code>包中定义了我们的领域 ：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>domain</span>
+</code></pre></div><h2 id=领域驱动设计>领域驱动设计</h2>
+<p>到目前为止，我一直努力避免使用任何令人困惑的术语，因为我发现它们通常会使问题变得复杂而不是简化它们。如果你不相信我，请尝试阅读有关域驱动设计（DDD）的任何文章，书籍或其他资源。他们几乎总是使你在代码中实际实现想法带来更多的疑问和更少的明确答案。</p>
+<p>我不是在说明DDD没有用，也不是在建议你不要读那些书。我的意思是，我的很多（大多数）读者在这里是为了寻求有关如何改进其代码的更实用建议，而不是讨论软件开发理论。</p>
+<p>从实际的执行角度来看，领域驱动设计的主要好处是编写可以随时间变化而变化的软件。我发现在Go中实现此目标的最佳方法是清楚地定义你的领域类型，然后编写依赖于这些类型的实现。这仍然会导致代码耦合，但是由于你的领域与问题紧密相关，因此你解决这种耦合并不困难。实际上，我经常发现，需要对领域模型进行清晰的定义是有启发性的，而不是麻烦的。</p>
+<p><em>注意：定义具体领域类型并将代码耦合到它们的想法并不是独创的或新颖的。本·约翰逊在<a class=link href=https://medium.com/@benbjohnson/standard-package-layout-7cdbc8391fc1 target=_blank rel=noopener>2016年撰写的</a> 这篇文章，对于任何新入门的Gopher来说仍然是非常有价值的文章。</em></p>
+<p>回到前面的示例，我们看到在<code>domain</code>包中定义了我们的领域 ：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>domain</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>User</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>ID</span>    <span style=color:#66d9ef>string</span>
   <span style=color:#a6e22e>Email</span> <span style=color:#66d9ef>string</span>
   <span style=color:#a6e22e>OrgIDs</span> []<span style=color:#66d9ef>string</span>
 }
-</code></pre></div><p>再进一步，我们甚至可以开始定义基本的构建块，而我们的其余应用可以实现或者在不与实现细节耦合的情况下使用。 例如我们的UserService ：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>domain</span>
+</code></pre></div><p>再进一步，我们甚至可以开始定义基本的构建块，而我们的其余应用可以实现或者在不与实现细节耦合的情况下使用。 例如我们的UserService ：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>domain</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>User</span> <span style=color:#66d9ef>struct</span> { <span style=color:#960050;background-color:#1e0010>…</span> }
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserService</span> <span style=color:#66d9ef>interface</span> {
   <span style=color:#a6e22e>User</span>(<span style=color:#a6e22e>token</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>User</span>, <span style=color:#66d9ef>error</span>)
 }
-</code></pre></div><p>这是由<code>github</code>和<code>gitlab</code>包实现的接口，并在<code>mw</code>包中使用。 它也可以被我们代码中的其他软件包所使用，而不用关心它是如何实现的。而且由于它是在领域中定义的，因此我们不必担心每个实现的返回类型都会有所变化-它们都基于一个通用的定义可以构建。</p><p>随着应用程序的发展和变化，这种定义通用接口的想法变得更加强大。 例如，假设我们有一个稍微复杂的UserService ：也许它会处理创建用户，验证用户，通过令牌查找用户，通过密码重置令牌，更改密码等操作。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>domain</span>
+</code></pre></div><p>这是由<code>github</code>和<code>gitlab</code>包实现的接口，并在<code>mw</code>包中使用。 它也可以被我们代码中的其他软件包所使用，而不用关心它是如何实现的。而且由于它是在领域中定义的，因此我们不必担心每个实现的返回类型都会有所变化-它们都基于一个通用的定义可以构建。</p>
+<p>随着应用程序的发展和变化，这种定义通用接口的想法变得更加强大。 例如，假设我们有一个稍微复杂的UserService ：也许它会处理创建用户，验证用户，通过令牌查找用户，通过密码重置令牌，更改密码等操作。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>domain</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserStore</span> <span style=color:#66d9ef>interface</span> {
 	<span style=color:#a6e22e>Create</span>(<span style=color:#a6e22e>NewUser</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>User</span>, <span style=color:#a6e22e>RememberToken</span>, <span style=color:#66d9ef>error</span>)
@@ -381,7 +524,8 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	<span style=color:#a6e22e>ResetToken</span>(<span style=color:#a6e22e>email</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>ResetToken</span>, <span style=color:#66d9ef>error</span>)
 	<span style=color:#a6e22e>UpdatePw</span>(<span style=color:#a6e22e>pw</span> <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>tok</span> <span style=color:#a6e22e>ResetToken</span>) (<span style=color:#a6e22e>RememberToken</span>, <span style=color:#66d9ef>error</span>)
 }
-</code></pre></div><p>我们可能首先使用纯SQL代码和本地数据库来实现：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>sql</span>
+</code></pre></div><p>我们可能首先使用纯SQL代码和本地数据库来实现：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>sql</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserStore</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>DB</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>sql</span>.<span style=color:#a6e22e>DB</span>
@@ -392,7 +536,9 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 </span><span style=color:#75715e></span>}
 
 <span style=color:#75715e>// … and more methods
-</span></code></pre></div><p>即便当我们只有一个应用程序时，但是也许我们会成长为另一个Google，我们决定一个集中的用户管理系统，这样我们所有单独的应用都可以使用这套系统。</p><p>如果我们将代码耦合到sql实现，这基本很难实现，但是由于大多数代码都耦合到domain.UserService我们可以编写一个新的实现并使用。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>userapi</span>
+</span></code></pre></div><p>即便当我们只有一个应用程序时，但是也许我们会成长为另一个Google，我们决定一个集中的用户管理系统，这样我们所有单独的应用都可以使用这套系统。</p>
+<p>如果我们将代码耦合到sql实现，这基本很难实现，但是由于大多数代码都耦合到domain.UserService我们可以编写一个新的实现并使用。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>userapi</span>
 
 <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserStore</span> <span style=color:#66d9ef>struct</span> {
   <span style=color:#a6e22e>HTTPClient</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Client</span>
@@ -403,15 +549,173 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 </span><span style=color:#75715e></span>}
 
 <span style=color:#75715e>// …
-</span></code></pre></div><p>一般而言，耦合到领域而不是特定的实现方式使我们不必担心诸如以下的细节：</p><ul><li><strong>我们正在与微服务或本地数据库进行交互吗？</strong> 无论我们的用户管理系统是本地SQL数据库还是微服务，我们都可以在合理的时间内完成代码编写。
-*<strong>我们是否通过JSON，GraphQL，gRPC或其他方式与用户API通信？</strong> 尽管我们的实现需要知道如何与用户API进行通信，但是无论我们使用哪种特定技术，我们其余的代码都将继续以相同的方式运行。</li><li>其他更多…</li></ul><p>从根本上讲，这就是我认为领域驱动设计的主要好处。这不是花哨的术语，色彩鲜艳的图形，也不是在同事面前炫耀聪明。纯粹是设计能够不断发展以满足不断变化的需求的软件。</p><h2 id=为什么我们不从领域驱动设计开始>为什么我们不从领域驱动设计开始？</h2><p>显而易见的后续问题是：“如果它是如此出色，为什么我们不只是从领域驱动设计开始呢？”</p><p>任何有使用模型-视图-控制器（MVC）经验的人都会告诉你，它很容易发生紧密耦合。几乎我们所有的应用程序都将需要依赖于我们的模型，而我们只是探讨了这可能会带来问题。那有什么呢？</p><p>从公用领域进行构建虽然很有用，但如果滥用，也可能是一场噩梦。领域驱动设计具有相当陡峭的学习曲线：并不是因为这些想法特别难于掌握，而是因为在项目发展到合理规模之前，你很少了解在应用这些想法时哪里出错了。结果是可能要花几年的时间才能真正掌握所有涉及的动态演化。我已经写了很长一段时间的软件了，但我仍然感觉不到我对所有可能出错或变得复杂的方式都拥有完全的了解。</p><p>*注意：这是我花这么长时间发布本文的重要原因之一。在很多时候，我仍然对分享保有疑虑，我不觉得自己是这个主题的专家。但是，我最终决定分享，因为我相信其他人可以从我的有限理解中学到东西，并且我相信随着与其他开发人员进行讨论，本文会随着时间的推移而发展和改进。因此，随时欢迎与我进行讨论 <a class=link href=mailto:jon@calhoun.io>-jon@calhoun.io</a> *</p><p>MVC为你提供了组织代码的合理起点。数据库交互在模型层，http处理程序在控制器层，渲染代码在视图层。这可能会导致紧密耦合，但可以让你快速入门。</p><p>与MVC不同，领域驱动设计不会为你提供组织代码的合理起点。实际上，从DDD开始与从MVC开始几乎完全相反：不是直接进入构建控制器并查看模型如何发展，相反，你必须花大量时间预先确定领域应该是什么。这可能包括模拟一些想法并让同事进行审查，讨论什么是正确/不正确的，几个迭代周期，然后才可以投入到编写一些代码中。 你可以在 <a class=link href=https://medium.com/wtf-dial/wtf-dial-domain-model-9655cd523182 target=_blank rel=noopener>Ben Johnson的WTF Dial项目</a> 中看到这一点，他在该 <a class=link href=https://medium.com/wtf-dial/wtf-dial-domain-model-9655cd523182 target=_blank rel=noopener>项目</a> 中创建了PR，并与Peter Bourgon，Egon Elbre和Marcus Olsson讨论了领域相关内容。</p><p>这并不是一件坏事，但正确起来也不容易，它需要大量的前期工作。 因此，如果你有一个更大的团队，每个人都需要在某个共同领域上达成共识，然后才能开始开发，那么我通常会发现这种方法最有效。</p><p>鉴于我经常在较小的团队中（或由我自己）进行编码，所以我发现，如果我从简单的事情开始，我的项目就会自然发展。也许这是一个 <a class=link href=https://www.calhoun.io/flat-application-structure/ target=_blank rel=noopener>平铺结构</a> ，也许是 <a class=link href=https://www.calhoun.io/using-mvc-to-structure-go-web-applications/ target=_blank rel=noopener>一个mvc结构</a> ，或者也许完全是其他东西。 只要我对代码的发展保持开放的态度，我就不会太着迷于那些细节。这使它最终可以采用DDD之类的形式，但是不需要我从那里开始。如前所述，对于大型组织（每个人都一起开发同一应用程序）而言，这样做可能会比较困难，因此通常需要进行更多的前期设计讨论。</p><p>在我们的示例应用程序中，我们做了与“让它不断发展”的概念非常相似的事情。每一步都是为特定目的而采取的：我们添加了<code>UserService</code>接口，因为我们需要测试身份验证中间件。 当我们开始从GitHub迁移到GitLab时，我们意识到我们的接口不够用，因此我们探索了其他选择。 围绕这一点，我认为一种让变得有意义DDD的方法，而不是猜测<code>User</code>和<code>UserService</code>接口，因为我们有一些实际的实现基础进行验证。</p><p>以DDD开头的另一个潜在问题是类型定义不足，因为我们经常在拥有具体用例之前就定义它们。例如，我们可能决定对用户进行身份验证如下所示：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserAuthenticator</span> <span style=color:#66d9ef>interface</span> {
+</span></code></pre></div><p>一般而言，耦合到领域而不是特定的实现方式使我们不必担心诸如以下的细节：</p>
+<ul>
+<li><strong>我们正在与微服务或本地数据库进行交互吗？</strong> 无论我们的用户管理系统是本地SQL数据库还是微服务，我们都可以在合理的时间内完成代码编写。
+*<strong>我们是否通过JSON，GraphQL，gRPC或其他方式与用户API通信？</strong> 尽管我们的实现需要知道如何与用户API进行通信，但是无论我们使用哪种特定技术，我们其余的代码都将继续以相同的方式运行。</li>
+<li>其他更多…</li>
+</ul>
+<p>从根本上讲，这就是我认为领域驱动设计的主要好处。这不是花哨的术语，色彩鲜艳的图形，也不是在同事面前炫耀聪明。纯粹是设计能够不断发展以满足不断变化的需求的软件。</p>
+<h2 id=为什么我们不从领域驱动设计开始>为什么我们不从领域驱动设计开始？</h2>
+<p>显而易见的后续问题是：“如果它是如此出色，为什么我们不只是从领域驱动设计开始呢？”</p>
+<p>任何有使用模型-视图-控制器（MVC）经验的人都会告诉你，它很容易发生紧密耦合。几乎我们所有的应用程序都将需要依赖于我们的模型，而我们只是探讨了这可能会带来问题。那有什么呢？</p>
+<p>从公用领域进行构建虽然很有用，但如果滥用，也可能是一场噩梦。领域驱动设计具有相当陡峭的学习曲线：并不是因为这些想法特别难于掌握，而是因为在项目发展到合理规模之前，你很少了解在应用这些想法时哪里出错了。结果是可能要花几年的时间才能真正掌握所有涉及的动态演化。我已经写了很长一段时间的软件了，但我仍然感觉不到我对所有可能出错或变得复杂的方式都拥有完全的了解。</p>
+<p>*注意：这是我花这么长时间发布本文的重要原因之一。在很多时候，我仍然对分享保有疑虑，我不觉得自己是这个主题的专家。但是，我最终决定分享，因为我相信其他人可以从我的有限理解中学到东西，并且我相信随着与其他开发人员进行讨论，本文会随着时间的推移而发展和改进。因此，随时欢迎与我进行讨论 <a class=link href=mailto:jon@calhoun.io>-jon@calhoun.io</a> *</p>
+<p>MVC为你提供了组织代码的合理起点。数据库交互在模型层，http处理程序在控制器层，渲染代码在视图层。这可能会导致紧密耦合，但可以让你快速入门。</p>
+<p>与MVC不同，领域驱动设计不会为你提供组织代码的合理起点。实际上，从DDD开始与从MVC开始几乎完全相反：不是直接进入构建控制器并查看模型如何发展，相反，你必须花大量时间预先确定领域应该是什么。这可能包括模拟一些想法并让同事进行审查，讨论什么是正确/不正确的，几个迭代周期，然后才可以投入到编写一些代码中。 你可以在 <a class=link href=https://medium.com/wtf-dial/wtf-dial-domain-model-9655cd523182 target=_blank rel=noopener>Ben Johnson的WTF Dial项目</a> 中看到这一点，他在该 <a class=link href=https://medium.com/wtf-dial/wtf-dial-domain-model-9655cd523182 target=_blank rel=noopener>项目</a> 中创建了PR，并与Peter Bourgon，Egon Elbre和Marcus Olsson讨论了领域相关内容。</p>
+<p>这并不是一件坏事，但正确起来也不容易，它需要大量的前期工作。 因此，如果你有一个更大的团队，每个人都需要在某个共同领域上达成共识，然后才能开始开发，那么我通常会发现这种方法最有效。</p>
+<p>鉴于我经常在较小的团队中（或由我自己）进行编码，所以我发现，如果我从简单的事情开始，我的项目就会自然发展。也许这是一个 <a class=link href=https://www.calhoun.io/flat-application-structure/ target=_blank rel=noopener>平铺结构</a> ，也许是 <a class=link href=https://www.calhoun.io/using-mvc-to-structure-go-web-applications/ target=_blank rel=noopener>一个mvc结构</a> ，或者也许完全是其他东西。 只要我对代码的发展保持开放的态度，我就不会太着迷于那些细节。这使它最终可以采用DDD之类的形式，但是不需要我从那里开始。如前所述，对于大型组织（每个人都一起开发同一应用程序）而言，这样做可能会比较困难，因此通常需要进行更多的前期设计讨论。</p>
+<p>在我们的示例应用程序中，我们做了与“让它不断发展”的概念非常相似的事情。每一步都是为特定目的而采取的：我们添加了<code>UserService</code>接口，因为我们需要测试身份验证中间件。 当我们开始从GitHub迁移到GitLab时，我们意识到我们的接口不够用，因此我们探索了其他选择。 围绕这一点，我认为一种让变得有意义DDD的方法，而不是猜测<code>User</code>和<code>UserService</code>接口，因为我们有一些实际的实现基础进行验证。</p>
+<p>以DDD开头的另一个潜在问题是类型定义不足，因为我们经常在拥有具体用例之前就定义它们。例如，我们可能决定对用户进行身份验证如下所示：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>UserAuthenticator</span> <span style=color:#66d9ef>interface</span> {
 	<span style=color:#a6e22e>Authenticate</span>(<span style=color:#a6e22e>email</span>, <span style=color:#a6e22e>pw</span> <span style=color:#66d9ef>string</span>) (<span style=color:#66d9ef>error</span>)
 }
-</code></pre></div><p>但是后来，我们意识到，实际上，每当我们对用户进行身份验证时，我们确实希望返回该用户（或记住的令牌），并且通过预先定义此接口，而之前我们错过了这一细节。现在，我们需要引入第二种方法来检索此信息，或者我们需要更改<code>UserAuthenticator</code>类型并重构实现利用此功能的任何代码。</p><p>同样的情况适用于你的模型。在实际实现<code>github</code>和<code>gitlab</code>软件包之前，我们可能会认为，我们在<code>User</code>模型上唯一需要的识别信息是Email字段，但是我们稍后可能会在实现这些服务时意识到电子邮件地址可以更改的，而我们还需要ID字段用于唯一标识用户。</p><p>在使用领域模型之前定义是一项挑战。除非我们已经非常了解我们正在研究的领域，否则我们极不可能知道我们需要做什么和不需要做什么。是的，这意味着我们必须在以后重构代码，但是如果你错误定义了领域，不使用DDD会很多比重构整个代码库更容易。 这是为什么我不介意从紧密耦合的代码开始并在以后进行重构的另一个原因。</p><p>最后，并非所有代码都需要这种解耦，它并不能总是能够带来好处，并且在某些情况下（例如DB），我们很少利用这种解耦。</p><p>对于不继续研发的项目，你可能不需要花费所有时间来解耦代码。如果代码没有继续研发，那么更改的可能性将大大降低，而为代码做准备而付出的额外努力可能只是浪费了。</p><p>此外，解耦并不总是能提供它所承诺的好处，我们也不会总是利用这种解耦的优势。 正如<a class=link href=https://twitter.com/matryer target=_blank rel=noopener>Mat Ryer</a>所指出的那样 ，我们很少会换掉数据库实现。 即使我们确实实现了所有功能的分离，即使我们碰巧只在少数正在迁移数据库的应用程序中，这种迁移通常也需要彻底重新考虑我们与数据存储之间的交互方式。 毕竟，NoSQL数据库的行为与SQL数据库完全不同，要真正利用两者，我们必须编写所使用数据库的特定代码。最终结果是这些抽象并不总是为我们提供我们想要的神奇的“实现无关”的结果。</p><p>这并不意味着DDD不能提供优势，而是意味着我们不应该简单地 <a class=link href=https://en.wikipedia.org/wiki/Drinking_the_Kool-Aid target=_blank rel=noopener>顶礼膜拜</a> 并期待神奇效果。我们需要停下来自我反思。</p><h2 id=综上所述>综上所述</h2><p>在本文中，我们直接研究了代码紧密耦合时遇到的问题，并探讨了定义领域类型和接口如何帮助改善这种耦合。 我们还讨论了为什么让我们的代码随着时间的推移而发展，而不是从开始进行这种分离的设计的原因。</p><p>在本系列的下一篇文章中，我希望展开讲解使用领域驱动设计编写Go代码的想法。 具体来说，我想讨论：</p><ul><li>接口测试如何帮助确保实现可以毫无问题地互换。</li><li>子域如何衍生自不同的上下文。</li><li>使用传统的DDD六边形来形象化这一切，以及像第三方库这样的代码如何适配。</li></ul><p>我还想强调，本文绝不是硬性规定。这只是我微薄的尝试，试图分享一些帮助我改进Go软件的见解和想法。</p><p>我也不是第一个在Go中讨论或探索DDD和设计模式的人。 你应该查看以下内容以获得更全面的理解：</p><ul><li><a class=link href=https://github.com/marcusolsson/goddd target=_blank rel=noopener>GoDDD by Marcus Olsen</a> - 这是一个GitHub存储库，其中包含文章和演讲，Marcus Olsen试图将传统的DDD Java示例应用程序移植到Go中。</li><li><a class=link href=https://medium.com/wtf-dial target=_blank rel=noopener>WTF Dial by Ben Johnson</a> - 我在文中链接了Ben的Standard Pacakage Layout文章； 本系列应用了Ben在该文章中讨论的内容。我还建议查看附带的PR，并仔细阅读评论。</li><li><a class=link href="https://www.youtube.com/watch?v=oL6JBUk6tj0" target=_blank rel=noopener>How Do You Structure Your Go Apps by Kat Zien</a> - 在演讲中，Kat通过多种方法构建了Go应用程序。附带了演讲的代码仓库和幻灯片。</li><li><a class=link href=https://www.ardanlabs.com/blog/2017/02/design-philosophy-on-packaging.html target=_blank rel=noopener>Design Philosophy On Packaging by Bill Kennedy</a> - 虽然不专门涉及结构化应用程序，但本系列讨论了与结构紧密联系的包设计。</li></ul></section><footer class=article-footer><section class=article-tags><a href=../../../tags/golang/>Golang</a>
-<a href=../../../tags/ddd/>DDD</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article class=has-image><a href=../../../2021/02/2021-02-25-context-and-structs/><div class=article-image><img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_2.png width=250 height=150 loading=lazy data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA=="></div><div class=article-details><h2 class=article-title>上下文Context与结构体Struct</h2></div></a></article><article class=has-image><a href=../../../2021/02/2021-02-19-go116-module-changes/><div class=article-image><img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA=="></div><div class=article-details><h2 class=article-title>Go 1.16 中Module功能新变化</h2></div></a></article><article><a href=../../../2019/03/2019-03-20-using-go-modules/><div class=article-details><h2 class=article-title>使用Go Modules</h2></div></a></article><article class=has-image><a href=../../../2021/07/introducing-event-modeling/><div class=article-image><img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw=="></div><div class=article-details><h2 class=article-title>什么是事件建模Event Modeling?</h2></div></a></article><article class=has-image><a href=../../../2020/03/2020-03-31-intro-opentelemetry/><div class=article-image><img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_2.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ=="></div><div class=article-details><h2 class=article-title>OpenTelemetry入门</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+</code></pre></div><p>但是后来，我们意识到，实际上，每当我们对用户进行身份验证时，我们确实希望返回该用户（或记住的令牌），并且通过预先定义此接口，而之前我们错过了这一细节。现在，我们需要引入第二种方法来检索此信息，或者我们需要更改<code>UserAuthenticator</code>类型并重构实现利用此功能的任何代码。</p>
+<p>同样的情况适用于你的模型。在实际实现<code>github</code>和<code>gitlab</code>软件包之前，我们可能会认为，我们在<code>User</code>模型上唯一需要的识别信息是Email字段，但是我们稍后可能会在实现这些服务时意识到电子邮件地址可以更改的，而我们还需要ID字段用于唯一标识用户。</p>
+<p>在使用领域模型之前定义是一项挑战。除非我们已经非常了解我们正在研究的领域，否则我们极不可能知道我们需要做什么和不需要做什么。是的，这意味着我们必须在以后重构代码，但是如果你错误定义了领域，不使用DDD会很多比重构整个代码库更容易。 这是为什么我不介意从紧密耦合的代码开始并在以后进行重构的另一个原因。</p>
+<p>最后，并非所有代码都需要这种解耦，它并不能总是能够带来好处，并且在某些情况下（例如DB），我们很少利用这种解耦。</p>
+<p>对于不继续研发的项目，你可能不需要花费所有时间来解耦代码。如果代码没有继续研发，那么更改的可能性将大大降低，而为代码做准备而付出的额外努力可能只是浪费了。</p>
+<p>此外，解耦并不总是能提供它所承诺的好处，我们也不会总是利用这种解耦的优势。 正如<a class=link href=https://twitter.com/matryer target=_blank rel=noopener>Mat Ryer</a>所指出的那样 ，我们很少会换掉数据库实现。 即使我们确实实现了所有功能的分离，即使我们碰巧只在少数正在迁移数据库的应用程序中，这种迁移通常也需要彻底重新考虑我们与数据存储之间的交互方式。 毕竟，NoSQL数据库的行为与SQL数据库完全不同，要真正利用两者，我们必须编写所使用数据库的特定代码。最终结果是这些抽象并不总是为我们提供我们想要的神奇的“实现无关”的结果。</p>
+<p>这并不意味着DDD不能提供优势，而是意味着我们不应该简单地 <a class=link href=https://en.wikipedia.org/wiki/Drinking_the_Kool-Aid target=_blank rel=noopener>顶礼膜拜</a> 并期待神奇效果。我们需要停下来自我反思。</p>
+<h2 id=综上所述>综上所述</h2>
+<p>在本文中，我们直接研究了代码紧密耦合时遇到的问题，并探讨了定义领域类型和接口如何帮助改善这种耦合。 我们还讨论了为什么让我们的代码随着时间的推移而发展，而不是从开始进行这种分离的设计的原因。</p>
+<p>在本系列的下一篇文章中，我希望展开讲解使用领域驱动设计编写Go代码的想法。 具体来说，我想讨论：</p>
+<ul>
+<li>接口测试如何帮助确保实现可以毫无问题地互换。</li>
+<li>子域如何衍生自不同的上下文。</li>
+<li>使用传统的DDD六边形来形象化这一切，以及像第三方库这样的代码如何适配。</li>
+</ul>
+<p>我还想强调，本文绝不是硬性规定。这只是我微薄的尝试，试图分享一些帮助我改进Go软件的见解和想法。</p>
+<p>我也不是第一个在Go中讨论或探索DDD和设计模式的人。 你应该查看以下内容以获得更全面的理解：</p>
+<ul>
+<li><a class=link href=https://github.com/marcusolsson/goddd target=_blank rel=noopener>GoDDD by Marcus Olsen</a> - 这是一个GitHub存储库，其中包含文章和演讲，Marcus Olsen试图将传统的DDD Java示例应用程序移植到Go中。</li>
+<li><a class=link href=https://medium.com/wtf-dial target=_blank rel=noopener>WTF Dial by Ben Johnson</a> - 我在文中链接了Ben的Standard Pacakage Layout文章； 本系列应用了Ben在该文章中讨论的内容。我还建议查看附带的PR，并仔细阅读评论。</li>
+<li><a class=link href="https://www.youtube.com/watch?v=oL6JBUk6tj0" target=_blank rel=noopener>How Do You Structure Your Go Apps by Kat Zien</a> - 在演讲中，Kat通过多种方法构建了Go应用程序。附带了演讲的代码仓库和幻灯片。</li>
+<li><a class=link href=https://www.ardanlabs.com/blog/2017/02/design-philosophy-on-packaging.html target=_blank rel=noopener>Design Philosophy On Packaging by Bill Kennedy</a> - 虽然不专门涉及结构化应用程序，但本系列讨论了与结构紧密联系的包设计。</li>
+</ul>
+</section>
+<footer class=article-footer>
+<section class=article-tags>
+<a href=../../../tags/golang/>Golang</a>
+<a href=../../../tags/ddd/>DDD</a>
+</section>
+<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span>
+</section>
+</footer>
+</article>
+<aside class=related-contents--wrapper>
+<h2 class=section-title>相关文章</h2>
+<div class=related-contents>
+<div class="flex article-list--tile">
+<article class=has-image>
+<a href=../../../2021/08/common-anti-patterns-in-go-web-applications/>
+<div class=article-image>
+<img src=https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg loading=lazy data-key=common-anti-patterns-in-go-web-applications data-hash=https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg>
+</div>
+<div class=article-details>
+<h2 class=article-title>Go Web应用中常见的反模式</h2>
+</div>
+</a>
+</article>
+<article class=has-image>
+<a href=../../../2021/02/2021-02-25-context-and-structs/>
+<div class=article-image>
+<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
+</div>
+<div class=article-details>
+<h2 class=article-title>上下文Context与结构体Struct</h2>
+</div>
+</a>
+</article>
+<article class=has-image>
+<a href=../../../2021/02/2021-02-19-go116-module-changes/>
+<div class=article-image>
+<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
+</div>
+<div class=article-details>
+<h2 class=article-title>Go 1.16 中Module功能新变化</h2>
+</div>
+</a>
+</article>
+<article>
+<a href=../../../2019/03/2019-03-20-using-go-modules/>
+<div class=article-details>
+<h2 class=article-title>使用Go Modules</h2>
+</div>
+</a>
+</article>
+<article class=has-image>
+<a href=../../../2021/07/introducing-event-modeling/>
+<div class=article-image>
+<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
+</div>
+<div class=article-details>
+<h2 class=article-title>什么是事件建模Event Modeling?</h2>
+</div>
+</a>
+</article>
+</div>
+</div>
+</aside>
+<div class=disqus-container>
+<div id=disqus_thread></div>
+<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+<style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style>
+<script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script>
+<footer class=site-footer>
+<section class=copyright>
+&copy;
 2013 -
-2021 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2021 ipfans's Blog
+</section>
+<section class=powerby>
+Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+</section>
+</footer>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script><script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script></body></html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
+</main>
+</div>
+<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
+</body>
+</html>

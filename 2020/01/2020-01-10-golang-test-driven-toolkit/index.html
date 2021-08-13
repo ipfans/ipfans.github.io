@@ -1,15 +1,95 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。
+<!doctype html><html lang=en>
+<head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。
 在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲突，人员能力的残次不齐都有可能导致代码的腐化。在测试过程中，我们选择引入测试保障代码的质量
 Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用Ginkgo、testify和GoMock工具。
-"><title>从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock</title><link rel=canonical href=https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/><link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock"><meta property="og:description" content="对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。
+"><title>从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock</title>
+<link rel=canonical href=https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/>
+<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock">
+<meta property="og:description" content="对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。
 在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲突，人员能力的残次不齐都有可能导致代码的腐化。在测试过程中，我们选择引入测试保障代码的质量
 Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用Ginkgo、testify和GoMock工具。
-"><meta property="og:url" content="https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="TDD"><meta property="article:published_time" content="2020-01-10T17:30:00+00:00"><meta property="article:modified_time" content="2020-01-10T17:30:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock"><meta name=twitter:description content="对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。
+">
+<meta property="og:url" content="https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/">
+<meta property="og:site_name" content="ipfans's Blog">
+<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="TDD"><meta property="article:published_time" content="2020-01-10T17:30:00+00:00"><meta property="article:modified_time" content="2020-01-10T17:30:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+<meta name=twitter:site content="@janxin">
+<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock">
+<meta name=twitter:description content="对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。
 在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲突，人员能力的残次不齐都有可能导致代码的腐化。在测试过程中，我们选择引入测试保障代码的质量
 Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用Ginkgo、testify和GoMock工具。
-"><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script></head><body class=article-page><script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script><div class="container main-container flex
-on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box><span class=hamburger-inner></span></span></button><header class=site-info><figure class=site-avatar><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></figure><h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1><h2 class=site-description></h2></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=../../../categories/translation/>Translation</a></header><h2 class=article-title><a href=../../../2020/01/2020-01-10-golang-test-driven-toolkit/>从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock</a></h2><footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--published>Jan 10, 2020</time></footer></div></header><section class=article-content><p>对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。</p><p>在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲突，人员能力的残次不齐都有可能导致代码的腐化。在测试过程中，我们选择引入测试保障代码的质量</p><p>Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用<code>Ginkgo</code>、<code>testify</code>和<code>GoMock</code>工具。</p><h2 id=gomock>GoMock</h2><p><a class=link href=https://github.com/golang/mock target=_blank rel=noopener>GoMock工具</a>是Golang官方提供的针对接口的代码生成测试工具。在实际的单元测试过程中，通常会选择Mock掉数据库（DB/KV）、外部服务调用操作部分，将这部分功能留在集成测试中完成。</p><p>比如我们将数据操作类型抽象成接口<code>Creator</code>、<code>Updater</code>、<code>Deleter</code>等，借助接口的组合功能，针对我们需要的功能进行组合开发。在测试过程中，我们可以借助GoMock工具生成对应的测试辅助代码。</p><p>以对最简单的<code>io.ReadeCloser</code>使用代码为例：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>tdd</span>
+"><meta name=twitter:card content="summary">
+<meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
+</head>
+<body class=article-page>
+<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
+<div class="container main-container flex
+on-phone--column extended">
+<aside class="sidebar left-sidebar sticky">
+<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box>
+<span class=hamburger-inner></span>
+</span>
+</button>
+<header class=site-info>
+<figure class=site-avatar>
+<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</figure>
+<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
+<h2 class=site-description></h2>
+</header>
+<ol class=menu id=main-menu>
+<li>
+<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span>
+</a>
+</li>
+<li>
+<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span>
+</a>
+</li>
+<li>
+<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
+<span>Feed</span>
+</a>
+</li>
+<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span>
+</li>
+</ol>
+</aside>
+<main class="main full-width">
+<article class=main-article>
+<header class=article-header>
+<div class=article-details>
+<header class=article-category>
+<a href=../../../categories/translation/>
+Translation
+</a>
+</header>
+<h2 class=article-title>
+<a href=../../../2020/01/2020-01-10-golang-test-driven-toolkit/>从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock</a>
+</h2>
+<footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--published>Jan 10, 2020</time>
+</footer></div>
+</header>
+<section class=article-content>
+<p>对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。</p>
+<p>在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲突，人员能力的残次不齐都有可能导致代码的腐化。在测试过程中，我们选择引入测试保障代码的质量</p>
+<p>Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用<code>Ginkgo</code>、<code>testify</code>和<code>GoMock</code>工具。</p>
+<h2 id=gomock>GoMock</h2>
+<p><a class=link href=https://github.com/golang/mock target=_blank rel=noopener>GoMock工具</a>是Golang官方提供的针对接口的代码生成测试工具。在实际的单元测试过程中，通常会选择Mock掉数据库（DB/KV）、外部服务调用操作部分，将这部分功能留在集成测试中完成。</p>
+<p>比如我们将数据操作类型抽象成接口<code>Creator</code>、<code>Updater</code>、<code>Deleter</code>等，借助接口的组合功能，针对我们需要的功能进行组合开发。在测试过程中，我们可以借助GoMock工具生成对应的测试辅助代码。</p>
+<p>以对最简单的<code>io.ReadeCloser</code>使用代码为例：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>tdd</span>
 
 <span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;io&#34;</span>
 
@@ -18,10 +98,12 @@ on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button cl
 	<span style=color:#66d9ef>return</span>
 }
 
-</code></pre></div><p>生成对应的mock方法，这里为了方便，我们使用<code>-package</code>参数定义包名，为了区分生成文件，添加了<code>_ten_test.go</code>后缀。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># 指定生成io.ReadCloser的mock方法</span>
+</code></pre></div><p>生成对应的mock方法，这里为了方便，我们使用<code>-package</code>参数定义包名，为了区分生成文件，添加了<code>_ten_test.go</code>后缀。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># 指定生成io.ReadCloser的mock方法</span>
 <span style=color:#75715e># 如果有专门的文件定义对应接口定义，则可以通过-source方法指定一次性提取所有接口</span>
 mockgen -package tdd io ReadCloser &gt; reader_gen_test.go
-</code></pre></div><p>接下来就是使用这个方法进行操作了，我们可以在<code>reader_test.go</code>文件中进行：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>tdd</span>
+</code></pre></div><p>接下来就是使用这个方法进行操作了，我们可以在<code>reader_test.go</code>文件中进行：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>tdd</span>
 
 <span style=color:#f92672>import</span> (
 	<span style=color:#e6db74>&#34;io&#34;</span>
@@ -49,12 +131,16 @@ mockgen -package tdd io ReadCloser &gt; reader_gen_test.go
 		<span style=color:#a6e22e>t</span>.<span style=color:#a6e22e>Errorf</span>(<span style=color:#e6db74>&#34;Read() failed. want=%v, got=%v.&#34;</span>, <span style=color:#a6e22e>want</span>, <span style=color:#a6e22e>buf</span>)
 	}
 }
-</code></pre></div><h2 id=testify>testify</h2><p>我们在上面的例子中，会发现使用reflect.DeepEqual方式对比，然后调用t.Errorf方式输出错误信息。但是这里面其实相对来说要麻烦一点，另外一个则是对数据而言，如果内容较多，我们没办法一一对比可能出现的内容，这种情况下<a class=link href=https://github.com/stretchr/testify target=_blank rel=noopener><code>testify</code>工具</a>则可以提供一种更便捷的方式帮助我们进行测试的管理。</p><p>为了方便对比这个测试内容，我们把上面<code>DeepEqual</code>的判断条件取反，获取的错误的内容对比验证一下：</p><pre><code># DeepEqual
+</code></pre></div><h2 id=testify>testify</h2>
+<p>我们在上面的例子中，会发现使用reflect.DeepEqual方式对比，然后调用t.Errorf方式输出错误信息。但是这里面其实相对来说要麻烦一点，另外一个则是对数据而言，如果内容较多，我们没办法一一对比可能出现的内容，这种情况下<a class=link href=https://github.com/stretchr/testify target=_blank rel=noopener><code>testify</code>工具</a>则可以提供一种更便捷的方式帮助我们进行测试的管理。</p>
+<p>为了方便对比这个测试内容，我们把上面<code>DeepEqual</code>的判断条件取反，获取的错误的内容对比验证一下：</p>
+<pre><code># DeepEqual
 === RUN   TestRead
 --- FAIL: TestRead (0.00s)
     /Users/kevin/Desktop/tdd/reader_test.go:26: Read() failed. want=[0 1 2 3 4], got=[0 1 2 3 4].
 FAIL
-</code></pre><p>现在，我们将测试文件替换为<code>testify</code>方式进行：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>tdd</span>
+</code></pre><p>现在，我们将测试文件替换为<code>testify</code>方式进行：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>tdd</span>
 
 <span style=color:#f92672>import</span> (
 	<span style=color:#e6db74>&#34;io&#34;</span>
@@ -82,7 +168,8 @@ FAIL
 		<span style=color:#66d9ef>return</span>
 	}
 }
-</code></pre></div><p>获取测试结果：</p><pre><code>=== RUN   TestRead
+</code></pre></div><p>获取测试结果：</p>
+<pre><code>=== RUN   TestRead
 --- FAIL: TestRead (0.00s)
     /Users/kevin/Desktop/tdd/reader_test.go:25: 
         	Error Trace:	reader_test.go:25
@@ -103,7 +190,11 @@ FAIL
         	Messages:   	Read failed
 FAIL
 coverage: 100.0% of statements
-</code></pre><p>另外，在<code>testify</code>工具中，还提供了<code>assert.JSONEq</code>等等非常有用的函数，可以自行研究一下。同时，<code>testify</code>工具还提供了<code>Testsuite</code>功能，用于方便的设置Setup和Teardown函数。</p><p>你会发现<code>testify</code>工具还提供了<code>mock</code>功能，不过在实际过程中，<strong>不太建议使用该功能</strong>。</p><h2 id=ginkgo>Ginkgo</h2><p><a class=link href=https://onsi.github.io/ginkgo/ target=_blank rel=noopener>Ginkgo</a>是针对Go程序进行BDD开发的工具，虽然它默认搭配使用<code>gomega</code>工具，不过我们还是建议你选择<code>testify</code>工具。你可以使用下面的方法快速接入<code>testify</code>：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>foo_test</span>
+</code></pre><p>另外，在<code>testify</code>工具中，还提供了<code>assert.JSONEq</code>等等非常有用的函数，可以自行研究一下。同时，<code>testify</code>工具还提供了<code>Testsuite</code>功能，用于方便的设置Setup和Teardown函数。</p>
+<p>你会发现<code>testify</code>工具还提供了<code>mock</code>功能，不过在实际过程中，<strong>不太建议使用该功能</strong>。</p>
+<h2 id=ginkgo>Ginkgo</h2>
+<p><a class=link href=https://onsi.github.io/ginkgo/ target=_blank rel=noopener>Ginkgo</a>是针对Go程序进行BDD开发的工具，虽然它默认搭配使用<code>gomega</code>工具，不过我们还是建议你选择<code>testify</code>工具。你可以使用下面的方法快速接入<code>testify</code>：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>foo_test</span>
 
 <span style=color:#f92672>import</span> (
     . <span style=color:#e6db74>&#34;github.com/onsi/ginkgo&#34;</span>
@@ -116,7 +207,8 @@ coverage: 100.0% of statements
         <span style=color:#a6e22e>assert</span>.<span style=color:#a6e22e>Equal</span>(<span style=color:#a6e22e>GinkgoT</span>(), <span style=color:#a6e22e>foo</span>{}.<span style=color:#a6e22e>Name</span>(), <span style=color:#e6db74>&#34;foo&#34;</span>)
     })
 })
-</code></pre></div><p><code>Ginkgo</code>工具提供了完善的<a class=link href=https://onsi.github.io/ginkgo/#getting-started-writing-your-first-test target=_blank rel=noopener>文档介绍</a>，你可以参考工具官方文档了解具体的使用。另外一个<code>Ginkgo</code>非常有用的是它可以方便接入已有的测试日志捕获程序，比如你是JUnit的用户，你可以选择将日志格式输出成JUnit XML格式：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>foo_test</span>
+</code></pre></div><p><code>Ginkgo</code>工具提供了完善的<a class=link href=https://onsi.github.io/ginkgo/#getting-started-writing-your-first-test target=_blank rel=noopener>文档介绍</a>，你可以参考工具官方文档了解具体的使用。另外一个<code>Ginkgo</code>非常有用的是它可以方便接入已有的测试日志捕获程序，比如你是JUnit的用户，你可以选择将日志格式输出成JUnit XML格式：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>foo_test</span>
 
 <span style=color:#f92672>import</span> (
     . <span style=color:#e6db74>&#34;github.com/onsi/ginkgo&#34;</span>
@@ -131,11 +223,131 @@ coverage: 100.0% of statements
     <span style=color:#a6e22e>junitReporter</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>reporters</span>.<span style=color:#a6e22e>NewJUnitReporter</span>(<span style=color:#e6db74>&#34;junit.xml&#34;</span>)
     <span style=color:#a6e22e>RunSpecsWithDefaultAndCustomReporters</span>(<span style=color:#a6e22e>t</span>, <span style=color:#e6db74>&#34;Foo Suite&#34;</span>, []<span style=color:#a6e22e>Reporter</span>{<span style=color:#a6e22e>junitReporter</span>})
 }
-</code></pre></div><h2 id=总结>总结</h2><p>文章总结了一些常见的涉及测试的工具，希望对你在实践过程中有所帮助。顺带，我还没忘记要完成这个系列。:D</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/golang/>Golang</a>
-<a href=../../../tags/tdd/>TDD</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article class=has-image><a href=../../../2021/02/2021-02-25-context-and-structs/><div class=article-image><img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_2.png width=250 height=150 loading=lazy data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA=="></div><div class=article-details><h2 class=article-title>上下文Context与结构体Struct</h2></div></a></article><article class=has-image><a href=../../../2021/02/2021-02-19-go116-module-changes/><div class=article-image><img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA=="></div><div class=article-details><h2 class=article-title>Go 1.16 中Module功能新变化</h2></div></a></article><article class=has-image><a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/><div class=article-image><img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ=="></div><div class=article-details><h2 class=article-title>译：在Go中转向领域驱动设计</h2></div></a></article><article><a href=../../../2019/03/2019-03-20-using-go-modules/><div class=article-details><h2 class=article-title>使用Go Modules</h2></div></a></article><article><a href=../../../2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/><div class=article-details><h2 class=article-title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+</code></pre></div><h2 id=总结>总结</h2>
+<p>文章总结了一些常见的涉及测试的工具，希望对你在实践过程中有所帮助。顺带，我还没忘记要完成这个系列。:D</p>
+</section>
+<footer class=article-footer>
+<section class=article-tags>
+<a href=../../../tags/golang/>Golang</a>
+<a href=../../../tags/tdd/>TDD</a>
+</section>
+<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span>
+</section>
+</footer>
+</article>
+<aside class=related-contents--wrapper>
+<h2 class=section-title>相关文章</h2>
+<div class=related-contents>
+<div class="flex article-list--tile">
+<article class=has-image>
+<a href=../../../2021/02/2021-02-25-context-and-structs/>
+<div class=article-image>
+<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
+</div>
+<div class=article-details>
+<h2 class=article-title>上下文Context与结构体Struct</h2>
+</div>
+</a>
+</article>
+<article class=has-image>
+<a href=../../../2021/02/2021-02-19-go116-module-changes/>
+<div class=article-image>
+<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
+</div>
+<div class=article-details>
+<h2 class=article-title>Go 1.16 中Module功能新变化</h2>
+</div>
+</a>
+</article>
+<article class=has-image>
+<a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
+<div class=article-image>
+<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
+</div>
+<div class=article-details>
+<h2 class=article-title>译：在Go中转向领域驱动设计</h2>
+</div>
+</a>
+</article>
+<article>
+<a href=../../../2019/03/2019-03-20-using-go-modules/>
+<div class=article-details>
+<h2 class=article-title>使用Go Modules</h2>
+</div>
+</a>
+</article>
+<article class=has-image>
+<a href=../../../2021/08/common-anti-patterns-in-go-web-applications/>
+<div class=article-image>
+<img src=https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg loading=lazy data-key=common-anti-patterns-in-go-web-applications data-hash=https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg>
+</div>
+<div class=article-details>
+<h2 class=article-title>Go Web应用中常见的反模式</h2>
+</div>
+</a>
+</article>
+</div>
+</div>
+</aside>
+<div class=disqus-container>
+<div id=disqus_thread></div>
+<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+<style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style>
+<script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script>
+<footer class=site-footer>
+<section class=copyright>
+&copy;
 2013 -
-2021 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2021 ipfans's Blog
+</section>
+<section class=powerby>
+Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+</section>
+</footer>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script><script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script></body></html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
+</main>
+</div>
+<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
+</body>
+</html>

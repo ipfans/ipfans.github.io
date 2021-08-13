@@ -1,4 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 06 Jul 2021 11:41:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>什么是事件建模Event Modeling?</title><link>https://www.4async.com/2021/07/introducing-event-modeling/</link><pubDate>Tue, 06 Jul 2021 11:41:00 +0000</pubDate><guid>https://www.4async.com/2021/07/introducing-event-modeling/</guid><description>基本概念 事件建模（Event Modeling）是一种描述系统的方法，展示信息如何随时间变化的例子。具体来说，这种方式省略了瞬息万变的细节，而着眼于在任何特定的时间点上的持久化存储和用户所见数据的变化。这些时间轴上的事件，构成了对系统的描述。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 13 Aug 2021 14:09:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>Go Web应用中常见的反模式</title><link>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</link><pubDate>Fri, 13 Aug 2021 14:09:00 +0000</pubDate><guid>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</guid><description>作者：Miłosz Smółka 译者：Kevin 原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/
+在我职业生涯的某个阶段，我对我所构建的软件不再感到兴奋。
+我最喜欢的工作内容是底层的细节和复杂的算法。在转到面向用户的应用开发之后，这些内容基本消失了。编程似乎是利用现有的库和工具把数据从一处移至另一处。到目前为止，我所学到的关于软件的知识不再那么有用了。
+让我们面对现实吧：大多数Web应用无法解决棘手的技术挑战。他们需要做到的是正确的对产品进行建模，并且比竞争对手更快的改进产品。
+这起初看起来似乎是那么的无聊，但是你很快会意识到实现这个目标比听起来要难。这是一项完全不同的挑战。即使它们技术上实现并没有那么复杂，但时解决它们会对产品产生巨大影响并且让人获得满足。
+Web应用面临的最大挑战不是变成了一个无法维护的屎山，而是会减慢你的速度，让你的业务最终失败。
+这是他们如何在Go中发生和我是如何避免他们的。
+松耦合是关键 应用难以维护的一个重要原因是强耦合。
+在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。
+相比之下，松耦合应用保持了清晰的边界。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？
+微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了分布式单体的陷阱，处理和之前相同的问题，而且还增加了网络开销。
+❌ 反模式：分布式单体 在你了解边界之前，不要将你的应用切分成为微服务。
+微服务并不会降低耦合，因为拆分服务的次数并不重要。重要的是如何连接各个服务。
+✅ 策略：松耦合 以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。
+DRY引入了耦合 强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。
+简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：
+每条知识在系统中都必须有一个单一的、明确的、权威的表述。
+&amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。
+当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。
+在Go中保持DRY 相比于其他现代语言，Go是清晰的，缺少很多特性，没有太多的语法糖来隐藏复杂性。
+我们习惯了捷径，所以一开始很难接受Go的冗长。就像我们已经开发出一种去寻找一种更加聪明的编写代码的方式的本能。
+最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
+if err != nil { return err } 但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。
+最终，大家都接受了Go的工作方式。它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。
+单一数据模型带来的应用耦合 **Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。**这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
+这里有一个流行的方式保存单个User模型的方法：
+type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;` FirstName string `json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;` LastName string `json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;` DisplayName string `json:&amp;#34;display_name&amp;#34;` Email string `json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;` Emails []Email `json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;` PasswordHash string `json:&amp;#34;-&amp;#34;` LastIP string `json:&amp;#34;-&amp;#34;` CreatedAt *time.</description></item><item><title>什么是事件建模Event Modeling?</title><link>https://www.4async.com/2021/07/introducing-event-modeling/</link><pubDate>Tue, 06 Jul 2021 11:41:00 +0000</pubDate><guid>https://www.4async.com/2021/07/introducing-event-modeling/</guid><description>基本概念 事件建模（Event Modeling）是一种描述系统的方法，展示信息如何随时间变化的例子。具体来说，这种方式省略了瞬息万变的细节，而着眼于在任何特定的时间点上的持久化存储和用户所见数据的变化。这些时间轴上的事件，构成了对系统的描述。
 近年来，很多系统使用事件通过事件存储数据库或者使用特定方式使用常规数据库构建了状态和信息传播的模块。然而，大多数方法仍然依赖于通过SQL数据库、文档数据库或者其他技术实现严格意义上的当前时间点信息的视图。
 对很多系统而言，特别是对于非小型系统而言，随着系统复杂性的增加，变更成本将会随着时间的推移难度指数级上升。与现有的设计和建模方式对比，事件建模可以在短时间内创建一个基础蓝图，将返工工作量降到最低。
 从过去谈起 讲故事自古以来就是人类能够将知识传递给后代的方法，它在很大程度上依赖于我们如何存储记忆-无论是逻辑的、视觉的、听觉的还是其他的。这一点很重要，因为这与信息系统的构建方式有相似之处。 用具体的例子说明某物应该如何工作是一种常见的方式。这种方式可以在软件开发的成功实践中看到，如行为驱动开发。这种方式很有效，因为我们通过故事来沟通更有效。将它和讲故事联系在一起，是一种保持社会信息的方式。我们的大脑是为它而建的，而不是为流程图和其他格式而建的。 而事件建模模型就是遵循这种讲故事模式而建立的产品建模方式。
@@ -96,7 +122,7 @@ package hello import &amp;#34;testing&amp;#34; func TestHello(t *testing.T) { wa
 $ go test PASS ok _/home/gopher/hello 0.</description></item><item><title>利用Stub File标注Python文件</title><link>https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/</link><pubDate>Tue, 29 Jan 2019 14:30:00 +0000</pubDate><guid>https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/</guid><description>&lt;p>在升级到&lt;code>Python 3.5+&lt;/code>版本之后，最大的项目管理优化来自于&lt;a class="link" href="https://www.python.org/dev/peps/pep-0484/" target="_blank" rel="noopener"
 >&lt;code>PEP-484 Type Hint&lt;/code>&lt;/a>的引入。借助&lt;code>Type Hint&lt;/code>，我们可以进一步提升&lt;code>Python&lt;/code>代码的类型标注，保障在重构过程中避免出现一些低级失误。&lt;/p>
 &lt;p>我们可以通过高版本&lt;code>Python&lt;/code>新加的新语法启用这项特性，然后通过&lt;code>mypy&lt;/code>等工具检查：&lt;/p>
-&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-python" data-lang="python">&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">greeting&lt;/span>(name: str) &lt;span style="color:#f92672">-&amp;gt;&lt;/span> str:
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-python" data-lang="python">&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">greeting&lt;/span>(name: str) &lt;span style="color:#f92672">-&amp;gt;&lt;/span> str:
 &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#39;Hello &amp;#39;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> name
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：&lt;/p></description></item><item><title>聊聊新的Go语言错误处理方案</title><link>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</link><pubDate>Fri, 25 Jan 2019 23:20:00 +0000</pubDate><guid>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</guid><description>今天早些时候，golang/x/exp中默默的更新了一个名曰xerrors的包，这个包和同样处于golang/x/exp下的另一个名叫errors的包名字十分相似，就连介绍也都一致：
 Package errors implements functions to manipulate errors. This package implements the Go 2 draft designs for error inspection and printing 从目前的情况来看，基本上错误的处理形式基本已经定型，处理方式则是类似于之前的另一个github.com/pkg/errors包，但是具体细节不尽相同。
@@ -109,6 +135,4 @@ var ( ErrBase = xerrors.New(&amp;#34;a new error&amp;#34;) ) func main() { err :
 >gini&lt;/a>库，结合了我们实际开发中的使用，描述一下我们为什么开发这个库，在开发过程中的权衡。&lt;/p></description></item><item><title>漫谈代码安全：也来聊一聊AntD这档子事</title><link>https://www.4async.com/2018/12/2018-12-25-scm-security/</link><pubDate>Tue, 25 Dec 2018 23:20:00 +0000</pubDate><guid>https://www.4async.com/2018/12/2018-12-25-scm-security/</guid><description>没想到今年突然有动力还能写一篇。可能来自于两个方面，有些东西需要整理，另外有一个事情我是感觉到很诧异的。今天技术圈最火的事情当属AntDesign彩蛋事件了（以下简称AntD），很不幸的是，本司也是本次受害者之一。
 考虑到AntD是一个使用十分广泛并且关注度非常高的国内项目，并且有阿里支付宝的背书效应，这一次我想影响的会在两个方面：一个是阿里开源本身的信用，一个是开源项目在国内的推广。当然，我们确实在引入AntD方面确实太过草率：我其实关注AntD了大概一年时间，考虑到issue情况和项目开发活跃度情况，要求团队引入此框架希望可以提升开发效率，没想到相关的项目1-2个月就出现了这种事情，真是令人实在痛心。
 这件事情也暴露出来，我们以前在使用开源项目时，太过信任
-另外，作为最后的一个建议，我们希望如果大家以后开源项目，如果做不到，请不要说自己是__企业级项目__，因为一般也就是放在自己企业里面用，这跟企业级项目是两个概念。至少我们具体到AntD这个项目上，这个项目无论代码开发和管控上，都是算不上的。</description></item><item><title>Go 1.10中的一处不兼容问题</title><link>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</link><pubDate>Fri, 08 Jun 2018 12:20:00 +0000</pubDate><guid>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</guid><description>&lt;p>最近我们在把线上系统升级至Go 1.10版本时发现，在我们实现的某些接口中，出现了客户反馈调用失败提示参数缺失的情况。这种情况我们在测试过程中未能复线，后来经过了解，发现了故障原因为Go 1.10版本升级过程中更改了部分程序代码与验证逻辑导致的。&lt;/p></description></item><item><title>关于Golang过滤敏感信息的正确姿势</title><link>https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/</link><pubDate>Wed, 06 Jun 2018 16:07:00 +0000</pubDate><guid>https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/</guid><description>&lt;p>今天正好看到一篇关于敏感信息过滤的&lt;a class="link" href="https://hackernoon.com/keep-passwords-and-secrets-out-of-your-logs-with-go-a2294a9546ce" target="_blank" rel="noopener"
->文章&lt;/a>，这算做一个interface实际应用的一些举例和应用。&lt;/p>
-&lt;p>例子中介绍了一种比较常见的使用场景：使用JSON保存数据时的对诸如用户密码等信息进行保护时候应该做的事情。作者以使用JSON格式保存用户账户和密码为例，讲解了使用&lt;code>json.Unmarshaler&lt;/code>接口类型过滤敏感信息。&lt;/p></description></item></channel></rss>
+另外，作为最后的一个建议，我们希望如果大家以后开源项目，如果做不到，请不要说自己是__企业级项目__，因为一般也就是放在自己企业里面用，这跟企业级项目是两个概念。至少我们具体到AntD这个项目上，这个项目无论代码开发和管控上，都是算不上的。</description></item><item><title>Go 1.10中的一处不兼容问题</title><link>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</link><pubDate>Fri, 08 Jun 2018 12:20:00 +0000</pubDate><guid>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</guid><description>&lt;p>最近我们在把线上系统升级至Go 1.10版本时发现，在我们实现的某些接口中，出现了客户反馈调用失败提示参数缺失的情况。这种情况我们在测试过程中未能复线，后来经过了解，发现了故障原因为Go 1.10版本升级过程中更改了部分程序代码与验证逻辑导致的。&lt;/p></description></item></channel></rss>

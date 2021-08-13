@@ -1,49 +1,151 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。
+<!doctype html><html lang=en>
+<head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。
  本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 Pronto Cycle Share 的数据分析挑战。
 你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 NumPy，Pandas，Matplotlib 和 Seaborn 与其他可用的数据源。
 这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 对应的 Notebook 文件，并通过 Jupyter 打开。
 下载 Pronto 的数据 我们可以从 Pronto 官网 下载对应的 数据文件。总下载大约 70MB，解压缩的文件大约 900MB。
 接下来我们需要导入一些 Python 包：
 In [2]:
-%matplotlib inline import matplotlib.pyplot as plt import pandas as pd import numpy as np import seaborn as sns; sns.set() 现在我们使用 Pandas 加载所有的行程记录："><title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title><link rel=canonical href=https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/><link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="使用 Python 和 Pandas 分析 Pronto CycleShare 数据"><meta property="og:description" content="这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。
+%matplotlib inline import matplotlib.pyplot as plt import pandas as pd import numpy as np import seaborn as sns; sns.set() 现在我们使用 Pandas 加载所有的行程记录："><title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title>
+<link rel=canonical href=https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/>
+<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="使用 Python 和 Pandas 分析 Pronto CycleShare 数据">
+<meta property="og:description" content="这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。
  本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 Pronto Cycle Share 的数据分析挑战。
 你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 NumPy，Pandas，Matplotlib 和 Seaborn 与其他可用的数据源。
 这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 对应的 Notebook 文件，并通过 Jupyter 打开。
 下载 Pronto 的数据 我们可以从 Pronto 官网 下载对应的 数据文件。总下载大约 70MB，解压缩的文件大约 900MB。
 接下来我们需要导入一些 Python 包：
 In [2]:
-%matplotlib inline import matplotlib.pyplot as plt import pandas as pd import numpy as np import seaborn as sns; sns.set() 现在我们使用 Pandas 加载所有的行程记录："><meta property="og:url" content="https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Python"><meta property="article:tag" content="Pandas"><meta property="article:published_time" content="2017-02-19T18:00:00+00:00"><meta property="article:modified_time" content="2017-02-19T18:00:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="使用 Python 和 Pandas 分析 Pronto CycleShare 数据"><meta name=twitter:description content="这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。
+%matplotlib inline import matplotlib.pyplot as plt import pandas as pd import numpy as np import seaborn as sns; sns.set() 现在我们使用 Pandas 加载所有的行程记录：">
+<meta property="og:url" content="https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/">
+<meta property="og:site_name" content="ipfans's Blog">
+<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Python"><meta property="article:tag" content="Pandas"><meta property="article:published_time" content="2017-02-19T18:00:00+00:00"><meta property="article:modified_time" content="2017-02-19T18:00:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+<meta name=twitter:site content="@janxin">
+<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="使用 Python 和 Pandas 分析 Pronto CycleShare 数据">
+<meta name=twitter:description content="这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。
  本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 Pronto Cycle Share 的数据分析挑战。
 你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 NumPy，Pandas，Matplotlib 和 Seaborn 与其他可用的数据源。
 这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 对应的 Notebook 文件，并通过 Jupyter 打开。
 下载 Pronto 的数据 我们可以从 Pronto 官网 下载对应的 数据文件。总下载大约 70MB，解压缩的文件大约 900MB。
 接下来我们需要导入一些 Python 包：
 In [2]:
-%matplotlib inline import matplotlib.pyplot as plt import pandas as pd import numpy as np import seaborn as sns; sns.set() 现在我们使用 Pandas 加载所有的行程记录："><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script></head><body class=article-page><script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script><div class="container main-container flex
-on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box><span class=hamburger-inner></span></span></button><header class=site-info><figure class=site-avatar><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></figure><h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1><h2 class=site-description></h2></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=../../../categories/python/>Python</a>
-<a href=../../../categories/translation/>Translation</a></header><h2 class=article-title><a href=../../../2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</a></h2><footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--published>Feb 19, 2017</time></footer></div></header><section class=article-content><p>这是一篇非常不错的 <a class=link href=https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/ target=_blank rel=noopener>pandas 分析入门文章</a>，在此简单翻译摘录如下。</p><hr><p>本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 <a class=link href=http://www.prontocycleshare.com/datachallenge target=_blank rel=noopener>Pronto Cycle Share 的数据分析挑战</a>。</p><p>你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 <a class=link href=http://www.numpy.org/ target=_blank rel=noopener>NumPy</a>，<a class=link href=http://pandas.pydata.org/ target=_blank rel=noopener>Pandas</a>，<a class=link href=http://matplotlib.org/ target=_blank rel=noopener>Matplotlib</a> 和 <a class=link href=http://seaborn.pydata.org/index.html target=_blank rel=noopener>Seaborn</a> 与其他可用的数据源。</p><p>这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 <a class=link href=http://jakevdp.github.io/downloads/notebooks/ProntoData.ipynb target=_blank rel=noopener>对应的 Notebook 文件</a>，并通过 Jupyter 打开。</p><h2 id=下载-pronto-的数据>下载 Pronto 的数据</h2><p>我们可以从 <a class=link href=http://www.prontocycleshare.com/datachallenge target=_blank rel=noopener>Pronto 官网</a> 下载对应的 <a class=link href=https://s3.amazonaws.com/pronto-data/open_data_year_one.zip target=_blank rel=noopener>数据文件</a>。总下载大约 70MB，解压缩的文件大约 900MB。</p><p>接下来我们需要导入一些 Python 包：</p><p>In [2]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>%</span>matplotlib inline
+%matplotlib inline import matplotlib.pyplot as plt import pandas as pd import numpy as np import seaborn as sns; sns.set() 现在我们使用 Pandas 加载所有的行程记录："><meta name=twitter:card content="summary">
+<meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
+</head>
+<body class=article-page>
+<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
+<div class="container main-container flex
+on-phone--column extended">
+<aside class="sidebar left-sidebar sticky">
+<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box>
+<span class=hamburger-inner></span>
+</span>
+</button>
+<header class=site-info>
+<figure class=site-avatar>
+<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</figure>
+<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
+<h2 class=site-description></h2>
+</header>
+<ol class=menu id=main-menu>
+<li>
+<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span>
+</a>
+</li>
+<li>
+<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span>
+</a>
+</li>
+<li>
+<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
+<span>Feed</span>
+</a>
+</li>
+<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span>
+</li>
+</ol>
+</aside>
+<main class="main full-width">
+<article class=main-article>
+<header class=article-header>
+<div class=article-details>
+<header class=article-category>
+<a href=../../../categories/python/>
+Python
+</a>
+<a href=../../../categories/translation/>
+Translation
+</a>
+</header>
+<h2 class=article-title>
+<a href=../../../2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</a>
+</h2>
+<footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--published>Feb 19, 2017</time>
+</footer></div>
+</header>
+<section class=article-content>
+<p>这是一篇非常不错的 <a class=link href=https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/ target=_blank rel=noopener>pandas 分析入门文章</a>，在此简单翻译摘录如下。</p>
+<hr>
+<p>本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 <a class=link href=http://www.prontocycleshare.com/datachallenge target=_blank rel=noopener>Pronto Cycle Share 的数据分析挑战</a>。</p>
+<p>你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 <a class=link href=http://www.numpy.org/ target=_blank rel=noopener>NumPy</a>，<a class=link href=http://pandas.pydata.org/ target=_blank rel=noopener>Pandas</a>，<a class=link href=http://matplotlib.org/ target=_blank rel=noopener>Matplotlib</a> 和 <a class=link href=http://seaborn.pydata.org/index.html target=_blank rel=noopener>Seaborn</a> 与其他可用的数据源。</p>
+<p>这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 <a class=link href=http://jakevdp.github.io/downloads/notebooks/ProntoData.ipynb target=_blank rel=noopener>对应的 Notebook 文件</a>，并通过 Jupyter 打开。</p>
+<h2 id=下载-pronto-的数据>下载 Pronto 的数据</h2>
+<p>我们可以从 <a class=link href=http://www.prontocycleshare.com/datachallenge target=_blank rel=noopener>Pronto 官网</a> 下载对应的 <a class=link href=https://s3.amazonaws.com/pronto-data/open_data_year_one.zip target=_blank rel=noopener>数据文件</a>。总下载大约 70MB，解压缩的文件大约 900MB。</p>
+<p>接下来我们需要导入一些 Python 包：</p>
+<p>In [2]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>%</span>matplotlib inline
 <span style=color:#f92672>import</span> matplotlib.pyplot <span style=color:#66d9ef>as</span> plt
 <span style=color:#f92672>import</span> pandas <span style=color:#66d9ef>as</span> pd
 <span style=color:#f92672>import</span> numpy <span style=color:#66d9ef>as</span> np
 <span style=color:#f92672>import</span> seaborn <span style=color:#66d9ef>as</span> sns; sns<span style=color:#f92672>.</span>set()
-</code></pre></div><p>现在我们使用 Pandas 加载所有的行程记录：</p><p>In [3]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>trips <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;2015_trip_data.csv&#39;</span>,
+</code></pre></div><p>现在我们使用 Pandas 加载所有的行程记录：</p>
+<p>In [3]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>trips <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;2015_trip_data.csv&#39;</span>,
                     parse_dates<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;starttime&#39;</span>, <span style=color:#e6db74>&#39;stoptime&#39;</span>],
                     infer_datetime_format<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
 trips<span style=color:#f92672>.</span>head()
-</code></pre></div><p>Out[3]:</p><p>这个行程数据集的每一行是由一个人单独骑行，共包含超过 140,000 条数据。</p><h2 id=探索时间与行程的关系>探索时间与行程的关系</h2><p>让我们先看看一年中每日行程次数的趋势。</p><p>In [4]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># Find the start date</span>
+</code></pre></div><p>Out[3]:</p>
+<p>这个行程数据集的每一行是由一个人单独骑行，共包含超过 140,000 条数据。</p>
+<h2 id=探索时间与行程的关系>探索时间与行程的关系</h2>
+<p>让我们先看看一年中每日行程次数的趋势。</p>
+<p>In [4]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># Find the start date</span>
 ind <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>DatetimeIndex(trips<span style=color:#f92672>.</span>starttime)
 trips[<span style=color:#e6db74>&#39;date&#39;</span>] <span style=color:#f92672>=</span> ind<span style=color:#f92672>.</span>date<span style=color:#f92672>.</span>astype(<span style=color:#e6db74>&#39;datetime64&#39;</span>)
 trips[<span style=color:#e6db74>&#39;hour&#39;</span>] <span style=color:#f92672>=</span> ind<span style=color:#f92672>.</span>hour
-</code></pre></div><p>In [5]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># Count trips by date</span>
+</code></pre></div><p>In [5]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># Count trips by date</span>
 by_date <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>pivot_table(<span style=color:#e6db74>&#39;trip_id&#39;</span>, aggfunc<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;count&#39;</span>,
                             index<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;date&#39;</span>,
                             columns<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;usertype&#39;</span>, )
-</code></pre></div><p>In [6]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>fig, ax <span style=color:#f92672>=</span> plt<span style=color:#f92672>.</span>subplots(<span style=color:#ae81ff>2</span>, figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>16</span>, <span style=color:#ae81ff>8</span>))
+</code></pre></div><p>In [6]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>fig, ax <span style=color:#f92672>=</span> plt<span style=color:#f92672>.</span>subplots(<span style=color:#ae81ff>2</span>, figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>16</span>, <span style=color:#ae81ff>8</span>))
 fig<span style=color:#f92672>.</span>subplots_adjust(hspace<span style=color:#f92672>=</span><span style=color:#ae81ff>0.4</span>)
 by_date<span style=color:#f92672>.</span>iloc[:, <span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>plot(ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>0</span>], title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Annual Members&#39;</span>);
 by_date<span style=color:#f92672>.</span>iloc[:, <span style=color:#ae81ff>1</span>]<span style=color:#f92672>.</span>plot(ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>1</span>], title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Day-Pass Users&#39;</span>);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvpy4sgpyj20pu0ebjuf alt></p><p>此图显示每日趋势，以年费用户（上图）和临时用户（下图）分隔。 根据图标，我们可以获得几个结论：</p><ul><li>4 月份短期使用的临时用户大幅增加可能是由于 <a class=link href=http://www.planetizen.com/node/75958/seattle-sets-bikeshare-record-apa-town target=_blank rel=noopener>美国规划协会全国会议</a> 在西雅图市中心举行。 其他一个比较接近的时间是 7 月 4 日周末。</li><li>临时用户呈现了一个与季节相关联的稳定的衰退趋势; 年费用户的使用没有随着秋天的来临而显着减少。</li><li>年费用户和临时用户似乎都显示出明显的每周趋势。</li></ul><p>现在放大每周趋势，看一下所有的骑乘都是按照星期几分部的。由于 2015 年 1 月份左右模式的变化，我们按照年份和星期几进行拆分：</p><p>In [7]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>by_weekday <span style=color:#f92672>=</span> by_date<span style=color:#f92672>.</span>groupby([by_date<span style=color:#f92672>.</span>index<span style=color:#f92672>.</span>year,
+</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvpy4sgpyj20pu0ebjuf alt></p>
+<p>此图显示每日趋势，以年费用户（上图）和临时用户（下图）分隔。 根据图标，我们可以获得几个结论：</p>
+<ul>
+<li>4 月份短期使用的临时用户大幅增加可能是由于 <a class=link href=http://www.planetizen.com/node/75958/seattle-sets-bikeshare-record-apa-town target=_blank rel=noopener>美国规划协会全国会议</a> 在西雅图市中心举行。 其他一个比较接近的时间是 7 月 4 日周末。</li>
+<li>临时用户呈现了一个与季节相关联的稳定的衰退趋势; 年费用户的使用没有随着秋天的来临而显着减少。</li>
+<li>年费用户和临时用户似乎都显示出明显的每周趋势。</li>
+</ul>
+<p>现在放大每周趋势，看一下所有的骑乘都是按照星期几分部的。由于 2015 年 1 月份左右模式的变化，我们按照年份和星期几进行拆分：</p>
+<p>In [7]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>by_weekday <span style=color:#f92672>=</span> by_date<span style=color:#f92672>.</span>groupby([by_date<span style=color:#f92672>.</span>index<span style=color:#f92672>.</span>year,
                               by_date<span style=color:#f92672>.</span>index<span style=color:#f92672>.</span>dayofweek])<span style=color:#f92672>.</span>mean()
 by_weekday<span style=color:#f92672>.</span>columns<span style=color:#f92672>.</span>name <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>  <span style=color:#75715e># remove label for plot</span>
 
@@ -52,7 +154,11 @@ by_weekday<span style=color:#f92672>.</span>loc[<span style=color:#ae81ff>2014</
 by_weekday<span style=color:#f92672>.</span>loc[<span style=color:#ae81ff>2015</span>]<span style=color:#f92672>.</span>plot(title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Average Use by Day of Week (2015)&#39;</span>, ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>1</span>]);
 <span style=color:#66d9ef>for</span> axi <span style=color:#f92672>in</span> ax:
     axi<span style=color:#f92672>.</span>set_xticklabels([<span style=color:#e6db74>&#39;Mon&#39;</span>, <span style=color:#e6db74>&#39;Tues&#39;</span>, <span style=color:#e6db74>&#39;Wed&#39;</span>, <span style=color:#e6db74>&#39;Thurs&#39;</span>, <span style=color:#e6db74>&#39;Fri&#39;</span>, <span style=color:#e6db74>&#39;Sat&#39;</span>, <span style=color:#e6db74>&#39;Sun&#39;</span>])
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtq0o8jaj20q20aimxv alt></p><p>我们看到了一个互补的模式：年费用户倾向于工作日使用他们的自行车（即作为通勤的一部分），而临时用户倾向于在周末使用他们的自行车。这种模式甚至在 2015 年年初都没有特别的体现出来，尤其是年费用户：似乎在头几个月，用户还没有使用 Pronto 的通勤习惯。</p><p>查看平日和周末的平均每小时骑行也很有趣。这需要一些操作：</p><p>In [8]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># count trips by date and by hour</span>
+</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtq0o8jaj20q20aimxv alt></p>
+<p>我们看到了一个互补的模式：年费用户倾向于工作日使用他们的自行车（即作为通勤的一部分），而临时用户倾向于在周末使用他们的自行车。这种模式甚至在 2015 年年初都没有特别的体现出来，尤其是年费用户：似乎在头几个月，用户还没有使用 Pronto 的通勤习惯。</p>
+<p>查看平日和周末的平均每小时骑行也很有趣。这需要一些操作：</p>
+<p>In [8]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># count trips by date and by hour</span>
 by_hour <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>pivot_table(<span style=color:#e6db74>&#39;trip_id&#39;</span>, aggfunc<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;count&#39;</span>,
                             index<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;date&#39;</span>, <span style=color:#e6db74>&#39;hour&#39;</span>],
                             columns<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;usertype&#39;</span>)<span style=color:#f92672>.</span>fillna(<span style=color:#ae81ff>0</span>)<span style=color:#f92672>.</span>reset_index(<span style=color:#e6db74>&#39;hour&#39;</span>)
@@ -64,11 +170,19 @@ by_hour<span style=color:#f92672>.</span>index<span style=color:#f92672>.</span>
                           [<span style=color:#e6db74>&#34;</span><span style=color:#e6db74>{0}</span><span style=color:#e6db74>:00&#34;</span><span style=color:#f92672>.</span>format(i) <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>24</span>)]],
                          inplace<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>);
 by_hour<span style=color:#f92672>.</span>columns<span style=color:#f92672>.</span>name <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
-</code></pre></div><p>现在我们可以绘制结果来查看每小时的趋势：</p><p>In [9]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>fig, ax <span style=color:#f92672>=</span> plt<span style=color:#f92672>.</span>subplots(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>16</span>, <span style=color:#ae81ff>6</span>), sharey<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</code></pre></div><p>现在我们可以绘制结果来查看每小时的趋势：</p>
+<p>In [9]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>fig, ax <span style=color:#f92672>=</span> plt<span style=color:#f92672>.</span>subplots(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>16</span>, <span style=color:#ae81ff>6</span>), sharey<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
 by_hour<span style=color:#f92672>.</span>loc[<span style=color:#e6db74>&#39;weekday&#39;</span>]<span style=color:#f92672>.</span>plot(title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Average Hourly Use (Mon-Fri)&#39;</span>, ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>0</span>])
 by_hour<span style=color:#f92672>.</span>loc[<span style=color:#e6db74>&#39;weekend&#39;</span>]<span style=color:#f92672>.</span>plot(title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Average Hourly Use (Sat-Sun)&#39;</span>, ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>1</span>])
 ax[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>set_ylabel(<span style=color:#e6db74>&#39;Average Trips per Hour&#39;</span>);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtx6xmpqj20q30axgmm alt></p><p>我们看到一个 “通勤” 模式和一个 “娱乐” 模式之间的明显区别:“通勤” 模式在早上和晚上急剧上升，而 “娱乐” 模式在下午的时候有一个宽峰。 有趣的是，年费会员在周末的行为似乎与临时用户在周末的行为几乎相同。</p><h2 id=旅行时间>旅行时间</h2><p>接下来，我们来看看旅行的持续时间。 Pronto 免费骑行最长可达 30 分钟; 任何长于此的单次使用，在前半个小时都会产生几美元的使用费，此后每小时大约需要十美元。</p><p>让我们看看年费会员和临时使用者的旅行持续时间的分布：</p><p>In [10]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>trips[<span style=color:#e6db74>&#39;minutes&#39;</span>] <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>tripduration <span style=color:#f92672>/</span> <span style=color:#ae81ff>60</span>
+</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtx6xmpqj20q30axgmm alt></p>
+<p>我们看到一个 “通勤” 模式和一个 “娱乐” 模式之间的明显区别:“通勤” 模式在早上和晚上急剧上升，而 “娱乐” 模式在下午的时候有一个宽峰。 有趣的是，年费会员在周末的行为似乎与临时用户在周末的行为几乎相同。</p>
+<h2 id=旅行时间>旅行时间</h2>
+<p>接下来，我们来看看旅行的持续时间。 Pronto 免费骑行最长可达 30 分钟; 任何长于此的单次使用，在前半个小时都会产生几美元的使用费，此后每小时大约需要十美元。</p>
+<p>让我们看看年费会员和临时使用者的旅行持续时间的分布：</p>
+<p>In [10]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>trips[<span style=color:#e6db74>&#39;minutes&#39;</span>] <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>tripduration <span style=color:#f92672>/</span> <span style=color:#ae81ff>60</span>
 trips<span style=color:#f92672>.</span>groupby(<span style=color:#e6db74>&#39;usertype&#39;</span>)[<span style=color:#e6db74>&#39;minutes&#39;</span>]<span style=color:#f92672>.</span>hist(bins<span style=color:#f92672>=</span>np<span style=color:#f92672>.</span>arange(<span style=color:#ae81ff>61</span>), alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.5</span>, normed<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>);
 plt<span style=color:#f92672>.</span>xlabel(<span style=color:#e6db74>&#39;Duration (minutes)&#39;</span>)
 plt<span style=color:#f92672>.</span>ylabel(<span style=color:#e6db74>&#39;relative frequency&#39;</span>)
@@ -78,13 +192,22 @@ plt<span style=color:#f92672>.</span>text(<span style=color:#ae81ff>34</span>, <
 plt<span style=color:#f92672>.</span>legend([<span style=color:#e6db74>&#39;Annual Members&#39;</span>, <span style=color:#e6db74>&#39;Short-term Pass&#39;</span>])
 
 plt<span style=color:#f92672>.</span>axvline(<span style=color:#ae81ff>30</span>, linestyle<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;--&#39;</span>, color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;red&#39;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.3</span>);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvu4jj5p0j20e20a5aab alt></p><p>在这里，我添加了一个红色的虚线，分开免费骑乘（左）和付费骑乘（右）。看来，年费用户对系统规则更加了解：只有行程分布的一小部分超过 30 分钟。另一方面，大约四分之一的临时用户时间超过半小时限制，并收取额外费用。 我的预期是，这些临时用户不能很好理解这种定价结构，并且可能会因为不开心的体验不再使用。</p><h2 id=估计行程距离>估计行程距离</h2><p>看看旅行的距离也十分有趣。Pronto 发布的数据中不包括行车的距离，因此我们需要通过其他来源来确定。让我们从加载行车数据开始 - 因为一些行程在 Pronto 的服务点之间开始和结束，我们将其添加为一个 “车站”：</p><p>In [11]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>stations <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;2015_station_data.csv&#39;</span>)
+</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvu4jj5p0j20e20a5aab alt></p>
+<p>在这里，我添加了一个红色的虚线，分开免费骑乘（左）和付费骑乘（右）。看来，年费用户对系统规则更加了解：只有行程分布的一小部分超过 30 分钟。另一方面，大约四分之一的临时用户时间超过半小时限制，并收取额外费用。 我的预期是，这些临时用户不能很好理解这种定价结构，并且可能会因为不开心的体验不再使用。</p>
+<h2 id=估计行程距离>估计行程距离</h2>
+<p>看看旅行的距离也十分有趣。Pronto 发布的数据中不包括行车的距离，因此我们需要通过其他来源来确定。让我们从加载行车数据开始 - 因为一些行程在 Pronto 的服务点之间开始和结束，我们将其添加为一个 “车站”：</p>
+<p>In [11]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>stations <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;2015_station_data.csv&#39;</span>)
 pronto_shop <span style=color:#f92672>=</span> dict(id<span style=color:#f92672>=</span><span style=color:#ae81ff>54</span>, name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;Pronto shop&#34;</span>,
                    terminal<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;Pronto shop&#34;</span>,
                    lat<span style=color:#f92672>=</span><span style=color:#ae81ff>47.6173156</span>, long<span style=color:#f92672>=-</span><span style=color:#ae81ff>122.3414776</span>,
                    dockcount<span style=color:#f92672>=</span><span style=color:#ae81ff>100</span>, online<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10/13/2014&#39;</span>)
 stations <span style=color:#f92672>=</span> stations<span style=color:#f92672>.</span>append(pronto_shop, ignore_index<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
-</code></pre></div><p>现在我们需要找到两对纬度 / 经度坐标之间的骑车距离。幸运的是，Google 地图有一个距离 API，我们可以免费使用。</p><p>从文档中知道，我们每天免费使用的限制为每天最多 2500 个距离，每 10 秒最多 100 个距离。现在有 55 个站，我们有（55 * 54/2） = 1485 个非零距离，所以我们可以在几天内免费查询所有车站之间的距离。</p><p>为此，我们一次查询一行，在查询之间等待 10 + 秒（注意：我们可能还会使用 googlemaps Python 包 ，但使用它需要获取 API 密钥）。</p><p>In [12]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>from</span> time <span style=color:#f92672>import</span> sleep
+</code></pre></div><p>现在我们需要找到两对纬度 / 经度坐标之间的骑车距离。幸运的是，Google 地图有一个距离 API，我们可以免费使用。</p>
+<p>从文档中知道，我们每天免费使用的限制为每天最多 2500 个距离，每 10 秒最多 100 个距离。现在有 55 个站，我们有（55 * 54/2） = 1485 个非零距离，所以我们可以在几天内免费查询所有车站之间的距离。</p>
+<p>为此，我们一次查询一行，在查询之间等待 10 + 秒（注意：我们可能还会使用 googlemaps Python 包 ，但使用它需要获取 API 密钥）。</p>
+<p>In [12]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>from</span> time <span style=color:#f92672>import</span> sleep
 
 <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>query_distances</span>(stations<span style=color:#f92672>=</span>stations):
     <span style=color:#e6db74>&#34;&#34;&#34;Query the Google API for bicycling distances&#34;&#34;&#34;</span>
@@ -132,25 +255,41 @@ stations <span style=color:#f92672>=</span> stations<span style=color:#f92672>.<
 
     <span style=color:#75715e># Build distance matrix and save to CSV</span>
     distances <span style=color:#f92672>=</span> build_distance_matrix()
-</code></pre></div><p>这里是第一个 5x5 距离矩阵：</p><p>In [13]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>distances <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;station_distances.csv&#39;</span>, index_col<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;terminal&#39;</span>)
+</code></pre></div><p>这里是第一个 5x5 距离矩阵：</p>
+<p>In [13]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>distances <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;station_distances.csv&#39;</span>, index_col<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;terminal&#39;</span>)
 distances<span style=color:#f92672>.</span>iloc[:<span style=color:#ae81ff>5</span>, :<span style=color:#ae81ff>5</span>]
-</code></pre></div><p>Out[13]:</p><p>让我们将这些距离转换为英里，并将它们加入我们的行程数据：</p><p>In [14]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>stacked <span style=color:#f92672>=</span> distances<span style=color:#f92672>.</span>stack() <span style=color:#f92672>/</span> <span style=color:#ae81ff>1609.34</span>  <span style=color:#75715e># convert meters to miles</span>
+</code></pre></div><p>Out[13]:</p>
+<p>让我们将这些距离转换为英里，并将它们加入我们的行程数据：</p>
+<p>In [14]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>stacked <span style=color:#f92672>=</span> distances<span style=color:#f92672>.</span>stack() <span style=color:#f92672>/</span> <span style=color:#ae81ff>1609.34</span>  <span style=color:#75715e># convert meters to miles</span>
 stacked<span style=color:#f92672>.</span>name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;distance&#39;</span>
 trips <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>join(stacked, on<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;from_station_id&#39;</span>,<span style=color:#e6db74>&#39;to_station_id&#39;</span>])
-</code></pre></div><p>现在我们可以绘制行程距离的分布：</p><p>In [15]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>fig, ax <span style=color:#f92672>=</span> plt<span style=color:#f92672>.</span>subplots(figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>12</span>, <span style=color:#ae81ff>4</span>))
+</code></pre></div><p>现在我们可以绘制行程距离的分布：</p>
+<p>In [15]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>fig, ax <span style=color:#f92672>=</span> plt<span style=color:#f92672>.</span>subplots(figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>12</span>, <span style=color:#ae81ff>4</span>))
 trips<span style=color:#f92672>.</span>groupby(<span style=color:#e6db74>&#39;usertype&#39;</span>)[<span style=color:#e6db74>&#39;distance&#39;</span>]<span style=color:#f92672>.</span>hist(bins<span style=color:#f92672>=</span>np<span style=color:#f92672>.</span>linspace(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>6.99</span>, <span style=color:#ae81ff>50</span>),
                                            alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.5</span>, ax<span style=color:#f92672>=</span>ax);
 plt<span style=color:#f92672>.</span>xlabel(<span style=color:#e6db74>&#39;Distance between start &amp; end (miles)&#39;</span>)
 plt<span style=color:#f92672>.</span>ylabel(<span style=color:#e6db74>&#39;relative frequency&#39;</span>)
 plt<span style=color:#f92672>.</span>title(<span style=color:#e6db74>&#39;Minimum Distance of Trip&#39;</span>)
 plt<span style=color:#f92672>.</span>legend([<span style=color:#e6db74>&#39;Annual Members&#39;</span>, <span style=color:#e6db74>&#39;Short-term Pass&#39;</span>]);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuk9mwpzj20ke07tjrm alt></p><p>请记住，这显示站点之间的最短可能距离，是每次行程上实际距离的下限。许多旅行（特别是临时用户）在几个街区内开始和结束。除此之外，旅行高峰一般在大约 1 英里左右，也有一些用户将他们的旅行距离扩展到四英里或更长的距离。</p><h2 id=骑手速度>骑手速度</h2><p>给定这些距离，我们还可以计算估计骑行速度的下限。 让我们这样做，然后看看年费用户和临时用户的速度分布：</p><p>In [16]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>trips[<span style=color:#e6db74>&#39;speed&#39;</span>] <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>distance <span style=color:#f92672>*</span> <span style=color:#ae81ff>60</span> <span style=color:#f92672>/</span> trips<span style=color:#f92672>.</span>minutes
+</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuk9mwpzj20ke07tjrm alt></p>
+<p>请记住，这显示站点之间的最短可能距离，是每次行程上实际距离的下限。许多旅行（特别是临时用户）在几个街区内开始和结束。除此之外，旅行高峰一般在大约 1 英里左右，也有一些用户将他们的旅行距离扩展到四英里或更长的距离。</p>
+<h2 id=骑手速度>骑手速度</h2>
+<p>给定这些距离，我们还可以计算估计骑行速度的下限。 让我们这样做，然后看看年费用户和临时用户的速度分布：</p>
+<p>In [16]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>trips[<span style=color:#e6db74>&#39;speed&#39;</span>] <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>distance <span style=color:#f92672>*</span> <span style=color:#ae81ff>60</span> <span style=color:#f92672>/</span> trips<span style=color:#f92672>.</span>minutes
 trips<span style=color:#f92672>.</span>groupby(<span style=color:#e6db74>&#39;usertype&#39;</span>)[<span style=color:#e6db74>&#39;speed&#39;</span>]<span style=color:#f92672>.</span>hist(bins<span style=color:#f92672>=</span>np<span style=color:#f92672>.</span>linspace(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>15</span>, <span style=color:#ae81ff>50</span>), alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.5</span>, normed<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>);
 plt<span style=color:#f92672>.</span>xlabel(<span style=color:#e6db74>&#39;lower bound riding speed (MPH)&#39;</span>)
 plt<span style=color:#f92672>.</span>ylabel(<span style=color:#e6db74>&#39;relative frequency&#39;</span>)
 plt<span style=color:#f92672>.</span>title(<span style=color:#e6db74>&#39;Rider Speed Lower Bound (MPH)&#39;</span>)
 plt<span style=color:#f92672>.</span>legend([<span style=color:#e6db74>&#39;Annual Members&#39;</span>, <span style=color:#e6db74>&#39;Short-term Pass&#39;</span>]);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuq6y9e5j20dw0a5dg1 alt></p><p>有趣的是，分布是完全不同的，年费用户的速度平均值更高一些。你可能会想到这里的结论，年费用户的速度比临时用户更高，但数据本身不足以支持这一结论。如果年费用户倾向于通过最直接的路线从点 A 去往点 B，那么这些数据也可以被解释，而临时用户倾向于绕行并间接到达他们的目的地。我怀疑现实是这两种效应的混合。</p><p>还要看看距离和速度之间的关系：</p><p>In [17]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>g <span style=color:#f92672>=</span> sns<span style=color:#f92672>.</span>FacetGrid(trips, col<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;usertype&#34;</span>, hue<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;usertype&#39;</span>, size<span style=color:#f92672>=</span><span style=color:#ae81ff>6</span>)
+</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuq6y9e5j20dw0a5dg1 alt></p>
+<p>有趣的是，分布是完全不同的，年费用户的速度平均值更高一些。你可能会想到这里的结论，年费用户的速度比临时用户更高，但数据本身不足以支持这一结论。如果年费用户倾向于通过最直接的路线从点 A 去往点 B，那么这些数据也可以被解释，而临时用户倾向于绕行并间接到达他们的目的地。我怀疑现实是这两种效应的混合。</p>
+<p>还要看看距离和速度之间的关系：</p>
+<p>In [17]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>g <span style=color:#f92672>=</span> sns<span style=color:#f92672>.</span>FacetGrid(trips, col<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;usertype&#34;</span>, hue<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;usertype&#39;</span>, size<span style=color:#f92672>=</span><span style=color:#ae81ff>6</span>)
 g<span style=color:#f92672>.</span>map(plt<span style=color:#f92672>.</span>scatter,<span style=color:#e6db74>&#34;distance&#34;</span>,<span style=color:#e6db74>&#34;speed&#34;</span>, s<span style=color:#f92672>=</span><span style=color:#ae81ff>4</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.2</span>)
 
 <span style=color:#75715e># Add lines and labels</span>
@@ -162,7 +301,14 @@ g<span style=color:#f92672>.</span>axes[<span style=color:#ae81ff>0</span>, <spa
     ax<span style=color:#f92672>.</span>text(<span style=color:#ae81ff>9.8</span>, <span style=color:#ae81ff>16.5</span>,<span style=color:#e6db74>&#34;Free Trips</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>Additional Fee&#34;</span>, ha<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;right&#39;</span>,
             size<span style=color:#f92672>=</span><span style=color:#ae81ff>18</span>, rotation<span style=color:#f92672>=</span><span style=color:#ae81ff>39</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.5</span>, color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;red&#39;</span>)
     ax<span style=color:#f92672>.</span>axis([<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>10</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>25</span>])
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvut21qj5j20no0butca alt></p><p>总的来说，我们看到较长的路途速度更快 - 虽然这受到与上述相同的下限影响。如上所述，作为参考，我绘制了需要的红线用于区分额外费用（低于红线）和免费费用（红线以上）。我们再次看到，年度会员对于不超过半小时的限制比每天通过用户更加精明 - 点的分布的指向了用户注意了他们使用的时间，以避免额外的费用。</p><h2 id=海拔高度>海拔高度</h2><p>在西雅图自行车分享服务的可行性的一个焦点是，西雅图是一个丘陵城市。在服务发布之前，一些分析师预测，西雅图会有源源不断的自行车上坡下坡，所以并不适合分享单车系统的落地。</p><p>数据版本中不包含海拔高度数据，但我们可以转到 Google Maps API 获取我们需要的数据; 请参阅 <a class=link href=https://developers.google.com/maps/documentation/elevation/intro target=_blank rel=noopener>此网站</a> 了解海拔 API 的描述。</p><p>在这种情况下，自由使用限制为每天 2500 个请求，每次请求最多包含 512 个海拔高度。 由于我们只需要 55 个海拔高度，我们可以在单个查询中执行：</p><p>In [18]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_station_elevations</span>(stations):
+</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvut21qj5j20no0butca alt></p>
+<p>总的来说，我们看到较长的路途速度更快 - 虽然这受到与上述相同的下限影响。如上所述，作为参考，我绘制了需要的红线用于区分额外费用（低于红线）和免费费用（红线以上）。我们再次看到，年度会员对于不超过半小时的限制比每天通过用户更加精明 - 点的分布的指向了用户注意了他们使用的时间，以避免额外的费用。</p>
+<h2 id=海拔高度>海拔高度</h2>
+<p>在西雅图自行车分享服务的可行性的一个焦点是，西雅图是一个丘陵城市。在服务发布之前，一些分析师预测，西雅图会有源源不断的自行车上坡下坡，所以并不适合分享单车系统的落地。</p>
+<p>数据版本中不包含海拔高度数据，但我们可以转到 Google Maps API 获取我们需要的数据; 请参阅 <a class=link href=https://developers.google.com/maps/documentation/elevation/intro target=_blank rel=noopener>此网站</a> 了解海拔 API 的描述。</p>
+<p>在这种情况下，自由使用限制为每天 2500 个请求，每次请求最多包含 512 个海拔高度。 由于我们只需要 55 个海拔高度，我们可以在单个查询中执行：</p>
+<p>In [18]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_station_elevations</span>(stations):
     <span style=color:#e6db74>&#34;&#34;&#34;Get station elevations via Google Maps API&#34;&#34;&#34;</span>
     URL <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;https://maps.googleapis.com/maps/api/elevation/json?locations=&#34;</span>
     locs <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;|&#39;</span><span style=color:#f92672>.</span>join([<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>{0}</span><span style=color:#e6db74>,</span><span style=color:#e6db74>{1}</span><span style=color:#e6db74>&#39;</span><span style=color:#f92672>.</span>format(lat, long)
@@ -187,20 +333,29 @@ g<span style=color:#f92672>.</span>axes[<span style=color:#ae81ff>0</span>, <spa
 <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>exists(<span style=color:#e6db74>&#39;station_elevations.csv&#39;</span>):
     get_station_elevations(stations)
     process_station_elevations()
-</code></pre></div><p>现在让我们读入海拔高度数据：</p><p>In [19]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>elevs <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;station_elevations.csv&#39;</span>, index_col<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>)
+</code></pre></div><p>现在让我们读入海拔高度数据：</p>
+<p>In [19]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>elevs <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;station_elevations.csv&#39;</span>, index_col<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>)
 elevs<span style=color:#f92672>.</span>head()
-</code></pre></div><p>Out[19]:</p><p>为了验证结果，我们需要仔细检查纬度和经度是否匹配：</p><p>In [20]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># double check that locations match</span>
+</code></pre></div><p>Out[19]:</p>
+<p>为了验证结果，我们需要仔细检查纬度和经度是否匹配：</p>
+<p>In [20]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># double check that locations match</span>
 print(np<span style=color:#f92672>.</span>allclose(stations<span style=color:#f92672>.</span>long, elevs<span style=color:#f92672>.</span>lng))
 print(np<span style=color:#f92672>.</span>allclose(stations<span style=color:#f92672>.</span>lat, elevs<span style=color:#f92672>.</span>lat))
 </code></pre></div><pre><code>True
 True
-</code></pre><p>现在我们可以将海拔数据与行程数据整合：</p><p>In [21]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>stations[<span style=color:#e6db74>&#39;elevation&#39;</span>] <span style=color:#f92672>=</span> elevs[<span style=color:#e6db74>&#39;elevation&#39;</span>]
+</code></pre><p>现在我们可以将海拔数据与行程数据整合：</p>
+<p>In [21]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>stations[<span style=color:#e6db74>&#39;elevation&#39;</span>] <span style=color:#f92672>=</span> elevs[<span style=color:#e6db74>&#39;elevation&#39;</span>]
 elevs<span style=color:#f92672>.</span>index <span style=color:#f92672>=</span> stations[<span style=color:#e6db74>&#39;terminal&#39;</span>]
 
 trips[<span style=color:#e6db74>&#39;elevation_start&#39;</span>] <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>join(elevs, on<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;from_station_id&#39;</span>)[<span style=color:#e6db74>&#39;elevation&#39;</span>]
 trips[<span style=color:#e6db74>&#39;elevation_end&#39;</span>] <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>join(elevs, on<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;to_station_id&#39;</span>)[<span style=color:#e6db74>&#39;elevation&#39;</span>]
 trips[<span style=color:#e6db74>&#39;elevation_gain&#39;</span>] <span style=color:#f92672>=</span> trips[<span style=color:#e6db74>&#39;elevation_end&#39;</span>] <span style=color:#f92672>-</span> trips[<span style=color:#e6db74>&#39;elevation_start&#39;</span>]
-</code></pre></div><p>让我们来看看海拔数据和会员类型的分布关系：</p><p>In [22]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>g <span style=color:#f92672>=</span> sns<span style=color:#f92672>.</span>FacetGrid(trips, col<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;usertype&#34;</span>, hue<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;usertype&#39;</span>)
+</code></pre></div><p>让我们来看看海拔数据和会员类型的分布关系：</p>
+<p>In [22]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>g <span style=color:#f92672>=</span> sns<span style=color:#f92672>.</span>FacetGrid(trips, col<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;usertype&#34;</span>, hue<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;usertype&#39;</span>)
 g<span style=color:#f92672>.</span>map(plt<span style=color:#f92672>.</span>hist,<span style=color:#e6db74>&#34;elevation_gain&#34;</span>, bins<span style=color:#f92672>=</span>np<span style=color:#f92672>.</span>arange(<span style=color:#f92672>-</span><span style=color:#ae81ff>145</span>, <span style=color:#ae81ff>150</span>, <span style=color:#ae81ff>10</span>))
 g<span style=color:#f92672>.</span>fig<span style=color:#f92672>.</span>set_figheight(<span style=color:#ae81ff>6</span>)
 g<span style=color:#f92672>.</span>fig<span style=color:#f92672>.</span>set_figwidth(<span style=color:#ae81ff>16</span>);
@@ -211,13 +366,23 @@ g<span style=color:#f92672>.</span>fig<span style=color:#f92672>.</span>set_figw
     <span style=color:#66d9ef>for</span> ax <span style=color:#f92672>in</span> g<span style=color:#f92672>.</span>axes<span style=color:#f92672>.</span>flat:
         ax<span style=color:#f92672>.</span>fill(x, <span style=color:#ae81ff>100</span> <span style=color:#f92672>*</span> (lim <span style=color:#f92672>-</span> abs(x)),
                 color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;gray&#39;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.1</span>, zorder<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>)
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwev74fzj20su0a2mxj alt></p><p>我们在背景中绘制了一些阴影以帮助引导分析。 年度会员和临时用户之间有很大的区别：年费用户非常明显的表示出偏好下坡行程（左侧的分布），而临时用户表现并不明显，而是表示喜欢骑乘开始并在相同高度结束。</p><p>为了使海拔数据变化的影响更加明显，我们做一些计算：</p><p>In [23]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>print(<span style=color:#e6db74>&#34;total downhill trips:&#34;</span>, (trips<span style=color:#f92672>.</span>elevation_gain <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>)<span style=color:#f92672>.</span>sum())
+</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwev74fzj20su0a2mxj alt></p>
+<p>我们在背景中绘制了一些阴影以帮助引导分析。 年度会员和临时用户之间有很大的区别：年费用户非常明显的表示出偏好下坡行程（左侧的分布），而临时用户表现并不明显，而是表示喜欢骑乘开始并在相同高度结束。</p>
+<p>为了使海拔数据变化的影响更加明显，我们做一些计算：</p>
+<p>In [23]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>print(<span style=color:#e6db74>&#34;total downhill trips:&#34;</span>, (trips<span style=color:#f92672>.</span>elevation_gain <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>)<span style=color:#f92672>.</span>sum())
 print(<span style=color:#e6db74>&#34;total uphill trips:&#34;</span>, (trips<span style=color:#f92672>.</span>elevation_gain<span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>)<span style=color:#f92672>.</span>sum())
 </code></pre></div><pre><code>total downhill trips: 80532
 total uphill trips:   50493
-</code></pre><p>我们看到，第一年下坡比上坡多出了 3 万次 - 这是大约 60％ 以上。 根据目前的使用水平，这意味着 Pronto 工作人员必须每天从海拔较低的服务点运送大约 100 辆自行车到高海拔服务点。</p><h2 id=天气>天气</h2><p>另一个常见的反对循环共享的可行性的论点是天气。让我们来看看出行数量随着温度和降水量的变化。</p><p>幸运的是，数据包括了大范围的天气数据：</p><p>In [24]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>weather <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;2015_weather_data.csv&#39;</span>, index_col<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Date&#39;</span>, parse_dates<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</code></pre><p>我们看到，第一年下坡比上坡多出了 3 万次 - 这是大约 60％ 以上。 根据目前的使用水平，这意味着 Pronto 工作人员必须每天从海拔较低的服务点运送大约 100 辆自行车到高海拔服务点。</p>
+<h2 id=天气>天气</h2>
+<p>另一个常见的反对循环共享的可行性的论点是天气。让我们来看看出行数量随着温度和降水量的变化。</p>
+<p>幸运的是，数据包括了大范围的天气数据：</p>
+<p>In [24]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>weather <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;2015_weather_data.csv&#39;</span>, index_col<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Date&#39;</span>, parse_dates<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
 weather<span style=color:#f92672>.</span>columns
-</code></pre></div><p>Out[24]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>Index([<span style=color:#e6db74>&#39;Max_Temperature_F&#39;</span>, <span style=color:#e6db74>&#39;Mean_Temperature_F&#39;</span>, <span style=color:#e6db74>&#39;Min_TemperatureF&#39;</span>,
+</code></pre></div><p>Out[24]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>Index([<span style=color:#e6db74>&#39;Max_Temperature_F&#39;</span>, <span style=color:#e6db74>&#39;Mean_Temperature_F&#39;</span>, <span style=color:#e6db74>&#39;Min_TemperatureF&#39;</span>,
        <span style=color:#e6db74>&#39;Max_Dew_Point_F&#39;</span>, <span style=color:#e6db74>&#39;MeanDew_Point_F&#39;</span>, <span style=color:#e6db74>&#39;Min_Dewpoint_F&#39;</span>, <span style=color:#e6db74>&#39;Max_Humidity&#39;</span>,
        <span style=color:#e6db74>&#39;Mean_Humidity&#39;</span>, <span style=color:#e6db74>&#39;Min_Humidity&#39;</span>, <span style=color:#e6db74>&#39;Max_Sea_Level_Pressure_In&#39;</span>,
        <span style=color:#e6db74>&#39;Mean_Sea_Level_Pressure_In&#39;</span>, <span style=color:#e6db74>&#39;Min_Sea_Level_Pressure_In&#39;</span>,
@@ -226,10 +391,14 @@ weather<span style=color:#f92672>.</span>columns
        <span style=color:#e6db74>&#39;Max_Gust_Speed_MPH&#39;</span>, <span style=color:#e6db74>&#39;Precipitation_In&#39;</span>, <span style=color:#e6db74>&#39;Events&#39;</span>],
       dtype<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;object&#39;</span>)
        dtype <span style=color:#f92672>=</span><span style=color:#e6db74>&#39;object&#39;</span><span style=color:#960050;background-color:#1e0010>）</span>
-</code></pre></div><p>让我们将天气数据与行程数据结合起来：</p><p>In [25]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>by_date <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>groupby([<span style=color:#e6db74>&#39;date&#39;</span>, <span style=color:#e6db74>&#39;usertype&#39;</span>])[<span style=color:#e6db74>&#39;trip_id&#39;</span>]<span style=color:#f92672>.</span>count()
+</code></pre></div><p>让我们将天气数据与行程数据结合起来：</p>
+<p>In [25]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>by_date <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</span>groupby([<span style=color:#e6db74>&#39;date&#39;</span>, <span style=color:#e6db74>&#39;usertype&#39;</span>])[<span style=color:#e6db74>&#39;trip_id&#39;</span>]<span style=color:#f92672>.</span>count()
 by_date<span style=color:#f92672>.</span>name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;count&#39;</span>
 by_date <span style=color:#f92672>=</span> by_date<span style=color:#f92672>.</span>reset_index(<span style=color:#e6db74>&#39;usertype&#39;</span>)<span style=color:#f92672>.</span>join(weather)
-</code></pre></div><p>现在我们可以看看按工作日和周末为纬度，查看出行数量随温度和降水量的变化：</p><p>In [26]:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># add a flag indicating weekend</span>
+</code></pre></div><p>现在我们可以看看按工作日和周末为纬度，查看出行数量随温度和降水量的变化：</p>
+<p>In [26]:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># add a flag indicating weekend</span>
 by_date[<span style=color:#e6db74>&#39;weekend&#39;</span>] <span style=color:#f92672>=</span> (by_date<span style=color:#f92672>.</span>index<span style=color:#f92672>.</span>dayofweek<span style=color:#f92672>&gt;=</span> <span style=color:#ae81ff>5</span>)
 
 <span style=color:#75715e>#----------------------------------------------------------------</span>
@@ -263,11 +432,126 @@ g<span style=color:#f92672>.</span>axes[<span style=color:#ae81ff>0</span>, <spa
                   transform<span style=color:#f92672>=</span>g<span style=color:#f92672>.</span>axes[<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>]<span style=color:#f92672>.</span>transAxes)
 g<span style=color:#f92672>.</span>fig<span style=color:#f92672>.</span>text(<span style=color:#ae81ff>0.45</span>, <span style=color:#ae81ff>1</span>,<span style=color:#e6db74>&#34;Trend With Precipitation&#34;</span>, ha<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;center&#39;</span>, va<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;top&#39;</span>, size<span style=color:#f92672>=</span><span style=color:#ae81ff>16</span>);
 </code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqa1v43j20rp0c4wg6 alt>
-<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqr99vcj20rj0c440e alt></p><p>对于天气的影响，我们可以看出明显的趋势：人们更喜欢温暖、阳光明媚的天气。但是也有一些有趣的细节：工作日期间，所有的用户都受到天气的影响。然而周末年费用户受影响更少。我没有什么好的理论说明为什么有这种趋势，如果你有好的想法，欢迎提供。</p><h2 id=总结>总结</h2><p>根据上面的一些系列分析，但是我想我们可以从这些数据中获得一些结论：</p><ul><li>年费用户与临时用户整体上会有不同的行为：年费用户通常是利用 Pronto 进行工作日的通勤。临时用户则是周末使用 Pronto 探索城市的特定区域。</li><li>尽管年费用户对定价策略有所了解，但是四分之一的行程还是超过了半小时的限制，并产生了额外的费用。为了客户的权益，Pronto 应该更好告知用户这种定价策略。</li><li>海拔和天气会影响使用，正如你预计的一样：下坡比上坡多 60%，寒冷和下雨也会明显减少当天的骑行数量。</li></ul></section><footer class=article-footer><section class=article-tags><a href=../../../tags/python/>Python</a>
-<a href=../../../tags/pandas/>Pandas</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article><a href=../../../2019/01/2019-01-28-python-typing-with-stub-files/><div class=article-details><h2 class=article-title>利用Stub File标注Python文件</h2></div></a></article><article><a href=../../../2017/08/2017-08-02-install-face-recognition-on-osx/><div class=article-details><h2 class=article-title>OSX 下安装 face_recognition</h2></div></a></article><article><a href=../../../2016/09/2016-09-15-tracing-python-program-with-dtrace/><div class=article-details><h2 class=article-title>使用 dtrace 跟踪 Python 应用</h2></div></a></article><article><a href=../../../2016/07/2016-07-13-type-hint-improve-python-programming/><div class=article-details><h2 class=article-title>利用 Type Hint 提升 Python 程序开发效率</h2></div></a></article><article><a href=../../../2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/><div class=article-details><h2 class=article-title>从 asyncio 简单实现看异步是如何工作的</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqr99vcj20rj0c440e alt></p>
+<p>对于天气的影响，我们可以看出明显的趋势：人们更喜欢温暖、阳光明媚的天气。但是也有一些有趣的细节：工作日期间，所有的用户都受到天气的影响。然而周末年费用户受影响更少。我没有什么好的理论说明为什么有这种趋势，如果你有好的想法，欢迎提供。</p>
+<h2 id=总结>总结</h2>
+<p>根据上面的一些系列分析，但是我想我们可以从这些数据中获得一些结论：</p>
+<ul>
+<li>年费用户与临时用户整体上会有不同的行为：年费用户通常是利用 Pronto 进行工作日的通勤。临时用户则是周末使用 Pronto 探索城市的特定区域。</li>
+<li>尽管年费用户对定价策略有所了解，但是四分之一的行程还是超过了半小时的限制，并产生了额外的费用。为了客户的权益，Pronto 应该更好告知用户这种定价策略。</li>
+<li>海拔和天气会影响使用，正如你预计的一样：下坡比上坡多 60%，寒冷和下雨也会明显减少当天的骑行数量。</li>
+</ul>
+</section>
+<footer class=article-footer>
+<section class=article-tags>
+<a href=../../../tags/python/>Python</a>
+<a href=../../../tags/pandas/>Pandas</a>
+</section>
+<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span>
+</section>
+</footer>
+</article>
+<aside class=related-contents--wrapper>
+<h2 class=section-title>相关文章</h2>
+<div class=related-contents>
+<div class="flex article-list--tile">
+<article>
+<a href=../../../2019/01/2019-01-28-python-typing-with-stub-files/>
+<div class=article-details>
+<h2 class=article-title>利用Stub File标注Python文件</h2>
+</div>
+</a>
+</article>
+<article>
+<a href=../../../2017/08/2017-08-02-install-face-recognition-on-osx/>
+<div class=article-details>
+<h2 class=article-title>OSX 下安装 face_recognition</h2>
+</div>
+</a>
+</article>
+<article>
+<a href=../../../2016/09/2016-09-15-tracing-python-program-with-dtrace/>
+<div class=article-details>
+<h2 class=article-title>使用 dtrace 跟踪 Python 应用</h2>
+</div>
+</a>
+</article>
+<article>
+<a href=../../../2016/07/2016-07-13-type-hint-improve-python-programming/>
+<div class=article-details>
+<h2 class=article-title>利用 Type Hint 提升 Python 程序开发效率</h2>
+</div>
+</a>
+</article>
+<article>
+<a href=../../../2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/>
+<div class=article-details>
+<h2 class=article-title>从 asyncio 简单实现看异步是如何工作的</h2>
+</div>
+</a>
+</article>
+</div>
+</div>
+</aside>
+<div class=disqus-container>
+<div id=disqus_thread></div>
+<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+<style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style>
+<script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script>
+<footer class=site-footer>
+<section class=copyright>
+&copy;
 2013 -
-2021 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2021 ipfans's Blog
+</section>
+<section class=powerby>
+Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+</section>
+</footer>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script><script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script></body></html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
+</main>
+</div>
+<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
+</body>
+</html>
