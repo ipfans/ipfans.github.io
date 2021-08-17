@@ -22,7 +22,7 @@ package main import ( &amp;#34;fmt&amp;#34; ) type Addable interface { type int,
 $ go version go version go1.17 darwin/arm64 $ go run ~/main.">
 <meta property="og:url" content="https://www.4async.com/2021/08/golang-117-generics/">
 <meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="golang"><meta property="article:published_time" content="2021-08-17T17:48:00+00:00"><meta property="article:modified_time" content="2021-08-17T17:48:00+00:00"><meta property="og:image" content="https://www.4async.com/go.png">
+<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="golang"><meta property="article:published_time" content="2021-08-17T17:48:00+00:00"><meta property="article:modified_time" content="2021-08-17T17:48:00+00:00"><meta property="og:image" content="https://www.4async.com/2021/08/golang-117-generics/go.png">
 <meta name=twitter:site content="@janxin">
 <meta name=twitter:creator content="@janxin"><meta name=twitter:title content="Go 1.17 泛型尝鲜">
 <meta name=twitter:description content="今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。
@@ -34,7 +34,7 @@ Go语言官方有详细的泛型提案文档可以在这里和这里查看详情
 package main import ( &amp;#34;fmt&amp;#34; ) type Addable interface { type int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr, float32, float64, complex64, complex128, string } func add[T Addable](a, b T) T { return a + b } func main() { fmt.Println(add(1,2)) fmt.Println(add(&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;)) } 这个函数可以实现任何需要使用+符号进行运算的类型，我们通过定义Addable类型，枚举了所有可能可以使用add方法的所有的类型。比如我们在main函数中就使用了int和string两种不同类型。
 但是如果这时我们使用简单的go run命令运行，会发现提示语法错误：
 $ go version go version go1.17 darwin/arm64 $ go run ~/main."><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://www.4async.com/go.png">
+<meta name=twitter:image content="https://www.4async.com/2021/08/golang-117-generics/go.png">
 <script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
 </head>
 <body class=article-page>
@@ -85,7 +85,7 @@ on-phone--column extended">
 <header class=article-header>
 <div class=article-image>
 <a href=../../../2021/08/golang-117-generics/>
-<img src=../../../go.png loading=lazy alt="Featured image of post Go 1.17 泛型尝鲜">
+<img src=../../../2021/08/golang-117-generics/go_hu0a44c8ca350ed766a7653d0fae9076f0_60746_800x0_resize_box_3.png srcset="../../../2021/08/golang-117-generics/go_hu0a44c8ca350ed766a7653d0fae9076f0_60746_800x0_resize_box_3.png 800w, ../../../2021/08/golang-117-generics/go_hu0a44c8ca350ed766a7653d0fae9076f0_60746_1600x0_resize_box_3.png 1600w" width=800 height=452 loading=lazy alt="Featured image of post Go 1.17 泛型尝鲜">
 </a>
 </div>
 <div class=article-details>
@@ -395,7 +395,11 @@ false
 <p>我们可以预见在Go 1.18版本中，多个标准库会被新增或者扩展，包括：类型定义库<a class=link href=https://github.com/golang/go/discussions/47319 target=_blank rel=noopener><code>constraints</code></a>，通用slice操作库<a class=link href=https://github.com/golang/go/discussions/47203 target=_blank rel=noopener><code>slices</code></a>，通用类型安全map<a class=link href=https://github.com/golang/go/discussions/47330 target=_blank rel=noopener><code>maps</code></a>等等。因为这些会进入标准库，所以实现和使用这里不做具体探讨和实现了，等待标准库添加内容即可。</p>
 <h2 id=go泛型的实现原理>Go泛型的实现原理</h2>
 <p>我们回归到最原始的例子快速看一下Go中是如何实现泛型的。为了方便分析，我们在所有<code>func</code>上添加<code>go:noinline</code>防止内联，然后编译程序进行分析。这里可能Go 1.17实现问题未能支持如<code>go tool</code>或<code>go build -gcflags=all=-S</code>之类的命令传递<code>-G=3</code>参数，因此这里我们选择第三方的反汇编工具看一下具体的实现：</p>
-<p><img src=../../../asm.png alt=ASM></p>
+<p><figure style=flex-grow:231;flex-basis:556px>
+<a href=../../../2021/08/golang-117-generics/asm.png data-size=598x258><img src=../../../2021/08/golang-117-generics/asm.png srcset="../../../2021/08/golang-117-generics/asm_hufeba331bc8c7a90eb05253426857297a_63728_480x0_resize_box_3.png 480w, ../../../2021/08/golang-117-generics/asm_hufeba331bc8c7a90eb05253426857297a_63728_1024x0_resize_box_3.png 1024w" width=598 height=258 loading=lazy alt=ASM>
+</a>
+<figcaption>ASM</figcaption>
+</figure></p>
 <p>可以看到目前Go会根据类型将泛型展开成对应类型函数，这样也会小小的增加编译时间和编译后文件大小。因为我测试使用Apple Silicon平台，考虑大家可能不熟悉相关汇编，具体执行逻辑不再具体展示。</p>
 <h2 id=其他注意事项>其他注意事项</h2>
 <p>目前Go的泛型仍在开发过程中，即便在1.17beta到正式版过程中，很多泛型的corner case也正在完善过程中，比如在之前测试中我发现某些代码在beta版本无法正确编译，但是在RC中已可以正确编译。目前的泛型实现未必代表1.18版本中是相同的实现细节，甚至可能在1.18中提供更多的功能。同时，<strong>目前泛型类型是无法在package中导出的</strong>，这导致在1.17版本中它的应用场景大大的受限。如果你有计划在某些场景中使用，我仍旧建议单元测试覆盖你使用的场景情况，防止出现版本迭代可能导致的问题。</p>
