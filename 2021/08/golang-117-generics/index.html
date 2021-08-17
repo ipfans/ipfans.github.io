@@ -183,122 +183,69 @@ $ go run ~/main.go
 </span><span style=color:#a6e22e>+        return &#34;&lt;&#34;+fmt.Sprint(v)+&#34;&gt;&#34;
 </span></code></pre></div><pre><code>$ go run -gcflags=-G=3 main.go
 [&lt;1&gt; &lt;2&gt; &lt;3&gt; &lt;4&gt; &lt;5&gt; &lt;6&gt;]
-</code></pre><h3 id=实现相对类型安全的mapfilter>实现相对类型安全的Map/Filter</h3>
+</code></pre><h3 id=实现类型安全的mapfilter>实现类型安全的Map/Filter</h3>
+<p>除了操作数据以外，我们通常还需要对数据进行筛选。在前面的例子上，我们可以通过实现<code>filterFunc</code>实现更好的通用逻辑：</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
 
 <span style=color:#f92672>import</span> (
+	<span style=color:#e6db74>&#34;crypto/rand&#34;</span>
 	<span style=color:#e6db74>&#34;fmt&#34;</span>
+	<span style=color:#e6db74>&#34;math/big&#34;</span>
 	<span style=color:#e6db74>&#34;strings&#34;</span>
 )
 
-<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>T</span> <span style=color:#66d9ef>interface</span>{}
-
-<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Iterable</span> <span style=color:#66d9ef>struct</span> {
-	<span style=color:#a6e22e>next</span> <span style=color:#66d9ef>func</span>() <span style=color:#f92672>*</span><span style=color:#a6e22e>T</span>
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>mapFunc</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>any</span>, <span style=color:#a6e22e>M</span> <span style=color:#a6e22e>any</span>](<span style=color:#a6e22e>a</span> []<span style=color:#a6e22e>T</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#a6e22e>M</span>) []<span style=color:#a6e22e>M</span> {
+    <span style=color:#a6e22e>n</span> <span style=color:#f92672>:=</span> make([]<span style=color:#a6e22e>M</span>, len(<span style=color:#a6e22e>a</span>), cap(<span style=color:#a6e22e>a</span>))
+    <span style=color:#66d9ef>for</span> <span style=color:#a6e22e>i</span>, <span style=color:#a6e22e>e</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>a</span> {
+        <span style=color:#a6e22e>n</span>[<span style=color:#a6e22e>i</span>] = <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>e</span>)
+    }
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>n</span>
 }
 
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>IterableSlice</span>(<span style=color:#a6e22e>slice</span> []<span style=color:#a6e22e>T</span>) <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span> {
-	<span style=color:#a6e22e>next</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>func</span>() <span style=color:#f92672>*</span><span style=color:#a6e22e>T</span> {
-		<span style=color:#66d9ef>if</span> len(<span style=color:#a6e22e>slice</span>) &lt; <span style=color:#ae81ff>1</span> {
-			<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span>
-		}
-		<span style=color:#a6e22e>tmp</span> <span style=color:#f92672>:=</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>slice</span>[<span style=color:#ae81ff>0</span>]
-		<span style=color:#a6e22e>slice</span> = <span style=color:#a6e22e>slice</span>[<span style=color:#ae81ff>1</span>:]
-		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>tmp</span>
-	}
-	<span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>Iterable</span>{<span style=color:#a6e22e>next</span>: <span style=color:#a6e22e>next</span>}
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>filterFunc</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>any</span>](<span style=color:#a6e22e>a</span> []<span style=color:#a6e22e>T</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#66d9ef>bool</span>) []<span style=color:#a6e22e>T</span> {
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>n</span> []<span style=color:#a6e22e>T</span>
+    <span style=color:#66d9ef>for</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>e</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>a</span> {
+        <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>e</span>) {
+            <span style=color:#a6e22e>n</span> = append(<span style=color:#a6e22e>n</span>, <span style=color:#a6e22e>e</span>)
+        }
+    }
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>n</span>
 }
 
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Iter</span>(<span style=color:#a6e22e>elems</span> <span style=color:#f92672>...</span><span style=color:#a6e22e>T</span>) <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span> {
-	<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>IterableSlice</span>(<span style=color:#a6e22e>elems</span>)
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>iter</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span>) <span style=color:#a6e22e>ForEach</span>(<span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>)) {
-	<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>(); <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span>; <span style=color:#a6e22e>ptr</span> = <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>() {
-		<span style=color:#a6e22e>f</span>(<span style=color:#f92672>*</span><span style=color:#a6e22e>ptr</span>)
-	}
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>iter</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span>) <span style=color:#a6e22e>Map</span>(<span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#a6e22e>T</span>) <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span> {
-	<span style=color:#a6e22e>next</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>func</span>() <span style=color:#f92672>*</span><span style=color:#a6e22e>T</span> {
-		<span style=color:#a6e22e>ptr</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>()
-		<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>==</span> <span style=color:#66d9ef>nil</span> {
-			<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span>
-		}
-		<span style=color:#f92672>*</span><span style=color:#a6e22e>ptr</span> = <span style=color:#a6e22e>f</span>(<span style=color:#f92672>*</span><span style=color:#a6e22e>ptr</span>)
-		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>ptr</span>
-	}
-	<span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>Iterable</span>{<span style=color:#a6e22e>next</span>: <span style=color:#a6e22e>next</span>}
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>iter</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span>) <span style=color:#a6e22e>Filter</span>(<span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#66d9ef>bool</span>) <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span> {
-	<span style=color:#a6e22e>next</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>func</span>() <span style=color:#f92672>*</span><span style=color:#a6e22e>T</span> {
-		<span style=color:#66d9ef>for</span> {
-			<span style=color:#a6e22e>ptr</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>()
-			<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>==</span> <span style=color:#66d9ef>nil</span> {
-				<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span>
-			}
-			<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>f</span>(<span style=color:#f92672>*</span><span style=color:#a6e22e>ptr</span>) {
-				<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>ptr</span>
-			}
-		}
-	}
-	<span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>Iterable</span>{<span style=color:#a6e22e>next</span>: <span style=color:#a6e22e>next</span>}
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>iter</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span>) <span style=color:#a6e22e>Any</span>(<span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#66d9ef>bool</span>) <span style=color:#66d9ef>bool</span> {
-	<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>(); <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span>; <span style=color:#a6e22e>ptr</span> = <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>() {
-		<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>f</span>(<span style=color:#f92672>*</span><span style=color:#a6e22e>ptr</span>) {
-			<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>true</span>
-		}
-	}
-	<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>false</span>
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>iter</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span>) <span style=color:#a6e22e>All</span>(<span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#66d9ef>bool</span>) <span style=color:#66d9ef>bool</span> {
-	<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>(); <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span>; <span style=color:#a6e22e>ptr</span> = <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>() {
-		<span style=color:#66d9ef>if</span> !<span style=color:#a6e22e>f</span>(<span style=color:#f92672>*</span><span style=color:#a6e22e>ptr</span>) {
-			<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>false</span>
-		}
-	}
-	<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>true</span>
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>iter</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Iterable</span>) <span style=color:#a6e22e>Collect</span>() []<span style=color:#a6e22e>T</span> {
-	<span style=color:#a6e22e>slice</span> <span style=color:#f92672>:=</span> []<span style=color:#a6e22e>T</span>{}
-	<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>(); <span style=color:#a6e22e>ptr</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span>; <span style=color:#a6e22e>ptr</span> = <span style=color:#a6e22e>iter</span>.<span style=color:#a6e22e>next</span>() {
-		<span style=color:#a6e22e>slice</span> = append(<span style=color:#a6e22e>slice</span>, <span style=color:#f92672>*</span><span style=color:#a6e22e>ptr</span>)
-	}
-	<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>slice</span>
-}
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Print</span>(<span style=color:#a6e22e>elem</span> <span style=color:#a6e22e>T</span>) {
-	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>elem</span>)
-}
 
 <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
-	<span style=color:#75715e>// 首字母转换大写
-</span><span style=color:#75715e></span>	<span style=color:#a6e22e>s</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>Iter</span>(<span style=color:#e6db74>&#34;hello,&#34;</span>, <span style=color:#e6db74>&#34;world.&#34;</span>, <span style=color:#e6db74>&#34;!!&#34;</span>).
-		<span style=color:#a6e22e>Map</span>(<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>i</span> <span style=color:#a6e22e>T</span>) <span style=color:#a6e22e>T</span> {
-			<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>strings</span>.<span style=color:#a6e22e>Title</span>(<span style=color:#a6e22e>i</span>.(<span style=color:#66d9ef>string</span>))
-		}).
-		<span style=color:#a6e22e>Collect</span>()
-	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>s</span>)
+    <span style=color:#a6e22e>vi</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>filterFunc</span>(
+		<span style=color:#a6e22e>mapFunc</span>([]<span style=color:#66d9ef>int</span>{<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>,<span style=color:#ae81ff>3</span>,<span style=color:#ae81ff>4</span>,<span style=color:#ae81ff>5</span>,<span style=color:#ae81ff>6</span>},
+			<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>int</span>) <span style=color:#66d9ef>int</span> {
+				<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>v</span><span style=color:#f92672>*</span><span style=color:#a6e22e>v</span>
+			},
+		), 
+		<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>int</span>) <span style=color:#66d9ef>bool</span> {
+			<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>v</span> &lt; <span style=color:#ae81ff>40</span>
+		})
+    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vi</span>)
 
-	<span style=color:#75715e>// 判断是否为复数
-</span><span style=color:#75715e></span>	<span style=color:#a6e22e>isEven</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>i</span> <span style=color:#a6e22e>T</span>) <span style=color:#66d9ef>bool</span> { <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>i</span>.(<span style=color:#66d9ef>int</span>)<span style=color:#f92672>%</span><span style=color:#ae81ff>2</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span> }
-	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>Iter</span>(<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>).<span style=color:#a6e22e>Any</span>(<span style=color:#a6e22e>isEven</span>))
-	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>Iter</span>(<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>).<span style=color:#a6e22e>All</span>(<span style=color:#a6e22e>isEven</span>))
-	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>Iter</span>(<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>).<span style=color:#a6e22e>Filter</span>(<span style=color:#a6e22e>isEven</span>).<span style=color:#a6e22e>Collect</span>())
+	<span style=color:#a6e22e>vs</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>filterFunc</span>(
+		<span style=color:#a6e22e>mapFunc</span>([]<span style=color:#66d9ef>string</span>{<span style=color:#e6db74>&#34;a&#34;</span>, <span style=color:#e6db74>&#34;b&#34;</span>, <span style=color:#e6db74>&#34;c&#34;</span>, <span style=color:#e6db74>&#34;d&#34;</span>, <span style=color:#e6db74>&#34;e&#34;</span>},
+			<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>string</span>) <span style=color:#66d9ef>string</span> {
+				<span style=color:#75715e>// 需要使用crypto/rand增加随机性
+</span><span style=color:#75715e></span>				<span style=color:#a6e22e>n</span>, <span style=color:#a6e22e>_</span> <span style=color:#f92672>:=</span><span style=color:#a6e22e>rand</span>.<span style=color:#a6e22e>Int</span>(<span style=color:#a6e22e>rand</span>.<span style=color:#a6e22e>Reader</span>, <span style=color:#a6e22e>big</span>.<span style=color:#a6e22e>NewInt</span>(<span style=color:#ae81ff>5</span>))
+				
+				<span style=color:#a6e22e>i</span> <span style=color:#f92672>:=</span> int(<span style=color:#a6e22e>n</span>.<span style=color:#a6e22e>Int64</span>())<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>
+				<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>strings</span>.<span style=color:#a6e22e>Repeat</span>(<span style=color:#a6e22e>v</span>, <span style=color:#a6e22e>i</span>)
+			},
+		), 
+		<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>string</span>) <span style=color:#66d9ef>bool</span> {
+			<span style=color:#66d9ef>return</span> len(<span style=color:#a6e22e>v</span>)&gt;<span style=color:#ae81ff>3</span>
+		})
+    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vs</span>)
 }
 </code></pre></div><pre><code>$ go run -gcflags=-G=3 main.go
-[Hello, World. !!]
-true
-false
-[2 4]
-</code></pre><p>目前Go的泛型无法应用在运算符上，因为有一些基础类型无法进行运算符支持，这里只能选择类型断言处理。虽然这里有做类型断言，但是因为我们在输入时已经确定了类型，因此这里仍旧是可以接受的。<strong>但如果作为对外暴露提供的API而言，在运行时仍旧可能出现断言类型不正确导致panic</strong>。</p>
-<h3 id=实现类型可靠的worker-pool>实现类型可靠的Worker Pool</h3>
-<p>比如我们通过泛型实现一个类型可靠的通用批量类型转换函数：</p>
+[1 4 9 16 25 36]
+[aaaa dddd eeeee]
+</code></pre><h3 id=实现类型可靠的worker-pool>实现类型可靠的Worker Pool</h3>
+<p>除了上面这个例子，我们还可以通过泛型实现一个类型可靠的通用批量类型转换函数：</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
 
 <span style=color:#f92672>import</span> (
@@ -380,7 +327,7 @@ false
 
 	<span style=color:#a6e22e>in2</span> <span style=color:#f92672>:=</span> []<span style=color:#a6e22e>T1</span>{<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>5</span>}
 	<span style=color:#a6e22e>out2</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>ParallelMap</span>(<span style=color:#ae81ff>4</span>, <span style=color:#a6e22e>in2</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>x</span> <span style=color:#a6e22e>T1</span>) (<span style=color:#a6e22e>T2</span>, <span style=color:#66d9ef>error</span>) {
-		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Sprintf</span>(<span style=color:#e6db74>&#34;%d&#34;</span>, <span style=color:#a6e22e>x</span>), <span style=color:#66d9ef>nil</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Sprintf</span>(<span style=color:#e6db74>&#34;&lt;%d&gt;&#34;</span>, <span style=color:#a6e22e>x</span>), <span style=color:#66d9ef>nil</span>
 	})
 	<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
 		<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#e6db74>&#34;error: &#34;</span>, <span style=color:#a6e22e>err</span>)
@@ -389,10 +336,10 @@ false
 	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>out2</span>)
 }
 </code></pre></div><pre><code>$ go run -gcflags=-G=3 main.go
-[1 2 5 4 3]
-[4 1 5 3 2]
+[3 5 2 4 1]
+[&lt;1&gt; &lt;4&gt; &lt;5&gt; &lt;3&gt; &lt;2&gt;]
 </code></pre><h3 id=其他应用>其他应用</h3>
-<p>我们可以预见在Go 1.18版本中，多个标准库会被新增或者扩展，包括：类型定义库<a class=link href=https://github.com/golang/go/discussions/47319 target=_blank rel=noopener><code>constraints</code></a>，通用slice操作库<a class=link href=https://github.com/golang/go/discussions/47203 target=_blank rel=noopener><code>slices</code></a>，通用类型安全map<a class=link href=https://github.com/golang/go/discussions/47330 target=_blank rel=noopener><code>maps</code></a>等等。因为这些会进入标准库，所以实现和使用这里不做具体探讨和实现了，等待标准库添加内容即可。</p>
+<p>我们可以预见在Go 1.18版本中，多个标准库会被新增或者扩展，包括：类型定义库<a class=link href=https://github.com/golang/go/discussions/47319 target=_blank rel=noopener><code>constraints</code></a>，通用slice操作库<a class=link href=https://github.com/golang/go/discussions/47203 target=_blank rel=noopener><code>slices</code></a>，通用类型安全map<a class=link href=https://github.com/golang/go/discussions/47330 target=_blank rel=noopener><code>maps</code></a>等等。因为这些会进入标准库，大家可以先自行实现试用，真正线上使用建议等待标准库添加内容即可。</p>
 <h2 id=go泛型的实现原理>Go泛型的实现原理</h2>
 <p>我们回归到最原始的例子快速看一下Go中是如何实现泛型的。为了方便分析，我们在所有<code>func</code>上添加<code>go:noinline</code>防止内联，然后编译程序进行分析。这里可能Go 1.17实现问题未能支持如<code>go tool</code>或<code>go build -gcflags=all=-S</code>之类的命令传递<code>-G=3</code>参数，因此这里我们选择第三方的反汇编工具看一下具体的实现：</p>
 <p><figure style=flex-grow:231;flex-basis:556px>
@@ -402,7 +349,7 @@ false
 </figure></p>
 <p>可以看到目前Go会根据类型将泛型展开成对应类型函数，这样也会小小的增加编译时间和编译后文件大小。因为我测试使用Apple Silicon平台，考虑大家可能不熟悉相关汇编，具体执行逻辑不再具体展示。</p>
 <h2 id=其他注意事项>其他注意事项</h2>
-<p>目前Go的泛型仍在开发过程中，即便在1.17beta到正式版过程中，很多泛型的corner case也正在完善过程中，比如在之前测试中我发现某些代码在beta版本无法正确编译，但是在RC中已可以正确编译。目前的泛型实现未必代表1.18版本中是相同的实现细节，甚至可能在1.18中提供更多的功能。同时，<strong>目前泛型类型是无法在package中导出的</strong>，这导致在1.17版本中它的应用场景大大的受限。如果你有计划在某些场景中使用，我仍旧建议单元测试覆盖你使用的场景情况，防止出现版本迭代可能导致的问题。</p>
+<p>目前Go的泛型仍在开发过程中，即便在1.17beta到正式版过程中，很多泛型的corner case也正在完善过程中，比如在之前测试中我发现某些代码在beta版本无法正确编译，但是在RC中已可以正确编译。目前的泛型实现未必代表1.18版本中是相同的实现细节，甚至可能在1.18中提供更多的功能。同时，<strong>目前1.17泛型类型是无法在package中导出的</strong>，这导致在1.17版本中它的应用场景大大的受限。如果你仍有计划在某些场景中使用，我仍旧建议单元测试覆盖你使用的场景情况，防止出现版本迭代可能导致的问题。</p>
 </section>
 <footer class=article-footer>
 <section class=article-tags>
