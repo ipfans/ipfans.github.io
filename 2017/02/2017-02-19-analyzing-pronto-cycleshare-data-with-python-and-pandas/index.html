@@ -34,49 +34,15 @@ In [2]:
 <meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
 <script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
 </head>
-<body class=article-page>
+<body class="article-page has-toc">
 <script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
 <div class="container main-container flex
-on-phone--column extended">
-<aside class="sidebar left-sidebar sticky">
-<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box>
-<span class=hamburger-inner></span>
-</span>
-</button>
-<header class=site-info>
-<figure class=site-avatar>
-<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
-</figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
-<ol class=menu id=main-menu>
-<li>
-<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
-<span>Home</span>
+extended">
+<div id=article-toolbar>
+<a href=https://www.4async.com class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg>
+<span>返回</span>
 </a>
-</li>
-<li>
-<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
-<span>About</span>
-</a>
-</li>
-<li>
-<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-<span>Archives</span>
-</a>
-</li>
-<li>
-<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
-<span>Feed</span>
-</a>
-</li>
-<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span>
-</li>
-</ol>
-</aside>
+</div>
 <main class="main full-width">
 <article class=main-article>
 <header class=article-header>
@@ -92,9 +58,12 @@ Translation
 <h2 class=article-title>
 <a href=../../../2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</a>
 </h2>
-<footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<footer class=article-time>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Feb 19, 2017</time>
-</footer></div>
+</div>
+</footer>
+</div>
 </header>
 <section class=article-content>
 <p>这是一篇非常不错的 <a class=link href=https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/ target=_blank rel=noopener>pandas 分析入门文章</a>，在此简单翻译摘录如下。</p>
@@ -136,7 +105,11 @@ by_date <span style=color:#f92672>=</span> trips<span style=color:#f92672>.</spa
 fig<span style=color:#f92672>.</span>subplots_adjust(hspace<span style=color:#f92672>=</span><span style=color:#ae81ff>0.4</span>)
 by_date<span style=color:#f92672>.</span>iloc[:, <span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>plot(ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>0</span>], title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Annual Members&#39;</span>);
 by_date<span style=color:#f92672>.</span>iloc[:, <span style=color:#ae81ff>1</span>]<span style=color:#f92672>.</span>plot(ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>1</span>], title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Day-Pass Users&#39;</span>);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvpy4sgpyj20pu0ebjuf alt></p>
+</code></pre></div><p><figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvpy4sgpyj20pu0ebjuf>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvpy4sgpyj20pu0ebjuf loading=lazy>
+</a>
+</figure></p>
 <p>此图显示每日趋势，以年费用户（上图）和临时用户（下图）分隔。 根据图标，我们可以获得几个结论：</p>
 <ul>
 <li>4 月份短期使用的临时用户大幅增加可能是由于 <a class=link href=http://www.planetizen.com/node/75958/seattle-sets-bikeshare-record-apa-town target=_blank rel=noopener>美国规划协会全国会议</a> 在西雅图市中心举行。 其他一个比较接近的时间是 7 月 4 日周末。</li>
@@ -154,7 +127,11 @@ by_weekday<span style=color:#f92672>.</span>loc[<span style=color:#ae81ff>2014</
 by_weekday<span style=color:#f92672>.</span>loc[<span style=color:#ae81ff>2015</span>]<span style=color:#f92672>.</span>plot(title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Average Use by Day of Week (2015)&#39;</span>, ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>1</span>]);
 <span style=color:#66d9ef>for</span> axi <span style=color:#f92672>in</span> ax:
     axi<span style=color:#f92672>.</span>set_xticklabels([<span style=color:#e6db74>&#39;Mon&#39;</span>, <span style=color:#e6db74>&#39;Tues&#39;</span>, <span style=color:#e6db74>&#39;Wed&#39;</span>, <span style=color:#e6db74>&#39;Thurs&#39;</span>, <span style=color:#e6db74>&#39;Fri&#39;</span>, <span style=color:#e6db74>&#39;Sat&#39;</span>, <span style=color:#e6db74>&#39;Sun&#39;</span>])
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtq0o8jaj20q20aimxv alt></p>
+</code></pre></div><p><figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtq0o8jaj20q20aimxv>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtq0o8jaj20q20aimxv loading=lazy>
+</a>
+</figure></p>
 <p>我们看到了一个互补的模式：年费用户倾向于工作日使用他们的自行车（即作为通勤的一部分），而临时用户倾向于在周末使用他们的自行车。这种模式甚至在 2015 年年初都没有特别的体现出来，尤其是年费用户：似乎在头几个月，用户还没有使用 Pronto 的通勤习惯。</p>
 <p>查看平日和周末的平均每小时骑行也很有趣。这需要一些操作：</p>
 <p>In [8]:</p>
@@ -176,7 +153,11 @@ by_hour<span style=color:#f92672>.</span>columns<span style=color:#f92672>.</spa
 by_hour<span style=color:#f92672>.</span>loc[<span style=color:#e6db74>&#39;weekday&#39;</span>]<span style=color:#f92672>.</span>plot(title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Average Hourly Use (Mon-Fri)&#39;</span>, ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>0</span>])
 by_hour<span style=color:#f92672>.</span>loc[<span style=color:#e6db74>&#39;weekend&#39;</span>]<span style=color:#f92672>.</span>plot(title<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Average Hourly Use (Sat-Sun)&#39;</span>, ax<span style=color:#f92672>=</span>ax[<span style=color:#ae81ff>1</span>])
 ax[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>set_ylabel(<span style=color:#e6db74>&#39;Average Trips per Hour&#39;</span>);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtx6xmpqj20q30axgmm alt></p>
+</code></pre></div><p><figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtx6xmpqj20q30axgmm>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvtx6xmpqj20q30axgmm loading=lazy>
+</a>
+</figure></p>
 <p>我们看到一个 “通勤” 模式和一个 “娱乐” 模式之间的明显区别:“通勤” 模式在早上和晚上急剧上升，而 “娱乐” 模式在下午的时候有一个宽峰。 有趣的是，年费会员在周末的行为似乎与临时用户在周末的行为几乎相同。</p>
 <h2 id=旅行时间>旅行时间</h2>
 <p>接下来，我们来看看旅行的持续时间。 Pronto 免费骑行最长可达 30 分钟; 任何长于此的单次使用，在前半个小时都会产生几美元的使用费，此后每小时大约需要十美元。</p>
@@ -192,7 +173,11 @@ plt<span style=color:#f92672>.</span>text(<span style=color:#ae81ff>34</span>, <
 plt<span style=color:#f92672>.</span>legend([<span style=color:#e6db74>&#39;Annual Members&#39;</span>, <span style=color:#e6db74>&#39;Short-term Pass&#39;</span>])
 
 plt<span style=color:#f92672>.</span>axvline(<span style=color:#ae81ff>30</span>, linestyle<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;--&#39;</span>, color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;red&#39;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.3</span>);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvu4jj5p0j20e20a5aab alt></p>
+</code></pre></div><p><figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvu4jj5p0j20e20a5aab>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvu4jj5p0j20e20a5aab loading=lazy>
+</a>
+</figure></p>
 <p>在这里，我添加了一个红色的虚线，分开免费骑乘（左）和付费骑乘（右）。看来，年费用户对系统规则更加了解：只有行程分布的一小部分超过 30 分钟。另一方面，大约四分之一的临时用户时间超过半小时限制，并收取额外费用。 我的预期是，这些临时用户不能很好理解这种定价结构，并且可能会因为不开心的体验不再使用。</p>
 <h2 id=估计行程距离>估计行程距离</h2>
 <p>看看旅行的距离也十分有趣。Pronto 发布的数据中不包括行车的距离，因此我们需要通过其他来源来确定。让我们从加载行车数据开始 - 因为一些行程在 Pronto 的服务点之间开始和结束，我们将其添加为一个 “车站”：</p>
@@ -274,7 +259,11 @@ plt<span style=color:#f92672>.</span>xlabel(<span style=color:#e6db74>&#39;Dista
 plt<span style=color:#f92672>.</span>ylabel(<span style=color:#e6db74>&#39;relative frequency&#39;</span>)
 plt<span style=color:#f92672>.</span>title(<span style=color:#e6db74>&#39;Minimum Distance of Trip&#39;</span>)
 plt<span style=color:#f92672>.</span>legend([<span style=color:#e6db74>&#39;Annual Members&#39;</span>, <span style=color:#e6db74>&#39;Short-term Pass&#39;</span>]);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuk9mwpzj20ke07tjrm alt></p>
+</code></pre></div><p><figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuk9mwpzj20ke07tjrm>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuk9mwpzj20ke07tjrm loading=lazy>
+</a>
+</figure></p>
 <p>请记住，这显示站点之间的最短可能距离，是每次行程上实际距离的下限。许多旅行（特别是临时用户）在几个街区内开始和结束。除此之外，旅行高峰一般在大约 1 英里左右，也有一些用户将他们的旅行距离扩展到四英里或更长的距离。</p>
 <h2 id=骑手速度>骑手速度</h2>
 <p>给定这些距离，我们还可以计算估计骑行速度的下限。 让我们这样做，然后看看年费用户和临时用户的速度分布：</p>
@@ -285,7 +274,11 @@ plt<span style=color:#f92672>.</span>xlabel(<span style=color:#e6db74>&#39;lower
 plt<span style=color:#f92672>.</span>ylabel(<span style=color:#e6db74>&#39;relative frequency&#39;</span>)
 plt<span style=color:#f92672>.</span>title(<span style=color:#e6db74>&#39;Rider Speed Lower Bound (MPH)&#39;</span>)
 plt<span style=color:#f92672>.</span>legend([<span style=color:#e6db74>&#39;Annual Members&#39;</span>, <span style=color:#e6db74>&#39;Short-term Pass&#39;</span>]);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuq6y9e5j20dw0a5dg1 alt></p>
+</code></pre></div><p><figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuq6y9e5j20dw0a5dg1>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvuq6y9e5j20dw0a5dg1 loading=lazy>
+</a>
+</figure></p>
 <p>有趣的是，分布是完全不同的，年费用户的速度平均值更高一些。你可能会想到这里的结论，年费用户的速度比临时用户更高，但数据本身不足以支持这一结论。如果年费用户倾向于通过最直接的路线从点 A 去往点 B，那么这些数据也可以被解释，而临时用户倾向于绕行并间接到达他们的目的地。我怀疑现实是这两种效应的混合。</p>
 <p>还要看看距离和速度之间的关系：</p>
 <p>In [17]:</p>
@@ -301,7 +294,11 @@ g<span style=color:#f92672>.</span>axes[<span style=color:#ae81ff>0</span>, <spa
     ax<span style=color:#f92672>.</span>text(<span style=color:#ae81ff>9.8</span>, <span style=color:#ae81ff>16.5</span>,<span style=color:#e6db74>&#34;Free Trips</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>Additional Fee&#34;</span>, ha<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;right&#39;</span>,
             size<span style=color:#f92672>=</span><span style=color:#ae81ff>18</span>, rotation<span style=color:#f92672>=</span><span style=color:#ae81ff>39</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.5</span>, color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;red&#39;</span>)
     ax<span style=color:#f92672>.</span>axis([<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>10</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>25</span>])
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvut21qj5j20no0butca alt></p>
+</code></pre></div><p><figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvut21qj5j20no0butca>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvut21qj5j20no0butca loading=lazy>
+</a>
+</figure></p>
 <p>总的来说，我们看到较长的路途速度更快 - 虽然这受到与上述相同的下限影响。如上所述，作为参考，我绘制了需要的红线用于区分额外费用（低于红线）和免费费用（红线以上）。我们再次看到，年度会员对于不超过半小时的限制比每天通过用户更加精明 - 点的分布的指向了用户注意了他们使用的时间，以避免额外的费用。</p>
 <h2 id=海拔高度>海拔高度</h2>
 <p>在西雅图自行车分享服务的可行性的一个焦点是，西雅图是一个丘陵城市。在服务发布之前，一些分析师预测，西雅图会有源源不断的自行车上坡下坡，所以并不适合分享单车系统的落地。</p>
@@ -366,7 +363,11 @@ g<span style=color:#f92672>.</span>fig<span style=color:#f92672>.</span>set_figw
     <span style=color:#66d9ef>for</span> ax <span style=color:#f92672>in</span> g<span style=color:#f92672>.</span>axes<span style=color:#f92672>.</span>flat:
         ax<span style=color:#f92672>.</span>fill(x, <span style=color:#ae81ff>100</span> <span style=color:#f92672>*</span> (lim <span style=color:#f92672>-</span> abs(x)),
                 color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;gray&#39;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.1</span>, zorder<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>)
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwev74fzj20su0a2mxj alt></p>
+</code></pre></div><p><figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwev74fzj20su0a2mxj>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwev74fzj20su0a2mxj loading=lazy>
+</a>
+</figure></p>
 <p>我们在背景中绘制了一些阴影以帮助引导分析。 年度会员和临时用户之间有很大的区别：年费用户非常明显的表示出偏好下坡行程（左侧的分布），而临时用户表现并不明显，而是表示喜欢骑乘开始并在相同高度结束。</p>
 <p>为了使海拔数据变化的影响更加明显，我们做一些计算：</p>
 <p>In [23]:</p>
@@ -431,8 +432,16 @@ g<span style=color:#f92672>.</span>axes[<span style=color:#ae81ff>0</span>, <spa
 g<span style=color:#f92672>.</span>axes[<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>]<span style=color:#f92672>.</span>text(<span style=color:#ae81ff>0.95</span>, <span style=color:#ae81ff>0.95</span>,<span style=color:#e6db74>&#39;Saturday - Sunday&#39;</span>, ha<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;right&#39;</span>, va<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;top&#39;</span>, size<span style=color:#f92672>=</span><span style=color:#ae81ff>14</span>,
                   transform<span style=color:#f92672>=</span>g<span style=color:#f92672>.</span>axes[<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>]<span style=color:#f92672>.</span>transAxes)
 g<span style=color:#f92672>.</span>fig<span style=color:#f92672>.</span>text(<span style=color:#ae81ff>0.45</span>, <span style=color:#ae81ff>1</span>,<span style=color:#e6db74>&#34;Trend With Precipitation&#34;</span>, ha<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;center&#39;</span>, va<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;top&#39;</span>, size<span style=color:#f92672>=</span><span style=color:#ae81ff>16</span>);
-</code></pre></div><p><img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqa1v43j20rp0c4wg6 alt>
-<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqr99vcj20rj0c440e alt></p>
+</code></pre></div><p><figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqa1v43j20rp0c4wg6>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqa1v43j20rp0c4wg6 loading=lazy>
+</a>
+</figure>
+<figure>
+<a href=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqr99vcj20rj0c440e>
+<img src=http://ww1.sinaimg.cn/large/69e37fdbgy1fcvwqr99vcj20rj0c440e loading=lazy>
+</a>
+</figure></p>
 <p>对于天气的影响，我们可以看出明显的趋势：人们更喜欢温暖、阳光明媚的天气。但是也有一些有趣的细节：工作日期间，所有的用户都受到天气的影响。然而周末年费用户受影响更少。我没有什么好的理论说明为什么有这种趋势，如果你有好的想法，欢迎提供。</p>
 <h2 id=总结>总结</h2>
 <p>根据上面的一些系列分析，但是我想我们可以从这些数据中获得一些结论：</p>
@@ -494,14 +503,12 @@ g<span style=color:#f92672>.</span>fig<span style=color:#f92672>.</span>text(<sp
 </div>
 </div>
 </aside>
+<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
 <div class=disqus-container>
 <div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
 <noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
 </div>
-<style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style>
-<script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script>
 <footer class=site-footer>
 <section class=copyright>
 &copy;
@@ -510,7 +517,7 @@ g<span style=color:#f92672>.</span>fig<span style=color:#f92672>.</span>text(<sp
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>
@@ -550,6 +557,27 @@ Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=
 </div>
 </div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
 </main>
+<aside class="sidebar right-sidebar sticky">
+<section class="widget archives">
+<div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg>
+</div>
+<h2 class="widget-title section-title">目录</h2>
+<div class=widget--toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#下载-pronto-的数据>下载 Pronto 的数据</a></li>
+<li><a href=#探索时间与行程的关系>探索时间与行程的关系</a></li>
+<li><a href=#旅行时间>旅行时间</a></li>
+<li><a href=#估计行程距离>估计行程距离</a></li>
+<li><a href=#骑手速度>骑手速度</a></li>
+<li><a href=#海拔高度>海拔高度</a></li>
+<li><a href=#天气>天气</a></li>
+<li><a href=#总结>总结</a></li>
+</ul>
+</nav>
+</div>
+</section>
+</aside>
 </div>
 <script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
 <script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>

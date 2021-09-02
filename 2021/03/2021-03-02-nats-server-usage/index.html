@@ -5,12 +5,13 @@
 NATS Streaming Server NATS Streaming Server（或者叫stan）是用于尝试解决上面提到的nats的已存在问题的。stan添加了持久化功能和消息送达策略支持。stan中自带了nats服务端，但是在使用过程中，nats和stan不能进行混用。在官方文档中，是这么描述stan和nats之间的关系的：
  NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。
  stan的具体架构如下图：
+ 
 但是stan虽然提供了持久化和消息传递策略支持，但是在架构设计上却出现了问题，导致在最开始设计时遗留了很多问题，比如当你确定stan集群是固定的不能无限制水平扩容(#999)，比如不支持多租户功能(#1122)，比如客户端无法主动拉取消息只能被推送等等
 NATS JetStream NATS JetStream（或者叫JetStream）是NATS基于Raft算法实现的最新的架构设计尝试解决上述问题的新方案。在区别于原有的stan功能上，提供了新的持久化功能和消息送达策略，同时支持水平扩容。同时，新的JetStream也为大消息做了一些优化，不再将这特性功能作为nats的客户端存在而是嵌入NATS Server中作为其中的一个功能存在。也就是说，如果在对这几项技术进行选择时，JetStream应该是最应该被选择的方案。更多详细情况具体可以查看官方的指导文档。
 NATS JetStream使用 理论介绍过了，接下来说说实际使用的事情。现在JetStream还是RC阶段，
 编译和启动客户端 下载nats-server源码，解压之后执行：
 cd nats-server-master go build -o nats-server -ldflags=&amp;quot;-s -w -buildid=&amp;quot; . ./nats-server -js 这样就可以启动一个支持JetStream功能的服务端了。
-[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02.605238 [INF] Git: [not set] [54738] 2021/03/02 18:27:02."><title>NATS-Server(JetStream)和NATS Streaming Server对比</title>
+[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02."><title>NATS-Server(JetStream)和NATS Streaming Server对比</title>
 <link rel=canonical href=https://www.4async.com/2021/03/2021-03-02-nats-server-usage/>
 <link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="NATS-Server(JetStream)和NATS Streaming Server对比">
 <meta property="og:description" content="在我吐槽了无数次之后，NATS JetStream终于结束了beta阶段正式进入RC阶段。终于官方也在最近刚刚正式回复了我正式版本在处理几个问题之后就会正式发布。那么在这个比较重要的NATS-Server特性发布之际聊一下NATS产品本身区别和新特性的使用，还有更多的潜在的区别。
@@ -18,12 +19,13 @@ cd nats-server-master go build -o nats-server -ldflags=&amp;quot;-s -w -buildid=
 NATS Streaming Server NATS Streaming Server（或者叫stan）是用于尝试解决上面提到的nats的已存在问题的。stan添加了持久化功能和消息送达策略支持。stan中自带了nats服务端，但是在使用过程中，nats和stan不能进行混用。在官方文档中，是这么描述stan和nats之间的关系的：
  NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。
  stan的具体架构如下图：
+ 
 但是stan虽然提供了持久化和消息传递策略支持，但是在架构设计上却出现了问题，导致在最开始设计时遗留了很多问题，比如当你确定stan集群是固定的不能无限制水平扩容(#999)，比如不支持多租户功能(#1122)，比如客户端无法主动拉取消息只能被推送等等
 NATS JetStream NATS JetStream（或者叫JetStream）是NATS基于Raft算法实现的最新的架构设计尝试解决上述问题的新方案。在区别于原有的stan功能上，提供了新的持久化功能和消息送达策略，同时支持水平扩容。同时，新的JetStream也为大消息做了一些优化，不再将这特性功能作为nats的客户端存在而是嵌入NATS Server中作为其中的一个功能存在。也就是说，如果在对这几项技术进行选择时，JetStream应该是最应该被选择的方案。更多详细情况具体可以查看官方的指导文档。
 NATS JetStream使用 理论介绍过了，接下来说说实际使用的事情。现在JetStream还是RC阶段，
 编译和启动客户端 下载nats-server源码，解压之后执行：
 cd nats-server-master go build -o nats-server -ldflags=&amp;quot;-s -w -buildid=&amp;quot; . ./nats-server -js 这样就可以启动一个支持JetStream功能的服务端了。
-[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02.605238 [INF] Git: [not set] [54738] 2021/03/02 18:27:02.">
+[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02.">
 <meta property="og:url" content="https://www.4async.com/2021/03/2021-03-02-nats-server-usage/">
 <meta property="og:site_name" content="ipfans's Blog">
 <meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="NATS"><meta property="article:tag" content="JetStream"><meta property="article:published_time" content="2021-03-02T18:38:00+00:00"><meta property="article:modified_time" content="2021-03-02T18:38:00+00:00"><meta property="og:image" content="https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg">
@@ -34,58 +36,25 @@ cd nats-server-master go build -o nats-server -ldflags=&amp;quot;-s -w -buildid=
 NATS Streaming Server NATS Streaming Server（或者叫stan）是用于尝试解决上面提到的nats的已存在问题的。stan添加了持久化功能和消息送达策略支持。stan中自带了nats服务端，但是在使用过程中，nats和stan不能进行混用。在官方文档中，是这么描述stan和nats之间的关系的：
  NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。
  stan的具体架构如下图：
+ 
 但是stan虽然提供了持久化和消息传递策略支持，但是在架构设计上却出现了问题，导致在最开始设计时遗留了很多问题，比如当你确定stan集群是固定的不能无限制水平扩容(#999)，比如不支持多租户功能(#1122)，比如客户端无法主动拉取消息只能被推送等等
 NATS JetStream NATS JetStream（或者叫JetStream）是NATS基于Raft算法实现的最新的架构设计尝试解决上述问题的新方案。在区别于原有的stan功能上，提供了新的持久化功能和消息送达策略，同时支持水平扩容。同时，新的JetStream也为大消息做了一些优化，不再将这特性功能作为nats的客户端存在而是嵌入NATS Server中作为其中的一个功能存在。也就是说，如果在对这几项技术进行选择时，JetStream应该是最应该被选择的方案。更多详细情况具体可以查看官方的指导文档。
 NATS JetStream使用 理论介绍过了，接下来说说实际使用的事情。现在JetStream还是RC阶段，
 编译和启动客户端 下载nats-server源码，解压之后执行：
 cd nats-server-master go build -o nats-server -ldflags=&amp;quot;-s -w -buildid=&amp;quot; . ./nats-server -js 这样就可以启动一个支持JetStream功能的服务端了。
-[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02.605238 [INF] Git: [not set] [54738] 2021/03/02 18:27:02."><meta name=twitter:card content="summary">
+[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02."><meta name=twitter:card content="summary">
 <meta name=twitter:image content="https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg">
 <script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
 </head>
-<body class=article-page>
+<body class="article-page has-toc">
 <script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
 <div class="container main-container flex
-on-phone--column extended">
-<aside class="sidebar left-sidebar sticky">
-<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box>
-<span class=hamburger-inner></span>
-</span>
-</button>
-<header class=site-info>
-<figure class=site-avatar>
-<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
-</figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
-<ol class=menu id=main-menu>
-<li>
-<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
-<span>Home</span>
+extended">
+<div id=article-toolbar>
+<a href=https://www.4async.com class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg>
+<span>返回</span>
 </a>
-</li>
-<li>
-<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
-<span>About</span>
-</a>
-</li>
-<li>
-<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-<span>Archives</span>
-</a>
-</li>
-<li>
-<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
-<span>Feed</span>
-</a>
-</li>
-<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span>
-</li>
-</ol>
-</aside>
+</div>
 <main class="main full-width">
 <article class="has-image main-article">
 <header class=article-header>
@@ -106,9 +75,12 @@ Golang
 <h2 class=article-title>
 <a href=../../../2021/03/2021-03-02-nats-server-usage/>NATS-Server(JetStream)和NATS Streaming Server对比</a>
 </h2>
-<footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<footer class=article-time>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Mar 02, 2021</time>
-</footer></div>
+</div>
+</footer>
+</div>
 </header>
 <section class=article-content>
 <p>在我吐槽了无数次之后，<code>NATS JetStream</code>终于结束了beta阶段正式进入RC阶段。终于官方也在最近刚刚正式回复了我正式版本在处理几个问题之后就会正式发布。那么在这个比较重要的<code>NATS-Server</code>特性发布之际聊一下NATS产品本身区别和新特性的使用，还有更多的潜在的区别。</p>
@@ -121,7 +93,11 @@ Golang
 <p>NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。</p>
 </blockquote>
 <p><code>stan</code>的具体架构如下图：</p>
-<p><img src=https://i.loli.net/2021/03/02/YsSxFitoJV7jwC9.jpg alt></p>
+<p><figure>
+<a href=https://i.loli.net/2021/03/02/YsSxFitoJV7jwC9.jpg>
+<img src=https://i.loli.net/2021/03/02/YsSxFitoJV7jwC9.jpg loading=lazy>
+</a>
+</figure></p>
 <p>但是<code>stan</code>虽然提供了持久化和消息传递策略支持，但是在架构设计上却出现了问题，导致在最开始设计时遗留了很多问题，比如当你确定<code>stan</code>集群是固定的不能无限制水平扩容(<a class=link href=https://github.com/nats-io/nats-streaming-server/issues/999 target=_blank rel=noopener>#999</a>)，比如不支持多租户功能(<a class=link href=https://github.com/nats-io/nats-streaming-server/issues/1122 target=_blank rel=noopener>#1122</a>)，比如客户端无法主动拉取消息只能被推送等等</p>
 <h3 id=nats-jetstream>NATS JetStream</h3>
 <p><code>NATS JetStream</code>（或者叫<code>JetStream</code>）是NATS基于<code>Raft</code>算法实现的最新的架构设计尝试解决上述问题的新方案。在区别于原有的<code>stan</code>功能上，提供了新的持久化功能和消息送达策略，同时支持水平扩容。同时，新的<code>JetStream</code>也为大消息做了一些优化，不再将这特性功能作为<code>nats</code>的客户端存在而是嵌入<code>NATS Server</code>中作为其中的一个功能存在。也就是说，如果在对这几项技术进行选择时，<code>JetStream</code>应该是最应该被选择的方案。更多详细情况具体可以查看官方的<a class=link href=https://github.com/nats-io/jetstream target=_blank rel=noopener>指导文档</a>。</p>
@@ -273,14 +249,12 @@ go build -o nats-server -ldflags=&quot;-s -w -buildid=&quot; .
 </div>
 </div>
 </aside>
+<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
 <div class=disqus-container>
 <div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
 <noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
 </div>
-<style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style>
-<script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script>
 <footer class=site-footer>
 <section class=copyright>
 &copy;
@@ -289,7 +263,7 @@ go build -o nats-server -ldflags=&quot;-s -w -buildid=&quot; .
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>
@@ -329,6 +303,32 @@ Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=
 </div>
 </div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
 </main>
+<aside class="sidebar right-sidebar sticky">
+<section class="widget archives">
+<div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg>
+</div>
+<h2 class="widget-title section-title">目录</h2>
+<div class=widget--toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#概念区分nats-server--nats-streaming-server--nats-jetstream>概念区分：NATS-Server / NATS Streaming Server / NATS JetStream</a>
+<ul>
+<li><a href=#nats-server>NATS-Server</a></li>
+<li><a href=#nats-streaming-server>NATS Streaming Server</a></li>
+<li><a href=#nats-jetstream>NATS JetStream</a></li>
+</ul>
+</li>
+<li><a href=#nats-jetstream使用>NATS JetStream使用</a>
+<ul>
+<li><a href=#编译和启动客户端>编译和启动客户端</a></li>
+<li><a href=#编写jetstream-demo>编写JetStream DEMO</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</section>
+</aside>
 </div>
 <script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
 <script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>

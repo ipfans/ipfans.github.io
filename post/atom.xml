@@ -17,8 +17,10 @@ Web应用面临的最大挑战不是变成了一个无法维护的屎山，而�
 在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。
 相比之下，松耦合应用保持了清晰的边界。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？
 微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了分布式单体的陷阱，处理和之前相同的问题，而且还增加了网络开销。
+从强耦合单体应用到分布式单体
 ❌ 反模式：分布式单体 在你了解边界之前，不要将你的应用切分成为微服务。
 微服务并不会降低耦合，因为拆分服务的次数并不重要。重要的是如何连接各个服务。
+从模块化单体应用到松耦合微服务
 ✅ 策略：松耦合 以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。
 DRY引入了耦合 强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。
 简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：
@@ -36,7 +38,8 @@ type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement
 近年来，很多系统使用事件通过事件存储数据库或者使用特定方式使用常规数据库构建了状态和信息传播的模块。然而，大多数方法仍然依赖于通过SQL数据库、文档数据库或者其他技术实现严格意义上的当前时间点信息的视图。
 对很多系统而言，特别是对于非小型系统而言，随着系统复杂性的增加，变更成本将会随着时间的推移难度指数级上升。与现有的设计和建模方式对比，事件建模可以在短时间内创建一个基础蓝图，将返工工作量降到最低。
 从过去谈起 讲故事自古以来就是人类能够将知识传递给后代的方法，它在很大程度上依赖于我们如何存储记忆-无论是逻辑的、视觉的、听觉的还是其他的。这一点很重要，因为这与信息系统的构建方式有相似之处。 用具体的例子说明某物应该如何工作是一种常见的方式。这种方式可以在软件开发的成功实践中看到，如行为驱动开发。这种方式很有效，因为我们通过故事来沟通更有效。将它和讲故事联系在一起，是一种保持社会信息的方式。我们的大脑是为它而建的，而不是为流程图和其他格式而建的。 而事件建模模型就是遵循这种讲故事模式而建立的产品建模方式。
-事件建模模式 时间线是最好描述故事主线的方式，对我们的系统而言，时间线也是描述我们系统核心部分概念的重要组成部分。我们可以通过在一条时间线上，系统从开始到结束，在没有分支情况下应该做什么方式展示我们系统的一部分功能。这就是一个典型的事件模型的组成。我们可以用这种方式跟踪所有UI界面中字段值如何存储和如何展示的。比如在上面的示例图中，我们使用了3种不同模块的内容和传统的线框模型就展示了整个系统的模型。但是简单性是我们重要的一个目标，因此我们只依赖于4种模式构建这种模型图。
+事件建模模式
+时间线是最好描述故事主线的方式，对我们的系统而言，时间线也是描述我们系统核心部分概念的重要组成部分。我们可以通过在一条时间线上，系统从开始到结束，在没有分支情况下应该做什么方式展示我们系统的一部分功能。这就是一个典型的事件模型的组成。我们可以用这种方式跟踪所有UI界面中字段值如何存储和如何展示的。比如在上面的示例图中，我们使用了3种不同模块的内容和传统的线框模型就展示了整个系统的模型。但是简单性是我们重要的一个目标，因此我们只依赖于4种模式构建这种模型图。
 保持简单性 当我们想采用某些做法或流程来帮助彼此理解和沟通时，它与个人为熟练掌握这些方法而进行的学习量成反比。换句话说，如果我们可以更快的掌握一个名叫X的方法时，我们就可以更好的通过这种方式进行知识分享和互动；反之，无论这种方法多么好，昂贵的学习成本总会搞砸一切。
 当一本书是团队中的必读书目时，每个人都会说他们读过；但事实上只有一半的人会真正读过；这些真正读过的人中一半的人会声称他们理解了这本书；而这些声称理解的人中只有一半的人真正的理解了这本书；而这些真正理解了这本书的人只有一半的人能够使用它。
 这就是为什么使用3个模块和基于2个想法的4种模式进行事件建模。因为这只需要几分钟就可以将所有的东西向所有人解释清楚。其他的学习则可以在实践中进行。即便理解出现了不足和错误，也可以很快在实践中得到纠正。
@@ -59,8 +62,7 @@ Then：一个房间被预订了
 Given：酒店设置了12间海景房，海景房从4月4日到12日被预订
 Then：日历上应该显示除4月4日到12日以外的所有海景房的日期
 从上面图中我们也可以注意到，所有的读都是用绿色进行标记的。
-集成 我们刚刚介绍了描述大多数系统所需的 4 种模式中的前 2 种模式。 系统可以从其他系统获取信息并且将信息发送到其他系统。 强迫这 2 个模式成为前 2 个模式的扩展并共享相同的空间是很诱人的选择。 然而这会让交流变得更加困难，因为它们没有人类可见的方面，并且需要一些更高级别的模式。
-翻译 当我们有一个为我们提供信息的外部系统时，将这些信息转换成我们自己系统中的更熟悉的形式会很有帮助。 在我们的酒店系统中，如果选择让我们的清洁人员反应更加灵敏，我们可以从客人的 GPS 坐标中获取事件。 我们不想使用经度和纬度对作为事件来指定我们系统中的先决条件。 我们宁愿选择对我们有意义的活动，例如“客人离开酒店”、“客人回到酒店房间”。</description></item><item><title>构建属于你自己的dapr绑定组件</title><link>https://www.4async.com/2021/05/building-your-own-dapr-binding/</link><pubDate>Sat, 15 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-binding/</guid><description>在上一篇文章中，吐槽了拖延症的危害，因此这次我来分享一下我最新推送到dapr的最新的一个新的绑定组件，通过这个来看一下如何实现自己的绑定组件。
+集成 我们刚刚介绍了描述大多数系统所需的 4 种模式中的前 2 种模式。 系统可以从其他系统获取信息并且将信息发送到其他系统。 强迫这 2 个模式成为前 2 个模式的扩展并共享相同的空间是很诱人的选择。 然而这会让交流变得更加困难，因为它们没有人类可见的方面，并且需要一些更高级别的模式。</description></item><item><title>构建属于你自己的dapr绑定组件</title><link>https://www.4async.com/2021/05/building-your-own-dapr-binding/</link><pubDate>Sat, 15 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-binding/</guid><description>在上一篇文章中，吐槽了拖延症的危害，因此这次我来分享一下我最新推送到dapr的最新的一个新的绑定组件，通过这个来看一下如何实现自己的绑定组件。
 文中提到的PR可以在 dapr/components-contrib#872 查看对应的具体代码。
 什么是 dapr 的绑定组件？ 在dapr中，绑定是用于使用外部系统功能（比如事件或者接口）的扩展组件。它的优势在于：
 免除连接到消息传递系统(如队列和消息总线)并进行轮询的复杂性； 聚焦于业务逻辑，而不是如何与系统交互的实现细节； 使代码不受 SDK 或库的跟踪； 处理重试和故障恢复； 在运行时在绑定之间切换； 构建具有特定于环境的绑定的可移植应用程序，不需要进行代码更改； 在官方文档中，也提到了一个具体的例子：以twilio发送短信为例，一般开发过程中应用程序需要依赖Twilio SDK才可以实现功能，但是借助绑定组件，你可以将SDK的绑定转移至dapr程序领域内，在本身应用程序中不再绑定对应的SDK，不用担心未来SDK过期或者变更带来的重复工作（仅需要更新dapr即可）。
@@ -75,11 +77,10 @@ type InputBinding interface { Init(metadata Metadata) error Read(handler func(*R
 type ( // NameResolution is a name resolution component definition. NameResolution struct { Name string FactoryMethod func() nr.Resolver } // Registry handles registering and creating name resolution components. Registry interface { Register(components ...NameResolution) Create(name, version string) (nr.Resolver, error) } nameResolutionRegistry struct { resolvers map[string]func() nr.Resolver } ) 其中真正的服务解析则是依靠 components-contrib 中实现了 Resolver 接口的具体实现执行。
 // Resolver is the interface of name resolver.</description></item><item><title>在非容器(集群)环境下运行dapr</title><link>https://www.4async.com/2021/03/2021-03-11-running-dapr-without-container/</link><pubDate>Thu, 11 Mar 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/03/2021-03-11-running-dapr-without-container/</guid><description>前一段时间一直关注的dapr正式发布了v1.0版本(实际上本文发布时还更新了v1.0.1)，代表dapr在某些程度上进入稳定状态，可以尝试在实际中进行运用。作为我一直关注的项目，在第一时间中进行了尝试，并试图引入实际项目中，本文则是针对这些的一些先期测试内容.
 什么是dapr？ dapr最早是由微软开源的(不愧是你)，一个可移植的、事件驱动的程序运行时，它使任何开发者都能轻松地构建运行在云和边缘的弹性、无状态/有状态的应用程序，并且可以灵活支持多种开发语言。换而言之，在我看来，dapr可以作为一个serverless落地方案看待和处理，对程序而言，只关注提供的store和消息队列接口，无需关心架构层面更多内容。
+overview
 不过在官方的示例教程中，使用的环境为容器环境部署和管理dapr。实际上，除了在容器环境或者容器集群环境下，dapr可以配置为在本地机器上以自托管模式运行。
 本地安装 dapr安装可以通过官方的dapr-cli实现，dapr-cli可以通过一键安装命令快速安装：
-# wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash Your system is linux_amd64 Dapr CLI is detected: main: line 86: 43656 Segmentation fault $DAPR_CLI_FILE --version Reinstalling Dapr CLI - /usr/local/bin/dapr... Getting the latest Dapr CLI... Installing v1.0.0 Dapr CLI... Downloading https://github.com/dapr/cli/releases/download/v1.0.0/dapr_linux_amd64.tar.gz ... dapr installed into /usr/local/bin successfully. CLI version: 1.0.0 Runtime version: n/a To get started with Dapr, please visit https://docs.dapr.io/getting-started/ 可以通过输入dapr命令确认dapr-cli程序是否被正常安装成功。
-接下来使用dapr-cli安装所有的runtime等应用。
-# dapr init --slim ⌛ Making the jump to hyperspace.</description></item><item><title>NATS-Server(JetStream)和NATS Streaming Server对比</title><link>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</link><pubDate>Tue, 02 Mar 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</guid><description>在我吐槽了无数次之后，NATS JetStream终于结束了beta阶段正式进入RC阶段。终于官方也在最近刚刚正式回复了我正式版本在处理几个问题之后就会正式发布。那么在这个比较重要的NATS-Server特性发布之际聊一下NATS产品本身区别和新特性的使用，还有更多的潜在的区别。
+# wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash Your system is linux_amd64 Dapr CLI is detected: main: line 86: 43656 Segmentation fault $DAPR_CLI_FILE --version Reinstalling Dapr CLI - /usr/local/bin/dapr... Getting the latest Dapr CLI... Installing v1.0.0 Dapr CLI... Downloading https://github.com/dapr/cli/releases/download/v1.0.0/dapr_linux_amd64.tar.gz ... dapr installed into /usr/local/bin successfully. CLI version: 1.0.0 Runtime version: n/a To get started with Dapr, please visit https://docs.dapr.io/getting-started/ 可以通过输入dapr命令确认dapr-cli程序是否被正常安装成功。</description></item><item><title>NATS-Server(JetStream)和NATS Streaming Server对比</title><link>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</link><pubDate>Tue, 02 Mar 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</guid><description>在我吐槽了无数次之后，NATS JetStream终于结束了beta阶段正式进入RC阶段。终于官方也在最近刚刚正式回复了我正式版本在处理几个问题之后就会正式发布。那么在这个比较重要的NATS-Server特性发布之际聊一下NATS产品本身区别和新特性的使用，还有更多的潜在的区别。
 概念区分：NATS-Server / NATS Streaming Server / NATS JetStream NATS-Server NATS-Server（或者叫nats）是一个开源的、云原生的、高性能的消息传递系统，是NATS的最基础的产品。它的核心是一个发布/订阅（Pub/Sub）系统，客户端可以在不同集群中的服务间nats进行通讯，而不需要关注具体的消息在哪个服务上。换而言之，客户端可以在任意一个集群的服务端上发布消息，同时在任意集群客户端上尝试读取消息。在官方与其他同类消息队列产品功能对比中，我们也可以管窥一下产品的功能列表。nats支持多流多服务进行pub/sub，负载均衡，保障消息最多/最少一次送达，多租户和用户认证等功能。虽然看上去优点很多，但是nats不是一个应用很广的消息队列的重要原因是，它缺少了一些对消息队列而言很最重要的产品特性，比如持久化支持，比如消息确保一次送达。这意味着当你的消息发送出去之后，你的消息是在处理过程中可能丢失的，甚至是可能送达不到的。
 NATS Streaming Server NATS Streaming Server（或者叫stan）是用于尝试解决上面提到的nats的已存在问题的。stan添加了持久化功能和消息送达策略支持。stan中自带了nats服务端，但是在使用过程中，nats和stan不能进行混用。在官方文档中，是这么描述stan和nats之间的关系的：
 NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。
@@ -89,7 +90,7 @@ NATS JetStream NATS JetStream（或者叫JetStream）是NATS基于Raft算法实�
 NATS JetStream使用 理论介绍过了，接下来说说实际使用的事情。现在JetStream还是RC阶段，
 编译和启动客户端 下载nats-server源码，解压之后执行：
 cd nats-server-master go build -o nats-server -ldflags=&amp;quot;-s -w -buildid=&amp;quot; . ./nats-server -js 这样就可以启动一个支持JetStream功能的服务端了。
-[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02.605238 [INF] Git: [not set] [54738] 2021/03/02 18:27:02.</description></item><item><title>上下文Context与结构体Struct</title><link>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</link><pubDate>Thu, 25 Feb 2021 10:30:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</guid><description>原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
+[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02.</description></item><item><title>上下文Context与结构体Struct</title><link>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</link><pubDate>Thu, 25 Feb 2021 10:30:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</guid><description>原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
 在context的文档中写道。
 上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。 本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。
 倾向于将上下文作为参数传递 为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。

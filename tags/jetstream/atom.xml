@@ -8,4 +8,4 @@ NATS JetStream NATS JetStream（或者叫JetStream）是NATS基于Raft算法实�
 NATS JetStream使用 理论介绍过了，接下来说说实际使用的事情。现在JetStream还是RC阶段，
 编译和启动客户端 下载nats-server源码，解压之后执行：
 cd nats-server-master go build -o nats-server -ldflags=&amp;quot;-s -w -buildid=&amp;quot; . ./nats-server -js 这样就可以启动一个支持JetStream功能的服务端了。
-[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02.605238 [INF] Git: [not set] [54738] 2021/03/02 18:27:02.</description></item></channel></rss>
+[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02.</description></item></channel></rss>

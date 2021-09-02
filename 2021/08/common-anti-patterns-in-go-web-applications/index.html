@@ -11,14 +11,17 @@ Web应用面临的最大挑战不是变成了一个无法维护的屎山，而�
 在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。
 相比之下，松耦合应用保持了清晰的边界。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？
 微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了分布式单体的陷阱，处理和之前相同的问题，而且还增加了网络开销。
+ 从强耦合单体应用到分布式单体 
  ❌ 反模式：分布式单体 在你了解边界之前，不要将你的应用切分成为微服务。
  微服务并不会降低耦合，因为拆分服务的次数并不重要。重要的是如何连接各个服务。
+ 从模块化单体应用到松耦合微服务 
  ✅ 策略：松耦合 以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。
  DRY引入了耦合 强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。
 简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：
  每条知识在系统中都必须有一个单一的、明确的、权威的表述。
  &amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。
 当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。
+ 
 在Go中保持DRY 相比于其他现代语言，Go是清晰的，缺少很多特性，没有太多的语法糖来隐藏复杂性。
 我们习惯了捷径，所以一开始很难接受Go的冗长。就像我们已经开发出一种去寻找一种更加聪明的编写代码的方式的本能。
 最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
@@ -40,14 +43,17 @@ Web应用面临的最大挑战不是变成了一个无法维护的屎山，而�
 在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。
 相比之下，松耦合应用保持了清晰的边界。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？
 微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了分布式单体的陷阱，处理和之前相同的问题，而且还增加了网络开销。
+ 从强耦合单体应用到分布式单体 
  ❌ 反模式：分布式单体 在你了解边界之前，不要将你的应用切分成为微服务。
  微服务并不会降低耦合，因为拆分服务的次数并不重要。重要的是如何连接各个服务。
+ 从模块化单体应用到松耦合微服务 
  ✅ 策略：松耦合 以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。
  DRY引入了耦合 强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。
 简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：
  每条知识在系统中都必须有一个单一的、明确的、权威的表述。
  &amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。
 当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。
+ 
 在Go中保持DRY 相比于其他现代语言，Go是清晰的，缺少很多特性，没有太多的语法糖来隐藏复杂性。
 我们习惯了捷径，所以一开始很难接受Go的冗长。就像我们已经开发出一种去寻找一种更加聪明的编写代码的方式的本能。
 最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
@@ -72,14 +78,17 @@ Web应用面临的最大挑战不是变成了一个无法维护的屎山，而�
 在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。
 相比之下，松耦合应用保持了清晰的边界。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？
 微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了分布式单体的陷阱，处理和之前相同的问题，而且还增加了网络开销。
+ 从强耦合单体应用到分布式单体 
  ❌ 反模式：分布式单体 在你了解边界之前，不要将你的应用切分成为微服务。
  微服务并不会降低耦合，因为拆分服务的次数并不重要。重要的是如何连接各个服务。
+ 从模块化单体应用到松耦合微服务 
  ✅ 策略：松耦合 以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。
  DRY引入了耦合 强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。
 简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：
  每条知识在系统中都必须有一个单一的、明确的、权威的表述。
  &amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。
 当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。
+ 
 在Go中保持DRY 相比于其他现代语言，Go是清晰的，缺少很多特性，没有太多的语法糖来隐藏复杂性。
 我们习惯了捷径，所以一开始很难接受Go的冗长。就像我们已经开发出一种去寻找一种更加聪明的编写代码的方式的本能。
 最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
@@ -91,49 +100,15 @@ type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement
 <meta name=twitter:image content="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg">
 <script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
 </head>
-<body class=article-page>
+<body class="article-page has-toc">
 <script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
 <div class="container main-container flex
-on-phone--column extended">
-<aside class="sidebar left-sidebar sticky">
-<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box>
-<span class=hamburger-inner></span>
-</span>
-</button>
-<header class=site-info>
-<figure class=site-avatar>
-<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
-</figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
-<ol class=menu id=main-menu>
-<li>
-<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
-<span>Home</span>
+extended">
+<div id=article-toolbar>
+<a href=https://www.4async.com class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg>
+<span>返回</span>
 </a>
-</li>
-<li>
-<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
-<span>About</span>
-</a>
-</li>
-<li>
-<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-<span>Archives</span>
-</a>
-</li>
-<li>
-<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
-<span>Feed</span>
-</a>
-</li>
-<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span>
-</li>
-</ol>
-</aside>
+</div>
 <main class="main full-width">
 <article class="has-image main-article">
 <header class=article-header>
@@ -154,9 +129,12 @@ Software Architecture
 <h2 class=article-title>
 <a href=../../../2021/08/common-anti-patterns-in-go-web-applications/>Go Web应用中常见的反模式</a>
 </h2>
-<footer class=article-time><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<footer class=article-time>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Aug 13, 2021</time>
-</footer></div>
+</div>
+</footer>
+</div>
 </header>
 <section class=article-content>
 <blockquote>
@@ -175,13 +153,23 @@ Software Architecture
 <p><strong>在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用</strong>。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。</p>
 <p>相比之下，<strong>松耦合应用保持了清晰的边界</strong>。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？</p>
 <p>微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了<a class=link href=https://threedots.tech/post/microservices-or-monolith-its-detail/ target=_blank rel=noopener>分布式单体</a>的陷阱，处理和之前相同的问题，而且还增加了网络开销。</p>
-<p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/microservices.png alt=从强耦合单体应用到分布式单体></p>
+<p><figure>
+<a href=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/microservices.png>
+<img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/microservices.png loading=lazy alt=从强耦合单体应用到分布式单体>
+</a>
+<figcaption>从强耦合单体应用到分布式单体</figcaption>
+</figure></p>
 <blockquote>
 <p>❌ 反模式：分布式单体 <br>
 在你了解边界之前，不要将你的应用切分成为微服务。</p>
 </blockquote>
 <p>微服务并不会降低耦合，<strong>因为拆分服务的次数并不重要。重要的是如何连接各个服务</strong>。</p>
-<p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/monolith.png alt=从模块化单体应用到松耦合微服务></p>
+<p><figure>
+<a href=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/monolith.png>
+<img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/monolith.png loading=lazy alt=从模块化单体应用到松耦合微服务>
+</a>
+<figcaption>从模块化单体应用到松耦合微服务</figcaption>
+</figure></p>
 <blockquote>
 <p>✅ 策略：松耦合 <br>
 以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。</p>
@@ -194,7 +182,11 @@ Software Architecture
 </blockquote>
 <p>&ldquo;每一条知识"这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。</p>
 <p><strong>当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。</strong></p>
-<p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/coupling.png alt></p>
+<p><figure>
+<a href=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/coupling.png>
+<img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/coupling.png loading=lazy>
+</a>
+</figure></p>
 <h2 id=在go中保持dry>在Go中保持DRY</h2>
 <p>相比于其他现代语言，Go是清晰的，缺少很多特性，没有太多的语法糖来隐藏复杂性。</p>
 <p>我们习惯了捷径，所以一开始很难接受Go的冗长。就像我们已经开发出一种去寻找一种更加聪明的编写代码的方式的本能。</p>
@@ -234,7 +226,11 @@ Software Architecture
 <p>模型越复杂，你面临的问题就越多。</p>
 <p>比如，<code>json</code>标签表示JSON而不是HTTP。但是让你引入同样是格式化到JSON，但是格式与API不同的事件时会发生什么？你需要不停的添加hack让所有功能正常工作。</p>
 <p>最终，你的团队会避免对结构体的修改，因为在你动了结构体之后你无法确定会出现什么样的问题。</p>
-<p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/single-model.png alt></p>
+<p><figure>
+<a href=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/single-model.png>
+<img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/single-model.png loading=lazy>
+</a>
+</figure></p>
 <blockquote>
 <p>❌ 反模式：单一模型 <br>
 不要给一个模型多个责任。 <br>
@@ -289,7 +285,11 @@ Software Architecture
 <p>起初，看上去我们会在所有地方使用相同的<code>User</code>模型。现在，很明显我们过早的避免了重复。API和存储的结构很相似，但足够不同到需要拆分成不同的模型。</p>
 <p>在Web应用中，<strong>你API返回（读模型）与存储在数据库中的视图（写模型）并不相同</strong>。</p>
 <p>存储代码无需知道HTTP的模型，因此我们需要进行结构转换。</p>
-<p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/mapping-models.png alt></p>
+<p><figure>
+<a href=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/mapping-models.png>
+<img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/mapping-models.png loading=lazy>
+</a>
+</figure></p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>userResponseFromDBModel</span>(<span style=color:#a6e22e>u</span> <span style=color:#a6e22e>UserDBModel</span>) <span style=color:#a6e22e>UserResponse</span> {
 	<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>emails</span> []<span style=color:#a6e22e>EmailResponse</span>
 	<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>e</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>u</span>.<span style=color:#a6e22e>Emails</span> {
@@ -469,7 +469,11 @@ Software Architecture
 <p>商业逻辑需要单独的层。更改实现（数据库引擎、HTTP 库、基础架构、Pub/Sub 等）应是可能的，而无需对逻辑部件进行任何更改。</p>
 <p>你做这种分离并不是因为你想要更改数据库引擎，这种情况很少会发生。<strong>但是，关注点的分离可以让你的代码更容易理解和修改。你知道你在修改什么，并且有没有副作用。</strong> 这样就很难在关键部分引入bug。</p>
 <p>要分离应用层，我们需要添加额外的模型和映射。</p>
-<p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/application-layer.png alt></p>
+<p><figure>
+<a href=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/application-layer.png>
+<img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/application-layer.png loading=lazy>
+</a>
+</figure></p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>User</span> <span style=color:#66d9ef>struct</span> {
 	<span style=color:#a6e22e>id</span>        <span style=color:#66d9ef>int</span>
 	<span style=color:#a6e22e>firstName</span> <span style=color:#66d9ef>string</span>
@@ -518,7 +522,11 @@ Software Architecture
 <p>这就是当我需要更新业务逻辑时我需要修改的代码。这明显很无聊，<strong>但是我知道我修改了什么</strong>。</p>
 <p>当我们添加另一个API（比如gRPC）或者外部系统（如Pub/Sub）时，我们需要同样的工作。每个部分都是用单独的模型，我们在应用层映射转换它们。</p>
 <p>因为应用层维护了所有的验证和其他商业逻辑，他会让我们无论是使用HTTP还是gRPC API都没什么区别。API只是应用的入口。</p>
-<p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/more-models.png alt></p>
+<p><figure>
+<a href=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/more-models.png>
+<img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/more-models.png loading=lazy>
+</a>
+</figure></p>
 <blockquote>
 <p>✅ 策略：应用层 <br>
 将产品最重要的代码划分成单独的层。</p>
@@ -640,7 +648,11 @@ Software Architecture
 <h2 id=从数据库schema开始>从数据库Schema开始</h2>
 <p>假设我们需要添加一个用户创建和加入团队的功能。</p>
 <p>按照关系型方法，我们需要添加一个<code>teams</code>表和另外一个将用户和它进行关联的表。我们叫它<code>membership</code>。</p>
-<p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/relational-db.png alt></p>
+<p><figure>
+<a href=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/relational-db.png>
+<img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/relational-db.png loading=lazy>
+</a>
+</figure></p>
 <p>按照关系方法，我们将添加一张桌子和另一张加入它的表格。让我们称之为。teamsusersmembership</p>
 <p>我们已经有了<code>UserStorage</code>，所以很自然的添加两个新的结构体：<code>TeamStorage</code>和<code>MembershipStorage</code>。他们会为每个表格提供CRUD方法。</p>
 <p>添加新团队的代码可能看起来是这个样子的：</p>
@@ -680,7 +692,11 @@ Software Architecture
 }
 </code></pre></div><p>但是，这样的话实现细节（事务处理）就会泄漏到了逻辑层。它通过基于<code>defer</code>的错误处理污染了一个可读的函数。</p>
 <p>下面是一个练习：考虑如何在文档数据库中对此进行建模。比如，我们可以将所有成员保留在团队文档中。</p>
-<p><img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/document-db.png alt></p>
+<p><figure>
+<a href=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/document-db.png>
+<img src=https://threedots.tech/post/common-anti-patterns-in-go-web-applications/document-db.png loading=lazy>
+</a>
+</figure></p>
 <p>在这种情况下，添加成员就可以在<code>TeamStorage</code>中完成，这样我们就不需要单独的<code>MembershipStorage</code>。但是切换数据库就变更了我们模型的假设，这不是很奇怪吗？</p>
 <p>现在很显然，我们通过引入"成员身份"概念泄露了实现细节。&ldquo;创建新成员身份&rdquo;，这只会困扰我们的销售或者客户服务同事。<strong>当你开始说一种不同于公司其他成员的语言时，这通常一个严重的危险信号</strong>。</p>
 <blockquote>
@@ -791,14 +807,12 @@ Software Architecture
 </div>
 </div>
 </aside>
+<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
 <div class=disqus-container>
 <div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//s1mbily.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
 <noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
 </div>
-<style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style>
-<script>window.addEventListener('onColorSchemeChange',a=>{DISQUS&&DISQUS.reset({reload:!0})})</script>
 <footer class=site-footer>
 <section class=copyright>
 &copy;
@@ -807,7 +821,7 @@ Software Architecture
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=2.4.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>
@@ -847,6 +861,32 @@ Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=
 </div>
 </div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
 </main>
+<aside class="sidebar right-sidebar sticky">
+<section class="widget archives">
+<div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg>
+</div>
+<h2 class="widget-title section-title">目录</h2>
+<div class=widget--toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#松耦合是关键>松耦合是关键</a></li>
+<li><a href=#dry引入了耦合>DRY引入了耦合</a></li>
+<li><a href=#在go中保持dry>在Go中保持DRY</a></li>
+<li><a href=#单一数据模型带来的应用耦合>单一数据模型带来的应用耦合</a></li>
+<li><a href=#复制消除耦合>复制消除耦合</a></li>
+<li><a href=#生成模版>生成模版</a></li>
+<li><a href=#不要过度使用库>不要过度使用库</a></li>
+<li><a href=#避免隐式标签名>避免隐式标签名</a></li>
+<li><a href=#将逻辑与实现细节分开>将逻辑与实现细节分开</a></li>
+<li><a href=#标准的go项目结构>标准的Go项目结构</a></li>
+<li><a href=#保持简单化>保持简单化</a></li>
+<li><a href=#从数据库schema开始>从数据库Schema开始</a></li>
+<li><a href=#你的网络应用程序不是单纯的crud>你的网络应用程序不是单纯的CRUD</a></li>
+</ul>
+</nav>
+</div>
+</section>
+</aside>
 </div>
 <script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
 <script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
