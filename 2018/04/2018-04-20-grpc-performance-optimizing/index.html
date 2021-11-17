@@ -39,9 +39,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -84,6 +83,11 @@ Golang
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Apr 20, 2018</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 2 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -94,7 +98,7 @@ Golang
 <h2 id=性能测试>性能测试</h2>
 <p>性能测试采用我们的线上标配，目前由于业务量原因，其实性能并不高，这里只是对比参考，建议你在后续处理过程中自行测试。其实最简单的处理方式就是创建多个gRPC client。</p>
 <p>单Client处理：</p>
-<pre><code>➜  client ./client -n 100000 -c 1
+<pre tabindex=0><code>➜  client ./client -n 100000 -c 1
 2017/08/04 16:49:39 concurrency: 1
 requests per client: 100000
 
@@ -108,7 +112,7 @@ requests per client: 100000
 2017/08/04 16:00:04 mean: 244283 ns, median: 241106 ns, max: 6107692 ns, min: 138633 ns, p99: 678374 ns
 2017/08/04 16:00:04 mean: 0 ms, median: 0 ms, max: 6 ms, min: 0 ms, p99: 0 ms
 </code></pre><p>修改Client数目为10：</p>
-<pre><code>➜  client ./client -n 100000 -c 10
+<pre tabindex=0><code>➜  client ./client -n 100000 -c 10
 2017/08/04 16:02:55 concurrency: 10
 requests per client: 10000
 
@@ -122,7 +126,7 @@ requests per client: 10000
 2017/08/04 16:03:01 mean: 623814 ns, median: 550812 ns, max: 15572759 ns, min: 98979 ns, p99: 5868493 ns
 2017/08/04 16:03:01 mean: 0 ms, median: 0 ms, max: 15 ms, min: 0 ms, p99: 5 ms
 </code></pre><p>修改Client数目为20：</p>
-<pre><code>➜  client ./client -n 100000 -c 20
+<pre tabindex=0><code>➜  client ./client -n 100000 -c 20
 2017/08/04 16:03:48 concurrency: 20
 requests per client: 5000
 
@@ -136,7 +140,7 @@ requests per client: 5000
 2017/08/04 16:03:54 mean: 1277405 ns, median: 1132744 ns, max: 16286260 ns, min: 99258 ns, p99: 8126886 ns
 2017/08/04 16:03:54 mean: 1 ms, median: 1 ms, max: 16 ms, min: 0 ms, p99: 8 ms
 </code></pre><p>修改Client数目为15：</p>
-<pre><code>➜  client ./client -n 100000 -c 15
+<pre tabindex=0><code>➜  client ./client -n 100000 -c 15
 2017/08/04 16:06:57 concurrency: 15
 requests per client: 6666
 
@@ -229,7 +233,7 @@ requests per client: 6666
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

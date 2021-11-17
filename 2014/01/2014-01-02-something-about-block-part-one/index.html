@@ -48,9 +48,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -88,6 +87,11 @@ on-phone--column extended">
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Jan 02, 2014</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 2 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -111,7 +115,7 @@ on-phone--column extended">
 </ol>
 <p>具体的实现代码可以参考 llvm 的 <a class=link href=https://llvm.org/svn/llvm-project/compiler-rt/trunk/BlocksRuntime/ target=_blank rel=noopener>BlockRuntime</a>。</p>
 <p>对于研究 block 的具体代码翻译，则可以使用 clang 的 rewrite-objc 功能，将 OC 文件转换成 cpp 文件。比如：</p>
-<pre><code>clang -rewrite-objc blocktest.c
+<pre tabindex=0><code>clang -rewrite-objc blocktest.c
 </code></pre><p>这样就可以生成对应的 blocktest.cpp 文件。</p>
 <h2 id=从源码看-nsconcreteglobalblock>从源码看 NSConcreteGlobalBlock</h2>
 <p>首先先看一下 NSConcreteGlobalBlock 的代码，从简单的开始：</p>
@@ -157,7 +161,7 @@ on-phone--column extended">
 </code></pre></div><p>主要的 Block 代码被翻译成为了一个指针函数调用，__main_block_impl_0 是一个定义过的结构，每个 Block 的类型是固定的。其中 isa 是指明的 Block 类型，FuncPtr 则是函数指针。值得注意的是，虽然 impl.isa 填写的是 NSConcreteStackBlock，但是实际在编译过程中，这里还是会被处理成为 NSConcreteGlobalBlock。</p>
 <h2 id=从反汇编看-nsconcreteglobalblock>从反汇编看 NSConcreteGlobalBlock</h2>
 <p>(x86_64):</p>
-<pre><code>
+<pre tabindex=0><code>
 	__text:0000000100000EC0 _main           proc near
 	__text:0000000100000EC0
 	__text:0000000100000EC0 var_8           = dword ptr -8
@@ -179,7 +183,7 @@ on-phone--column extended">
 	__text:0000000100000EEF _main           endp
 
 </code></pre><p>(ARM):</p>
-<pre><code>
+<pre tabindex=0><code>
 	__text:00002F70                 PUSH            {R7,LR}
 	__text:00002F72                 MOV             R7, SP
 	__text:00002F74                 SUB             SP, SP, #8
@@ -225,7 +229,7 @@ on-phone--column extended">
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

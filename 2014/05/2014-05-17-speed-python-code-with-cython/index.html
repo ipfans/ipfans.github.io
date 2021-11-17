@@ -33,9 +33,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -72,6 +71,11 @@ on-phone--column extended">
 <footer class=article-time>
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>May 17, 2014</time>
+</div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 2 分钟
+</time>
 </div>
 </footer>
 </div>
@@ -132,7 +136,7 @@ setup(name <span style=color:#f92672>=</span><span style=color:#e6db74>&#39;cyth
 )
 
 </code></pre></div><p>将 fib.py 文件重命名为 fib.pyx 文件，然后执行下面命令就可以了：</p>
-<pre><code>(pypy)➜  cython  pypy setup.py build_ext --inplace
+<pre tabindex=0><code>(pypy)➜  cython  pypy setup.py build_ext --inplace
 running build_ext
 building 'fib' extension
 cc -arch x86_64 -O2 -fPIC -Wimplicit -I/Developer/pypy/include -c fib.c -o build/temp.macosx-10.9-x86_64-2.7/fib.o
@@ -146,14 +150,14 @@ fib.c:58:9: warning: 'Py_OptimizeFlag' macro redefined
 1 warning generated.
 cc -shared -undefined dynamic_lookup -arch x86_64 build/temp.macosx-10.9-x86_64-2.7/fib.o -o /Desktop/cython/fib.pypy-23.so
 </code></pre><p>具体执行的代码如下：</p>
-<pre><code>cython fib.pyx
+<pre tabindex=0><code>cython fib.pyx
 cc -arch x86_64 -O2 -fPIC -Wimplicit -I/Users/jetlee/Developer/pypy/include -c fib.c -o build/temp.macosx-10.9-x86_64-2.7/fib.o
 cc -shared -undefined dynamic_lookup -arch x86_64 build/temp.macosx-10.9-x86_64-2.7/fib.o -o /Users/jetlee/Desktop/cython/fib.pypy-23.so
 </code></pre><p>这里有个很奇怪的地方，cython 生成的是 so 文件，我的系统是 mac，shared library 是. dylib 文件，不过 cython 这里只认识 so 文件，所以自己不要自以为是的改名了&mldr;</p>
-<pre><code>(pypy)➜  cython  pypy try_c.py
+<pre tabindex=0><code>(pypy)➜  cython  pypy try_c.py
 208.884904146
 </code></pre><p>再测试一下 CPython 的结果：</p>
-<pre><code>(pypy)➜  cython  python try_c.py
+<pre tabindex=0><code>(pypy)➜  cython  python try_c.py
 215.461463928
 </code></pre><p>上面的结果不是同样条件测试的，会对结果有一定的影响。具体情况下的结果还请自行测试。</p>
 <p>除了利用 Cython 外，还有其他几种方法用来加速，这个可以自行搜索一下，比如 cffi，具体不在这里赘述。我个人比较倾向于 Cython 的方法，这种方法可以实现无需修改代码的加速（如上），同样也可以实现更高效的代码级别编译，效率更高。但是缺点是绕不开 python 的 GIL 问题，具体的可以看一下 <a class=link href=http://developer.51cto.com/art/200910/156804.htm target=_blank rel=noopener>这篇文章</a> 介绍 GIL 问题。</p>
@@ -184,7 +188,7 @@ cc -shared -undefined dynamic_lookup -arch x86_64 build/temp.macosx-10.9-x86_64-
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

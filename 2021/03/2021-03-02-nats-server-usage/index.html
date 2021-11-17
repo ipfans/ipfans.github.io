@@ -60,9 +60,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -113,6 +112,11 @@ Golang
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Mar 02, 2021</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 2 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -139,11 +143,11 @@ Golang
 <p>理论介绍过了，接下来说说实际使用的事情。现在<code>JetStream</code>还是RC阶段，</p>
 <h3 id=编译和启动客户端>编译和启动客户端</h3>
 <p>下载<a class=link href=https://github.com/nats-io/nats-server/archive/master.zip target=_blank rel=noopener><code>nats-server</code>源码</a>，解压之后执行：</p>
-<pre><code>cd nats-server-master
+<pre tabindex=0><code>cd nats-server-master
 go build -o nats-server -ldflags=&quot;-s -w -buildid=&quot; .
 ./nats-server -js
 </code></pre><p>这样就可以启动一个支持<code>JetStream</code>功能的服务端了。</p>
-<pre><code>[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server
+<pre tabindex=0><code>[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server
 [54738] 2021/03/02 18:27:02.605236 [INF]   Version:  2.2.0-RC.2
 [54738] 2021/03/02 18:27:02.605238 [INF]   Git:      [not set]
 [54738] 2021/03/02 18:27:02.605239 [INF]   Name:     NAFWRGQTR2CHMBIKNPE6R3ZTW2BWV2FWPAZREMHI24IYVM6FVHMVIYLQ
@@ -297,7 +301,7 @@ go build -o nats-server -ldflags=&quot;-s -w -buildid=&quot; .
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

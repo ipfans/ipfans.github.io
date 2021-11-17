@@ -36,9 +36,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -81,20 +80,25 @@ Other
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Apr 20, 2018</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 1 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
 <section class=article-content>
 <p>树莓派支持命令行下配置WiFi连接，可以通过编辑 <code>/etc/wpa_supplicant/wpa_supplicant.conf</code> 文件配置对应的WiFi配置。具体的内容可以使用 <code>wpa_passphrase</code> 工具生成对应的配置信息，附加到该文件结尾即可。</p>
 <p>假设我存在 <code>SSID</code> 为 <code>testing</code> 密码为 <code>testingPassword</code> 的WiFi网络，我可以使用 <code>wpa_passphrase </code> 生成对应的配置字符串：</p>
-<pre><code>$ wpa_passphrase &quot;testing&quot; &quot;testingPassword&quot;
+<pre tabindex=0><code>$ wpa_passphrase &quot;testing&quot; &quot;testingPassword&quot;
 network={
 	ssid=&quot;testing&quot;
 	#psk=&quot;testingPassword&quot;
 	psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531
 }
 
-</code></pre><pre><code>
+</code></pre><pre tabindex=0><code>
 当然你可以在 `psk` 填写原始的密码。
 
 不过在某些极限环境下，我们有可能便装出门，未配置网线等工具，这个时候只有未加入过的WiFi网络，这样如何处理呢？
@@ -110,7 +114,7 @@ ssid=&ldquo;testing&rdquo;
 #psk=&ldquo;testingPassword&rdquo;
 psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531
 }</p>
-<pre><code></code></pre>
+<pre tabindex=0><code></code></pre>
 </section>
 <footer class=article-footer>
 <section class=article-tags>
@@ -166,7 +170,7 @@ psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

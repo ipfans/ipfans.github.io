@@ -54,9 +54,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -94,6 +93,11 @@ on-phone--column extended">
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Dec 28, 2015</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 2 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -103,10 +107,10 @@ on-phone--column extended">
 <h2 id=初始化项目>初始化项目</h2>
 <p>vagrant 可以在 <a class=link href=https://www.vagrantup.com/ target=_blank rel=noopener>https://www.vagrantup.com/</a> 下载安装，对应的系统镜像可以在 <a class=link href=http://www.vagrantbox.es/ target=_blank rel=noopener>http://www.vagrantbox.es/</a> 找到下载安装。根据国内实际的下载情况，我们建议先行下载镜像方式初始化项目。在选择镜像时，建议选择与线上服务器版本相同的镜像。下面我们仅演示本地加载镜像方式。</p>
 <p>下载 vagrant 和镜像后，安装 vagrant 软件。这样就可以在命令行中执行相关指令。还有，记得安装 VirtualBox。</p>
-<pre><code>vagrant box add centos /path/to/centos-6.6-x86_64.box
+<pre tabindex=0><code>vagrant box add centos /path/to/centos-6.6-x86_64.box
 </code></pre><p>比如我们线上服务器使用了 centos 环境，我们在开发时，也是选择相同版本的 CentOS box。</p>
 <p>接下来进入对应的项目目录，使用如下命令创建 Vagrantfile（centos 是刚刚添加的 box）。当然，如果项目已经存在 Vagrantfile，则可以进行省略。</p>
-<pre><code>vagrant init centos
+<pre tabindex=0><code>vagrant init centos
 </code></pre><p>项目文件夹下会生成 Vagrantfile 文件。</p>
 <h2 id=vagrantfile-编辑>Vagrantfile 编辑</h2>
 <p>Vagrant 在执行环境初始化时会根据 Vagrantfile 文件的描述进行。比较常见的编辑内容一般包含以下几种。</p>
@@ -150,16 +154,16 @@ on-phone--column extended">
 <p>在编辑 Vagrantfile 完成后，可以通过 <code>vagrant up</code> 命令，启动虚拟环境。此时如果设置了服务器初始化，会在最开始过程中执行大量的初始化操作。待操作完成后，则可以验证。</p>
 <h2 id=打包分发>打包分发</h2>
 <p>在编辑完成后，则可以根据当前版本生成 Box 文件。对其他开发者而言，可以通过 Box 文件直接快速生成开发环境，也避免了还需要进行服务器初始化阶段。</p>
-<pre><code>vagrant package
+<pre tabindex=0><code>vagrant package
 </code></pre><p>输出会提示保存文件地址：</p>
-<pre><code>==&gt; default: Attempting graceful shutdown of VM...
+<pre tabindex=0><code>==&gt; default: Attempting graceful shutdown of VM...
 ==&gt; default: Clearing any previously set forwarded ports...
 ==&gt; default: Exporting VM...
 ==&gt; default: Compressing package to: /path/to/package.box
 </code></pre><p>如果进行了初始化环境的变更，我们建议同时更新 Vagrantfile 文件，通过重新打包的方式进行同步更新。</p>
 <h2 id=vagrant-其他命令>Vagrant 其他命令</h2>
 <p>在刚刚提到的几个命令中，<code>vagrant up</code> 可以用于开启环境，对应的还有一些其他命令：</p>
-<pre><code>vagrant ssh				// ssh
+<pre tabindex=0><code>vagrant ssh				// ssh
 vagrant halt			// 关机
 vagrant status			// 查看状态
 vagrant destory			// 删除虚拟机，如果你需要重新开始
@@ -191,7 +195,7 @@ vagrant destory			// 删除虚拟机，如果你需要重新开始
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

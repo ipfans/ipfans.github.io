@@ -42,9 +42,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -95,6 +94,11 @@ Golang
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Mar 11, 2021</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 3 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -111,7 +115,7 @@ Golang
 <p>不过在官方的示例教程中，使用的环境为容器环境部署和管理dapr。实际上，除了在容器环境或者容器集群环境下，<code>dapr</code>可以配置为在本地机器上以自托管模式运行。</p>
 <h2 id=本地安装>本地安装</h2>
 <p><code>dapr</code>安装可以通过官方的<code>dapr-cli</code>实现，<code>dapr-cli</code>可以通过一键安装命令快速安装：</p>
-<pre><code># wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
+<pre tabindex=0><code># wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
 Your system is linux_amd64
 
 Dapr CLI is detected:
@@ -128,7 +132,7 @@ Runtime version: n/a
 To get started with Dapr, please visit https://docs.dapr.io/getting-started/
 </code></pre><p>可以通过输入<code>dapr</code>命令确认<code>dapr-cli</code>程序是否被正常安装成功。</p>
 <p>接下来使用dapr-cli安装所有的runtime等应用。</p>
-<pre><code># dapr init --slim
+<pre tabindex=0><code># dapr init --slim
 ⌛  Making the jump to hyperspace...
 ↘  Downloading binaries and setting up components...
 Dapr runtime installed to /root/.dapr/bin, you may run the following to add it to your path if you want to run daprd directly:
@@ -142,10 +146,10 @@ Dapr runtime installed to /root/.dapr/bin, you may run the following to add it t
 CLI version: 1.0.0
 Runtime version: 1.0.1
 </code></pre><p>在官方文档中，如果选择使用<code>init</code>命令初始化，<code>dapr-cli</code>将会自动尝试使用容器环境管理相关程序，只有添加<code>--slim</code>参数才会选择本地化运行。更多用法可以参考<code>dapr help init</code>帮助。默认程序相关内容会安装在<code>$HOME/.dapr</code>目录下，这里因为我为了简便使用了<code>root</code>用户，因此程序命令所在目录为<code>/root/.dapr/bin</code>，共安装了如下命令：</p>
-<pre><code># ls ~/.dapr/bin
+<pre tabindex=0><code># ls ~/.dapr/bin
 daprd  dashboard  placement  web
 </code></pre><p>从文件名可以看出来<code>daprd</code>是deamon进程，<code>dashboard</code>就是管理面板，<code>placement</code>是用于管理<code>actor</code>分布方案和密钥范围的工具。官方文档中提到在安装后会使用<code>Reids</code>作为默认的存储和pub/sub组件，但是我实际安装下来其实是并没没有的，不知道是不是文档有些过期导致的。这时如果按照官方文档的例子进行操作启动程序并尝试在存储中保存数据，则会出现报错的情况：</p>
-<pre><code>// 第一个session中执行：
+<pre tabindex=0><code>// 第一个session中执行：
 # dapr run --app-id myapp --dapr-http-port 3500
 
 // 第二个session中执行：
@@ -187,13 +191,13 @@ daprd  dashboard  placement  web
   - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>consumerID</span>
     <span style=color:#f92672>value</span>: <span style=color:#e6db74>&#34;myGroup&#34;</span>
 </code></pre></div><p>这里我们定义了一个<code>store</code>名叫做<code>redis-store</code>，所以我们要把上面的命令修改一下：</p>
-<pre><code># curl -X POST -H &quot;Content-Type: application/json&quot; -d '[{ &quot;key&quot;: &quot;name&quot;, &quot;value&quot;: &quot;Bruce Wayne&quot;}]' http://localhost:3500/v1.0/state/redis-store
+<pre tabindex=0><code># curl -X POST -H &quot;Content-Type: application/json&quot; -d '[{ &quot;key&quot;: &quot;name&quot;, &quot;value&quot;: &quot;Bruce Wayne&quot;}]' http://localhost:3500/v1.0/state/redis-store
 
 // 获取存储内容
 # curl http://localhost:3500/v1.0/state/redis-store/name
 &quot;Bruce Wayne&quot;
 </code></pre><p>同时也可以通过<code>redis-cli</code>获取<code>Redis</code>中存储的内容：</p>
-<pre><code># redis-cli
+<pre tabindex=0><code># redis-cli
 127.0.0.1:6379&gt; keys *
 1) &quot;myapp||name&quot;
 127.0.0.1:6379&gt; hgetall &quot;myapp||name&quot;
@@ -233,9 +237,9 @@ daprd  dashboard  placement  web
 }
 
 </code></pre></div><p>使用如下命令启动编译后的<code>daprdemo</code>，注意指定文件名时需要填写路径或者在<code>$PATH</code>中:</p>
-<pre><code># dapr --app-id subapp --app-port 5000 run ~/daprdemo
+<pre tabindex=0><code># dapr --app-id subapp --app-port 5000 run ~/daprdemo
 </code></pre><p>在程序启动日志中我们可以看到<code>dapr</code>会尝试访问一些默认的<code>endpoint</code>读取可能的配置：</p>
-<pre><code>INFO[0000] application discovered on port 5000           app_id=subapp instance=127.0.0.1 scope=dapr.runtime type=log ver=1.0.1
+<pre tabindex=0><code>INFO[0000] application discovered on port 5000           app_id=subapp instance=127.0.0.1 scope=dapr.runtime type=log ver=1.0.1
 == APP == [GIN] 2021/03/11 - 10:45:02 | 404 |         949ns |       127.0.0.1 | GET      &quot;/dapr/config&quot;
 
 INFO[0000] application configuration loaded              app_id=subapp instance=127.0.0.1 scope=dapr.runtime type=log ver=1.0.1
@@ -246,13 +250,13 @@ INFO[0000] app is subscribed to the following topics: [deathStarStatus] through 
 WARN[0000] redis streams: BUSYGROUP Consumer Group name already exists  app_id=subapp instance=127.0.0.1 scope=dapr.contrib type=log ver=1.0.1
 INFO[0000] dapr initialized. Status: Running. Init Elapsed 49.674504ms  app_id=subapp instance=127.0.0.1 scope=dapr.runtime type=log ver=1.0.1
 </code></pre><p>接下来我们尝试使用<code>dapr-cli</code>对我们之前启动的<code>myapp</code>发送消息：</p>
-<pre><code>dapr publish --publish-app-id myapp --pubsub redis-pubsub --topic deathStarStatus --data '{&quot;status&quot;: &quot;completed&quot;}'
+<pre tabindex=0><code>dapr publish --publish-app-id myapp --pubsub redis-pubsub --topic deathStarStatus --data '{&quot;status&quot;: &quot;completed&quot;}'
 </code></pre><p>在程序日志中获取到的输出为：</p>
-<pre><code>== APP == [GIN] 2021/03/11 - 10:45:05 | 200 |      122.15µs |       127.0.0.1 | POST     &quot;/dsstatus&quot;
+<pre tabindex=0><code>== APP == [GIN] 2021/03/11 - 10:45:05 | 200 |      122.15µs |       127.0.0.1 | POST     &quot;/dsstatus&quot;
 
 == APP == 2021/03/11 10:45:05 {&quot;id&quot;:&quot;9c237504-7cab-4a13-8582-92d9130fd016&quot;,&quot;source&quot;:&quot;myapp&quot;,&quot;pubsubname&quot;:&quot;redis-pubsub&quot;,&quot;traceid&quot;:&quot;00-fba669a086f84650e882e3cadc55082c-ea466c080e359e68-00&quot;,&quot;data&quot;:{&quot;status&quot;:&quot;completed&quot;},&quot;specversion&quot;:&quot;1.0&quot;,&quot;datacontenttype&quot;:&quot;application/json&quot;,&quot;type&quot;:&quot;com.dapr.event.sent&quot;,&quot;topic&quot;:&quot;deathStarStatus&quot;}
 </code></pre><p>当然，除了pub/sub方式，我们也可以借助<code>dapr</code>提供的路由功能，直接进行服务调用：</p>
-<pre><code># curl http://127.0.0.1:3500/v1.0/invoke/subapp/method/dsstatus -X POST
+<pre tabindex=0><code># curl http://127.0.0.1:3500/v1.0/invoke/subapp/method/dsstatus -X POST
 {&quot;success&quot;:true}
 </code></pre><p>其他的组件功能则可以参考官方文档中描述进行配置即可。</p>
 <h2 id=总结>总结</h2>
@@ -338,7 +342,7 @@ INFO[0000] dapr initialized. Status: Running. Init Elapsed 49.674504ms  app_id=s
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

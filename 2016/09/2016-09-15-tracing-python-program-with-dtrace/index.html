@@ -36,9 +36,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -81,6 +80,11 @@ Python
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Sep 15, 2016</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 3 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -91,7 +95,7 @@ Python
 <p>dtrace 是一个低开销的成本动态跟踪工具，可以通过埋点 probs 方式监控各项程序运行状态。dtrace 最初内置在 Solaris 系统中，因此我们可以借助 Solaris 系统的相关文档了解 dtrace 的基本操作。<a class=link href=http://wenku.baidu.com/view/adb13ec7f61fb7360b4c65ad.html target=_blank rel=noopener>DTrace 用户指南</a> 是 Oracle 提供的基于 Solaris 系统的 dtrace 操作手册，操作基本与其它系统相同，推荐在最初开始阶段阅读该使用手册。</p>
 <p>在 macOS 上，已经很多系统底层功能和 framework 中已经集成了 dtrace 的功能。</p>
 <p>比如说我们需要监控 read 这个 syscall 的入口，可以通过下面这个命令实现：</p>
-<pre><code>➜  ~ sudo dtrace -n syscall::read:entry
+<pre tabindex=0><code>➜  ~ sudo dtrace -n syscall::read:entry
 
 dtrace: description 'syscall::read:entry' matched 1 probe
 
@@ -110,7 +114,7 @@ CPU     ID                    FUNCTION:NAME
 <span style=color:#f92672>{</span>printf <span style=color:#f92672>(</span><span style=color:#e6db74>&#34;%s called read, asking for %d bytes\n&#34;</span><span style=color:#f92672>,</span> execname<span style=color:#f92672>,</span> arg2<span style=color:#f92672>);</span>
 <span style=color:#f92672>}</span>
 </code></pre></div><p>然后通过命令行执行：</p>
-<pre><code>➜  ~ sudo dtrace -s syscall.d
+<pre tabindex=0><code>➜  ~ sudo dtrace -s syscall.d
 
 dtrace: script 'syscall.d' matched 1 probe
 
@@ -125,9 +129,9 @@ CPU     ID                    FUNCTION:NAME
 </code></pre><h2 id=从-dtrace-到-python-跟踪>从 dtrace 到 Python 跟踪</h2>
 <p>在 Pycon 上的分享上，提供了一种 CPython 虚拟机代码 Patch 方式进行跟踪的方案，这种方案需要系统支持，比如 REHL 系列系统默认支持，假如你是用了 Ubuntu 系统，除了重新编译 CPython 以外没有其他办法。不过除此之外，还有一种更简单的方式，就是使用 <code>Python USDT</code>。但是值得注意的是 <code>Python USDT</code> 是一种用户态修饰器监控方法，这种方式与 patch CPython 的方式相比差距较大，毕竟 USDT 无法监控一些系统底层的尤其是涉及到比如 gevent 导致的上下文切换时的混乱。同样的，systemtap 也有一个专门的库：<a class=link href=https://github.com/wooparadog/python-systemtap target=_blank rel=noopener>python-systemtap</a>。</p>
 <p>不过还是从 USDT 开始。USDT 可以通过 pip 直接安装：</p>
-<pre><code>pip install usdt
+<pre tabindex=0><code>pip install usdt
 </code></pre><p>接下来用 ipython 演示一下 usdt 的基础使用：</p>
-<pre><code>➜  ~ ipython
+<pre tabindex=0><code>➜  ~ ipython
 Python 2.7.12 (default, Jul  4 2016, 11:33:35)
 Type &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 
@@ -151,7 +155,7 @@ In [4]: @fbt
 
 In [5]: example(&quot;hello&quot;)
 </code></pre><p>我们使用监听进程的方式监控来自于 usdt 的探针：</p>
-<pre><code>➜  ~ sudo dtrace -l -p 7777 -m fbt
+<pre tabindex=0><code>➜  ~ sudo dtrace -l -p 7777 -m fbt
 
    ID   PROVIDER            MODULE                          FUNCTION NAME
  1206 python-fbt7777               fbt                           example entry
@@ -164,7 +168,7 @@ In [5]: example(&quot;hello&quot;)
 <li>执行代码行数</li>
 </ul>
 <p>首先运行一个 Python 3.6</p>
-<pre><code>➜  ~ ipython
+<pre tabindex=0><code>➜  ~ ipython
 Python 3.6.0b1 (default, Sep 15 2016, 10:16:39)
 Type &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 
@@ -181,7 +185,7 @@ Out[2]: 33164
 
 In [3]:
 </code></pre><p>接下来通过 dtrace 来获取所有的 Python 探针输出：</p>
-<pre><code>➜  ~ sudo dtrace -l -m python3.6
+<pre tabindex=0><code>➜  ~ sudo dtrace -l -m python3.6
 
    ID   PROVIDER            MODULE                          FUNCTION NAME
 35775 python33164         python3.6          _PyEval_EvalFrameDefault function-entry
@@ -259,7 +263,7 @@ In [3]:
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

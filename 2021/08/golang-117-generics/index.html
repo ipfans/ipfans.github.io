@@ -51,9 +51,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -101,6 +100,11 @@ Golang
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Aug 17, 2021</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 3 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -137,7 +141,7 @@ Golang
 }
 </code></pre></div><p>这个函数可以实现任何需要使用<code>+</code>符号进行运算的类型，我们通过定义<code>Addable</code>类型，枚举了所有可能可以使用<code>add</code>方法的所有的类型。比如我们在<code>main</code>函数中就使用了<code>int</code>和<code>string</code>两种不同类型。</p>
 <p>但是如果这时我们使用简单的<code>go run</code>命令运行，会发现提示语法错误：</p>
-<pre><code>$ go version
+<pre tabindex=0><code>$ go version
 go version go1.17 darwin/arm64
 $ go run ~/main.go
 # command-line-arguments
@@ -145,11 +149,11 @@ $ go run ~/main.go
 ../main.go:15:6: missing function body
 ../main.go:15:9: syntax error: unexpected [, expecting (
 </code></pre><p>因为在Go 1.17中，泛型并未默认开启，你需要定义<code>gcflags</code>方式启用泛型：</p>
-<pre><code>$ go run -gcflags=-G=3 ~/main.go
+<pre tabindex=0><code>$ go run -gcflags=-G=3 ~/main.go
 3
 12
 </code></pre><p>如果你觉得这种方式太过于复杂，每次都需要添加，也可以通过定义环境变量形式让每次都带此参数（不推荐，尤其是多版本环境时低版本Go中会报错）：</p>
-<pre><code>$ export GOFLAGS=&quot;-gcflags=-G=3&quot;
+<pre tabindex=0><code>$ export GOFLAGS=&quot;-gcflags=-G=3&quot;
 $ go run ~/main.go
 3
 12
@@ -177,14 +181,14 @@ $ go run ~/main.go
     })
     <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vs</span>)
 }
-</code></pre></div><pre><code>$ go run -gcflags=-G=3 main.go
+</code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
 [1 4 9 16 25 36]
 </code></pre><p>在这个例子中，我们定义了一个M类型，因此除了进行同样类型的转换外，也可以做不同类型的转换：</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-diff data-lang=diff><span style=color:#f92672>-     vs := mapFunc(vi, func(v int) int {
 </span><span style=color:#f92672>-        return v*v
 </span><span style=color:#f92672></span><span style=color:#a6e22e>+     vs := mapFunc(vi, func(v int) string {
 </span><span style=color:#a6e22e>+        return &#34;&lt;&#34;+fmt.Sprint(v)+&#34;&gt;&#34;
-</span></code></pre></div><pre><code>$ go run -gcflags=-G=3 main.go
+</span></code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
 [&lt;1&gt; &lt;2&gt; &lt;3&gt; &lt;4&gt; &lt;5&gt; &lt;6&gt;]
 </code></pre><h3 id=实现类型安全的mapfilter>实现类型安全的Map/Filter</h3>
 <p>除了操作数据以外，我们通常还需要对数据进行筛选。在前面的例子上，我们可以通过实现<code>filterFunc</code>实现更好的通用逻辑：</p>
@@ -244,7 +248,7 @@ $ go run ~/main.go
 		})
     <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vs</span>)
 }
-</code></pre></div><pre><code>$ go run -gcflags=-G=3 main.go
+</code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
 [1 4 9 16 25 36]
 [aaaa dddd eeeee]
 </code></pre><h3 id=实现类型可靠的worker-pool>实现类型可靠的Worker Pool</h3>
@@ -338,7 +342,7 @@ $ go run ~/main.go
 	}
 	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>out2</span>)
 }
-</code></pre></div><pre><code>$ go run -gcflags=-G=3 main.go
+</code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
 [3 5 2 4 1]
 [&lt;1&gt; &lt;4&gt; &lt;5&gt; &lt;3&gt; &lt;2&gt;]
 </code></pre><h3 id=其他应用>其他应用</h3>
@@ -435,7 +439,7 @@ $ go run ~/main.go
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

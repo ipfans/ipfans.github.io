@@ -48,9 +48,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -88,6 +87,11 @@ on-phone--column extended">
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Jan 15, 2014</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 1 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -99,9 +103,9 @@ on-phone--column extended">
 <p>编译倒是挺顺畅的，./config 一下，然后直接 make && make install，替换下系统的头文件和 lib 文件。</p>
 <p>然后开始安装 pyOpenSSL。这步也没什么错误提示，如果安装出错，那么肯定是 OpenSSL 的版本不对。</p>
 <p>然后执行以下 mitmproxy，提示 pyOpenSSL 的 SSL.so 无法找 “SSL_get_servername” 的引用。What？编译没问题运行却提示出错了，orz。</p>
-<pre><code>ldd SSL.so
+<pre tabindex=0><code>ldd SSL.so
 </code></pre><p>看下该文件的引用关系，发现引用了 lib64 的 libssl.so.6 和 libcrypto.so.6 文件，这两个文件是 openssl 的 shared library。切换到默认的 OpenSSL 目录下 / usr/local/ssl/lib / 文件下，发现并没有生成 so 文件。原因很明显了，是因为生成 OpenSSL 的方式是采用默认的 static 方式。</p>
-<pre><code>./config shared
+<pre tabindex=0><code>./config shared
 </code></pre><p>这样就没有问题了。</p>
 <p>另外还有一个值得注意的地方是在 64 位系统下默认的 lib 目录是 lib64 而不是 lib，最开始我还替换错了，还好及时发现了。</p>
 <p>PS: 每次 Markdown 写文章，带下划线的总是忘记该，要回来修一下，蛋疼。</p>
@@ -132,7 +136,7 @@ on-phone--column extended">
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

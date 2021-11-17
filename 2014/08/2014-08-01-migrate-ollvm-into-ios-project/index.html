@@ -48,9 +48,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -88,6 +87,11 @@ on-phone--column extended">
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Aug 01, 2014</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 2 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -96,41 +100,41 @@ on-phone--column extended">
 <p>不过值得注意的是 ollvm 主要有效的还是 c 的函数，对 OC 对抗效果不明显。对抗分析的问题，请参考半仙的《软件反分析》。</p>
 <h2 id=theos-整合>Theos 整合</h2>
 <p>Theos 主要依赖于 Makefile，因此需要 Makefile 文件来实现功能了。首先在文件里添加：</p>
-<pre><code>TARGET_CC = path_to_clang/clang
+<pre tabindex=0><code>TARGET_CC = path_to_clang/clang
 TARGET_CXX = path_to_clang/clang++
 TARGET_LD = path_to_clang/clang++
 </code></pre><p>然后修改 (项目名)_CFLAGS 参数，如果没有则添加：</p>
-<pre><code>xxx_CFLAGS = -fobjc-arc -mllvm -fla
+<pre tabindex=0><code>xxx_CFLAGS = -fobjc-arc -mllvm -fla
 </code></pre><p>这样就可以在项目中应用 ollvm 了。</p>
 <h2 id=xcode-整合>Xcode 整合</h2>
 <p>集成进入 Xcode 需要修改几个文件，根据现有的插件进行修改。</p>
 <p>具体修改步骤如下：</p>
-<pre><code>$ cd /Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Xcode/Plug-ins/
+<pre tabindex=0><code>$ cd /Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Xcode/Plug-ins/
 $ sudo cp -r Clang\ LLVM\ 1.0.xcplugin/ Obfuscator.xcplugin
 $ cd Obfuscator.xcplugin/Contents/
 $ sudo plutil -convert xml1 Info.plist
 $ sudo vim Info.plist
 </code></pre><p>修改文件内容（修改前 -> 修改后）</p>
-<pre><code>&lt;string&gt;com.apple.compilers.clang&lt;/string&gt; -&gt; &lt;string&gt;com.apple.compilers.obfuscator&lt;/string&gt;
+<pre tabindex=0><code>&lt;string&gt;com.apple.compilers.clang&lt;/string&gt; -&gt; &lt;string&gt;com.apple.compilers.obfuscator&lt;/string&gt;
 &lt;string&gt;Clang LLVM 1.0 Compiler Xcode Plug-in&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator Xcode Plug-in&lt;/string&gt;
 </code></pre><p>接下来修改 Info.plist</p>
-<pre><code>$ sudo plutil -convert binary1 Info.plist
+<pre tabindex=0><code>$ sudo plutil -convert binary1 Info.plist
 $ cd Resources/
 $ sudo mv Clang\ LLVM\ 1.0.xcspec Obfuscator.xcspec
 $ sudo vim Obfuscator.xcspec
 </code></pre><p>修改为：</p>
-<pre><code>Identifier = &quot;com.apple.compilers.llvm.clang.1_0&quot;; -&gt; Identifier = &quot;com.apple.compilers.llvm.obfuscator.3_4&quot;;
+<pre tabindex=0><code>Identifier = &quot;com.apple.compilers.llvm.clang.1_0&quot;; -&gt; Identifier = &quot;com.apple.compilers.llvm.obfuscator.3_4&quot;;
 Name = &quot;Apple LLVM 5.1&quot;; -&gt; Name = &quot;Obfuscator 3.4&quot;;
 Description = &quot;Apple LLVM 5.1 compiler&quot;; -&gt; Description = &quot;Obfuscator 3.4&quot;;
 Vendor = Apple; -&gt; Vendor = HEIG-VD;
 Version = &quot;5.0&quot;; -&gt; Version = &quot;3.4&quot;;
 ExecPath = &quot;clang&quot;; -&gt; ExecPath = &quot;/path/to/obfuscator_bin/clang&quot;;
 </code></pre><p>接下来修改显示：</p>
-<pre><code>$ cd English.lproj/
+<pre tabindex=0><code>$ cd English.lproj/
 $ sudo mv Apple\ LLVM\ 5.1.strings &quot;Obfuscator 3.4.strings&quot;
 $ sudo vim Obfuscator\ 3.4.strings
 </code></pre><p>修改为：</p>
-<pre><code>&quot;Name&quot; = &quot;Apple LLVM 5.0&quot;; -&gt; &quot;Name&quot; = &quot;Obfuscator 3.4&quot;;
+<pre tabindex=0><code>&quot;Name&quot; = &quot;Apple LLVM 5.0&quot;; -&gt; &quot;Name&quot; = &quot;Obfuscator 3.4&quot;;
 &quot;Description&quot; = &quot;Apple LLVM 5.0 Compiler&quot;; -&gt; &quot;Description&quot; = &quot;Obfuscator 3.4&quot;;
 &quot;Version&quot; = &quot;5.0&quot;; -&gt; &quot;Version&quot; = &quot;3.4&quot;;
 &quot;Vendor&quot; = &quot;Apple&quot;; -&gt; &quot;Vendor&quot; = &quot;HEIG-VD&quot;;
@@ -138,7 +142,7 @@ $ sudo vim Obfuscator\ 3.4.strings
 <p>如果想要添加 cflag，可以在 CustomFlags 中自行添加。</p>
 <h2 id=目前的问题>目前的问题</h2>
 <p>如果你用起来，现在 ARM64 解决还有问题，我正在研究，如果你知道如何解决，欢迎指出。</p>
-<pre><code>➜  xxx  make
+<pre tabindex=0><code>➜  xxx  make
 Making all for tweak xxx...
  Preprocessing xxx.x...
  Compiling xxx.x...
@@ -174,7 +178,7 @@ make: *** [xxx.all.tweak.variables] Error 2
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

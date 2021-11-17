@@ -54,9 +54,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -102,6 +101,11 @@ Translation
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Mar 20, 2019</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 4 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -141,13 +145,13 @@ Translation
 	}
 }
 </code></pre></div><p>现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有<code>go.mod</code>文件。如果你文件创建在 <code>/home/gopher/hello</code>目录下，执行<code>go test</code>命令时，我们可以看到结果：</p>
-<pre><code>	$ go test
+<pre tabindex=0><code>	$ go test
 	PASS
 	ok  	_/home/gopher/hello	0.020s
 	$
 </code></pre><p>最后一行表示了整个包测试的汇总信息。因为我们现在在 <code>$GOPATH</code>外，并且不属于任何模块，因此 <code>go</code>命令不知道当前目录的引用路径，因此采用当前文件夹名生成了一个伪路径。</p>
 <p>现在让我们使用<code>go mod init</code>命令将当前目录设置成为模块的根目录，然后重新试试<code>go test</code>命令：</p>
-<pre><code>	$ go mod init example.com/hello
+<pre tabindex=0><code>	$ go mod init example.com/hello
 	go: creating new go.mod: module example.com/hello
 	$ go test
 	PASS
@@ -155,7 +159,7 @@ Translation
 	$
 </code></pre><p>恭喜你！你已经编写和测试了你的第一个模块。</p>
 <p><code>go mod init</code>命令会创建一个<code>go.mod</code>文件：</p>
-<pre><code>	$ cat go.mod
+<pre tabindex=0><code>	$ cat go.mod
 	module example.com/hello
 
 	go 1.12
@@ -172,7 +176,7 @@ Translation
 		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>quote</span>.<span style=color:#a6e22e>Hello</span>()
 	}
 </code></pre></div><p>现在让我们再次执行测试：</p>
-<pre><code>	$ go test
+<pre tabindex=0><code>	$ go test
 	go: finding rsc.io/quote v1.5.2
 	go: downloading rsc.io/quote v1.5.2
 	go: extracting rsc.io/quote v1.5.2
@@ -186,7 +190,7 @@ Translation
 	ok  	example.com/hello	0.023s
 	$
 </code></pre><p><code>go</code>命令会自动处理<code>go.mod</code>中制定的依赖版本。当包中<code>import</code>指向的模块没有在 <code>go.mod</code>文件中， <code>go</code>命令会自动搜索这个模块，并且将最新版本添加到 <code>go.mod</code>文件中。（“最新版本”是指最新的标签<a class=link href=https://semver.org/#spec-item-9 target=_blank rel=noopener>非预发布</a>的稳定版本。）在我们的例子中，<code>go test</code>解析了新的引用路径<code>rsc.io/quote</code>为对应的模块，版本为<code>v1.5.2</code>。它同样下载了<code>rsc.io/quote</code>中使用的两个依赖，名为<code>rsc.io/sampler</code>和<code>golang.org/x/text</code>。不过，只有直接使用的依赖会被记录在<code>go.mod</code>文件中。</p>
-<pre><code>	$ cat go.mod
+<pre tabindex=0><code>	$ cat go.mod
 	module example.com/hello
 
 	go 1.12
@@ -194,13 +198,13 @@ Translation
 	require rsc.io/quote v1.5.2
 	$
 </code></pre><p>第二次执行<code>go test</code>命令时不会重复这个工作，因为 <code>go.mod</code> 已经最新并且所有的下载模块都会缓存到本地（保存在<code>$GOPATH/pkg/mod</code>目录中）：</p>
-<pre><code>	$ go test
+<pre tabindex=0><code>	$ go test
 	PASS
 	ok  	example.com/hello	0.020s
 	$
 </code></pre><p>值得注意的是，虽然<code>go</code>命令添加新依赖简单便捷，但是它并不是没有成本的。你的模块递归依赖新的依赖时可能会有正确性、安全性和非正当授权等等问题。更多的思考，可以参考Russ Cox的博客<a class=link href=https://research.swtch.com/deps target=_blank rel=noopener>我们的软件依赖问题</a>。</p>
 <p>如同我们上面看到的那样，添加一新的依赖通常会带来新的间接依赖。命令<code>go list -m all</code>会列出虽有的当前依赖和他们的依赖</p>
-<pre><code>	$ go list -m all
+<pre tabindex=0><code>	$ go list -m all
 	example.com/hello
 	golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c
 	rsc.io/quote v1.5.2
@@ -209,7 +213,7 @@ Translation
 </code></pre><p>在<code>go list</code>输出中，当前模块，或者叫做主模块，通常是第一行，接下来是根据依赖路径排序的依赖。</p>
 <p><code>golang.org/x/text</code>的版本<code>v0.0.0-20170915032832-14c0d48ead0c</code>是<a class=link href=https://golang.org/cmd/go/#hdr-Pseudo_versions target=_blank rel=noopener>伪版本</a>的例子，是<code>go</code>命令的版本语法用于标记未打标签的提交。</p>
 <p>同时，<code>go.mod</code>和<code>go</code>命令维护了一个名叫<code>go.sum</code>的文件包含了指定模块版本的期望的<a class=link href=https://golang.org/cmd/go/#hdr-Module_downloading_and_verification target=_blank rel=noopener>加密hash</a>：</p>
-<pre><code>	$ cat go.sum
+<pre tabindex=0><code>	$ cat go.sum
 	golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c h1:qgOY6WgZO...
 	golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:Nq...
 	rsc.io/quote v1.5.2 h1:w5fcysjrx7yqtD/aO+QwRjYZOKnaM9Uh2b40tElTs3...
@@ -222,7 +226,7 @@ Translation
 <p>在Go modules中，版本采用语义化版本标签标记版本。语义化版本包含三部分：主要版本、次要版本和修订版本。举一个例子，比如，<code>v0.1.2</code>，主要版本为0，次要版本为1，修订版本为2.</p>
 <p>让我们在这一节中先升级一下次要版本，下一节中我们再尝试升级一下主要版本。</p>
 <p>从<code>go list -m all</code>的输出中，我们可以看到我们使用了 <code>golang.org/x/text</code>的一个没有标签的版本，让我们吧这个版本升级成最新版本，然后测试一下所有的功能是否正常工作：</p>
-<pre><code>	$ go get golang.org/x/text
+<pre tabindex=0><code>	$ go get golang.org/x/text
 	go: finding golang.org/x/text v0.3.0
 	go: downloading golang.org/x/text v0.3.0
 	go: extracting golang.org/x/text v0.3.0
@@ -232,7 +236,7 @@ Translation
 	$
 </code></pre><p>哇哦，所有的功能都正常工作。</p>
 <p>让我们看一下<code>go list -m all</code>和<code>go.mod</code>文件：</p>
-<pre><code>	$ go list -m all
+<pre tabindex=0><code>	$ go list -m all
 	example.com/hello
 	golang.org/x/text v0.3.0
 	rsc.io/quote v1.5.2
@@ -249,7 +253,7 @@ Translation
 	$
 </code></pre><p><code>golang.org/x/text</code>文件被更新到了最新的标签版本<code>v0.3.0</code>。 <code>go.mod</code>文件中的记录也被更新成了<code>v0.3.0</code>。<code>indirect</code> 注释标记了依赖不是被当前模块直接使用的，只是在其他依赖项中被间接引用。具体内容可以通过<code>go help modules</code>查看更多介绍。</p>
 <p>现在，我们可以尝试升级<code>rsc.io/sampler</code>的小版本，同样的，我们使用<code>go get</code>指令后执行测试：</p>
-<pre><code>	$ go get rsc.io/sampler
+<pre tabindex=0><code>	$ go get rsc.io/sampler
 	go: finding rsc.io/sampler v1.99.99
 	go: downloading rsc.io/sampler v1.99.99
 	go: extracting rsc.io/sampler v1.99.99
@@ -261,11 +265,11 @@ Translation
 	FAIL	example.com/hello	0.014s
 	$
 </code></pre><p>噢，不！测试显示最新版的 <code>rsc.io/sampler</code>不兼容我们的使用方式，让我们看一下这个模块所有可用的标签版本：</p>
-<pre><code>	$ go list -m -versions rsc.io/sampler
+<pre tabindex=0><code>	$ go list -m -versions rsc.io/sampler
 	rsc.io/sampler v1.0.0 v1.2.0 v1.2.1 v1.3.0 v1.3.1 v1.99.99
 	$
 </code></pre><p>我们在使用的版本是v1.3.0，看上去v1.99.99明显不能使用，或许我们可以使用v1.3.1版本：</p>
-<pre><code>	$ go get rsc.io/sampler@v1.3.1
+<pre tabindex=0><code>	$ go get rsc.io/sampler@v1.3.1
 	go: finding rsc.io/sampler v1.3.1
 	go: downloading rsc.io/sampler v1.3.1
 	go: extracting rsc.io/sampler v1.3.1
@@ -299,7 +303,7 @@ Translation
 		}
 	}
 </code></pre></div><p>现在让我们测试一下：</p>
-<pre><code>	$ go test
+<pre tabindex=0><code>	$ go test
 	go: finding rsc.io/quote/v3 v3.1.0
 	go: downloading rsc.io/quote/v3 v3.1.0
 	go: extracting rsc.io/quote/v3 v3.1.0
@@ -307,7 +311,7 @@ Translation
 	ok  	example.com/hello	0.024s
 	$
 </code></pre><p>注意，我们同时使用了<code>rsc.io/quote</code>和<code>rsc.io/quote/v3</code>：</p>
-<pre><code>	$ go list -m rsc.io/q...
+<pre tabindex=0><code>	$ go list -m rsc.io/q...
 	rsc.io/quote v1.5.2
 	rsc.io/quote/v3 v3.1.0
 	$
@@ -316,7 +320,7 @@ Translation
 <p>这规定了模块作者一个清晰的单一模块路径的规则：可以一个程序既可以在<code>rsc.io/quote</code>的<code>v1.5.2</code>和<code>v1.6.0</code>版本下构建通过。同时，允许不同的模块主版本（因为有不同路径）让模块的消费者能够增量升级至新主版本中。在这个例子中，我们希望使用<code>rsc/quote/v3 v3.1.0</code>中的<code>quote.Concurrency</code>，但是我们没做好合并我们<code>rsc.io/quote v1.5.2</code>的使用方式时，这个能力可以帮助到我们。这个能力在大型代码的项目中的增量更新中尤为重要。</p>
 <h2 id=升级一个依赖到新主版本>升级一个依赖到新主版本</h2>
 <p>现在，让我们完成将使用<code>rsc.io/quote</code>转换为仅使用<code>rsc.io/quote/v3</code>。因为主版本的变化，我们可以预计到一些API已经删除，改名或者发生了一些不兼容的变化。阅读一下文档我们可以知道，<code>Hello</code>现在已经变为了<code>HelloV3</code>：</p>
-<pre><code>	$ go doc rsc.io/quote/v3
+<pre tabindex=0><code>	$ go doc rsc.io/quote/v3
 	package quote // import &quot;rsc.io/quote&quot;
 
 	Package quote collects pithy sayings.
@@ -353,12 +357,12 @@ Translation
 		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>quote</span>.<span style=color:#a6e22e>Concurrency</span>()
 	}
 </code></pre></div><p>现在我们重新运行一下测试，确保所有的功能都能够正常运行。</p>
-<pre><code>	$ go test
+<pre tabindex=0><code>	$ go test
 	PASS
 	ok      example.com/hello       0.014s
 </code></pre><h2 id=移除无用依赖>移除无用依赖</h2>
 <p>我们已经移除了所有<code>rsc.io/quote</code>的使用，但是当我们执行<code>go list -m all</code>命令时，我们仍旧可以看到它出现在我们的<code>go.mod</code>文件中。</p>
-<pre><code>	$ go list -m all
+<pre tabindex=0><code>	$ go list -m all
 	example.com/hello
 	golang.org/x/text v0.3.0
 	rsc.io/quote v1.5.2
@@ -378,7 +382,7 @@ Translation
 	$
 </code></pre><p>为什么呢？因为当我们构建一个单独的包时，如执行<code>go build</code>或者<code>go test</code>时，很容易得知哪些包遗失了或者需要被添加，但是很难确认哪些包可以被安全移除。只有在检查完模块所有的包和可能的构建标签组合之后，才能移除一个依赖。普通的构建命令不会夹在这些信息，因此无法安全的移除依赖。</p>
 <p><code>go mod tidy</code>命令则可以帮助清理无用依赖：</p>
-<pre><code>	$ go mod tidy
+<pre tabindex=0><code>	$ go mod tidy
 	$ go list -m all
 	example.com/hello
 	golang.org/x/text v0.3.0
@@ -490,7 +494,7 @@ Translation
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

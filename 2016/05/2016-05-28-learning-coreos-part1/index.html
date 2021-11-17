@@ -54,9 +54,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -99,6 +98,11 @@ Technical Investigations
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>May 28, 2016</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 2 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -121,7 +125,7 @@ $update_channel<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;
 <p>接下来执行：</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>vagrant up
 </code></pre></div><p>在一堆输出之后，生成的 4 个实例就已经在运行了。也可以通过命令 <code>vagrant status</code> 查看运行状态。</p>
-<pre><code>➜  coreos-vagrant git:(master) vagrant status
+<pre tabindex=0><code>➜  coreos-vagrant git:(master) vagrant status
 Current machine states:
 
 core-01                   running (virtualbox)
@@ -133,21 +137,21 @@ This environment represents multiple VMs. The VMs are all listed
 above with their current state. For more information about a specific
 VM, run `vagrant status NAME`.
 </code></pre><p>接下来需要把 SSH 密钥添加到 SSH 可以识别的路径中，当然，也可以使用 <code>ssh -i</code> 每次指定 key。</p>
-<pre><code>➜  coreos-vagrant git:(master) ssh-add ~/.vagrant.d/insecure_private_key
+<pre tabindex=0><code>➜  coreos-vagrant git:(master) ssh-add ~/.vagrant.d/insecure_private_key
 Identity added: /Users/user/.vagrant.d/insecure_private_key (/Users/user/.vagrant.d/insecure_private_key)
 ➜  coreos-vagrant git:(master) vagrant ssh core-01 -- -A
 CoreOS stable (1010.5.0)
 core@core-01 ~ $
 </code></pre><p>这里的 <code>-- -A</code> 前两的个横杆表示 ssh 参数的起始。之后的 <code>-A</code> 是标准的 SSH 命令参数，表示将主机的 SSH 秘钥传递到虚拟机里面，这样做是为了之后的涉及 SSH 操作更加方便，否则会在某些命令时报错。</p>
 <p>进入 CoreOS 之后，就可以查看现在集群中的机器，可以通过如下命令：</p>
-<pre><code>core@core-01 ~ $ fleetctl list-machines
+<pre tabindex=0><code>core@core-01 ~ $ fleetctl list-machines
 MACHINE		IP		METADATA
 6e1b9fae...	172.17.8.104	-
 91060182...	172.17.8.103	-
 af1494a6...	172.17.8.102	-
 c99fef8a...	172.17.8.101	-
 </code></pre><p>查看设备是否正常加入。当然，也可以很方便的登录其它系统：</p>
-<pre><code>core@core-01 ~ $ fleetctl ssh -machine af1494a6
+<pre tabindex=0><code>core@core-01 ~ $ fleetctl ssh -machine af1494a6
 The authenticity of host '172.17.8.102' can't be established.
 ECDSA key fingerprint is 24:34:be:4e:b7:43:be:94:34:33:b2:81:e0:0c:08:9d.
 Are you sure you want to continue connecting (yes/no)? yes
@@ -234,7 +238,7 @@ logout
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

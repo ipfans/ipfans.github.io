@@ -30,9 +30,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -70,12 +69,17 @@ on-phone--column extended">
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Apr 08, 2014</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 3 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
 <section class=article-content>
 <p>最近升级了一下 simplejson，发现 simplejson 的 speedup 模块报了一个错误：</p>
-<pre><code>Installing collected packages: simplejson
+<pre tabindex=0><code>Installing collected packages: simplejson
   Found existing installation: simplejson 3.3.1
     Uninstalling simplejson:
       Successfully uninstalled simplejson
@@ -98,7 +102,7 @@ Successfully installed simplejson
 Cleaning up...
 </code></pre><p>注意看 error 这里，有一个 <code>unknown argument: '-mno-fused-madd'</code> 的错误，应该是 Xcode 升级最新的版本之后，clang 替换带来的问题。</p>
 <p>解决方法也很简单，在编译之前 export 两个参数即可：</p>
-<pre><code>$ export CFLAGS=-Qunused-arguments
+<pre tabindex=0><code>$ export CFLAGS=-Qunused-arguments
 $ export CPPFLAGS=-Qunused-arguments
 $ pip install simplejson
 Downloading/unpacking simplejson
@@ -115,13 +119,13 @@ Successfully installed simplejson
 Cleaning up...
 
 </code></pre><p>后来查了一下具体的原因，在 <a class=link href=https://developer.apple.com/library/mac/releasenotes/DeveloperTools/RN-Xcode/Introduction/Introduction.html target=_blank rel=noopener>Xcode5.1 的 release note</a> 中有提及：</p>
-<pre><code>The Apple LLVM compiler in Xcode 5.1 treats unrecognized command-line options as errors. This issue has been seen when building both Python native extensions and Ruby Gems, where some invalid compiler options are currently specified.
+<pre tabindex=0><code>The Apple LLVM compiler in Xcode 5.1 treats unrecognized command-line options as errors. This issue has been seen when building both Python native extensions and Ruby Gems, where some invalid compiler options are currently specified.
 
 Projects using invalid compiler options will need to be changed to remove those options. To help ease that transition, the compiler will temporarily accept an option to downgrade the error to a warning:
 
 -Wno-error=unused-command-line-argument-hard-error-in-future
 </code></pre><p>官方推荐的方法是：</p>
-<pre><code>$ ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install simplejson
+<pre tabindex=0><code>$ ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install simplejson
 Downloading/unpacking simplejson
   Downloading simplejson-3.4.0.tar.gz (68kB): 68kB downloaded
   Running setup.py egg_info for package simplejson
@@ -165,7 +169,7 @@ Cleaning up...
     print <span style=color:#e6db74>&#39;by simplejson: </span><span style=color:#e6db74>%s</span><span style=color:#e6db74> seconds&#39;</span> <span style=color:#f92672>%</span> t<span style=color:#f92672>.</span>timeit(number<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span>)
 
 </code></pre></div><p>测试结果表明：恩，实际上不用 simplejson 也可以，不会有很大性能差异：</p>
-<pre><code>$ python json_speed.py
+<pre tabindex=0><code>$ python json_speed.py
 by json: 0.000191926956177 seconds
 by simplejson: 0.000169992446899 seconds
 </code></pre>
@@ -198,7 +202,7 @@ by simplejson: 0.000169992446899 seconds
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

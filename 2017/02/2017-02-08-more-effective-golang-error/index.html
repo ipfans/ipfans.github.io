@@ -42,9 +42,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -87,6 +86,11 @@ Golang
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Feb 08, 2017</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 3 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -111,7 +115,7 @@ Golang
 }
 </code></pre></div><p>正常情况下，Golang 现有的哲学中，要求你尽量手工处理所有的错误返回，这稍微增加了开发人员的心智负担。关于这部分设计的讨论，请参考本文最开始提供的参考链接，此处不做太多探讨。</p>
 <p>本质上，Golang 中的错误类型 <code>error</code> 是一个接口类型：</p>
-<pre><code>type error interface {Error() string
+<pre tabindex=0><code>type error interface {Error() string
 }
 </code></pre><p>只要满足这一接口定义的所有数值都可以传入 <code>error</code> 类型的位置。在 <a class=link href=http://go-proverbs.github.io/ target=_blank rel=noopener>Go Proverbs</a> 中也提到了关于错误的描述： <code>Errors are values</code>。这一句如何理解呢？</p>
 <h2 id=errors-are-values>Errors are values</h2>
@@ -126,7 +130,7 @@ Golang
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>os</span>.<span style=color:#a6e22e>Remove</span>(<span style=color:#e6db74>&#34;/tmp/nonexist&#34;</span>)
 <span style=color:#a6e22e>log</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>err</span>)
 </code></pre></div><p>输出了：</p>
-<pre><code>2017/02/08 14:09:22 remove /tmp/nonexist: no such file or directory
+<pre tabindex=0><code>2017/02/08 14:09:22 remove /tmp/nonexist: no such file or directory
 </code></pre><p>这种方式提供了一种更加直观的上下文信息，比如具体出错的内容，也可以是出现错误的文件等等。通过查看 Remove 的实现，我们可以看到：</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// PathError records an error and the operation and file path that caused it.
 </span><span style=color:#75715e></span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>PathError</span> <span style=color:#66d9ef>struct</span> {
@@ -276,7 +280,7 @@ Golang
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

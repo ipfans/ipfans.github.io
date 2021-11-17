@@ -54,9 +54,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -107,23 +106,28 @@ Golang
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Feb 19, 2021</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 1 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
 <section class=article-content>
-<pre><code>原文地址：https://blog.golang.org/go116-module-changes
+<pre tabindex=0><code>原文地址：https://blog.golang.org/go116-module-changes
 原文作者：Jay Conrod
 译者：Kevin
 </code></pre><p>希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。<a class=link href=https://golang.org/doc/go1.16 target=_blank rel=noopener>发行说明</a>中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。</p>
 <h2 id=module功能默认开启>Module功能默认开启</h2>
 <p>go命令现在默认以module-aware模式构建包，即使没有<code>go.mod</code>文件存在。这是向在所有项目中使用Module功能迈出的一大步。</p>
 <p>通过设置<code>GO111MODULE</code>环境变量为<code>off</code>，仍然可以在<code>GOPATH</code>模式下构建包。你也可以将<code>GO111MODULE</code>设置为<code>auto</code>，只有当当前目录或任何父目录中存在<code>go.mod</code>文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用<code>go env -w</code>来永久地设置<code>GO111MODULE</code>和其他变量。</p>
-<pre><code>go env -w GO111MODULE=auto
+<pre tabindex=0><code>go env -w GO111MODULE=auto
 </code></pre><p>我们计划在 Go 1.17 中放弃对<code>GOPATH</code>模式的支持。换句话说，Go 1.17将忽略<code>GO111MODULE</code>。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交<a class=link href=https://github.com/golang/go/issues/new target=_blank rel=noopener>问题</a>或<a class=link href=https://github.com/golang/go/wiki/ExperienceReports target=_blank rel=noopener>体验报告</a>。</p>
 <h2 id=不会自动更改-gomod-和-gosum>不会自动更改 go.mod 和 go.sum</h2>
 <p>在之前的版本中，当<code>go</code>命令发现<code>go.mod</code>或<code>go.sum</code>有问题时，比如缺少<code>require</code>指令或缺少<code>sum</code>，它会尝试自动修复问题。我们收到了很多反馈，认为这种行为是出乎大家意料的，尤其是对于像<code>go list</code>这样通常不会产生副作用的命令。自动修复并不总是可取的：如果一个导入的包没有被任何需要的Module提供，<code>go</code>命令会添加一个新的依赖关系，可能会触发普通依赖关系的升级。即使是拼写错误的导入路径也会导致（失败的）网络查找。</p>
 <p>在 Go 1.16 中，module-aware命令在发现<code>go.mod</code>或<code>go.sum</code>中的问题后会报告一个错误，而不是尝试自动修复问题。在大多数情况下，错误信息建议使用命令来修复问题。</p>
-<pre><code>$ go build
+<pre tabindex=0><code>$ go build
 example.go:3:8: no required module provides package golang.org/x/net/html; to add it:
     go get golang.org/x/net/html
 $ go get golang.org/x/net/html
@@ -131,20 +135,20 @@ $ go build
 </code></pre><p>和之前一样，如果存在<code>vendor</code>目录，<code>go</code>命令可能会使用该目录（详见<a class=link href=https://golang.org/ref/mod#vendoring target=_blank rel=noopener><code>Vendoring</code></a>）。像<code>go get</code>和<code>go mod tidy</code>这样的命令仍然会修改<code>go.mod</code>和<code>go.sum</code>，因为它们的主要目的是管理依赖关系。</p>
 <h2 id=在特定版本上安装可执行文件>在特定版本上安装可执行文件</h2>
 <p><code>go install</code>命令现在可以通过指定<code>@version</code>后缀来安装特定版本的可执行文件。</p>
-<pre><code>go install golang.org/x/tools/gopls@v0.6.5
+<pre tabindex=0><code>go install golang.org/x/tools/gopls@v0.6.5
 </code></pre><p>当使用这种语法时，<code>go install</code>命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)</p>
 <p>我们曾经推荐使用<code>go get -u</code>程序来安装可执行文件，但这种使用方式对<code>go.mod</code>中添加或更改Module版本需求的意义造成了太多的混淆。而为了避免意外修改<code>go.mod</code>，人们开始建议使用更复杂的命令，比如：</p>
-<pre><code>cd $HOME; GO111MODULE=on go get program@latest
+<pre tabindex=0><code>cd $HOME; GO111MODULE=on go get program@latest
 </code></pre><p>现在我们都可以用<code>go install program@latest</code>来代替。详情请看<a class=link href=https://golang.org/ref/mod#go-install target=_blank rel=noopener>go install</a>。</p>
 <p>为了消除使用哪个版本的歧义，当使用这种安装语法时，对程序的go.mod文件中可能存在的指令有一些限制。特别是，至少在目前，替换和排除指令是不允许的。从长远来看，一旦新的<code>go install program@version</code>在足够多的用例中运行良好，我们计划让<code>go get</code>停止安装命令二进制文件。详情请参见<a class=link href=https://golang.org/issue/43684 target=_blank rel=noopener>issue 43684</a>。</p>
 <h2 id=module撤回>Module撤回</h2>
 <p>您是否曾经在Module版本准备好之前不小心发布过？或者您是否在版本发布后就发现了一个需要快速修复的问题？发布的版本中的错误是很难纠正的。为了保持Module构建的确定性，一个版本在发布后不能被修改。即使你删除或更改了版本标签，<a class=link href=https://proxy.golang.org/ target=_blank rel=noopener><code>proxy.golang.org</code></a>和其他代理可能已经有了原始版本的缓存。</p>
 <p>Module作者现在可以使用<code>go.mod</code>中的<code>retract</code>指令撤回Module版本。撤回的版本仍然存在，并且可以被下载（所以依赖它的构建不会中断），但在解析<code>@latest</code>这样的版本时，<code>go</code>命令不会自动选择它，<code>go get</code>和<code>go list -m -u</code>会打印关于现有使用版本的警告。</p>
 <p>例如，假设一个流行库<code>example.com/lib</code>的作者发布了<code>v1.0.5</code>，然后发现了一个新的安全问题。他们可以在他们的go.mod文件中添加如下指令。</p>
-<pre><code>// Remote-triggered crash in package foo. See CVE-2021-01234.
+<pre tabindex=0><code>// Remote-triggered crash in package foo. See CVE-2021-01234.
 retract v1.0.5
 </code></pre><p>接下来，作者可以标记并推送<code>v1.0.6</code>版本，即新的最高版本。在这之后，已经依赖v1.0.5的用户在检查更新或升级依赖的软件包时，就会被通知版本撤回。通知信息可能会包含来自<code>retract</code>指令上方注释的文字。</p>
-<pre><code>$ go list -m -u all
+<pre tabindex=0><code>$ go list -m -u all
 example.com/lib v1.0.0 (retracted)
 $ go get .
 go: warning: example.com/lib@v1.0.5: retracted by module author:
@@ -156,10 +160,10 @@ go: to switch to the latest unretracted version, run:
 <p><code>go</code>命令可以从<a class=link href=https://proxy.golang.org/ target=_blank rel=noopener><code>proxy.golang.org</code></a>这样的镜像中下载Module源代码，或者直接从使用<code>git</code>、<code>hg</code>、<code>svn</code>、<code>bzr</code>或<code>fossil</code>的版本管理仓库中下载。直接的版本控制访问是很重要的，特别是对于那些在代理上无法使用的私有Module，但这也是一个潜在的安全问题：版本控制工具中的一个bug可能会被恶意服务器利用，运行非预期的代码。</p>
 <p>Go 1.16引入了一个新的配置变量<code>GOVCS</code>，让用户可以指定哪些Module可以使用特定的版本控制工具。<code>GOVCS</code>接受一个以逗号分隔的<code>pattern:vcslist</code>规则列表。<code>pattern</code>是一个<a class=link href=https://golang.org/pkg/path#Match target=_blank rel=noopener><code>path.Match</code></a>模式，匹配一个Module路径的一个或多个前缀元素。特殊模式public和private匹配公共和私有Module（private被定义为由GOPRIVATE中的模式匹配的Module；public是其他所有Module）。<code>vcslist</code>是一个以管道符分隔的允许的版本控制命令列表，或关键字<code>all</code>或<code>off</code>。</p>
 <p>例如</p>
-<pre><code>GOVCS=github.com:git,evil.com:off,*:git|hg
+<pre tabindex=0><code>GOVCS=github.com:git,evil.com:off,*:git|hg
 </code></pre><p>在此设置下，路径在<code>github.com</code>上的Module可以使用<code>git</code>下载；路径在<code>evil.com</code>上的Module不能使用任何版本管理程序下载，其他所有路径（*匹配所有）可以使用<code>git</code>或<code>hg</code>下载。</p>
 <p>如果没有设置<code>GOVCS</code>，或者一个Module不符合任何模式，<code>go</code>命令就会使用这个默认值：公共Module允许使用<code>git</code>和<code>hg</code>，私有Module允许使用所有工具。只允许<code>Git</code>和<code>Mercurial</code>的理由是，这两个系统作为不受信任的服务器的客户端运行的问题最受关注。相比之下，<code>Bazaar</code>、<code>Fossil</code>和<code>Subversion</code>主要是在受信任的、经过认证的环境中使用，作为攻击面的审查程度不高。也就是说，默认的设置是</p>
-<pre><code>GOVCS=public:git|hg,private:all
+<pre tabindex=0><code>GOVCS=public:git|hg,private:all
 </code></pre><p>更多细节请参见使用<a class=link href=https://golang.org/ref/mod#vcs-govcs target=_blank rel=noopener><code>GOVCS控制版本管理工具</code></a>。</p>
 <h2 id=下一步>下一步？</h2>
 <p>我们希望您觉得这些功能很有用。我们已经在努力为Go 1.17开发新的Module功能，特别是<a class=link href=https://github.com/golang/go/issues/36460 target=_blank rel=noopener><code>懒惰Module加载</code></a>，这将使Module加载过程更快、更稳定。和以往一样，如果您遇到新的bug，请在<a class=link href=https://github.com/golang/go/issues target=_blank rel=noopener>问题跟踪</a>上告诉我们。Happy coding!</p>
@@ -239,7 +243,7 @@ go: to switch to the latest unretracted version, run:
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

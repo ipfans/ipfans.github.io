@@ -42,9 +42,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -87,6 +86,11 @@ Technical Investigations
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>May 28, 2016</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 3 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -96,10 +100,10 @@ Technical Investigations
 <p>工具 <code>fleet</code> 是一个在集群层面上的 <code>systemd</code> 管理工具。它的配置文件语法基于 <code>systemd</code> 的语法，另外添加了一些自有的属性。如果你希望在集群中运行你的服务，那么使用 <code>fleet</code> 管理 <code>systemd</code> 单元是再有必要不过的了。</p>
 <p>在比较新的系统 (CentOS 7+、Ubuntu 16+、Debian 8+) 中均采用了 <code>systemd</code> 作为启动项管理工具。如果你对 <code>systemd</code> 有疑问的话，请到其 <a class=link href=https://www.freedesktop.org/wiki/Software/systemd/ target=_blank rel=noopener>官方网站</a> 查看具体的介绍，这里不做赘述。</p>
 <p>之前使用的 <code>fleetctl</code> 就是 <code>fleet</code> 的管理工具，默认是在集群中的某台机器上进行管理。当然，<code>fleetctl</code> 同样也可以通过远程进行管理，可以通过如下命令连接远程集群。</p>
-<pre><code>FLEETCTL_ENDPOINT=http://&lt;IP:[PORT]&gt; fleetctl list-units
+<pre tabindex=0><code>FLEETCTL_ENDPOINT=http://&lt;IP:[PORT]&gt; fleetctl list-units
 </code></pre><h2 id=fleetctl-常见命令>fleetctl 常见命令</h2>
 <p>比较常见的 <code>fleetctl</code> 命令有：</p>
-<pre><code>core@core-01 ~ $ fleetctl -h
+<pre tabindex=0><code>core@core-01 ~ $ fleetctl -h
 ...
 COMMANDS:
 	cat				查看已经提交的单元文件内容
@@ -131,18 +135,18 @@ COMMANDS:
 <span style=color:#a6e22e>ExecStart</span><span style=color:#f92672>=</span><span style=color:#e6db74>/usr/bin/docker run --name busybox busybox /bin/sh -c &#34;trap&#39;exit 0&#39;INT TERM; while true; do echo Hello World; sleep 1; done&#34;</span>
 <span style=color:#a6e22e>ExecStop</span><span style=color:#f92672>=</span><span style=color:#e6db74>/usr/bin/docker stop busybox</span>
 </code></pre></div><p>看起来基本与 <code>systemd</code> 语法一致。保存成 <code>helloworld.service</code>，然后执行命令：</p>
-<pre><code>core@core-01 ~ $ fleetctl start helloworld.service
+<pre tabindex=0><code>core@core-01 ~ $ fleetctl start helloworld.service
 Unit helloworld.service inactive
 Unit helloworld.service launched on 6e1b9fae.../172.17.8.104
 </code></pre><p>可以通过 <code>fleetctl</code> 查看状态：</p>
-<pre><code>core@core-01 ~ $ fleetctl list-units
+<pre tabindex=0><code>core@core-01 ~ $ fleetctl list-units
 UNIT			MACHINE				ACTIVE	SUB
 helloworld.service	6e1b9fae.../172.17.8.104	active	running
 core@core-01 ~ $ fleetctl list-unit-files
 UNIT			HASH	DSTATE		STATE		TARGET
 helloworld.service	ce68bd4	launched	launched	6e1b9fae.../172.17.8.104
 </code></pre><p>同时，可以通过 <code>fleetctl journal</code> 查看程序是否正常运行了。</p>
-<pre><code>core@core-01 ~ $ fleetctl journal helloworld
+<pre tabindex=0><code>core@core-01 ~ $ fleetctl journal helloworld
 The authenticity of host '172.17.8.104' can't be established.
 ECDSA key fingerprint is 11:63:ee:93:e4:b9:5e:06:e9:c6:cd:63:e2:df:ef:9e.
 Are you sure you want to continue connecting (yes/no)? yes
@@ -176,7 +180,7 @@ May 28 10:09:13 core-04 docker[1163]: Hello World
 <span style=color:#66d9ef>[X-Fleet]</span>
 <span style=color:#a6e22e>Conflicts</span><span style=color:#f92672>=</span><span style=color:#e6db74>helloworld@*.service</span>
 </code></pre></div><p>最后新增的内容是 fleet 的专属语法，使用 <code>Conflicts</code> 可以限定每台机器上仅允许一个 <code>helloworld</code> 服务运行。</p>
-<pre><code>core@core-01 ~ $ fleetctl stop helloworld
+<pre tabindex=0><code>core@core-01 ~ $ fleetctl stop helloworld
 Unit helloworld.service loaded on 6e1b9fae.../172.17.8.104
 core@core-01 ~ $ fleetctl unload helloworld
 Unit helloworld.service inactive
@@ -282,7 +286,7 @@ helloworld@4.service	ce68bd4	launched	launched	c99fef8a.../172.17.8.101
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

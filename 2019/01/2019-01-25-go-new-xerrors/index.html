@@ -45,9 +45,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -98,12 +97,17 @@ Golang
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Jan 25, 2019</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 1 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
 <section class=article-content>
 <p>今天早些时候，<code>golang/x/exp</code>中默默的更新了一个名曰<code>xerrors</code>的包，这个包和同样处于<code>golang/x/exp</code>下的另一个名叫<code>errors</code>的包名字十分相似，就连介绍也都一致：</p>
-<pre><code> Package errors implements functions to manipulate errors.
+<pre tabindex=0><code> Package errors implements functions to manipulate errors.
 
 This package implements the Go 2 draft designs for error inspection and printing
 </code></pre><p>从目前的情况来看，基本上错误的处理形式基本已经定型，处理方式则是类似于之前的另一个<code>github.com/pkg/errors</code>包，但是具体细节不尽相同。</p>
@@ -143,7 +147,7 @@ This package implements the Go 2 draft designs for error inspection and printing
 </span><span style=color:#75715e></span>	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>xerrors</span>.<span style=color:#a6e22e>Unwrap</span>(<span style=color:#a6e22e>err</span>) <span style=color:#f92672>==</span> <span style=color:#a6e22e>ErrBase</span>)           <span style=color:#75715e>// 获取内层错误为原错误，地址相同
 </span><span style=color:#75715e></span>}
 </code></pre></div><p>输出结果为：</p>
-<pre><code>true
+<pre tabindex=0><code>true
 false
 true
 false
@@ -165,7 +169,7 @@ true
 	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Printf</span>(<span style=color:#e6db74>&#34;%+v\n&#34;</span>, <span style=color:#a6e22e>err3</span>)
 }
 </code></pre></div><p>输出链路如下：</p>
-<pre><code>wrap#02:
+<pre tabindex=0><code>wrap#02:
     main.main
         /.../error.go:16
   - wrap#01:
@@ -272,7 +276,7 @@ true
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

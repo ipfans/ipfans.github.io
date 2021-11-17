@@ -42,9 +42,8 @@ on-phone--column extended">
 <figure class=site-avatar>
 <img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </figure>
-<h1 class=site-name><a href=https://www.4async.com>ipfans's Blog</a></h1>
-<h2 class=site-description></h2>
-</header>
+<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
+<h2 class=site-description></h2></header>
 <ol class=menu id=main-menu>
 <li>
 <a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -87,6 +86,11 @@ Technical Investigations
 <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>May 31, 2016</time>
 </div>
+<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>
+阅读时长: 2 分钟
+</time>
+</div>
 </footer>
 </div>
 </header>
@@ -98,7 +102,7 @@ Technical Investigations
 <p>另外比较常见的服务发现还有 ZooKeeper（应用最广泛）、Consul 等等，如果有兴趣，可以自己在进行研究。</p>
 <h2 id=etcdctl-使用>Etcdctl 使用</h2>
 <p>工具 <code>etcdctl</code> 是 <code>etcd</code> 的控制程序，我们可以通过执行命令查看所有键值：</p>
-<pre><code>core@core-01 ~ $ etcdctl ls / --recursive
+<pre tabindex=0><code>core@core-01 ~ $ etcdctl ls / --recursive
 /coreos.com
 /coreos.com/network
 /coreos.com/network/config
@@ -110,15 +114,15 @@ Technical Investigations
 /coreos.com/updateengine/rebootlock
 /coreos.com/updateengine/rebootlock/semaphore
 </code></pre><p>还可以通过类似 Redis 的 <code>get</code> 等命令获取具体存储内容：</p>
-<pre><code>core@core-01 ~ $ etcdctl get /coreos.com/network/subnets/10.1.64.0-24
+<pre tabindex=0><code>core@core-01 ~ $ etcdctl get /coreos.com/network/subnets/10.1.64.0-24
 {&quot;PublicIP&quot;:&quot;172.17.8.101&quot;}
 </code></pre><p>区别是 Etcd 是支持目录的：</p>
-<pre><code>core@core-01 ~ $ etcdctl mkdir hello
+<pre tabindex=0><code>core@core-01 ~ $ etcdctl mkdir hello
 core@core-01 ~ $ etcdctl get hello
 /hello: is a directory
 core@core-01 ~ $ etcdctl rmdir hello
 </code></pre><p>刚刚我们介绍时也提到，Etcd 支持 HTTP 方式调用，比如：</p>
-<pre><code>core@core-01 ~ $ curl -L -X PUT http://127.0.0.1:2379/v2/keys/message -d value=&quot;Hello&quot;
+<pre tabindex=0><code>core@core-01 ~ $ curl -L -X PUT http://127.0.0.1:2379/v2/keys/message -d value=&quot;Hello&quot;
 {&quot;action&quot;:&quot;set&quot;,&quot;node&quot;:{&quot;key&quot;:&quot;/message&quot;,&quot;value&quot;:&quot;Hello&quot;,&quot;modifiedIndex&quot;:10318,&quot;createdIndex&quot;:10318},&quot;prevNode&quot;:{&quot;key&quot;:&quot;/message&quot;,&quot;value&quot;:&quot;Hello&quot;,&quot;modifiedIndex&quot;:10300,&quot;createdIndex&quot;:10300}}
 core@core-01 ~ $ etcdctl get /message
 Hello
@@ -127,11 +131,11 @@ core@core-01 ~ $ curl -L -X DELETE http://127.0.0.1:2379/v2/keys/message
 core@core-01 ~ $ etcdctl get /message
 Error:  100: Key not found (/message) [10467]
 </code></pre><p>TTL 的特性可以在设置状态时进行设定：</p>
-<pre><code>etcdctl set /foo &quot;Expiring Soon&quot; --ttl 20
+<pre tabindex=0><code>etcdctl set /foo &quot;Expiring Soon&quot; --ttl 20
 </code></pre><p>这个 KV 对就会在 20 秒内时效。</p>
 <h2 id=etcd-集群管理>Etcd 集群管理</h2>
 <p>除了本身的 KV 数据库特性外，作为集群服务发现工具时，也可以通过 restful api 方式发现当前集群信息：</p>
-<pre><code>core@core-01 ~ $ curl -L http://127.0.0.1:4001/v2/stats/leader
+<pre tabindex=0><code>core@core-01 ~ $ curl -L http://127.0.0.1:4001/v2/stats/leader
 {&quot;leader&quot;:&quot;efb737dfdc9ee528&quot;,&quot;followers&quot;:{&quot;6219cfe16536320&quot;:{&quot;latency&quot;:{&quot;current&quot;:0.003561,&quot;average&quot;:0.0031178274017212987,&quot;standardDeviation&quot;:0.018016615756979302,&quot;minimum&quot;:9e-06,&quot;maximum&quot;:1.338917},&quot;counts&quot;:{&quot;fail&quot;:0,&quot;success&quot;:51588}},&quot;a8cc28a8e121c40d&quot;:{&quot;latency&quot;:{&quot;current&quot;:0.002212,&quot;average&quot;:0.002837358092138387,&quot;standardDeviation&quot;:0.015615452604769925,&quot;minimum&quot;:1.7e-05,&quot;maximum&quot;:1.48721},&quot;counts&quot;:{&quot;fail&quot;:0,&quot;success&quot;:51618}},&quot;e44ee28dd4e590ac&quot;:{&quot;latency&quot;:{&quot;current&quot;:0.001838,&quot;average&quot;:0.006247004906804689,&quot;standardDeviation&quot;:0.4458222893241591,&quot;minimum&quot;:9e-06,&quot;maximum&quot;:105.637627},&quot;counts&quot;:{&quot;fail&quot;:32,&quot;success&quot;:58694}}}}
 core@core-01 ~ $ curl -L http://127.0.0.1:4001/v2/stats/self
 {&quot;name&quot;:&quot;c99fef8aac9b4a3e9d3a44f58b0739a6&quot;,&quot;id&quot;:&quot;efb737dfdc9ee528&quot;,&quot;state&quot;:&quot;StateLeader&quot;,&quot;startTime&quot;:&quot;2016-05-28T09:44:01.416629553Z&quot;,&quot;leaderInfo&quot;:{&quot;leader&quot;:&quot;efb737dfdc9ee528&quot;,&quot;uptime&quot;:&quot;1h59m14.023315023s&quot;,&quot;startTime&quot;:&quot;2016-05-28T09:44:44.495996231Z&quot;},&quot;recvAppendRequestCnt&quot;:0,&quot;sendAppendRequestCnt&quot;:162816,&quot;sendPkgRate&quot;:20.004570208101516,&quot;sendBandwidthRate&quot;:1953.7463493742348}
@@ -236,7 +240,7 @@ core@core-01 ~ $ curl -L http://127.0.0.1:4001/v2/stats/self
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.2.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>
