@@ -31,7 +31,7 @@ if err != nil { return err } 但是对新手而言，一遍又一遍的重复这
 这里有一个流行的方式保存单个User模型的方法：
 type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;` FirstName string `json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;` LastName string `json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;` DisplayName string `json:&amp;#34;display_name&amp;#34;` Email string `json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;` Emails []Email `json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;` PasswordHash string `json:&amp;#34;-&amp;#34;` LastIP string `json:&amp;#34;-&amp;#34;` CreatedAt *time."><title>Go Web应用中常见的反模式</title>
 <link rel=canonical href=https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="Go Web应用中常见的反模式">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Go Web应用中常见的反模式">
 <meta property="og:description" content="作者：Miłosz Smółka 译者：Kevin 原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/
  在我职业生涯的某个阶段，我对我所构建的软件不再感到兴奋。
 我最喜欢的工作内容是底层的细节和复杂的算法。在转到面向用户的应用开发之后，这些内容基本消失了。编程似乎是利用现有的库和工具把数据从一处移至另一处。到目前为止，我所学到的关于软件的知识不再那么有用了。
@@ -765,7 +765,7 @@ Software Architecture
 <article class=has-image>
 <a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
 <div class=article-image>
-<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
+<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>译：在Go中转向领域驱动设计</h2>
@@ -775,7 +775,7 @@ Software Architecture
 <article class=has-image>
 <a href=../../../2021/07/introducing-event-modeling/>
 <div class=article-image>
-<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
+<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy alt="Featured image of post 什么是事件建模Event Modeling?" data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
 </div>
 <div class=article-details>
 <h2 class=article-title>什么是事件建模Event Modeling?</h2>
@@ -785,7 +785,7 @@ Software Architecture
 <article class=has-image>
 <a href=../../../2021/02/2021-02-25-context-and-structs/>
 <div class=article-image>
-<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
+<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 上下文Context与结构体Struct" data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
 </div>
 <div class=article-details>
 <h2 class=article-title>上下文Context与结构体Struct</h2>
@@ -795,7 +795,7 @@ Software Architecture
 <article class=has-image>
 <a href=../../../2021/02/2021-02-19-go116-module-changes/>
 <div class=article-image>
-<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
+<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化" data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
 </div>
 <div class=article-details>
 <h2 class=article-title>Go 1.16 中Module功能新变化</h2>
@@ -822,11 +822,11 @@ Software Architecture
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

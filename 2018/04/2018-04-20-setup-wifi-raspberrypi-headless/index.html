@@ -5,7 +5,7 @@
 $ wpa_passphrase &amp;quot;testing&amp;quot; &amp;quot;testingPassword&amp;quot; network={ ssid=&amp;quot;testing&amp;quot; #psk=&amp;quot;testingPassword&amp;quot; psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531 }  当然你可以在 `psk` 填写原始的密码。 不过在某些极限环境下，我们有可能便装出门，未配置网线等工具，这个时候只有未加入过的WiFi网络，这样如何处理呢？ 这种方式与开启SSH方式类似，在制作的SD卡根目录下，新增/修改对应的 `wpa_supplicant.conf` 文件，添加对应的信息即可。 *注意，该文件包含默认头部信息不能缺少。如Raspbian 20180418版本完整配置为：* ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev update_config=1
 network={ ssid=&amp;ldquo;testing&amp;rdquo; #psk=&amp;ldquo;testingPassword&amp;rdquo; psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531 }"><title>树莓派无界面配置WiFi</title>
 <link rel=canonical href=https://www.4async.com/2018/04/2018-04-20-setup-wifi-raspberrypi-headless/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="树莓派无界面配置WiFi">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="树莓派无界面配置WiFi">
 <meta property="og:description" content="树莓派支持命令行下配置WiFi连接，可以通过编辑 /etc/wpa_supplicant/wpa_supplicant.conf 文件配置对应的WiFi配置。具体的内容可以使用 wpa_passphrase 工具生成对应的配置信息，附加到该文件结尾即可。
 假设我存在 SSID 为 testing 密码为 testingPassword 的WiFi网络，我可以使用 wpa_passphrase  生成对应的配置字符串：
 $ wpa_passphrase &amp;quot;testing&amp;quot; &amp;quot;testingPassword&amp;quot; network={ ssid=&amp;quot;testing&amp;quot; #psk=&amp;quot;testingPassword&amp;quot; psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531 }  当然你可以在 `psk` 填写原始的密码。 不过在某些极限环境下，我们有可能便装出门，未配置网线等工具，这个时候只有未加入过的WiFi网络，这样如何处理呢？ 这种方式与开启SSH方式类似，在制作的SD卡根目录下，新增/修改对应的 `wpa_supplicant.conf` 文件，添加对应的信息即可。 *注意，该文件包含默认头部信息不能缺少。如Raspbian 20180418版本完整配置为：* ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev update_config=1
@@ -132,7 +132,7 @@ psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531
 <article class=has-image>
 <a href=../../../2021/02/2021-02-19-move-to-hugo/>
 <div class=article-image>
-<img src=../../../2021/02/2021-02-19-move-to-hugo/cover.ff0f3f3c6016016f059fbfd8c15c5d94_hu7bbb3f3ebdb843801f79bded2b036297_73881_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2021-02-19-move-to-hugo data-hash="md5-/w8/PGAWAW8Fn7/YwVxdlA==">
+<img src=../../../2021/02/2021-02-19-move-to-hugo/cover.ff0f3f3c6016016f059fbfd8c15c5d94_hu7bbb3f3ebdb843801f79bded2b036297_73881_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 切换至Hugo引擎驱动" data-key=2021-02-19-move-to-hugo data-hash="md5-/w8/PGAWAW8Fn7/YwVxdlA==">
 </div>
 <div class=article-details>
 <h2 class=article-title>切换至Hugo引擎驱动</h2>
@@ -166,11 +166,11 @@ psk=131e1e221f6e06e3911a2d11ff2fac9182665c004de85300f9cac208a6a80531
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

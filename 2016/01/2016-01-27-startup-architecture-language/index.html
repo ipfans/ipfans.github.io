@@ -9,7 +9,7 @@ Python、Ruby 语法对程序员而言最大的成本在于需要重新学习一
 Python 和程序员入门的语言差距较大：用 4 个空格表述程序缩进。这意味着，程序员直接从网上寻找解决方案（拷贝代码）时成本更高，因为很有可能他需要手工进行代码格式化，这样有可能造成程序逻辑的改变。另外一个不得不提的是一些 Python 库看似好用，实际上或多或少有有一些坑，这对新手而言，往往是致命的。对应的，Ruby 语言本身时不存在这些问题的。然而 Ruby 作为开发主语言时最大的问题是，如果选择 RoR 框架作为初始的 Web 框架时，如果没有一个熟悉 RoR 框架的人，那么学习修改 RoR 框架的成本是特别高的：对于一个通用型框架而言，你可能需要更多的特殊场景定制，这可能需要做大量的猴子补丁，如果不对框架有一个清晰了解时，这样的成本会更高。
 JavaScript（后面统一用 Nodejs 代称）则借助 Nodejs 实现了高性能和较大吞吐量。而且从语言层面上，JavaScript 对很多程序员并不陌生。然而，在过去的很长时间，真正熟练掌握 JavaScript 的都是前端工程师，这是一个非常尴尬的问题。对后端工程师而言，Nodejs 需要与前端不同的技术栈，而且大概没有公司希望一个完全没有任何后端经验的前端工程师去接手后端项目的开发的。Nodejs 是一个年轻的语言，年轻必然会伴随一些问题，比如，库比较少（当然现在也是井喷期）。一些必要的库需要慢慢寻找。事实上，我也不得不吐槽，可能是开发者水平问题，导致很多 npm 提供的包，往往或多或少存在一些比较恼人的 BUG，这些 BUG 可能会在你开发过程中，正常运行中出现，而你却不得不干掉它。对于这种 BUG，很多时候更快的处理方式是你自己动手进行快速修复。然而当你的程序员不具备这种能力的时候，就需要提一个 issue 到开发者，由开发者进行修复，并且需要等待版本更新到 npm 源中。很多时候这个过程都是比较尴尬的，尤其是你选择了一个开发者并不是特别活跃的包。"><title>聊聊初创公司的后端语言选型 (小众语言)</title>
 <link rel=canonical href=https://www.4async.com/2016/01/2016-01-27-startup-architecture-language/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="聊聊初创公司的后端语言选型 (小众语言)">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="聊聊初创公司的后端语言选型 (小众语言)">
 <meta property="og:description" content="在创业公司初创伊始，如何选择合适的语言决定了产品后续的技术栈和如何进行合理的业务支撑方向。如果你在读这篇文章之前，更倾向于选择 Java/C#/PHP 常见语言技术栈，我觉得对于你而言，这篇文章帮助不大。因为对你而言，这些技术栈意味着更加方便招人，更方便的故障处理资料等等。但是如果一个初创公司想要选择合理的小众语言技术栈，我想这篇文章对你也许有一些帮助。
 在文章开始之前，我觉得有必要描述一下所谓的小众语言，这里我在最初进行技术选型时，考察了包括：
  Python: 你可能在接触爬虫、大数据分析等等方面听过 Python 的大名，大家都知道 Pythonista 都习惯说的一句话就是：人生苦短，我用 Python。 Ruby: 你如果做过 Web 框架，你遇到最多的是很多人都会提到 RoR 框架。用过之后只有一个惊叹了。 JavaScript（Nodejs）: 有没有听过 JavaScript 全栈工程师？有没有听过 JavaScript 全栈工程师？有没有听过 JavaScript 全栈工程师？ Golang: 简单粗暴的语言，也许你见过很多人跟你吹嘘，Golang 是下一代的云计算开发语言。  其他语言太过于小众，考虑语言的应用很多需要得到更多的社区支持，目前不在考虑的范畴内。
@@ -121,7 +121,7 @@ Software Architecture
 <article class=has-image>
 <a href=../../../2021/07/introducing-event-modeling/>
 <div class=article-image>
-<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
+<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy alt="Featured image of post 什么是事件建模Event Modeling?" data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
 </div>
 <div class=article-details>
 <h2 class=article-title>什么是事件建模Event Modeling?</h2>
@@ -131,7 +131,7 @@ Software Architecture
 <article class=has-image>
 <a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
 <div class=article-image>
-<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
+<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>译：在Go中转向领域驱动设计</h2>
@@ -151,11 +151,11 @@ Software Architecture
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

@@ -5,7 +5,7 @@
 3.4 之前如何实现异步 在 3.5 版本以前的程序中，Python 程序通常是使用 yield 作为一个判断是否进入异步操作的关键词。 比如在 3.4.x 版本中，我们可以用这样的一个例子来看一下 (或者你也可以用一个 Tornado 的例子，这 样你的程序就也可以运行在 2.7.x 版本的 Python 中了)：
 import time import asyncio @asyncio.coroutine def slow_operation(n): yield from asyncio.sleep(1) print(&amp;#34;Slow operation {}complete&amp;#34;.format(n)) @asyncio.coroutine def main(): start = time.time() yield from asyncio.wait([slow_operation(1), slow_operation(2), slow_operation(3), ]) end = time."><title>Python async/await 入门</title>
 <link rel=canonical href=https://www.4async.com/2015/08/2015-08-14-introduction-to-async-and-await/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="Python async/await 入门">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Python async/await 入门">
 <meta property="og:description" content="在新版 Python3.5 中，引入了两个新关键字 async 和 await，用于解决在 Python 异步编程中无法有效 区分 yield 生成器与异步的关系的问题。
 异步是一个什么东西 异步的作用在于，对于 Python 这种拥有 GIL 的语言，某个线程在处理单个耗时较长的任务时（如 I/O 读取，RESTful API 调用）等操作时，不能有效的释放 CPU 资源，导致其他线程的等待时间随之增加。 异步的作用是，在等待这种花费大量时间的操作数，允许释放 CPU 资源执行其他的线程任务，从而提 高程序的执行效率。
 3.4 之前如何实现异步 在 3.5 版本以前的程序中，Python 程序通常是使用 yield 作为一个判断是否进入异步操作的关键词。 比如在 3.4.x 版本中，我们可以用这样的一个例子来看一下 (或者你也可以用一个 Tornado 的例子，这 样你的程序就也可以运行在 2.7.x 版本的 Python 中了)：
@@ -251,11 +251,11 @@ Complete in 1.0060911178588867 second(s)
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

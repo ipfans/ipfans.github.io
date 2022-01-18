@@ -7,7 +7,7 @@
 本地安装 dapr安装可以通过官方的dapr-cli实现，dapr-cli可以通过一键安装命令快速安装：
 # wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash Your system is linux_amd64 Dapr CLI is detected: main: line 86: 43656 Segmentation fault $DAPR_CLI_FILE --version Reinstalling Dapr CLI - /usr/local/bin/dapr... Getting the latest Dapr CLI... Installing v1.0.0 Dapr CLI... Downloading https://github.com/dapr/cli/releases/download/v1.0.0/dapr_linux_amd64.tar.gz ... dapr installed into /usr/local/bin successfully. CLI version: 1.0.0 Runtime version: n/a To get started with Dapr, please visit https://docs.dapr.io/getting-started/ 可以通过输入dapr命令确认dapr-cli程序是否被正常安装成功。"><title>在非容器(集群)环境下运行dapr</title>
 <link rel=canonical href=https://www.4async.com/2021/03/2021-03-11-running-dapr-without-container/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="在非容器(集群)环境下运行dapr">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="在非容器(集群)环境下运行dapr">
 <meta property="og:description" content="前一段时间一直关注的dapr正式发布了v1.0版本(实际上本文发布时还更新了v1.0.1)，代表dapr在某些程度上进入稳定状态，可以尝试在实际中进行运用。作为我一直关注的项目，在第一时间中进行了尝试，并试图引入实际项目中，本文则是针对这些的一些先期测试内容.
 什么是dapr？ dapr最早是由微软开源的(不愧是你)，一个可移植的、事件驱动的程序运行时，它使任何开发者都能轻松地构建运行在云和边缘的弹性、无状态/有状态的应用程序，并且可以灵活支持多种开发语言。换而言之，在我看来，dapr可以作为一个serverless落地方案看待和处理，对程序而言，只关注提供的store和消息队列接口，无需关心架构层面更多内容。
  overview 
@@ -275,7 +275,7 @@ INFO[0000] dapr initialized. Status: Running. Init Elapsed 49.674504ms  app_id=s
 <article class=has-image>
 <a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
 <div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
+<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>OpenTelemetry入门</h2>
@@ -285,7 +285,7 @@ INFO[0000] dapr initialized. Status: Running. Init Elapsed 49.674504ms  app_id=s
 <article class=has-image>
 <a href=../../../2019/01/2019-01-25-go-new-xerrors/>
 <div class=article-image>
-<img src=../../../2019/01/2019-01-25-go-new-xerrors/cover.cafa45e868883662cdb07c50aff2a283_hue4ddd2aac593f64f6c4b0db3c64deb1c_32610_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2019-01-25-go-new-xerrors data-hash="md5-yvpF6GiINmLNsHxQr/Kigw==">
+<img src=../../../2019/01/2019-01-25-go-new-xerrors/cover.cafa45e868883662cdb07c50aff2a283_hue4ddd2aac593f64f6c4b0db3c64deb1c_32610_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 聊聊新的Go语言错误处理方案" data-key=2019-01-25-go-new-xerrors data-hash="md5-yvpF6GiINmLNsHxQr/Kigw==">
 </div>
 <div class=article-details>
 <h2 class=article-title>聊聊新的Go语言错误处理方案</h2>
@@ -305,11 +305,11 @@ INFO[0000] dapr initialized. Status: Running. Init Elapsed 49.674504ms  app_id=s
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

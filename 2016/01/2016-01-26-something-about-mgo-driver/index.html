@@ -8,7 +8,7 @@ h := Home{Name:&amp;#34;123&amp;#34;} fmt.Println(h.ID) 结果是 ObjectIdHex(&a
 h := Home{Name:&amp;#34;123&amp;#34;} fmt.Println(h.ID) fmt.Println(h.ID.Hex() == &amp;#34;&amp;#34;) 正确的生成 ObjectId 首先值得注意的是 NewObjectIdWithTime(t time.Time) 这个方法生成的 ObjectId 并不是唯一的，结果可能导致的是插入失败。最有效的方式是设定 ObjectId 对象支持 omitempty 属性，就像我上面生成的结构体一样，由数据库统一调配生成 ObjectId。如果真的确实需要，可以选择 NewObjctId()。
 时间问题 之前看到有人问，为什么保存的时间进入到数据库中慢了 8 个小时呢？原因是在保存进入 MongoDB 时，数据是按照 UTC 时间（不懂什么是 UTC？看这里）进行的保存，但是取出是按照当前时区来取出。那么问题来了，我的客户如果不都是国人，我怎么保存时间呢？目前我们采用了两种方式来确定数据库的保存时间。一种是 Unix 时间戳 ，这个是不受到时区的影响的，由前端格式化为对应的时区时间；另外一种则是需要在额外的对从 MongoDB 数据库中取出的数据进行额外的时区校准，简单来说可以这样："><title>Mgo 库的常见坑总结</title>
 <link rel=canonical href=https://www.4async.com/2016/01/2016-01-26-something-about-mgo-driver/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="Mgo 库的常见坑总结">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Mgo 库的常见坑总结">
 <meta property="og:description" content="mgo 库 是一个很好用的 MongoDB 驱动。对我们来说，主力数据库是 MongoDB，因此这个驱动对我们来说也是非常重要的。但是，mgo 库有些问题算是一些坑，这里我做了一些简单的整理。
 一些关于 bson.ObjectId 的问题 ObjectId 为空的判断 如果你看 bson.ObjectId 定义的话，它是一个 string 类型的数据。但是如果你直接定义一个结构，并且生成对象时，这个对象并不是这样的。
 我们首先定义一个结构体：
@@ -132,11 +132,11 @@ extended">
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

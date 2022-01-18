@@ -8,7 +8,7 @@
  解压压缩包，双击执行 start.bat 文件（Linux/Mac 下是 start.sh） 打开浏览器，浏览 http://127.0.0.1:3000 打开自动跳转至安装界面，内容一共只有下图这么多！很简单，我就不说啥了。如果你想多机同步，建议你将 SQLite 数据库和 repo 地址放在网盘内，比如我就放在 Dropbox 下了。   点击 Install Gogs，安装完成～  比如我现在是自己在用，可能需要一些单独的配置：
  打开 gogs 的目录，custom/conf/app.ini 文件，使用 SublimeText 之类的编辑器打开，不要使用记事本，这是个教训&amp;hellip; 按照下面修改之后就只允许本机访问了（反正只有我自己用），注意 Mac 和 Linux 下开 80 需要 root：  [server] PROTOCOL = http DOMAIN = localhost ROOT_URL = `http://localhost/` HTTP_ADDR = 127."><title>基于 Gogs 实现的私密 Git 服务</title>
 <link rel=canonical href=https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="基于 Gogs 实现的私密 Git 服务">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="基于 Gogs 实现的私密 Git 服务">
 <meta property="og:description" content="Github 是个好东西，最早接触 Git，就是因为 Github 接触的。上手简单，丰富的开源库，互动性等等功能都让 Github 充满魅力。
 当然了，一些私密的代码是不适合放在 Github 上的（比如工作代码），这个时候就不方便上传代码到 Github 了。当然了，如果 购买 Github 的 Micro Plan 就可以创建私密的 repo 了。
 不花钱有没有什么好方法？以前有一个 Github 功能大致相同的社区版 Gitlab，基于 Ruby 开发，可是配置实在是太过于复杂，也不适合一个人单独打包使用。不过后来遇到了 gogs，这个问题就解决了。其实刚开始知道 gogs 的时候，还不支持 SQLite3，最新的一个版本已经支持了，不过只有 x64 位版本，基于 golang 构建，因此也没有什么依赖需要安装，只需要简单的：下载、解压、打开、配置，然后你就可以使用 git 服务了。
@@ -149,11 +149,11 @@ HTTP_PORT = 80
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

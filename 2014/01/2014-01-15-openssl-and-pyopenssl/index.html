@@ -9,7 +9,7 @@ PSS: 重要的放在开头，升级 OpenSSL 对系统影响较大，比如 OpenS
 然后执行以下 mitmproxy，提示 pyOpenSSL 的 SSL.so 无法找 “SSL_get_servername” 的引用。What？编译没问题运行却提示出错了，orz。
 ldd SSL.so 看下该文件的引用关系，发现引用了 lib64 的 libssl."><title>OpenSSL 和 pyOpenSSL 那点事</title>
 <link rel=canonical href=https://www.4async.com/2014/01/2014-01-15-openssl-and-pyopenssl/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="OpenSSL 和 pyOpenSSL 那点事">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="OpenSSL 和 pyOpenSSL 那点事">
 <meta property="og:description" content="[UPDATE 2014-01-23]
 解决 pyOpenSSL 的问题也不一定非得使用升级 OpenSSL 的方式，由于 OpenSSL 关联面太广，实际上可以采用安装新版 OpenSSL，在安装 pyOpenSSL 的时候指定 include 和 libs 的方式来指定使用版本的 OpenSSL。具体改一下 setup.py 中的具体对应参数即可。
 PSS: 重要的放在开头，升级 OpenSSL 对系统影响较大，比如 OpenSSH 无法正常工作，算是得到的一个教训，记得同步更新相关使用到 OpenSSL 的软件
@@ -132,11 +132,11 @@ on-phone--column extended">
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

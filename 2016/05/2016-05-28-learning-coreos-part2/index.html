@@ -7,7 +7,7 @@ fleet 是什么 工具 fleet 是一个在集群层面上的 systemd 管理工具
 FLEETCTL_ENDPOINT=http://&amp;lt;IP:[PORT]&amp;gt; fleetctl list-units fleetctl 常见命令 比较常见的 fleetctl 命令有：
 core@core-01 ~ $ fleetctl -h ... COMMANDS: cat	查看已经提交的单元文件内容 destroy	销毁集群中的一个或多个单元 fd-forward	将标准输入输出转向到一个 unix socket 中 journal	将集群中的某个 unit 的日志输出到当前 list-machines	查看集群中的已知机器 list-unit-files	查看集群中存在的单元 list-units	查看集群中的单元状态 load	将一个或多个单元加载到集群中，必要时会先执行 submit 功能 ssh	连接到集群中的某台机器 start	启动集群中一个或多个单元，必要时会先执行 submit 和 load 功能 status	输出集群中一个或多个单元的状态 stop	停止集群中一个或多个单元 submit	上传一个或多个单元到集群中，并不会加载执行 unload	卸载集群中的一个或多个单元 fleet 单元文件 以一个 Hello World 程序作为演示来讲解："><title>CoreOS 折腾笔记（二）Fleet 进阶</title>
 <link rel=canonical href=https://www.4async.com/2016/05/2016-05-28-learning-coreos-part2/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="CoreOS 折腾笔记（二）Fleet 进阶">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="CoreOS 折腾笔记（二）Fleet 进阶">
 <meta property="og:description" content="如果要说什么样子的分布式集群对用户是最友好的，那无疑是对客户来说，像本地执行命令一样方便的执行集群命令肯定是最舒服的了。这个我们在上一节 集群部署 里面就提到了一个叫做 &amp;ldquo;fleetctl&amp;rdquo; 的命令，这个命令是做什么用的呢？
 fleet 是什么 工具 fleet 是一个在集群层面上的 systemd 管理工具。它的配置文件语法基于 systemd 的语法，另外添加了一些自有的属性。如果你希望在集群中运行你的服务，那么使用 fleet 管理 systemd 单元是再有必要不过的了。
 在比较新的系统 (CentOS 7+、Ubuntu 16+、Debian 8+) 中均采用了 systemd 作为启动项管理工具。如果你对 systemd 有疑问的话，请到其 官方网站 查看具体的介绍，这里不做赘述。
@@ -209,7 +209,7 @@ helloworld@4.service	ce68bd4	launched	launched	c99fef8a.../172.17.8.101
 <article class=has-image>
 <a href=../../../2021/07/introducing-event-modeling/>
 <div class=article-image>
-<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
+<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy alt="Featured image of post 什么是事件建模Event Modeling?" data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
 </div>
 <div class=article-details>
 <h2 class=article-title>什么是事件建模Event Modeling?</h2>
@@ -249,11 +249,11 @@ helloworld@4.service	ce68bd4	launched	launched	c99fef8a.../172.17.8.101
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

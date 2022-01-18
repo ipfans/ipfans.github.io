@@ -7,7 +7,7 @@
 数据库主从切换 虽然 MongoDB 的 Replica Set 功能可以方便的进行自动主从切换。但是实际使用过程中，我们也会遇到一些需要手工进行主从库切换的情况。比如，进行进行版本升级修复 BUG 或者安全漏洞。但是如果这个时候强行进行 Primary 的重启，则可能会出现未同步至 Secondary 的数据丢失的情况（血泪教训）。这种情况下，重启集群的方式是，优先进行 Secondary 的更新操作，在 Secondary 更新完成后，对 Primary 进行 stepDown 操作，等待主节点降级成为 Secondary 节点，之后进行操作。这样的好处是不会丢失数据。但是如果主从数据差异较大时，有可能会造成降级失败，此时可以重复执行 stepDown 直至成功。还有一个值得注意的是，即便 Secondary 可以停机维护，但是仍旧有可能丢数据，这个与 oplog 大小有关，我们放在后面说。
 慢查询问题 慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 db.setProfilingLevel() 进行管理。同时，主动分析也可以通过 explain 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 db.currentOp() 和 db.killOp() 功能干掉长时间执行、浪费资源的操作。"><title>一些 MongoDB 的坑</title>
 <link rel=canonical href=https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="一些 MongoDB 的坑">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="一些 MongoDB 的坑">
 <meta property="og:description" content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。
 但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。
 集合使用不当问题 在使用 MongoDB 过程中，我们创建了大量的集合。这种情况在 WiredTriger 引擎下创建大量零散文件。这个在使用过程中暂时未对我们造成实际的业务较大影响，但是从实际使用而言，对整体数据库性能、后续主从复制集群同步，都是有一定影响的。在实际应用过程中应该避免：拥有过多 DB、一个 DB 下有过多 Collection，这样都会导致部分指令的性能大幅度下滑。同时，过多的 DB 也会导致主从同步失败 (listDatabse 超时导致失败，从库退出)。
@@ -99,7 +99,7 @@ Golang
 <article class=has-image>
 <a href=../../../2021/08/golang-117-generics/>
 <div class=article-image>
-<img src=../../../2021/08/golang-117-generics/go.0e79e445e19a9abee9b3fd879464ff15_hu0a44c8ca350ed766a7653d0fae9076f0_60746_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=golang-117-generics data-hash="md5-DnnkReGamr7ps/2HlGT/FQ==">
+<img src=../../../2021/08/golang-117-generics/go.0e79e445e19a9abee9b3fd879464ff15_hu0a44c8ca350ed766a7653d0fae9076f0_60746_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Go 1.17 泛型尝鲜" data-key=golang-117-generics data-hash="md5-DnnkReGamr7ps/2HlGT/FQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>Go 1.17 泛型尝鲜</h2>
@@ -159,11 +159,11 @@ Golang
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

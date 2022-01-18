@@ -3,7 +3,7 @@
 <meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。
 "><title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</title>
 <link rel=canonical href=https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志">
 <meta property="og:description" content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。
 ">
 <meta property="og:url" content="https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/">
@@ -123,7 +123,7 @@ Golang
 <article class=has-image>
 <a href=../../../2021/02/2021-02-25-context-and-structs/>
 <div class=article-image>
-<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
+<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 上下文Context与结构体Struct" data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
 </div>
 <div class=article-details>
 <h2 class=article-title>上下文Context与结构体Struct</h2>
@@ -133,7 +133,7 @@ Golang
 <article class=has-image>
 <a href=../../../2021/02/2021-02-19-go116-module-changes/>
 <div class=article-image>
-<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
+<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化" data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
 </div>
 <div class=article-details>
 <h2 class=article-title>Go 1.16 中Module功能新变化</h2>
@@ -143,7 +143,7 @@ Golang
 <article class=has-image>
 <a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
 <div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
+<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>OpenTelemetry入门</h2>
@@ -153,7 +153,7 @@ Golang
 <article class=has-image>
 <a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
 <div class=article-image>
-<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
+<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>译：在Go中转向领域驱动设计</h2>
@@ -180,11 +180,11 @@ Golang
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

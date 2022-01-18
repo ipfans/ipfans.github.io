@@ -6,7 +6,7 @@
 倾向于将上下文作为参数传递 为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。
 type Worker struct { /* … */ } type Work struct { /* … */ } func New() *Worker { return &amp;amp;Worker{} } func (w *Worker) Fetch(ctx context.Context) (*Work, error) { _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 } func (w *Worker) Process(ctx context.Context, w *Work) error { _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker).Fetch和(*Worker).Process方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的context.Context将如何被使用：没有期望传递给一个方法的context.Context将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。"><title>上下文Context与结构体Struct</title>
 <link rel=canonical href=https://www.4async.com/2021/02/2021-02-25-context-and-structs/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="上下文Context与结构体Struct">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="上下文Context与结构体Struct">
 <meta property="og:description" content="原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
 在context的文档中写道。
 上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。  本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。
@@ -172,7 +172,7 @@ Golang
 <article class=has-image>
 <a href=../../../2021/02/2021-02-19-go116-module-changes/>
 <div class=article-image>
-<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
+<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化" data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
 </div>
 <div class=article-details>
 <h2 class=article-title>Go 1.16 中Module功能新变化</h2>
@@ -182,7 +182,7 @@ Golang
 <article class=has-image>
 <a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
 <div class=article-image>
-<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
+<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>译：在Go中转向领域驱动设计</h2>
@@ -199,7 +199,7 @@ Golang
 <article class=has-image>
 <a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
 <div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
+<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>OpenTelemetry入门</h2>
@@ -226,11 +226,11 @@ Golang
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

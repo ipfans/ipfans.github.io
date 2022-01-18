@@ -7,7 +7,7 @@ def setex(self, key, seconds, value): &amp;#34;&amp;#34;&amp;#34;Set the value a
 首先，我们都知道，对连接而言，创建是必要重型的操作。比如说，TCP 连接，接下来之后是登录认证等等过程，最后才会执行命令。这也就是我们通常计算库性能时，很多时候会把建立连接的时候去掉。但是这就出现了一个问题，当一个连接被占用时，其他的操作仍旧是不能够完成操作了，只能等待前一个操作完成。但是假如我们一次性创建一堆连接呢？从一堆连接中找到空闲的连接，使用完成后释放成空闲的状态，这就是线程池的本质。因为减少了每次创建连接的过程，所以对性能提升也非常有帮助。
 从单连接到连接池 首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。"><title>从零实现一个 Redis 客户端（二）</title>
 <link rel=canonical href=https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="从零实现一个 Redis 客户端（二）">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="从零实现一个 Redis 客户端（二）">
 <meta property="og:description" content="从 Call 到命令端 在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：
 client = redis.StrictRedis() client.setex(&amp;#34;key&amp;#34;, 10, &amp;#34;value&amp;#34;) 接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 setex 方法：
 def setex(self, key, seconds, value): &amp;#34;&amp;#34;&amp;#34;Set the value and expiration of a key. :raises TypeError: if seconds is neither int &amp;#34;&amp;#34;&amp;#34;if not isinstance(seconds, int): raise TypeError(&amp;#34;milliseconds argument must be int&amp;#34;) fut = self._conn.execute(b&amp;#39;SETEX&amp;#39;, key, seconds, value) return wait_ok(fut) 剩下的就是一个个方法逐个完善。
@@ -222,11 +222,11 @@ client<span style=color:#f92672>.</span>setex(<span style=color:#e6db74>&#34;key
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

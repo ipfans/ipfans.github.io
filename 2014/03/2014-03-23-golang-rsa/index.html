@@ -3,7 +3,7 @@
 <meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="话不多说，自己看吧，比较明白。
 package main import (&amp;#34;crypto&amp;#34; &amp;#34;crypto/rand&amp;#34; &amp;#34;crypto/rsa&amp;#34; &amp;#34;crypto/sha256&amp;#34; &amp;#34;crypto/x509&amp;#34; &amp;#34;encoding/base64&amp;#34; &amp;#34;encoding/pem&amp;#34; &amp;#34;errors&amp;#34; &amp;#34;fmt&amp;#34; ) func main() {signer, err := loadPrivateKey(&amp;#34;private.pem&amp;#34;) if err != nil {fmt.Errorf(&amp;#34;signer is damaged: %v&amp;#34;, err) } toSign := &amp;#34;date: Thu, 05 Jan 2012 21:31:40 GMT&amp;#34; signed, err := signer.Sign([]byte(toSign)) if err != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } sig := base64.StdEncoding.EncodeToString(signed) fmt.Printf(&amp;#34;Signature: %v\n&amp;#34;, sig) parser, perr := loadPublicKey(&amp;#34;public.pem&amp;#34;) if perr != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } err = parser."><title>Golang 的 RSA 公私钥方法实现</title>
 <link rel=canonical href=https://www.4async.com/2014/03/2014-03-23-golang-rsa/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="Golang 的 RSA 公私钥方法实现">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Golang 的 RSA 公私钥方法实现">
 <meta property="og:description" content="话不多说，自己看吧，比较明白。
 package main import (&amp;#34;crypto&amp;#34; &amp;#34;crypto/rand&amp;#34; &amp;#34;crypto/rsa&amp;#34; &amp;#34;crypto/sha256&amp;#34; &amp;#34;crypto/x509&amp;#34; &amp;#34;encoding/base64&amp;#34; &amp;#34;encoding/pem&amp;#34; &amp;#34;errors&amp;#34; &amp;#34;fmt&amp;#34; ) func main() {signer, err := loadPrivateKey(&amp;#34;private.pem&amp;#34;) if err != nil {fmt.Errorf(&amp;#34;signer is damaged: %v&amp;#34;, err) } toSign := &amp;#34;date: Thu, 05 Jan 2012 21:31:40 GMT&amp;#34; signed, err := signer.Sign([]byte(toSign)) if err != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } sig := base64.StdEncoding.EncodeToString(signed) fmt.Printf(&amp;#34;Signature: %v\n&amp;#34;, sig) parser, perr := loadPublicKey(&amp;#34;public.pem&amp;#34;) if perr != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } err = parser.">
 <meta property="og:url" content="https://www.4async.com/2014/03/2014-03-23-golang-rsa/">
@@ -249,11 +249,11 @@ func (r <span style=color:#f92672>*</span>rsaPublicKey) Unsign(message []byte, s
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

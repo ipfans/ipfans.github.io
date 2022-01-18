@@ -6,7 +6,7 @@
  发送 SIGINT 信号至 Consul； 连接要升级的 consul，使用命令 consul leave 发送离开命令；  这两种方式都会让该节点主动退出集群并结束进程，如下：
 [INFO] agent: Caught signal: terminated [INFO] agent: Graceful shutdown disabled. Exiting [INFO] agent: Requesting shutdown [INFO] consul: shutting down server [WARN] serf: Shutdown without a Leave [ERR] agent: Coordinate update error: No cluster leader [ERR] agent: failed to sync remote state: No cluster leader [WARN] serf: Shutdown without a Leave [INFO] manager: shutting down [INFO] agent: consul server down [INFO] agent: shutdown complete [INFO] agent: Stopping DNS server 10."><title>Consul平滑升级的一点建议</title>
 <link rel=canonical href=https://www.4async.com/2018/05/2018-05-10-consul-graceful-stop/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="Consul平滑升级的一点建议">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Consul平滑升级的一点建议">
 <meta property="og:description" content="我们从 Consul 0.6.x 版本开始使用，中间也遇到的一些各种各样的问题，比较常见的操作问题就是 consul 的升级问题（比如解决 BUG，早期 Consul 的 BUG 也遇到了好几个）。
 平滑升级时，我们常见的方式一般为替换 consul 可执行文件，然后执行 Graceful 重启
 常见 Consul 的 Graceful leave 的方法有以下两种：
@@ -135,7 +135,7 @@ Technical Investigations
 <article class=has-image>
 <a href=../../../2021/07/introducing-event-modeling/>
 <div class=article-image>
-<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
+<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy alt="Featured image of post 什么是事件建模Event Modeling?" data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
 </div>
 <div class=article-details>
 <h2 class=article-title>什么是事件建模Event Modeling?</h2>
@@ -195,11 +195,11 @@ Technical Investigations
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

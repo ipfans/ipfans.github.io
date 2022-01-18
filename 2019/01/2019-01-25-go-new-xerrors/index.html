@@ -8,7 +8,7 @@ raiseError: a new error 看起来非常类似于之前github.com/pkg/errors的�
 同时，这个包中也包含了几个非常有用的辅助函数，分别是：验证错误类型方法Is、错误类型转换方法As、错误关系链解除方法Opaque和提取内层错误方法Unwrap。我们可以用一个简单的演示来说明这种关系：
 var ( ErrBase = xerrors.New(&amp;#34;a new error&amp;#34;) ) func main() { err := xerrors."><title>聊聊新的Go语言错误处理方案</title>
 <link rel=canonical href=https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="聊聊新的Go语言错误处理方案">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="聊聊新的Go语言错误处理方案">
 <meta property="og:description" content="今天早些时候，golang/x/exp中默默的更新了一个名曰xerrors的包，这个包和同样处于golang/x/exp下的另一个名叫errors的包名字十分相似，就连介绍也都一致：
  Package errors implements functions to manipulate errors. This package implements the Go 2 draft designs for error inspection and printing 从目前的情况来看，基本上错误的处理形式基本已经定型，处理方式则是类似于之前的另一个github.com/pkg/errors包，但是具体细节不尽相同。
 如何处理error？ 在之前介绍文章中提到过github.com/pkg/errors包的设计思路，那么在Go团队的实现中，这种思路也得到了继承。先从一个小例子开始：
@@ -179,7 +179,7 @@ true
 <article class=has-image>
 <a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
 <div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
+<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>OpenTelemetry入门</h2>
@@ -239,11 +239,11 @@ true
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

@@ -9,7 +9,7 @@
 GIL 限制了 Python 的 bytecode 只能在一个线程中运行，使用这种 GIL 避免多线程编程时隐含并发访问对象可能带来的潜在问题，但是也让 Python 在多核下性能表现感人。这种实现方式一直备受诟病，这也导致 Python 在某些高并发场景时会出现较严重的性能下滑问题。
 在 Python 性能提升上，比较常见的性能提升的方式，是将多线程转化为多进程方式，以充分利用 CPU 多核心。但是这样带来直接的问题是进程间通讯会严重影响整体程序的吞吐量。一个简单的 CPU 密集 Python socket 的通讯程序，非 Block 状态下，吞吐量能有大概 10 倍以上的差距。(参考 Python Concurrency From the Ground Up )"><title>Python 异步与性能迷思</title>
 <link rel=canonical href=https://www.4async.com/2015/11/2015-11-11-async-python/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="Python 异步与性能迷思">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Python 异步与性能迷思">
 <meta property="og:description" content="今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？
 为了搞清楚这个问题，我对线上环境应用使用了性能探针系统。性能出人意料 (CPython 2.7.10)：
  线上性能 
@@ -182,11 +182,11 @@ on-phone--column extended">
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

@@ -7,7 +7,7 @@ class StickyMaster(controller.Master): ...... def handle_request(self, msg): pdb
 ✗ python pdbtest.py ...... &amp;gt; pdbtest.py(63)handle_request() -&amp;gt; if allow_check(msg) is False: (Pdb) 是不是看起来很像 gdb 一类的工具？这个时候输入命令查看对象了，输入 h 可以查看帮助：
 (Pdb) h Documented commands (type help &amp;lt;topic&amp;gt;): ======================================== EOF bt cont enable jump pp run unt a c continue exit l q s until alias cl d h list quit step up args clear debug help n r tbreak w b commands disable ignore next restart u whatis break condition down j p return unalias where Miscellaneous help topics: ========================== exec pdb Undocumented commands: ====================== retval rv 接下来查看下当前变量："><title>快速确认 Python 对象结构</title>
 <link rel=canonical href=https://www.4async.com/2014/05/2014-05-30-quick-identify-python-object-struct/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="快速确认 Python 对象结构">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="快速确认 Python 对象结构">
 <meta property="og:description" content="好吧，这个问题确实比较蛋疼的一个问题，也是最近经常遇到的问题。具体的原因是这样的，最近使用了一个开源的库实现功能，实现方法是使用的回调方式。这样就出现了一个问题，回调过来的对象是什么格式的我并不知道具体细节。有人说，看看文档不就行了么，问题是这个项目他就没个详细文档。其实读代码也是可以解决这个问题的，但是实际上这是一个时间的工作，并且很容易会把自己也绕进去。那怎么办呢？别急，往下看。
  直接 dir 输出属性   这个很简单了，直接 print dir(对象名) 就可以打印对象的属性名称了。不过这个得来回测试一下，不能一次性把所有的想要的都能得到。
 利用 pdb 快速定位   pdb 是官方库中的 Python Debugger，使用方法也比较简单：在 Python 代码中 import pdb 库，然后在指定的位置添加一句：pdb.set_trace()。以我的代码为例，我需要了解 msg 的结构：
@@ -175,11 +175,11 @@ msg = &lt;libmproxy.flow.Request instance at 0x1080d5680&gt;
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

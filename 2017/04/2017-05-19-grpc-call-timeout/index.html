@@ -11,7 +11,7 @@
 那么我们修改 examples/helloworld/greeter_client/main.go 中的 main，添加超时处理内容：
 func main() { // Set up method timeout configure. 	var wg sync.WaitGroup wg.Add(1) ch := make(chan grpc."><title>gRPC 调用超时控制</title>
 <link rel=canonical href=https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="gRPC 调用超时控制">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="gRPC 调用超时控制">
 <meta property="og:description" content="我们在进行服务间调用时广泛采用 gRPC 作为主要的调用协议，借助 gRPC 的模块化与语言无关的特性，可以在我们拓展多语言模块之间提供更好的支持。但是我们在使用 gRPC 之中也出现了一些问题，这些问题会做一些记录，希望可以与大家一起沟通与交流。
 某日，我们的客服反馈，我们的基础设施操作工具出现了长时间无响应的问题。该问题出现在我们对某些设备进行 OTA 升级时，操作长时间无返回，与之前预期的 10 秒内返回存在较大出入。经过我们的工程师分析，我们发现在 gRPC 处理过程中，我们的操作工具通过 gRPC 调用远程服务端接口时，接口长时间没有返回结果。
 我们首先怀疑是 gRPC 调用过程中出现了连接问题。gRPC 过程中可能由于多种原因导致连接断开或者服务器无法连接。在调用 gRPC 方法过程中，我们可以通过 FailFast(true) 方式进行快速失败。实际上，这个值默认情况下为 true。
@@ -170,7 +170,7 @@ Technical Investigations
 <article class=has-image>
 <a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
 <div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
+<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>OpenTelemetry入门</h2>
@@ -180,7 +180,7 @@ Technical Investigations
 <article class=has-image>
 <a href=../../../2019/01/2019-01-25-go-new-xerrors/>
 <div class=article-image>
-<img src=../../../2019/01/2019-01-25-go-new-xerrors/cover.cafa45e868883662cdb07c50aff2a283_hue4ddd2aac593f64f6c4b0db3c64deb1c_32610_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2019-01-25-go-new-xerrors data-hash="md5-yvpF6GiINmLNsHxQr/Kigw==">
+<img src=../../../2019/01/2019-01-25-go-new-xerrors/cover.cafa45e868883662cdb07c50aff2a283_hue4ddd2aac593f64f6c4b0db3c64deb1c_32610_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 聊聊新的Go语言错误处理方案" data-key=2019-01-25-go-new-xerrors data-hash="md5-yvpF6GiINmLNsHxQr/Kigw==">
 </div>
 <div class=article-details>
 <h2 class=article-title>聊聊新的Go语言错误处理方案</h2>
@@ -197,7 +197,7 @@ Technical Investigations
 <article class=has-image>
 <a href=../../../2021/07/introducing-event-modeling/>
 <div class=article-image>
-<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
+<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy alt="Featured image of post 什么是事件建模Event Modeling?" data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
 </div>
 <div class=article-details>
 <h2 class=article-title>什么是事件建模Event Modeling?</h2>
@@ -227,11 +227,11 @@ Technical Investigations
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

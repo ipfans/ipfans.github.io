@@ -8,7 +8,7 @@ func Call(a *Struct) uint64 {return a.Ba} 创建对象时避免创建引用 上�
 // method 1 new(Struct) Struct{} // method 2 &amp;amp;BigStruct{} range 遍历 常见的 range 方式通常是如下的方式：
 for k,v := range slices {log.Println(v) } 或者是省略 k，使用 v 就可以遍历整个 slices。但是，实际上下面这个方法会更快，原因是这里面节省了 v 的拷贝，速度要比拷贝更快："><title>Golang 高效编写（整理）</title>
 <link rel=canonical href=https://www.4async.com/2014/12/2014-12-18-golang-optimizing/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="Golang 高效编写（整理）">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Golang 高效编写（整理）">
 <meta property="og:description" content="这是一篇如何编写高效 Golang 语言程序的文章。这是从一些开发者的经验总结中整理出来的。根据这篇文章，你可以编写出一篇更高效的 Golang 程序。
 尽量使用直接的类型 interface{} 提供了 golang 中的 interface 类似于 java 的 interface、PHP 的 interface 或 C++ 的纯虚基类。通过这种方式可以提供更快捷的编码。但是这种方式也带来了一些问题，最大的问题还是性能问题。
 // method 1 a.AA() // method 2 v.(InterfaceA).AA() // method 3 switch v.(type) { case InterfaceA: v.(InterfaceA).AA()} 这三组方法性能逐个下降，最好的方式是直接进行类型引用。
@@ -119,11 +119,11 @@ extended">
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

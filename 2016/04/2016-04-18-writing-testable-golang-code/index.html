@@ -7,7 +7,7 @@ with patch.object(ProductionClass,&amp;#39;method&amp;#39;, return_value=None) a
 var imp = func() bool {return true} func TestFunc(t *testing.T) {defer func(org func() bool) {imp = org}(imp) img = func() bool {return false} // testing or something else... } 这样实现 Mock 是完全可以的，但是实际上会带来一些额外的问题，比如说在 MVC 框架中，我们正常采用的方式一般是这样的：
 import (&amp;#34;models&amp;#34; ... ) func A(ctx Context) error { ."><title>编写测试友好的 Golang 代码</title>
 <link rel=canonical href=https://www.4async.com/2016/04/2016-04-18-writing-testable-golang-code/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="编写测试友好的 Golang 代码">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="编写测试友好的 Golang 代码">
 <meta property="og:description" content="目前我们有大量的应用采用了 Golang 程序进行构建，但是在执行研发流程里我们会发现一些来自于静态编译程序的不便：相对于我们之前使用的 Python 语言程序而言，我们无法在程序功能的单元测试里大量的使用 Mock 方式来进行高效测试。
 而这些东西往往可以在开发人员编写单元测试用例时有效的节省时间和一些额外的环境准备成本。因此，这也给我们的程序的单元覆盖率带来了很多麻烦的地方：一些依赖于额外验证和表现的情况或者小几率出现的情况需要复杂的模拟步骤，对开发进度和效率带来了一些额外的影响。如何编写一个测试友好的 Golang 程序成为一个无法绕开的问题。
 从动态语言到静态语言 动态语言有良好的运行时修改属性，在运行时的动态修改函数，可以进行有效的 Mock。比如在 Python（以 3 为例，内置了 unittest.mock 标准库）程序中:
@@ -191,7 +191,7 @@ Golang
 <article class=has-image>
 <a href=../../../2021/02/2021-02-25-context-and-structs/>
 <div class=article-image>
-<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
+<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 上下文Context与结构体Struct" data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
 </div>
 <div class=article-details>
 <h2 class=article-title>上下文Context与结构体Struct</h2>
@@ -201,7 +201,7 @@ Golang
 <article class=has-image>
 <a href=../../../2021/02/2021-02-19-go116-module-changes/>
 <div class=article-image>
-<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
+<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化" data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
 </div>
 <div class=article-details>
 <h2 class=article-title>Go 1.16 中Module功能新变化</h2>
@@ -211,7 +211,7 @@ Golang
 <article class=has-image>
 <a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
 <div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
+<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>OpenTelemetry入门</h2>
@@ -221,7 +221,7 @@ Golang
 <article class=has-image>
 <a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
 <div class=article-image>
-<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
+<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>译：在Go中转向领域驱动设计</h2>
@@ -248,11 +248,11 @@ Golang
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

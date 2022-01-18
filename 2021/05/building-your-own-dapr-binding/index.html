@@ -12,7 +12,7 @@
 apiVersion: dapr.io/v1alpha1 kind: Component metadata: name: &amp;lt;NAME&amp;gt; namespace: &amp;lt;NAMESPACE&amp;gt; spec: type: bindings.&amp;lt;TYPE&amp;gt; version: v1 metadata: - name: &amp;lt;NAME&amp;gt; value: &amp;lt;VALUE&amp;gt; 其中metadata.name则是绑定置名称，spec.metadata.name和spec.metadata.value则是配置的属性和对应值。这个值我们可以通过实现接口InputBinding或者OutputBinding实现输入绑定和输出绑定.
 type InputBinding interface { Init(metadata Metadata) error Read(handler func(*ReadResponse) ([]byte, error)) error } type OutputBinding interface { Init(metadata Metadata) error Invoke(req *InvokeRequest) (*InvokeResponse, error) Operations() []OperationKind } 接下来需要实现一个生成对象的方法，比如说我们需要实现一个飞书推送Webhook的绑定组件，则可以："><title>构建属于你自己的dapr绑定组件</title>
 <link rel=canonical href=https://www.4async.com/2021/05/building-your-own-dapr-binding/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="构建属于你自己的dapr绑定组件">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="构建属于你自己的dapr绑定组件">
 <meta property="og:description" content="在上一篇文章中，吐槽了拖延症的危害，因此这次我来分享一下我最新推送到dapr的最新的一个新的绑定组件，通过这个来看一下如何实现自己的绑定组件。
 文中提到的PR可以在 dapr/components-contrib#872 查看对应的具体代码。
 什么是 dapr 的绑定组件？ 在dapr中，绑定是用于使用外部系统功能（比如事件或者接口）的扩展组件。它的优势在于：
@@ -241,7 +241,7 @@ Golang
 <article class=has-image>
 <a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
 <div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
+<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
 </div>
 <div class=article-details>
 <h2 class=article-title>OpenTelemetry入门</h2>
@@ -251,7 +251,7 @@ Golang
 <article class=has-image>
 <a href=../../../2019/01/2019-01-25-go-new-xerrors/>
 <div class=article-image>
-<img src=../../../2019/01/2019-01-25-go-new-xerrors/cover.cafa45e868883662cdb07c50aff2a283_hue4ddd2aac593f64f6c4b0db3c64deb1c_32610_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy data-key=2019-01-25-go-new-xerrors data-hash="md5-yvpF6GiINmLNsHxQr/Kigw==">
+<img src=../../../2019/01/2019-01-25-go-new-xerrors/cover.cafa45e868883662cdb07c50aff2a283_hue4ddd2aac593f64f6c4b0db3c64deb1c_32610_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 聊聊新的Go语言错误处理方案" data-key=2019-01-25-go-new-xerrors data-hash="md5-yvpF6GiINmLNsHxQr/Kigw==">
 </div>
 <div class=article-details>
 <h2 class=article-title>聊聊新的Go语言错误处理方案</h2>
@@ -271,11 +271,11 @@ Golang
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

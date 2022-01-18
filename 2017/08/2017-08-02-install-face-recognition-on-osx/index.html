@@ -8,7 +8,7 @@ brew install boost brew install boost-python --with-python3 需要注意的是�
 确认 Python dlib 要求 Python 编译时使用 --enable-shared 参数编译，默认情况下，pyenv 未启用该参数，因此编译需要使用下面参数进行 Python 重新编译
 PYTHON_CONFIGURE_OPTS=&amp;quot;--with-dtrace --enable-shared&amp;quot; pyenv install 3.6.2 前面一个参数是我一直编译 Python 3."><title>OSX 下安装 face_recognition</title>
 <link rel=canonical href=https://www.4async.com/2017/08/2017-08-02-install-face-recognition-on-osx/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="OSX 下安装 face_recognition">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="OSX 下安装 face_recognition">
 <meta property="og:description" content="face_recognition 是一个热门的人脸识别库，常年占据 Github Trending Python 子类的 Top10。
 在官方文档中，介绍安装 face_recognition 步骤非常简单，只需要执行 pip install face_recognition 就可以了，实际在安装过程中 face_recognition 有一些非 Python 依赖，需要单独安装，本文就对内容进行一个简单介绍，权作记录，方便大家手动安装时提前规避。文章基于 OSX 10.12.6+pyenv+python3.6.2 介绍。
 问题在哪里？ face_recognition 的依赖大部分都比较好安装，只有一个库例外，那就是 dlib 这个依赖。这个依赖需要安装 boost 和 boost-python 两个非 Python 依赖。
@@ -146,11 +146,11 @@ brew install boost-python --with-python3
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

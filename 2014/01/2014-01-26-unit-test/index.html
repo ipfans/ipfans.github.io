@@ -8,7 +8,7 @@ Python Python 提供了unittest 库，用于进行单元测试。这个详细说
 下面是一个对 random 模块的单元测试代码，测试了 shuffle, choice 和 sample 函数功能，测试函数以 test 开头，并且没有返回和传入参数。
 import random #被测试模块 import unittest class TestSequenceFunctions(unittest.TestCase): def setUp(self): ``` 测试初始化 ``` self.seq = range(10) pass def tearDown(self): ``` 测试清理 ``` pass def test_shuffle(self): # make sure the shuffled sequence does not lose any elements random."><title>关于写程序的一点想法：单元测试</title>
 <link rel=canonical href=https://www.4async.com/2014/01/2014-01-26-unit-test/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="关于写程序的一点想法：单元测试">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="关于写程序的一点想法：单元测试">
 <meta property="og:description" content="之前一直没有太过于关注过单元测试，感觉自己程序代码写了足够的实现逻辑和处理流程就应该完全可以满足需求，但是事实上在实现具体功能时，还是存在一些这样那样的问题，甚至通常情况下都是在代码写完可以跑通运行时发现的问题，通常这个时候已经很晚了。大家可以翻下我在 Github 上开放出来的大部分代码应该都存在一些或多或少的小问题，这些问题虽不致命，但是却是也是很烦躁的事情。
 什么是单元测试 单元测试（unit testing），是指对软件中的最小可测试单元进行检查和验证。对于单元测试中单元的含义，一般来说，要根据实际情况去判定其具体含义，如 C 语言中单元指一个函数，Java 里单元指一个类，图形化的软件中可以指一个窗口或一个菜单等。总的来说，单元就是人为规定的最小的被测功能模块。单元测试是在软件开发过程中要进行的最低级别的测试活动，软件的独立单元将在与程序的其他部分相隔离的情况下进行测试。(via 百度百科)
 我对单元测试的理解，单元测试应该是保证程序功能模块的代码安全性和健壮性的保障性测试，主要是开发人员在对自己开发的代码进行测试。被测试模块可能包括多个功能点，在做测试时，设计测试用例要覆盖这些功能点，以保证这些功能点经过测试。很多文章在介绍单元测试常常会介绍一些 100% 的覆盖，考虑到一些异常情况情况的情况下，我个人觉得应该是覆盖异常的情况更多一点，分支覆盖一般常见参数传入测试功能是否正常，另外还是需要保证一些以前的 Bug 并不会出现的测试用例。
@@ -133,11 +133,11 @@ extended">
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

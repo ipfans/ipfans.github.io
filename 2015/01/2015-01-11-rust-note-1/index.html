@@ -6,7 +6,7 @@
 fn main(){println!(&amp;quot;hello world!&amp;quot;);} println 是一个宏定义，后面会再详细写一下。fn 有点类似表示函数的 function 的定义，说起来，rust 是 Javascript 之父搞的，品位嘛，呵呵。
 Rust 安装程序带一个叫做 cargo 的工具，这个工具是用于项目编译的，可以按照下面的路径组织文件："><title>Rust 学习笔记一</title>
 <link rel=canonical href=https://www.4async.com/2015/01/2015-01-11-rust-note-1/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="Rust 学习笔记一">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Rust 学习笔记一">
 <meta property="og:description" content="注：rust 目前更新仍旧很频繁，语法变化比较大，学习主要基于 Rust 1.0 Alpha 版本，之后可能会有部分变化。
 先来说下 Rust 的优点：
  RAII(Resource Acquisition Is Initialization) ：垃圾回收 GC 是解决内存安全的最普通方式，但是 Rust 系统并不依靠 GC，而是在编译时通过 RAII 实现资源自动释放。 ** 安全便捷的并发开发 ** ：这个后面学习里面会讲到，这个和 Golang 应该算竞争了吧。 ** 高效的执行效率 **：根据测试，rust 的性能应该是超过了 Java 了。（一时半会找不到了，找到补上） 缺点我感觉如下： ** 学习复杂度不低 **：相对 go 或者其他语言，还是复杂很多，学习门槛比较高。 **GC 的问题 **：GC 好处是屏蔽了很多问题，会带来性能问题，比如 Go，Rust 需要了解更多的编译器细节。  Rust 基础 Rust 原文件扩展名是. rs，编译程序名字叫做 rustc。可以使用 rustc xxx.rs 编译成可执行文件。首先还是管用的 hello world:
@@ -112,11 +112,11 @@ println!(&quot;The value of x is: {}, y is: {}, z is: {}, i is: {}&quot;, x, y, 
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

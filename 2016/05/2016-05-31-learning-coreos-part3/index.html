@@ -7,7 +7,7 @@ Etcd 中提供了订阅通知机制，同时提供了一个线上服务 https://
 Etcdctl 使用 工具 etcdctl 是 etcd 的控制程序，我们可以通过执行命令查看所有键值：
 core@core-01 ~ $ etcdctl ls / --recursive /coreos.com /coreos.com/network /coreos.com/network/config /coreos.com/network/subnets /coreos.com/network/subnets/10.1.64.0-24 /coreos.com/network/subnets/10.1.48.0-24 /coreos.com/network/subnets/10.1.10.0-24 /coreos.com/updateengine /coreos.com/updateengine/rebootlock /coreos.com/updateengine/rebootlock/semaphore 还可以通过类似 Redis 的 get 等命令获取具体存储内容："><title>CoreOS 折腾笔记（三）了解 Etcd</title>
 <link rel=canonical href=https://www.4async.com/2016/05/2016-05-31-learning-coreos-part3/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="CoreOS 折腾笔记（三）了解 Etcd">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="CoreOS 折腾笔记（三）了解 Etcd">
 <meta property="og:description" content="服务发现是微服务化架构中重要的一环，服务的配置信息需要有一种可靠高效的发现机制，保证服务上线时可以及时被使用，服务失效中断时可以及时切走。服务发现工具 Etcd 就是为了这种需求开发的。
 什么是 Etcd？ Etcd 是一个分布式 KV 数据库，通过将数据分散存储在多台独立的设备上，从而提高数据的可靠性或读写性能。Etcd 是几个比较常见的服务发现应用之一，它支持 TTL 的支持和 HTTP Restful API，同时通过 Raft 一致性算法处理日志复制以保证强一致性。关于 Raft 算法，请参考 这篇文章，这里不多介绍。Etcd 本来就是 CoreOS 团队开发支持的，因此也是原生存在在 CoreOS 系统中。
 Etcd 中提供了订阅通知机制，同时提供了一个线上服务 https://discovery.etcd.io/，这个服务可以用于发现集群中的机器。比如 Fleet 等等工具也是基于 Etcd 去发现网络中的节点服务器。在 CoreOS 机器部署之后，系统中一个叫做 cloud-init 的服务会根据之前的 user-data 文件去启动 Etcd。Etcd 会更新对应的自己的节点信息，并且获取其它的节点信息。
@@ -163,7 +163,7 @@ core@core-01 ~ $ curl -L http://127.0.0.1:4001/v2/stats/self
 <article class=has-image>
 <a href=../../../2021/07/introducing-event-modeling/>
 <div class=article-image>
-<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
+<img src=../../../2021/07/introducing-event-modeling/_hucf7c873ea7f3b2f557ada81568c30cdb_177241_240c37b86f28be968c6b0bb34095736b.jpg width=250 height=150 loading=lazy alt="Featured image of post 什么是事件建模Event Modeling?" data-key=introducing-event-modeling data-hash="md5-r46sGJr30VU2AdrzIX2KFw==">
 </div>
 <div class=article-details>
 <h2 class=article-title>什么是事件建模Event Modeling?</h2>
@@ -203,11 +203,11 @@ core@core-01 ~ $ curl -L http://127.0.0.1:4001/v2/stats/self
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

@@ -5,7 +5,7 @@
 另外提供一下快速进行Github Action部署的方案（私有化仓库代码/公有化仓库网站展示），PERSONAL_TOKEN是个人token，需要从个人设置页面里获取填写至仓库Secrets中：
 name: github pages on: push: branches: - master jobs: deploy: runs-on: ubuntu-20.04 steps: - uses: actions/checkout@v2 - name: Setup Hugo uses: peaceiris/actions-hugo@v2 with: hugo-version: &amp;#39;latest&amp;#39; - name: Build run: hugo --minify - name: Deploy uses: peaceiris/actions-gh-pages@v3 with: personal_token: ${{ secrets.PERSONAL_TOKEN }} external_repository: 你的用户名/你的仓库 publish_dir: ./public cname: 你的域名 "><title>切换至Hugo引擎驱动</title>
 <link rel=canonical href=https://www.4async.com/2021/02/2021-02-19-move-to-hugo/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="切换至Hugo引擎驱动">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="切换至Hugo引擎驱动">
 <meta property="og:description" content="其实很早之前就希望切换至Hugo引擎驱动博客了，但是体验下来一圈，最大的感觉是Hugo的主题都很一言难尽&amp;hellip;所以拖着一直没有切换。结果今天想发布新文章时突然发现我无法正常编译Hexo的项目了，于是干脆趁此良机切换至Hugo引擎了。
 本站目前使用的主题是stack主题，相当简洁，推荐想切换至Hugo的小伙伴了解一下。
 另外提供一下快速进行Github Action部署的方案（私有化仓库代码/公有化仓库网站展示），PERSONAL_TOKEN是个人token，需要从个人设置页面里获取填写至仓库Secrets中：
@@ -174,11 +174,11 @@ Other
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

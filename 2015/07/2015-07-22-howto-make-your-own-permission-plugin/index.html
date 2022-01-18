@@ -6,7 +6,7 @@ class RoleNeed(object): pass class Identity(object): pass class Permission(objec
 from functools import partial。 from collections import namedtuple Need = namedtuple(&amp;#39;Need&amp;#39;, [&amp;#39;method&amp;#39;, &amp;#39;value&amp;#39;]) UserNeed = partial(Need,&amp;#39;user&amp;#39;) RoleNeed = partial(Need,&amp;#39;role&amp;#39;) namedtuple 是 Python 高级数据结构中的一个内容，在 collections 包中，其实实现的效果是生成带名称的元组。比如 Need = namedtuple(&amp;lsquo;Need&amp;rsquo;, [&amp;lsquo;method&amp;rsquo;, &amp;lsquo;value&amp;rsquo;]) 实际上就是生成了一个名字叫做 Need 的元组，你可以通过 Need(&amp;lsquo;a&amp;rsquo;, &amp;lsquo;b&amp;rsquo;) 的方式设置对应的 method 和 value 的值。
 接下来的 partial 是和之前我另一篇文章中介绍的 wraps 在一个包中的功能，可以简单理解为方便填入一个初始化参数的方法，比如 partial(Need,&amp;lsquo;user&amp;rsquo;) 等同于 Need(&amp;lsquo;user&amp;rsquo;, x)，但是 x 的这个参数需要在调用 parial 的返回值的时候才会传入，可以用来预定义一部分的环境参数。"><title>如何用 Python 实现一个权限管理系列 (一)</title>
 <link rel=canonical href=https://www.4async.com/2015/07/2015-07-22-howto-make-your-own-permission-plugin/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="如何用 Python 实现一个权限管理系列 (一)">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="如何用 Python 实现一个权限管理系列 (一)">
 <meta property="og:description" content="最近在实现大型 B2B 系统之后，有很多细节需要考虑，其中一环就是权限控制。之前考虑的比较少，认为这一块框架可以 handle 问题不大，后来发现 Tornado 目前没有一个比较完善的权限管理模块，甚至连个包都没有&amp;hellip; 于是只能自己动手，丰衣足食了。参考的方式也是通过 Flask-Principal 的类似实现方式。
 原型 一个权限管理模块应该有的功能应该有哪些呢？从基本角度出发，应该包含用户身份 (Identity)、用户角色（RoleNeed）、用户权限（Permission）这三个最基本的分类组成。那么从最开始，就需要定义这几个类：
 class RoleNeed(object): pass class Identity(object): pass class Permission(object): pass 再考虑一下，其实 RoleNeed 更像一个权限的枚举数组，除此之外，比如用户可能存在的权限与分组和单独的用户权限都有关系，这里需要更加抽象一下。具体的可以分成 UserNeed 和 RoleNeed，分别对应用户权限与用户组权限。这样如果通过类实现还是比较麻烦，需要继承，但是实际上这也只是一个元组而已。所以可以选择下面的方式：
@@ -148,11 +148,11 @@ RoleNeed <span style=color:#f92672>=</span> partial(Need,<span style=color:#e6db
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

@@ -5,7 +5,7 @@
  首先，需要安装 tty2usb 的驱动，点击下面两个连接下载后，安装 pkg 文件。  PL2303_MacOSX_v1_5_1.zip FTDI Driver   重启之后，将 usb 连接至 Mac，通过执行 ls /dev/cu.* 查看已经连接的设备，默认一般名称是 / dev/cu.usbserial 执行 screen /dev/cu.usbserial 波特率  登录 console，波特率需要查一下官方手册看下具体多少，一般是 9600 或者 115400 的多一些。 如果 screen 进去发现没反应，按按回车看看。 如果想结束此次会话，按 ctrl-a 然后 ctril-\ 结束会话。  cubieboard 拿到是 Android 系统，建议直接换成官方支持的 Lubuntu 系统吧，毕竟方便一些。
 更换步骤这里不多说了，主要是下载镜像，官方提供工具，直接刷进去就好了。"><title>折腾日记 ---cubieboard(Mac OS X 篇)</title>
 <link rel=canonical href=https://www.4async.com/2014/09/2014-09-10-trying-cubieboard-on-mac-os-x/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="折腾日记 ---cubieboard(Mac OS X 篇)">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="折腾日记 ---cubieboard(Mac OS X 篇)">
 <meta property="og:description" content="这个是在 OS X 上折腾 cubieboard 的笔记。首先，无论是树莓派还是 cubieboard 之类的开发板，都是需要装一个 usb2tty 的驱动，通过 console 连接到开发板上。
 步骤参考：http://pbxbook.com/other/mac-tty.html，简单复述一下：
  首先，需要安装 tty2usb 的驱动，点击下面两个连接下载后，安装 pkg 文件。  PL2303_MacOSX_v1_5_1.zip FTDI Driver   重启之后，将 usb 连接至 Mac，通过执行 ls /dev/cu.* 查看已经连接的设备，默认一般名称是 / dev/cu.usbserial 执行 screen /dev/cu.usbserial 波特率  登录 console，波特率需要查一下官方手册看下具体多少，一般是 9600 或者 115400 的多一些。 如果 screen 进去发现没反应，按按回车看看。 如果想结束此次会话，按 ctrl-a 然后 ctril-\ 结束会话。  cubieboard 拿到是 Android 系统，建议直接换成官方支持的 Lubuntu 系统吧，毕竟方便一些。
@@ -122,11 +122,11 @@ on-phone--column extended">
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

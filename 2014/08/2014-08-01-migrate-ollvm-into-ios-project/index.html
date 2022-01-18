@@ -9,7 +9,7 @@ Xcode 整合 集成进入 Xcode 需要修改几个文件，根据现有的插件
 具体修改步骤如下：
 $ cd /Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Xcode/Plug-ins/ $ sudo cp -r Clang\ LLVM\ 1.0.xcplugin/ Obfuscator.xcplugin $ cd Obfuscator.xcplugin/Contents/ $ sudo plutil -convert xml1 Info.plist $ sudo vim Info.plist 修改文件内容（修改前 -&amp;gt; 修改后）"><title>整合 ollvm 进入项目</title>
 <link rel=canonical href=https://www.4async.com/2014/08/2014-08-01-migrate-ollvm-into-ios-project/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="整合 ollvm 进入项目">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="整合 ollvm 进入项目">
 <meta property="og:description" content="ollvm 的项目我再这里就不做介绍了。整合进入项目的不过两种：一种是 Theos，另外一种是 Xcode。
 不过值得注意的是 ollvm 主要有效的还是 c 的函数，对 OC 对抗效果不明显。对抗分析的问题，请参考半仙的《软件反分析》。
 Theos 整合 Theos 主要依赖于 Makefile，因此需要 Makefile 文件来实现功能了。首先在文件里添加：
@@ -141,11 +141,11 @@ make: *** [xxx.all.tweak.variables] Error 2
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

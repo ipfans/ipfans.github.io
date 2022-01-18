@@ -8,7 +8,7 @@ JWT 处理方式 JWT 内容主要分为三段，分别对应头部信息，存�
 encodeBase64(header) + '.' + encodeBase64(payload) + '.' + Sign(key + encodeBase64(header) + '.' + encodeBase64(payload)) 其中 Sign 的算法是可以在 header 中进行定义，支持如 HMAC-SHA256 和 RSA-SHA256 等方式。key 则是用于验证的 key 信息。
 其中 header 格式如下:"><title>JWT 介绍</title>
 <link rel=canonical href=https://www.4async.com/2015/08/2015-08-07-jwt-basic/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="JWT 介绍">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="JWT 介绍">
 <meta property="og:description" content="JWT 是什么 JWT 全称是 JSON Web Tokens，是 RFC 7519 标准，用于安全校验两方可信性的安全措施。
 JWT 解决了哪些问题？ JWT 本身设计是用于解决 Session 机制不能够很好的在 SPA/API 类型 (restful) 应用中处理身份认证问题。通常 API 的调用是无状态（stateless）的，使用 Session 等形式会有上下文要求。如当用户登录完成后，可以通过下发 JWT 的形式进行无状态的 API 调用。在此之前通常是使用的方式包括不限于如 Basic Auth、Oauth2 或 Token 形式进行。
 JWT 相比是额外添加了签名校验方式，本质上来说对抗如暴力碰撞等形式有一些作用。但是由于本身长度的限制，存储的信息量有限。
@@ -104,11 +104,11 @@ extended">
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

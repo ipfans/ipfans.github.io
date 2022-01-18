@@ -6,7 +6,7 @@ ldconfig 的问题 经常会编译一些常用的库文件供其他的文件使�
 后来我灵机一动，虽然 so 文件在 ldcache 中了，但是重新使用 ldconfig 命令就重新 recache 一下就行了。
 看来不见得所有的都那么靠谱就是了。之前编译 zmap 也遇到了这个问题，一直很奇怪 json 库的 so 文件在 ldconf 文件中，为什么执行 zmap 却提示无法找到，看来也是相同的原因了。"><title>今天学到的几件事</title>
 <link rel=canonical href=https://www.4async.com/2014/01/2014-01-12-something-details/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="今天学到的几件事">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="今天学到的几件事">
 <meta property="og:description" content="权限的那点事儿 检查程序问题，除了配置文件有没有错以外，还需要检查一下权限什么的原因。除了用户组以外，还需要关注文件描述的配置。两个命令分别是
 chown chmod 多留点心眼总没坏处
 ldconfig 的问题 经常会编译一些常用的库文件供其他的文件使用。比如 luajit，今天安装完成之后，编译了一个依赖的程序，但是执行程序却发现提示对应的 so 文件无法找到。
@@ -85,11 +85,11 @@ chmod
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

@@ -7,7 +7,7 @@ by ipfans
 # echo.py from socket import * # 是的，这是一个不好的写法 def echo_server(address): sock = socket(AF_INET, SOCK_STREAM) sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) sock.bind(address) sock.listen(5) while True: client, addr = sock.accept() print(&amp;#34;connect from&amp;#34;, addr) echo_handler(client) def echo_handler(client): while True: data = client.recv(10000) if not data: break client.send(str.encode(&amp;#34;Got: &amp;#34;) + data) print(&amp;#34;connection closed.&amp;#34;) if __name__ == &amp;#39;__main__&amp;#39;: echo_server((&amp;#39;&amp;#39;, 25000)) 但是同步模式会有一个问题，当进行通讯是阻塞的，当一个连接占用时就会阻碍其他连接的继续，这个时候应该怎么更快的运行呢？
 回顾历史 在 asyncio 出现之前，我们都是怎么提高效率的呢？首先想到的方法就是多线程处理："><title>从 asyncio 简单实现看异步是如何工作的</title>
 <link rel=canonical href=https://www.4async.com/2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="从 asyncio 简单实现看异步是如何工作的">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="从 asyncio 简单实现看异步是如何工作的">
 <meta property="og:description" content="从 asyncio 简单实现看异步是如何工作的
 by ipfans
 注：请使用 Python 3.5+ 版本运行以下代码。
@@ -373,11 +373,11 @@ loop<span style=color:#f92672>.</span>run_forever()
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

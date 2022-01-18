@@ -7,7 +7,7 @@ AIO 的情况也说明了它适用的场景：长连接场景，或者重度的 
 这部分的内容，在 NGINX 引入线程池 性能提升 9 倍 中进行了详细的介绍，包含了 NGINX 的异步应用经验，同时介绍了 NGINX 中引入了阻塞的线程池用于解决某些特定场景问题下的效率。
 如何实现 Python 的异步 IO 这篇文章会以最新的 Python 3."><title>零基础编写 Python Redis Client（一）</title>
 <link rel=canonical href=https://www.4async.com/2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="零基础编写 Python Redis Client（一）">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="零基础编写 Python Redis Client（一）">
 <meta property="og:description" content="什么是 AIO AIO 是 Asynchronous Input/Output 的简写，也就是异步 IO。不过在谈什么是 AIO 之前，我们可能要先介绍一下 BIO。那么什么是 BIO 呢？简单的说，BIO 是 Blocking Input/Output，也就是阻塞 IO，他实现的通常是在线程池中找出一个线程处理 IO，在 IO 过程中，其他线程都需要等待 IO 完成后才可以从中选取一个线程占用 IO。这样最大的问题是，当线程数量较多，并且需要大量的 IO 操作时，就会造成一个大量的阻塞，因为实际上每次只有一个线程在处理 IO。
 那么如何解决这个时候的问题呢？这时候就提出了 AIO 的概念。通常在 IO 处理过程中也会伴有一些其他的处理操作，假如把所有的操作都浪费在了等待 IO 释放上，线程池中的线程利用率也太低了，因此我们需要一种方式，在申请 IO 处理之后，就去继续做其他的事情，等 IO 操作完成了，然后通知我们已经 OK，我们可以继续处理了。这也就是我们常说的 AIO 的原型。
 AIO 的情况也说明了它适用的场景：长连接场景，或者重度的 IO 操作等等的情况。
@@ -328,11 +328,11 @@ loop<span style=color:#f92672>.</span>close()
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

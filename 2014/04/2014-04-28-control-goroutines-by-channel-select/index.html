@@ -5,7 +5,7 @@
 package main import (&amp;#34;fmt&amp;#34; &amp;#34;sync&amp;#34; &amp;#34;time&amp;#34; ) func main() {queue := make(chan int, 20) var wg sync.WaitGroup for { // 就是一个死循环 	queue &amp;lt;- 1 &amp;lt;-queue for i := 0; i &amp;lt;10; i++ {wg.Add(1) go func(i int) {time.Sleep(5 * time.Second) fmt.Println(&amp;#34;Sleep&amp;#34;) wg.Done()}(i) } wg.Wait()} } 如何在一个 goroutine 里面控制所有的 goroutine，让所有的 goroutine 结束呢？这就需要 select 出场了。有人告诉我，这样子实现会更好一些：
 package main import (&amp;#34;fmt&amp;#34; &amp;#34;sync&amp;#34; &amp;#34;time&amp;#34; ) func main() { // 定义一个用于指定退出的 channel 	EXIT := make(chan int, 1) queue := make(chan int, 20) var wg sync."><title>channel 和 select 控制 goroutines</title>
 <link rel=canonical href=https://www.4async.com/2014/04/2014-04-28-control-goroutines-by-channel-select/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="channel 和 select 控制 goroutines">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="channel 和 select 控制 goroutines">
 <meta property="og:description" content="最近有一个需求是在一个常驻内存的程序中结束相关任务。在 Go 中，创建一个 goroutine 非常简单，只需要 go 一下就可以了，但是如果我创建了很多 goroutine，想要结束怎么办？
 比如说我有一个死循环的例子
 package main import (&amp;#34;fmt&amp;#34; &amp;#34;sync&amp;#34; &amp;#34;time&amp;#34; ) func main() {queue := make(chan int, 20) var wg sync.WaitGroup for { // 就是一个死循环 	queue &amp;lt;- 1 &amp;lt;-queue for i := 0; i &amp;lt;10; i++ {wg.Add(1) go func(i int) {time.Sleep(5 * time.Second) fmt.Println(&amp;#34;Sleep&amp;#34;) wg.Done()}(i) } wg.Wait()} } 如何在一个 goroutine 里面控制所有的 goroutine，让所有的 goroutine 结束呢？这就需要 select 出场了。有人告诉我，这样子实现会更好一些：
@@ -266,11 +266,11 @@ on-phone--column extended">
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>

@@ -12,7 +12,7 @@
 yapf 是 Google 员工开发的一个 Python 格式化工具，它支持 PEP8 与 Google 编码标准，一些具体的使用方式可以查看项目的主页。在实际的项目落地过程中，你应该会遇到的一个问题是关于 flake8 与 yapf 标准不一致导致一个通过另一个无法正常通过的问题。这一个方面，我们选择的方式是统一妥协成 flake8 的标准。对于 yapf 不支持的部分，我们建议活用 # yapf: disable 标记。
 还有另一个问题是关于一些 flake8 本身的标准（或者说 PEP－8 标准）问题，比如 flake8 常见问题：E501 程序代码长度超过 79 个字符问题，我们实际编码过程中对这一标准做了适当妥协，允许最大单行字符串长度为 200。但是我们仍然建议缩小至 79 个字符内表示完。"><title>我们是如何落实 Code Style Guide 的（Python 篇）</title>
 <link rel=canonical href=https://www.4async.com/2016/01/2016-01-15-how-we-follow-python-style-guide/>
-<link rel=stylesheet href=../../../scss/style.min.css><meta property="og:title" content="我们是如何落实 Code Style Guide 的（Python 篇）">
+<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="我们是如何落实 Code Style Guide 的（Python 篇）">
 <meta property="og:description" content="我们是如何落实 Code Style Guide 的（Python 篇）
 最近年终，总是想谈谈过去一年的感悟和积累。接下来大概有几篇关于项目管理等等一些小方面的介绍，这篇文章主要介绍一下我们如何将 Python 编码规范真正落实到程序的实际开发过程中的。
 编码规范选择 Python 作为灵活的脚本语言，在格式方面并不存在太多的限制（相对编译语言）。这样会导致一个比较蛋疼的问题：在项目开发过程中，由于个人的习惯和编码风格，导致程序缺少一个统一的标准，每个人的代码表现形式也不同。因此，在实际项目由于新人加入、老人退出过程中会产生比较高的模块维护成本。因此，在实际的项目开发中，选择一个编码标准也是比较重要的。
@@ -111,11 +111,11 @@ extended">
 <section class=copyright>
 &copy;
 2013 -
-2021 ipfans's Blog
+2022 ipfans's Blog
 </section>
 <section class=powerby>
 Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.5.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
+Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
 </section>
 </footer>
 <div class=pswp tabindex=-1 role=dialog aria-hidden=true>
