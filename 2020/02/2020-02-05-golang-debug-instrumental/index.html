@@ -1,248 +1,41 @@
-<!doctype html><html lang=en>
-<head><meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。
-"><title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</title>
-<link rel=canonical href=https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/>
-<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志">
-<meta property="og:description" content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。
-">
-<meta property="og:url" content="https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/">
-<meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="Instrumental"><meta property="article:published_time" content="2020-02-05T18:30:00+00:00"><meta property="article:modified_time" content="2020-02-05T18:30:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<meta name=twitter:site content="@janxin">
-<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志">
-<meta name=twitter:description content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。
-"><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
-</head>
-<body class="article-page has-toc">
-<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
-<div class="container main-container flex
-extended">
-<div id=article-toolbar>
-<a href=../../../ class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg>
-<span>返回</span>
-</a>
-</div>
-<main class="main full-width">
-<article class=main-article>
-<header class=article-header>
-<div class=article-details>
-<header class=article-category>
-<a href=../../../categories/golang/>
-Golang
-</a>
-</header>
-<h2 class=article-title>
-<a href=../../../2020/02/2020-02-05-golang-debug-instrumental/>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</a>
-</h2>
-<footer class=article-time>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Feb 05, 2020</time>
-</div>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>
-阅读时长: 1 分钟
-</time>
-</div>
-</footer>
-</div>
-</header>
-<section class=article-content>
-<p>我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们<a class=link href>前面一篇文章</a>中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。</p>
-<h2 id=系统的可观察性>系统的可观察性</h2>
-<p>为了应对目前软件开发的复杂度带来的相关问题，可观察性(Observability) 这个概念被引入软件领域。传统的监控和报警主要关注系统的异常情况和失败因素，可观察性更关注的是从系统自身出发，去展现系统的运行状况，更像是一种对系统的自我审视。一个可观察的系统中更关注应用本身的状态，而不是所处的机器或者网络这样的间接证据。我们希望直接得到应用当前的吞吐和延迟信息，为了达到这个目的，我们就需要合理主动暴露更多应用运行信息。在当前的应用开发环境下，面对复杂系统我们的关注将逐渐由点到点线面体的结合，这能让我们更好的理解系统，不仅知道What，更能回答Why。</p>
-<p>可观察性目前主要包含以下三大支柱：</p>
-<ul>
-<li>
-<p>度量(Metrics)：Metric 往往是一些聚合的信息，相比 Logging 丧失了一些具体信息，但是占用的空间要比完整日志小的多，可以用于监控和报警。</p>
-</li>
-<li>
-<p>分布式追踪(Tracing)：Tracing 介于 Logging 和 Metric 之间， 以请求的维度，串联服务间的调用关系并记录调用耗时，即保留了必要的信息，又将分散的日志事件通过 Span 串联， 帮助我们更好的理解系统的行为、辅助调试和排查性能问题。</p>
-</li>
-<li>
-<p>日志(Logging)：Logging 主要记录一些离散的事件，应用往往通过将定义好格式的日志信息输出到文件，然后用日志收集程序收集起来用于分析和聚合。</p>
-</li>
-</ul>
-<h2 id=故障发现监控设施>故障发现：监控设施</h2>
-<p>监控设施虽然对程序而言各种各样，但是在我们实际落地过程中，我们也会对网络环境/物理设备/业务系统等等各种可能存在潜在问题的系统进行监控和报警。这里监控系统和报警系统一般是属于监控设施部分，这一部分的选型一般是公司整体选型设计的，这里不额外讨论。这里讨论的具体事项可能需要根据各公司情况自行判定。</p>
-<p>我们选型时则是选择了基于<a class=link href=https://prometheus.io/ target=_blank rel=noopener>Prometheus</a>+<a class=link href=https://grafana.com/ target=_blank rel=noopener>Grafana</a>进行业务系统监控，因此需要对应的客户端进行输出结果。Prometheus采用了pull模式，需要开启对应的HTTP端口方便进行采集。官方有一个<a class=link href=https://prometheus.io/docs/guides/go-application/ target=_blank rel=noopener>基础的入门教程</a>，可以用以参考。</p>
-<h2 id=故障追溯分布式追踪>故障追溯：分布式追踪</h2>
-<p>分布式追踪我们目前采用的是<a class=link href=https://www.jaegertracing.io/ target=_blank rel=noopener>Jaeger系统</a>作为分布式追踪系统，我们可以根据用户反馈查看对应系统的请求，发现请求流经的系统和对应的处理时间。</p>
-<p>Jaeger提供了各种语言的丰富客户端格式，作为Go编写的应用，自然也提供了<a class=link href=https://github.com/jaegertracing/jaeger-client-go target=_blank rel=noopener>Go语言的客户端库</a>。</p>
-<h2 id=故障追溯日志>故障追溯：日志</h2>
-<p>日志采集系统大家常见的包含ELK(EFK)，后面更有性能更强资源占用更少的<a class=link href=https://clickhouse.tech/docs/zh/ target=_blank rel=noopener>ClickHouse</a>等等作为选择。这里我们重点不讨论外部系统的选择，更重要的将核心集中于常见库的选择中。</p>
-<p>在常见日志记录中，同分布式追踪相同，我们通常需要对请求的相关ID进行记录，保证在对对应数据进行分析时，能够尽快筛选对应的请求和相关数据内容。这里我推荐使用<a class=link href=https://github.com/rs/zerolog target=_blank rel=noopener><code>rs/zerolog</code></a>作为日志记录的日志库。虽然我们历史系统中大量的使用了<a class=link href=https://github.com/uber-go/zap target=_blank rel=noopener><code>zap</code></a>作为日志输出驱动，但是在实际开发中，借助<code>zerolog</code>提供的<a class=link href=https://github.com/rs/zerolog#pass-a-sub-logger-by-context target=_blank rel=noopener><code>WithContext</code></a>方法，我们可以有针对性的，对每次请求，部分请求、请求内参数等各方面进行详细定制，方便我们在诊断具体内容时动态调整日志级别、附带每次请求ID等等的需求。</p>
-<p>以常见Web框架<code>Gin</code>为例，我们可以将一些具体的请求数据保存至<code>context.Context</code>中，方便我们后续使用：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>RequestID</span>(<span style=color:#a6e22e>logger</span> <span style=color:#a6e22e>zerolog</span>.<span style=color:#a6e22e>Logger</span>) <span style=color:#a6e22e>gin</span>.<span style=color:#a6e22e>HandlerFunc</span> {
-	<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>gin</span>.<span style=color:#a6e22e>Context</span>) {
-		<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>reqID</span> <span style=color:#66d9ef>string</span>
-		<span style=color:#75715e>// 可接受外部RequestID，常见于系统间互相调用
-</span><span style=color:#75715e></span>		<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Header</span>.<span style=color:#a6e22e>Get</span>(<span style=color:#e6db74>&#34;X-Request-Id&#34;</span>) <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;&#34;</span> {
-			<span style=color:#a6e22e>reqID</span> = <span style=color:#a6e22e>uuid</span>.<span style=color:#a6e22e>New</span>().<span style=color:#a6e22e>String</span>()
-		} <span style=color:#66d9ef>else</span> {
-			<span style=color:#a6e22e>reqID</span> = <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Header</span>.<span style=color:#a6e22e>Get</span>(<span style=color:#e6db74>&#34;X-Request-Id&#34;</span>)
-		}
-		<span style=color:#a6e22e>ctx</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Context</span>()
-		<span style=color:#a6e22e>logger</span> = <span style=color:#a6e22e>logger</span>.<span style=color:#a6e22e>With</span>().<span style=color:#a6e22e>Str</span>(<span style=color:#e6db74>&#34;requestID&#34;</span>, <span style=color:#a6e22e>reqID</span>).<span style=color:#a6e22e>Logger</span>()
-		<span style=color:#75715e>// 绑定到context.Context
-</span><span style=color:#75715e></span>		<span style=color:#a6e22e>ctx</span> = <span style=color:#a6e22e>logger</span>.<span style=color:#a6e22e>WithContext</span>(<span style=color:#a6e22e>ctx</span>)
-		<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span> = <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>WithContext</span>(<span style=color:#a6e22e>ctx</span>)
-		<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Next</span>()
-		<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Header</span>(<span style=color:#e6db74>&#34;X-Request-Id&#34;</span>, <span style=color:#a6e22e>reqID</span>)
-	}
-}
-</code></pre></div><p>在使用过程中，我们需要动态调节日志等级，可以通过中间件或者其他形式控制：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>DebugLevel</span>(<span style=color:#a6e22e>config</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>viper</span>.<span style=color:#a6e22e>Viper</span>) <span style=color:#a6e22e>gin</span>.<span style=color:#a6e22e>HandlerFunc</span> {
-	<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>gin</span>.<span style=color:#a6e22e>Context</span>) {
-		<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>config</span>.<span style=color:#a6e22e>GetBool</span>(<span style=color:#e6db74>&#34;debug&#34;</span>) {
-			<span style=color:#a6e22e>logger</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>log</span>.<span style=color:#a6e22e>Ctx</span>(<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Context</span>()).<span style=color:#a6e22e>Level</span>(<span style=color:#a6e22e>zerolog</span>.<span style=color:#a6e22e>DebugLevel</span>)
-			<span style=color:#a6e22e>ctx</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>logger</span>.<span style=color:#a6e22e>WithContext</span>(<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Context</span>())
-			<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span> = <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>WithContext</span>(<span style=color:#a6e22e>ctx</span>)
-		}
-		<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Next</span>()
-	}
-}
-</code></pre></div>
-</section>
-<footer class=article-footer>
-<section class=article-tags>
-<a href=../../../tags/golang/>Golang</a>
-<a href=../../../tags/instrumental/>Instrumental</a>
-</section>
-<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span>
-</section>
-</footer>
-</article>
-<aside class=related-contents--wrapper>
-<h2 class=section-title>相关文章</h2>
-<div class=related-contents>
-<div class="flex article-list--tile">
-<article class=has-image>
-<a href=../../../2021/02/2021-02-25-context-and-structs/>
-<div class=article-image>
-<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 上下文Context与结构体Struct" data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
-</div>
-<div class=article-details>
-<h2 class=article-title>上下文Context与结构体Struct</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/02/2021-02-19-go116-module-changes/>
-<div class=article-image>
-<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化" data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
-</div>
-<div class=article-details>
-<h2 class=article-title>Go 1.16 中Module功能新变化</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
-<div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
-</div>
-<div class=article-details>
-<h2 class=article-title>OpenTelemetry入门</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
-<div class=article-image>
-<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
-</div>
-<div class=article-details>
-<h2 class=article-title>译：在Go中转向领域驱动设计</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2019/11/2019-11-23-learning-go-from-3rd-library/>
-<div class=article-details>
-<h2 class=article-title>从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序</h2>
-</div>
-</a>
-</article>
-</div>
-</div>
-</aside>
-<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
-<div class=disqus-container>
-<div id=disqus_thread></div>
-<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-</div>
-<footer class=site-footer>
-<section class=copyright>
-&copy;
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。
+"><title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</title><link rel=canonical href=https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/><link rel=stylesheet href=../../../scss/style.min.787c11515dc5d9a2a1ccd2c32e10ab2ce54935226bfd34de0eed651f4f0e0349.css><meta property="og:title" content="从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志"><meta property="og:description" content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。
+"><meta property="og:url" content="https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="Instrumental"><meta property="article:published_time" content="2020-02-05T18:30:00+00:00"><meta property="article:modified_time" content="2020-02-05T18:30:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志"><meta name=twitter:description content="我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们前面一篇文章中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。
+"><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,o,i,a,t,n,s){e.GoogleAnalyticsObject=t,e[t]=e[t]||function(){(e[t].q=e[t].q||[]).push(arguments)},e[t].l=1*new Date,n=o.createElement(i),s=o.getElementsByTagName(i)[0],n.async=1,n.src=a,s.parentNode.insertBefore(n,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-33841232-2","auto"),ga("send","pageview"))</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=../../../categories/golang/>Golang</a></header><div class=article-title-wrapper><h2 class=article-title><a href=../../../2020/02/2020-02-05-golang-debug-instrumental/>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Feb 05, 2020</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 1 分钟</time></div></footer></div></header><section class=article-content><p>我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们<a class=link href>前面一篇文章</a>中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。</p><h2 id=系统的可观察性>系统的可观察性</h2><p>为了应对目前软件开发的复杂度带来的相关问题，可观察性(Observability) 这个概念被引入软件领域。传统的监控和报警主要关注系统的异常情况和失败因素，可观察性更关注的是从系统自身出发，去展现系统的运行状况，更像是一种对系统的自我审视。一个可观察的系统中更关注应用本身的状态，而不是所处的机器或者网络这样的间接证据。我们希望直接得到应用当前的吞吐和延迟信息，为了达到这个目的，我们就需要合理主动暴露更多应用运行信息。在当前的应用开发环境下，面对复杂系统我们的关注将逐渐由点到点线面体的结合，这能让我们更好的理解系统，不仅知道What，更能回答Why。</p><p>可观察性目前主要包含以下三大支柱：</p><ul><li><p>度量(Metrics)：Metric 往往是一些聚合的信息，相比 Logging 丧失了一些具体信息，但是占用的空间要比完整日志小的多，可以用于监控和报警。</p></li><li><p>分布式追踪(Tracing)：Tracing 介于 Logging 和 Metric 之间， 以请求的维度，串联服务间的调用关系并记录调用耗时，即保留了必要的信息，又将分散的日志事件通过 Span 串联， 帮助我们更好的理解系统的行为、辅助调试和排查性能问题。</p></li><li><p>日志(Logging)：Logging 主要记录一些离散的事件，应用往往通过将定义好格式的日志信息输出到文件，然后用日志收集程序收集起来用于分析和聚合。</p></li></ul><h2 id=故障发现监控设施>故障发现：监控设施</h2><p>监控设施虽然对程序而言各种各样，但是在我们实际落地过程中，我们也会对网络环境/物理设备/业务系统等等各种可能存在潜在问题的系统进行监控和报警。这里监控系统和报警系统一般是属于监控设施部分，这一部分的选型一般是公司整体选型设计的，这里不额外讨论。这里讨论的具体事项可能需要根据各公司情况自行判定。</p><p>我们选型时则是选择了基于<a class=link href=https://prometheus.io/ target=_blank rel=noopener>Prometheus</a>+<a class=link href=https://grafana.com/ target=_blank rel=noopener>Grafana</a>进行业务系统监控，因此需要对应的客户端进行输出结果。Prometheus采用了pull模式，需要开启对应的HTTP端口方便进行采集。官方有一个<a class=link href=https://prometheus.io/docs/guides/go-application/ target=_blank rel=noopener>基础的入门教程</a>，可以用以参考。</p><h2 id=故障追溯分布式追踪>故障追溯：分布式追踪</h2><p>分布式追踪我们目前采用的是<a class=link href=https://www.jaegertracing.io/ target=_blank rel=noopener>Jaeger系统</a>作为分布式追踪系统，我们可以根据用户反馈查看对应系统的请求，发现请求流经的系统和对应的处理时间。</p><p>Jaeger提供了各种语言的丰富客户端格式，作为Go编写的应用，自然也提供了<a class=link href=https://github.com/jaegertracing/jaeger-client-go target=_blank rel=noopener>Go语言的客户端库</a>。</p><h2 id=故障追溯日志>故障追溯：日志</h2><p>日志采集系统大家常见的包含ELK(EFK)，后面更有性能更强资源占用更少的<a class=link href=https://clickhouse.tech/docs/zh/ target=_blank rel=noopener>ClickHouse</a>等等作为选择。这里我们重点不讨论外部系统的选择，更重要的将核心集中于常见库的选择中。</p><p>在常见日志记录中，同分布式追踪相同，我们通常需要对请求的相关ID进行记录，保证在对对应数据进行分析时，能够尽快筛选对应的请求和相关数据内容。这里我推荐使用<a class=link href=https://github.com/rs/zerolog target=_blank rel=noopener><code>rs/zerolog</code></a>作为日志记录的日志库。虽然我们历史系统中大量的使用了<a class=link href=https://github.com/uber-go/zap target=_blank rel=noopener><code>zap</code></a>作为日志输出驱动，但是在实际开发中，借助<code>zerolog</code>提供的<a class=link href=https://github.com/rs/zerolog#pass-a-sub-logger-by-context target=_blank rel=noopener><code>WithContext</code></a>方法，我们可以有针对性的，对每次请求，部分请求、请求内参数等各方面进行详细定制，方便我们在诊断具体内容时动态调整日志级别、附带每次请求ID等等的需求。</p><p>以常见Web框架<code>Gin</code>为例，我们可以将一些具体的请求数据保存至<code>context.Context</code>中，方便我们后续使用：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>RequestID</span>(<span style=color:#a6e22e>logger</span> <span style=color:#a6e22e>zerolog</span>.<span style=color:#a6e22e>Logger</span>) <span style=color:#a6e22e>gin</span>.<span style=color:#a6e22e>HandlerFunc</span> {
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>gin</span>.<span style=color:#a6e22e>Context</span>) {
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>reqID</span> <span style=color:#66d9ef>string</span>
+</span></span><span style=display:flex><span>		<span style=color:#75715e>// 可接受外部RequestID，常见于系统间互相调用
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>		<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Header</span>.<span style=color:#a6e22e>Get</span>(<span style=color:#e6db74>&#34;X-Request-Id&#34;</span>) <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;&#34;</span> {
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>reqID</span> = <span style=color:#a6e22e>uuid</span>.<span style=color:#a6e22e>New</span>().<span style=color:#a6e22e>String</span>()
+</span></span><span style=display:flex><span>		} <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>reqID</span> = <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Header</span>.<span style=color:#a6e22e>Get</span>(<span style=color:#e6db74>&#34;X-Request-Id&#34;</span>)
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>ctx</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Context</span>()
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>logger</span> = <span style=color:#a6e22e>logger</span>.<span style=color:#a6e22e>With</span>().<span style=color:#a6e22e>Str</span>(<span style=color:#e6db74>&#34;requestID&#34;</span>, <span style=color:#a6e22e>reqID</span>).<span style=color:#a6e22e>Logger</span>()
+</span></span><span style=display:flex><span>		<span style=color:#75715e>// 绑定到context.Context
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>		<span style=color:#a6e22e>ctx</span> = <span style=color:#a6e22e>logger</span>.<span style=color:#a6e22e>WithContext</span>(<span style=color:#a6e22e>ctx</span>)
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span> = <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>WithContext</span>(<span style=color:#a6e22e>ctx</span>)
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Next</span>()
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Header</span>(<span style=color:#e6db74>&#34;X-Request-Id&#34;</span>, <span style=color:#a6e22e>reqID</span>)
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>在使用过程中，我们需要动态调节日志等级，可以通过中间件或者其他形式控制：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>DebugLevel</span>(<span style=color:#a6e22e>config</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>viper</span>.<span style=color:#a6e22e>Viper</span>) <span style=color:#a6e22e>gin</span>.<span style=color:#a6e22e>HandlerFunc</span> {
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>gin</span>.<span style=color:#a6e22e>Context</span>) {
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>config</span>.<span style=color:#a6e22e>GetBool</span>(<span style=color:#e6db74>&#34;debug&#34;</span>) {
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>logger</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>log</span>.<span style=color:#a6e22e>Ctx</span>(<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Context</span>()).<span style=color:#a6e22e>Level</span>(<span style=color:#a6e22e>zerolog</span>.<span style=color:#a6e22e>DebugLevel</span>)
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>ctx</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>logger</span>.<span style=color:#a6e22e>WithContext</span>(<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>Context</span>())
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span> = <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Request</span>.<span style=color:#a6e22e>WithContext</span>(<span style=color:#a6e22e>ctx</span>)
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Next</span>()
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></section><footer class=article-footer><section class=article-tags><a href=../../../tags/golang/>Golang</a>
+<a href=../../../tags/instrumental/>Instrumental</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article class=has-image><a href=../../../2021/02/2021-02-25-context-and-structs/><div class=article-image><img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 上下文Context与结构体Struct" data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA=="></div><div class=article-details><h2 class=article-title>上下文Context与结构体Struct</h2></div></a></article><article class=has-image><a href=../../../2021/02/2021-02-19-go116-module-changes/><div class=article-image><img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化" data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA=="></div><div class=article-details><h2 class=article-title>Go 1.16 中Module功能新变化</h2></div></a></article><article class=has-image><a href=../../../2020/03/2020-03-31-intro-opentelemetry/><div class=article-image><img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ=="></div><div class=article-details><h2 class=article-title>OpenTelemetry入门</h2></div></a></article><article class=has-image><a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/><div class=article-image><img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ=="></div><div class=article-details><h2 class=article-title>译：在Go中转向领域驱动设计</h2></div></a></article><article><a href=../../../2019/11/2019-11-23-learning-go-from-3rd-library/><div class=article-details><h2 class=article-title>从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序</h2></div></a></article></div></div></aside><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
 2013 -
-2022 ipfans's Blog
-</section>
-<section class=powerby>
-Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
-</section>
-</footer>
-<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
-<div class=pswp__bg></div>
-<div class=pswp__scroll-wrap>
-<div class=pswp__container>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-</div>
-<div class="pswp__ui pswp__ui--hidden">
-<div class=pswp__top-bar>
-<div class=pswp__counter></div>
-<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2022 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.11.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-<div class=pswp__preloader>
-<div class=pswp__preloader__icn>
-<div class=pswp__preloader__cut>
-<div class=pswp__preloader__donut></div>
-</div>
-</div>
-</div>
-</div>
-<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-<div class=pswp__share-tooltip></div>
-</div>
-<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-</button>
-<div class=pswp__caption>
-<div class=pswp__caption__center></div>
-</div>
-</div>
-</div>
-</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
-</main>
-<aside class="sidebar right-sidebar sticky">
-<section class="widget archives">
-<div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg>
-</div>
-<h2 class="widget-title section-title">目录</h2>
-<div class=widget--toc>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#系统的可观察性>系统的可观察性</a></li>
-<li><a href=#故障发现监控设施>故障发现：监控设施</a></li>
-<li><a href=#故障追溯分布式追踪>故障追溯：分布式追踪</a></li>
-<li><a href=#故障追溯日志>故障追溯：日志</a></li>
-</ul>
-</nav>
-</div>
-</section>
-</aside>
-</div>
-<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
-<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
-</body>
-</html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

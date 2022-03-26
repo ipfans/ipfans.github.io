@@ -3,5 +3,5 @@ JWT 解决了哪些问题？ JWT 本身设计是用于解决 Session 机制不�
 JWT 相比是额外添加了签名校验方式，本质上来说对抗如暴力碰撞等形式有一些作用。但是由于本身长度的限制，存储的信息量有限。
 JWT 处理方式 JWT 内容主要分为三段，分别对应头部信息，存储数据和签名信息三部分，中间使用『.』符号连接，三段信息均进行 Base64 编码。
 具体实现方式可参考如下伪代码实现：
-encodeBase64(header) + '.' + encodeBase64(payload) + '.' + Sign(key + encodeBase64(header) + '.' + encodeBase64(payload)) 其中 Sign 的算法是可以在 header 中进行定义，支持如 HMAC-SHA256 和 RSA-SHA256 等方式。key 则是用于验证的 key 信息。
+encodeBase64(header) + &amp;#39;.&amp;#39; + encodeBase64(payload) + &amp;#39;.&amp;#39; + Sign(key + encodeBase64(header) + &amp;#39;.&amp;#39; + encodeBase64(payload)) 其中 Sign 的算法是可以在 header 中进行定义，支持如 HMAC-SHA256 和 RSA-SHA256 等方式。key 则是用于验证的 key 信息。
 其中 header 格式如下:</description></item></channel></rss>

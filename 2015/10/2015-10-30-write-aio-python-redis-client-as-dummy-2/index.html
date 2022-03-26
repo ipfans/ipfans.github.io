@@ -1,289 +1,112 @@
-<!doctype html><html lang=en>
-<head><meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="从 Call 到命令端 在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="从 Call 到命令端 在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：
 client = redis.StrictRedis() client.setex(&amp;#34;key&amp;#34;, 10, &amp;#34;value&amp;#34;) 接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 setex 方法：
-def setex(self, key, seconds, value): &amp;#34;&amp;#34;&amp;#34;Set the value and expiration of a key. :raises TypeError: if seconds is neither int &amp;#34;&amp;#34;&amp;#34;if not isinstance(seconds, int): raise TypeError(&amp;#34;milliseconds argument must be int&amp;#34;) fut = self._conn.execute(b&amp;#39;SETEX&amp;#39;, key, seconds, value) return wait_ok(fut) 剩下的就是一个个方法逐个完善。
+ def setex(self, key, seconds, value):  &amp;#34;&amp;#34;&amp;#34;Set the value and expiration of a key. :raises TypeError: if seconds is neither int &amp;#34;&amp;#34;&amp;#34;if not isinstance(seconds, int):  raise TypeError(&amp;#34;milliseconds argument must be int&amp;#34;)  fut = self._conn.execute(b&amp;#39;SETEX&amp;#39;, key, seconds, value)  return wait_ok(fut) 剩下的就是一个个方法逐个完善。
 什么是连接池 我们会看到，无论那个数据库客户端，总是会有连接池机制。那么连接池是什么呢？我们为什么需要连接池呢？
 首先，我们都知道，对连接而言，创建是必要重型的操作。比如说，TCP 连接，接下来之后是登录认证等等过程，最后才会执行命令。这也就是我们通常计算库性能时，很多时候会把建立连接的时候去掉。但是这就出现了一个问题，当一个连接被占用时，其他的操作仍旧是不能够完成操作了，只能等待前一个操作完成。但是假如我们一次性创建一堆连接呢？从一堆连接中找到空闲的连接，使用完成后释放成空闲的状态，这就是线程池的本质。因为减少了每次创建连接的过程，所以对性能提升也非常有帮助。
-从单连接到连接池 首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。"><title>从零实现一个 Redis 客户端（二）</title>
-<link rel=canonical href=https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/>
-<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="从零实现一个 Redis 客户端（二）">
-<meta property="og:description" content="从 Call 到命令端 在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：
+从单连接到连接池 首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。"><title>从零实现一个 Redis 客户端（二）</title><link rel=canonical href=https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/><link rel=stylesheet href=../../../scss/style.min.787c11515dc5d9a2a1ccd2c32e10ab2ce54935226bfd34de0eed651f4f0e0349.css><meta property="og:title" content="从零实现一个 Redis 客户端（二）"><meta property="og:description" content="从 Call 到命令端 在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：
 client = redis.StrictRedis() client.setex(&amp;#34;key&amp;#34;, 10, &amp;#34;value&amp;#34;) 接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 setex 方法：
-def setex(self, key, seconds, value): &amp;#34;&amp;#34;&amp;#34;Set the value and expiration of a key. :raises TypeError: if seconds is neither int &amp;#34;&amp;#34;&amp;#34;if not isinstance(seconds, int): raise TypeError(&amp;#34;milliseconds argument must be int&amp;#34;) fut = self._conn.execute(b&amp;#39;SETEX&amp;#39;, key, seconds, value) return wait_ok(fut) 剩下的就是一个个方法逐个完善。
+ def setex(self, key, seconds, value):  &amp;#34;&amp;#34;&amp;#34;Set the value and expiration of a key. :raises TypeError: if seconds is neither int &amp;#34;&amp;#34;&amp;#34;if not isinstance(seconds, int):  raise TypeError(&amp;#34;milliseconds argument must be int&amp;#34;)  fut = self._conn.execute(b&amp;#39;SETEX&amp;#39;, key, seconds, value)  return wait_ok(fut) 剩下的就是一个个方法逐个完善。
 什么是连接池 我们会看到，无论那个数据库客户端，总是会有连接池机制。那么连接池是什么呢？我们为什么需要连接池呢？
 首先，我们都知道，对连接而言，创建是必要重型的操作。比如说，TCP 连接，接下来之后是登录认证等等过程，最后才会执行命令。这也就是我们通常计算库性能时，很多时候会把建立连接的时候去掉。但是这就出现了一个问题，当一个连接被占用时，其他的操作仍旧是不能够完成操作了，只能等待前一个操作完成。但是假如我们一次性创建一堆连接呢？从一堆连接中找到空闲的连接，使用完成后释放成空闲的状态，这就是线程池的本质。因为减少了每次创建连接的过程，所以对性能提升也非常有帮助。
-从单连接到连接池 首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。">
-<meta property="og:url" content="https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/">
-<meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Python"><meta property="article:tag" content="async"><meta property="article:tag" content="Redis"><meta property="article:tag" content="asyncio"><meta property="article:published_time" content="2015-10-30T23:11:15+00:00"><meta property="article:modified_time" content="2015-10-30T23:11:15+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<meta name=twitter:site content="@janxin">
-<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="从零实现一个 Redis 客户端（二）">
-<meta name=twitter:description content="从 Call 到命令端 在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：
+从单连接到连接池 首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。"><meta property="og:url" content="https://www.4async.com/2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Python"><meta property="article:tag" content="async"><meta property="article:tag" content="Redis"><meta property="article:tag" content="asyncio"><meta property="article:published_time" content="2015-10-30T23:11:15+00:00"><meta property="article:modified_time" content="2015-10-30T23:11:15+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="从零实现一个 Redis 客户端（二）"><meta name=twitter:description content="从 Call 到命令端 在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：
 client = redis.StrictRedis() client.setex(&amp;#34;key&amp;#34;, 10, &amp;#34;value&amp;#34;) 接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 setex 方法：
-def setex(self, key, seconds, value): &amp;#34;&amp;#34;&amp;#34;Set the value and expiration of a key. :raises TypeError: if seconds is neither int &amp;#34;&amp;#34;&amp;#34;if not isinstance(seconds, int): raise TypeError(&amp;#34;milliseconds argument must be int&amp;#34;) fut = self._conn.execute(b&amp;#39;SETEX&amp;#39;, key, seconds, value) return wait_ok(fut) 剩下的就是一个个方法逐个完善。
+ def setex(self, key, seconds, value):  &amp;#34;&amp;#34;&amp;#34;Set the value and expiration of a key. :raises TypeError: if seconds is neither int &amp;#34;&amp;#34;&amp;#34;if not isinstance(seconds, int):  raise TypeError(&amp;#34;milliseconds argument must be int&amp;#34;)  fut = self._conn.execute(b&amp;#39;SETEX&amp;#39;, key, seconds, value)  return wait_ok(fut) 剩下的就是一个个方法逐个完善。
 什么是连接池 我们会看到，无论那个数据库客户端，总是会有连接池机制。那么连接池是什么呢？我们为什么需要连接池呢？
 首先，我们都知道，对连接而言，创建是必要重型的操作。比如说，TCP 连接，接下来之后是登录认证等等过程，最后才会执行命令。这也就是我们通常计算库性能时，很多时候会把建立连接的时候去掉。但是这就出现了一个问题，当一个连接被占用时，其他的操作仍旧是不能够完成操作了，只能等待前一个操作完成。但是假如我们一次性创建一堆连接呢？从一堆连接中找到空闲的连接，使用完成后释放成空闲的状态，这就是线程池的本质。因为减少了每次创建连接的过程，所以对性能提升也非常有帮助。
-从单连接到连接池 首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。"><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
-</head>
-<body class="article-page has-toc">
-<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
-<div class="container main-container flex
-extended">
-<div id=article-toolbar>
-<a href=../../../ class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg>
-<span>返回</span>
-</a>
-</div>
-<main class="main full-width">
-<article class=main-article>
-<header class=article-header>
-<div class=article-details>
-<h2 class=article-title>
-<a href=../../../2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/>从零实现一个 Redis 客户端（二）</a>
-</h2>
-<footer class=article-time>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Oct 30, 2015</time>
-</div>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>
-阅读时长: 2 分钟
-</time>
-</div>
-</footer>
-</div>
-</header>
-<section class=article-content>
-<h2 id=从-call-到命令端>从 Call 到命令端</h2>
-<p>在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>client <span style=color:#f92672>=</span> redis<span style=color:#f92672>.</span>StrictRedis()
-client<span style=color:#f92672>.</span>setex(<span style=color:#e6db74>&#34;key&#34;</span>, <span style=color:#ae81ff>10</span>, <span style=color:#e6db74>&#34;value&#34;</span>)
-</code></pre></div><p>接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 setex 方法：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>setex</span>(self, key, seconds, value):
-        <span style=color:#e6db74>&#34;&#34;&#34;Set the value and expiration of a key.
-</span><span style=color:#e6db74>
-</span><span style=color:#e6db74>        :raises TypeError: if seconds is neither int
-</span><span style=color:#e6db74>        &#34;&#34;&#34;</span><span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> isinstance(seconds, int):
-            <span style=color:#66d9ef>raise</span> <span style=color:#a6e22e>TypeError</span>(<span style=color:#e6db74>&#34;milliseconds argument must be int&#34;</span>)
-        fut <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_conn<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>b</span><span style=color:#e6db74>&#39;SETEX&#39;</span>, key, seconds, value)
-        <span style=color:#66d9ef>return</span> wait_ok(fut)
-</code></pre></div><p>剩下的就是一个个方法逐个完善。</p>
-<h2 id=什么是连接池>什么是连接池</h2>
-<p>我们会看到，无论那个数据库客户端，总是会有连接池机制。那么连接池是什么呢？我们为什么需要连接池呢？</p>
-<p>首先，我们都知道，对连接而言，创建是必要重型的操作。比如说，TCP 连接，接下来之后是登录认证等等过程，最后才会执行命令。这也就是我们通常计算库性能时，很多时候会把建立连接的时候去掉。但是这就出现了一个问题，当一个连接被占用时，其他的操作仍旧是不能够完成操作了，只能等待前一个操作完成。但是假如我们一次性创建一堆连接呢？从一堆连接中找到空闲的连接，使用完成后释放成空闲的状态，这就是线程池的本质。因为减少了每次创建连接的过程，所以对性能提升也非常有帮助。</p>
-<h2 id=从单连接到连接池>从单连接到连接池</h2>
-<p>首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>RedisPool</span>:
-    <span style=color:#e6db74>&#34;&#34;&#34;Redis connections pool.&#34;&#34;&#34;</span>
-
-    <span style=color:#66d9ef>def</span> __init__(self, address, db<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>, password<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>, encoding<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>,
-                 <span style=color:#f92672>*</span>, minsize, maxsize, commands_factory, loop<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
-        <span style=color:#66d9ef>if</span> loop <span style=color:#f92672>is</span> <span style=color:#66d9ef>None</span>:
-            loop <span style=color:#f92672>=</span> asyncio<span style=color:#f92672>.</span>get_event_loop()
-        self<span style=color:#f92672>.</span>_address <span style=color:#f92672>=</span> address
-        self<span style=color:#f92672>.</span>_db <span style=color:#f92672>=</span> db
-        self<span style=color:#f92672>.</span>_password <span style=color:#f92672>=</span> password
-        self<span style=color:#f92672>.</span>_encoding <span style=color:#f92672>=</span> encoding
-        self<span style=color:#f92672>.</span>_minsize <span style=color:#f92672>=</span> minsize
-        self<span style=color:#f92672>.</span>_factory <span style=color:#f92672>=</span> commands_factory
-        self<span style=color:#f92672>.</span>_loop <span style=color:#f92672>=</span> loop  <span style=color:#75715e># 连接池数组</span>
-        self<span style=color:#f92672>.</span>_pool <span style=color:#f92672>=</span> collections<span style=color:#f92672>.</span>deque(maxlen<span style=color:#f92672>=</span>maxsize)
-        self<span style=color:#f92672>.</span>_used <span style=color:#f92672>=</span> set()
-        self<span style=color:#f92672>.</span>_acquiring <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
-        self<span style=color:#f92672>.</span>_cond <span style=color:#f92672>=</span> asyncio<span style=color:#f92672>.</span>Condition(loop<span style=color:#f92672>=</span>loop)
-
-    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_create_new_connection</span>(self):
-        <span style=color:#66d9ef>return</span> create_redis(self<span style=color:#f92672>.</span>_address,
-                            db<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_db,
-                            password<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_password,
-                            encoding<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_encoding,
-                            commands_factory<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_factory,
-                            loop<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_loop)
-
-</code></pre></div><p>接下来，就需要创建大量的连接了：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#66d9ef>async</span> <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>create_pool</span>(self, <span style=color:#f92672>*</span>, override_min):
-        <span style=color:#75715e># todo: drop closed connections first</span>
-        <span style=color:#75715e># 判断是否达到了连接池数量限制</span>
-        <span style=color:#66d9ef>while</span> <span style=color:#f92672>not</span> self<span style=color:#f92672>.</span>_pool <span style=color:#f92672>and</span> self<span style=color:#f92672>.</span>size <span style=color:#f92672>&lt;</span> self<span style=color:#f92672>.</span>maxsize:
-            self<span style=color:#f92672>.</span>_acquiring <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
-            <span style=color:#66d9ef>try</span>:
-                conn <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> self<span style=color:#f92672>.</span>_create_new_connection()
-                self<span style=color:#f92672>.</span>_pool<span style=color:#f92672>.</span>append(conn)
-            <span style=color:#66d9ef>finally</span>:
-                self<span style=color:#f92672>.</span>_acquiring <span style=color:#f92672>-=</span> <span style=color:#ae81ff>1</span>
-                <span style=color:#75715e># connection may be closed at yeild point</span>
-                self<span style=color:#f92672>.</span>_drop_closed()
-</code></pre></div><p>那么怎么从这些连接中抽取连接并且进行连接呢:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>	<span style=color:#a6e22e>@asyncio</span><span style=color:#f92672>.</span>coroutine
-	<span style=color:#66d9ef>def</span> <span style=color:#a6e22e>acquire</span>(self):
-		<span style=color:#e6db74>&#34;&#34;&#34;Acquires a connection from free pool.
-</span><span style=color:#e6db74>		Creates new connection if needed.
-</span><span style=color:#e6db74>		&#34;&#34;&#34;</span>
-		<span style=color:#66d9ef>with</span> <span style=color:#66d9ef>await</span> self<span style=color:#f92672>.</span>_cond:
-		    <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
-		        <span style=color:#66d9ef>await</span> self<span style=color:#f92672>.</span>_fill_free(override_min<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
-		        <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>freesize:
-		            conn <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_pool<span style=color:#f92672>.</span>popleft()
-		            <span style=color:#66d9ef>assert</span> <span style=color:#f92672>not</span> conn<span style=color:#f92672>.</span>closed, conn
-		            <span style=color:#66d9ef>assert</span> conn <span style=color:#f92672>not</span> <span style=color:#f92672>in</span> self<span style=color:#f92672>.</span>_used, (conn, self<span style=color:#f92672>.</span>_used)
-		            self<span style=color:#f92672>.</span>_used<span style=color:#f92672>.</span>add(conn)
-		            <span style=color:#66d9ef>return</span> conn
-		        <span style=color:#66d9ef>else</span>:
-		            <span style=color:#66d9ef>await</span> self<span style=color:#f92672>.</span>_cond<span style=color:#f92672>.</span>wait()
-</code></pre></div><p>接下来就是使用完成后进行释放即可：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>   <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>release</span>(self, conn):
-        <span style=color:#e6db74>&#34;&#34;&#34;Returns used connection back into pool.
-</span><span style=color:#e6db74>        When returned connection has db index that differs from one in pool
-</span><span style=color:#e6db74>        the connection will be closed and dropped.
-</span><span style=color:#e6db74>        When queue of free connections is full the connection will be dropped.
-</span><span style=color:#e6db74>        &#34;&#34;&#34;</span><span style=color:#66d9ef>assert</span> conn <span style=color:#f92672>in</span> self<span style=color:#f92672>.</span>_used,<span style=color:#e6db74>&#34;Invalid connection, maybe from other pool&#34;</span>self<span style=color:#f92672>.</span>_used<span style=color:#f92672>.</span>remove(conn)
-        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> conn<span style=color:#f92672>.</span>closed:
-            <span style=color:#66d9ef>if</span> conn<span style=color:#f92672>.</span>in_transaction:
-                logger<span style=color:#f92672>.</span>warning(<span style=color:#e6db74>&#34;Connection </span><span style=color:#e6db74>%r</span><span style=color:#e6db74> in transaction, closing it.&#34;</span>,
-                               conn)
-                conn<span style=color:#f92672>.</span>close()
-            <span style=color:#66d9ef>elif</span> conn<span style=color:#f92672>.</span>db <span style=color:#f92672>==</span> self<span style=color:#f92672>.</span>db:
-                <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>maxsize <span style=color:#f92672>and</span> self<span style=color:#f92672>.</span>freesize <span style=color:#f92672>&lt;</span> self<span style=color:#f92672>.</span>maxsize:
-                    self<span style=color:#f92672>.</span>_pool<span style=color:#f92672>.</span>append(conn)
-                <span style=color:#66d9ef>else</span>:
-                    <span style=color:#75715e># consider this connection as old and close it.</span>
-                    conn<span style=color:#f92672>.</span>close()
-            <span style=color:#66d9ef>else</span>:
-                conn<span style=color:#f92672>.</span>close()
-        <span style=color:#75715e># FIXME: check event loop is not closed</span>
-        asyncio<span style=color:#f92672>.</span><span style=color:#66d9ef>async</span>(self<span style=color:#f92672>.</span>_wakeup(), loop<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_loop)
-</code></pre></div><p>至此，你已经可以实现一个基本的 Redis 客户端了，还在犹豫什么？快自己动手吧！</p>
-<p><strong>注: 文中 Redis 库参考了 aio-lib/aioredis 库。</strong></p>
-</section>
-<footer class=article-footer>
-<section class=article-tags>
-<a href=../../../tags/python/>Python</a>
+从单连接到连接池 首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。"><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,o,i,a,t,n,s){e.GoogleAnalyticsObject=t,e[t]=e[t]||function(){(e[t].q=e[t].q||[]).push(arguments)},e[t].l=1*new Date,n=o.createElement(i),s=o.getElementsByTagName(i)[0],n.async=1,n.src=a,s.parentNode.insertBefore(n,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-33841232-2","auto"),ga("send","pageview"))</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><div class=article-title-wrapper><h2 class=article-title><a href=../../../2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/>从零实现一个 Redis 客户端（二）</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Oct 30, 2015</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 2 分钟</time></div></footer></div></header><section class=article-content><h2 id=从-call-到命令端>从 Call 到命令端</h2><p>在第一个文章中，我们介绍了实现一个 Call 的客户端基本模型，但只是 Call 怎么能满足需求呢？比如在 redis-py 中，一个完整的客户端应该是这样的：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>client <span style=color:#f92672>=</span> redis<span style=color:#f92672>.</span>StrictRedis()
+</span></span><span style=display:flex><span>client<span style=color:#f92672>.</span>setex(<span style=color:#e6db74>&#34;key&#34;</span>, <span style=color:#ae81ff>10</span>, <span style=color:#e6db74>&#34;value&#34;</span>)
+</span></span></code></pre></div><p>接下来作为一个程序的客户端，需要去做的就是封装出一个 Redis Client。比如 setex 方法：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>setex</span>(self, key, seconds, value):
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;&#34;&#34;Set the value and expiration of a key.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        :raises TypeError: if seconds is neither int
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span><span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> isinstance(seconds, int):
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>raise</span> <span style=color:#a6e22e>TypeError</span>(<span style=color:#e6db74>&#34;milliseconds argument must be int&#34;</span>)
+</span></span><span style=display:flex><span>        fut <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_conn<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>b</span><span style=color:#e6db74>&#39;SETEX&#39;</span>, key, seconds, value)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> wait_ok(fut)
+</span></span></code></pre></div><p>剩下的就是一个个方法逐个完善。</p><h2 id=什么是连接池>什么是连接池</h2><p>我们会看到，无论那个数据库客户端，总是会有连接池机制。那么连接池是什么呢？我们为什么需要连接池呢？</p><p>首先，我们都知道，对连接而言，创建是必要重型的操作。比如说，TCP 连接，接下来之后是登录认证等等过程，最后才会执行命令。这也就是我们通常计算库性能时，很多时候会把建立连接的时候去掉。但是这就出现了一个问题，当一个连接被占用时，其他的操作仍旧是不能够完成操作了，只能等待前一个操作完成。但是假如我们一次性创建一堆连接呢？从一堆连接中找到空闲的连接，使用完成后释放成空闲的状态，这就是线程池的本质。因为减少了每次创建连接的过程，所以对性能提升也非常有帮助。</p><h2 id=从单连接到连接池>从单连接到连接池</h2><p>首先，还是创建一个 RedisPool 类，用于管理 Redis 的连接池。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>RedisPool</span>:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Redis connections pool.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> __init__(self, address, db<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>, password<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>, encoding<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>,
+</span></span><span style=display:flex><span>                 <span style=color:#f92672>*</span>, minsize, maxsize, commands_factory, loop<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> loop <span style=color:#f92672>is</span> <span style=color:#66d9ef>None</span>:
+</span></span><span style=display:flex><span>            loop <span style=color:#f92672>=</span> asyncio<span style=color:#f92672>.</span>get_event_loop()
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_address <span style=color:#f92672>=</span> address
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_db <span style=color:#f92672>=</span> db
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_password <span style=color:#f92672>=</span> password
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_encoding <span style=color:#f92672>=</span> encoding
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_minsize <span style=color:#f92672>=</span> minsize
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_factory <span style=color:#f92672>=</span> commands_factory
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_loop <span style=color:#f92672>=</span> loop  <span style=color:#75715e># 连接池数组</span>
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_pool <span style=color:#f92672>=</span> collections<span style=color:#f92672>.</span>deque(maxlen<span style=color:#f92672>=</span>maxsize)
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_used <span style=color:#f92672>=</span> set()
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_acquiring <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_cond <span style=color:#f92672>=</span> asyncio<span style=color:#f92672>.</span>Condition(loop<span style=color:#f92672>=</span>loop)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_create_new_connection</span>(self):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> create_redis(self<span style=color:#f92672>.</span>_address,
+</span></span><span style=display:flex><span>                            db<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_db,
+</span></span><span style=display:flex><span>                            password<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_password,
+</span></span><span style=display:flex><span>                            encoding<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_encoding,
+</span></span><span style=display:flex><span>                            commands_factory<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_factory,
+</span></span><span style=display:flex><span>                            loop<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_loop)
+</span></span></code></pre></div><p>接下来，就需要创建大量的连接了：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>    <span style=color:#66d9ef>async</span> <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>create_pool</span>(self, <span style=color:#f92672>*</span>, override_min):
+</span></span><span style=display:flex><span>        <span style=color:#75715e># todo: drop closed connections first</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># 判断是否达到了连接池数量限制</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> <span style=color:#f92672>not</span> self<span style=color:#f92672>.</span>_pool <span style=color:#f92672>and</span> self<span style=color:#f92672>.</span>size <span style=color:#f92672>&lt;</span> self<span style=color:#f92672>.</span>maxsize:
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>_acquiring <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>                conn <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> self<span style=color:#f92672>.</span>_create_new_connection()
+</span></span><span style=display:flex><span>                self<span style=color:#f92672>.</span>_pool<span style=color:#f92672>.</span>append(conn)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>finally</span>:
+</span></span><span style=display:flex><span>                self<span style=color:#f92672>.</span>_acquiring <span style=color:#f92672>-=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>                <span style=color:#75715e># connection may be closed at yeild point</span>
+</span></span><span style=display:flex><span>                self<span style=color:#f92672>.</span>_drop_closed()
+</span></span></code></pre></div><p>那么怎么从这些连接中抽取连接并且进行连接呢:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>	<span style=color:#a6e22e>@asyncio</span><span style=color:#f92672>.</span>coroutine
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>def</span> <span style=color:#a6e22e>acquire</span>(self):
+</span></span><span style=display:flex><span>		<span style=color:#e6db74>&#34;&#34;&#34;Acquires a connection from free pool.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>		Creates new connection if needed.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>		&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>with</span> <span style=color:#66d9ef>await</span> self<span style=color:#f92672>.</span>_cond:
+</span></span><span style=display:flex><span>		    <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
+</span></span><span style=display:flex><span>		        <span style=color:#66d9ef>await</span> self<span style=color:#f92672>.</span>_fill_free(override_min<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</span></span><span style=display:flex><span>		        <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>freesize:
+</span></span><span style=display:flex><span>		            conn <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_pool<span style=color:#f92672>.</span>popleft()
+</span></span><span style=display:flex><span>		            <span style=color:#66d9ef>assert</span> <span style=color:#f92672>not</span> conn<span style=color:#f92672>.</span>closed, conn
+</span></span><span style=display:flex><span>		            <span style=color:#66d9ef>assert</span> conn <span style=color:#f92672>not</span> <span style=color:#f92672>in</span> self<span style=color:#f92672>.</span>_used, (conn, self<span style=color:#f92672>.</span>_used)
+</span></span><span style=display:flex><span>		            self<span style=color:#f92672>.</span>_used<span style=color:#f92672>.</span>add(conn)
+</span></span><span style=display:flex><span>		            <span style=color:#66d9ef>return</span> conn
+</span></span><span style=display:flex><span>		        <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>		            <span style=color:#66d9ef>await</span> self<span style=color:#f92672>.</span>_cond<span style=color:#f92672>.</span>wait()
+</span></span></code></pre></div><p>接下来就是使用完成后进行释放即可：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>   <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>release</span>(self, conn):
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;&#34;&#34;Returns used connection back into pool.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        When returned connection has db index that differs from one in pool
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        the connection will be closed and dropped.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        When queue of free connections is full the connection will be dropped.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span><span style=color:#66d9ef>assert</span> conn <span style=color:#f92672>in</span> self<span style=color:#f92672>.</span>_used,<span style=color:#e6db74>&#34;Invalid connection, maybe from other pool&#34;</span>self<span style=color:#f92672>.</span>_used<span style=color:#f92672>.</span>remove(conn)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> conn<span style=color:#f92672>.</span>closed:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> conn<span style=color:#f92672>.</span>in_transaction:
+</span></span><span style=display:flex><span>                logger<span style=color:#f92672>.</span>warning(<span style=color:#e6db74>&#34;Connection </span><span style=color:#e6db74>%r</span><span style=color:#e6db74> in transaction, closing it.&#34;</span>,
+</span></span><span style=display:flex><span>                               conn)
+</span></span><span style=display:flex><span>                conn<span style=color:#f92672>.</span>close()
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>elif</span> conn<span style=color:#f92672>.</span>db <span style=color:#f92672>==</span> self<span style=color:#f92672>.</span>db:
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>maxsize <span style=color:#f92672>and</span> self<span style=color:#f92672>.</span>freesize <span style=color:#f92672>&lt;</span> self<span style=color:#f92672>.</span>maxsize:
+</span></span><span style=display:flex><span>                    self<span style=color:#f92672>.</span>_pool<span style=color:#f92672>.</span>append(conn)
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>                    <span style=color:#75715e># consider this connection as old and close it.</span>
+</span></span><span style=display:flex><span>                    conn<span style=color:#f92672>.</span>close()
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>                conn<span style=color:#f92672>.</span>close()
+</span></span><span style=display:flex><span>        <span style=color:#75715e># FIXME: check event loop is not closed</span>
+</span></span><span style=display:flex><span>        asyncio<span style=color:#f92672>.</span><span style=color:#66d9ef>async</span>(self<span style=color:#f92672>.</span>_wakeup(), loop<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>_loop)
+</span></span></code></pre></div><p>至此，你已经可以实现一个基本的 Redis 客户端了，还在犹豫什么？快自己动手吧！</p><p><strong>注: 文中 Redis 库参考了 aio-lib/aioredis 库。</strong></p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/python/>Python</a>
 <a href=../../../tags/async/>async</a>
 <a href=../../../tags/redis/>Redis</a>
-<a href=../../../tags/asyncio/>asyncio</a>
-</section>
-<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span>
-</section>
-</footer>
-</article>
-<aside class=related-contents--wrapper>
-<h2 class=section-title>相关文章</h2>
-<div class=related-contents>
-<div class="flex article-list--tile">
-<article>
-<a href=../../../2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/>
-<div class=article-details>
-<h2 class=article-title>零基础编写 Python Redis Client（一）</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/>
-<div class=article-details>
-<h2 class=article-title>从 asyncio 简单实现看异步是如何工作的</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2015/11/2015-11-11-async-python/>
-<div class=article-details>
-<h2 class=article-title>Python 异步与性能迷思</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/>
-<div class=article-details>
-<h2 class=article-title>PEP 0492 Coroutines with async and await syntax 中文翻译</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2015/08/2015-08-14-introduction-to-async-and-await/>
-<div class=article-details>
-<h2 class=article-title>Python async/await 入门</h2>
-</div>
-</a>
-</article>
-</div>
-</div>
-</aside>
-<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
-<div class=disqus-container>
-<div id=disqus_thread></div>
-<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-</div>
-<footer class=site-footer>
-<section class=copyright>
-&copy;
+<a href=../../../tags/asyncio/>asyncio</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article><a href=../../../2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/><div class=article-details><h2 class=article-title>零基础编写 Python Redis Client（一）</h2></div></a></article><article><a href=../../../2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/><div class=article-details><h2 class=article-title>从 asyncio 简单实现看异步是如何工作的</h2></div></a></article><article><a href=../../../2015/11/2015-11-11-async-python/><div class=article-details><h2 class=article-title>Python 异步与性能迷思</h2></div></a></article><article><a href=../../../2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/><div class=article-details><h2 class=article-title>PEP 0492 Coroutines with async and await syntax 中文翻译</h2></div></a></article><article><a href=../../../2015/08/2015-08-14-introduction-to-async-and-await/><div class=article-details><h2 class=article-title>Python async/await 入门</h2></div></a></article></div></div></aside><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
 2013 -
-2022 ipfans's Blog
-</section>
-<section class=powerby>
-Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
-</section>
-</footer>
-<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
-<div class=pswp__bg></div>
-<div class=pswp__scroll-wrap>
-<div class=pswp__container>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-</div>
-<div class="pswp__ui pswp__ui--hidden">
-<div class=pswp__top-bar>
-<div class=pswp__counter></div>
-<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2022 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.11.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-<div class=pswp__preloader>
-<div class=pswp__preloader__icn>
-<div class=pswp__preloader__cut>
-<div class=pswp__preloader__donut></div>
-</div>
-</div>
-</div>
-</div>
-<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-<div class=pswp__share-tooltip></div>
-</div>
-<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-</button>
-<div class=pswp__caption>
-<div class=pswp__caption__center></div>
-</div>
-</div>
-</div>
-</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
-</main>
-<aside class="sidebar right-sidebar sticky">
-<section class="widget archives">
-<div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg>
-</div>
-<h2 class="widget-title section-title">目录</h2>
-<div class=widget--toc>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#从-call-到命令端>从 Call 到命令端</a></li>
-<li><a href=#什么是连接池>什么是连接池</a></li>
-<li><a href=#从单连接到连接池>从单连接到连接池</a></li>
-</ul>
-</nav>
-</div>
-</section>
-</aside>
-</div>
-<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
-<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
-</body>
-</html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

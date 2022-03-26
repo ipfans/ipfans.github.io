@@ -1,6 +1,4 @@
-<!doctype html><html lang=en>
-<head><meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="原文地址：https://blog.golang.org/go116-module-changes 原文作者：Jay Conrod 译者：Kevin 希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。发行说明中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="原文地址：https://blog.golang.org/go116-module-changes 原文作者：Jay Conrod 译者：Kevin 希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。发行说明中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。
 Module功能默认开启 go命令现在默认以module-aware模式构建包，即使没有go.mod文件存在。这是向在所有项目中使用Module功能迈出的一大步。
 通过设置GO111MODULE环境变量为off，仍然可以在GOPATH模式下构建包。你也可以将GO111MODULE设置为auto，只有当当前目录或任何父目录中存在go.mod文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用go env -w来永久地设置GO111MODULE和其他变量。
 go env -w GO111MODULE=auto 我们计划在 Go 1.17 中放弃对GOPATH模式的支持。换句话说，Go 1.17将忽略GO111MODULE。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交问题或体验报告。
@@ -9,10 +7,7 @@ go env -w GO111MODULE=auto 我们计划在 Go 1.17 中放弃对GOPATH模式的�
 $ go build example.go:3:8: no required module provides package golang.org/x/net/html; to add it: go get golang.org/x/net/html $ go get golang.org/x/net/html $ go build 和之前一样，如果存在vendor目录，go命令可能会使用该目录（详见Vendoring）。像go get和go mod tidy这样的命令仍然会修改go.mod和go.sum，因为它们的主要目的是管理依赖关系。
 在特定版本上安装可执行文件 go install命令现在可以通过指定@version后缀来安装特定版本的可执行文件。
 go install golang.org/x/tools/gopls@v0.6.5 当使用这种语法时，go install命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)
-我们曾经推荐使用go get -u程序来安装可执行文件，但这种使用方式对go."><title>Go 1.16 中Module功能新变化</title>
-<link rel=canonical href=https://www.4async.com/2021/02/2021-02-19-go116-module-changes/>
-<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Go 1.16 中Module功能新变化">
-<meta property="og:description" content="原文地址：https://blog.golang.org/go116-module-changes 原文作者：Jay Conrod 译者：Kevin 希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。发行说明中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。
+我们曾经推荐使用go get -u程序来安装可执行文件，但这种使用方式对go."><title>Go 1.16 中Module功能新变化</title><link rel=canonical href=https://www.4async.com/2021/02/2021-02-19-go116-module-changes/><link rel=stylesheet href=../../../scss/style.min.787c11515dc5d9a2a1ccd2c32e10ab2ce54935226bfd34de0eed651f4f0e0349.css><meta property="og:title" content="Go 1.16 中Module功能新变化"><meta property="og:description" content="原文地址：https://blog.golang.org/go116-module-changes 原文作者：Jay Conrod 译者：Kevin 希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。发行说明中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。
 Module功能默认开启 go命令现在默认以module-aware模式构建包，即使没有go.mod文件存在。这是向在所有项目中使用Module功能迈出的一大步。
 通过设置GO111MODULE环境变量为off，仍然可以在GOPATH模式下构建包。你也可以将GO111MODULE设置为auto，只有当当前目录或任何父目录中存在go.mod文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用go env -w来永久地设置GO111MODULE和其他变量。
 go env -w GO111MODULE=auto 我们计划在 Go 1.17 中放弃对GOPATH模式的支持。换句话说，Go 1.17将忽略GO111MODULE。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交问题或体验报告。
@@ -21,13 +16,7 @@ go env -w GO111MODULE=auto 我们计划在 Go 1.17 中放弃对GOPATH模式的�
 $ go build example.go:3:8: no required module provides package golang.org/x/net/html; to add it: go get golang.org/x/net/html $ go get golang.org/x/net/html $ go build 和之前一样，如果存在vendor目录，go命令可能会使用该目录（详见Vendoring）。像go get和go mod tidy这样的命令仍然会修改go.mod和go.sum，因为它们的主要目的是管理依赖关系。
 在特定版本上安装可执行文件 go install命令现在可以通过指定@version后缀来安装特定版本的可执行文件。
 go install golang.org/x/tools/gopls@v0.6.5 当使用这种语法时，go install命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)
-我们曾经推荐使用go get -u程序来安装可执行文件，但这种使用方式对go.">
-<meta property="og:url" content="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/">
-<meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="GoModules"><meta property="article:published_time" content="2021-02-19T10:16:00+00:00"><meta property="article:modified_time" content="2021-02-19T10:16:00+00:00"><meta property="og:image" content="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/cover.jpg">
-<meta name=twitter:site content="@janxin">
-<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="Go 1.16 中Module功能新变化">
-<meta name=twitter:description content="原文地址：https://blog.golang.org/go116-module-changes 原文作者：Jay Conrod 译者：Kevin 希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。发行说明中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。
+我们曾经推荐使用go get -u程序来安装可执行文件，但这种使用方式对go."><meta property="og:url" content="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:tag" content="GoModules"><meta property="article:published_time" content="2021-02-19T10:16:00+00:00"><meta property="article:modified_time" content="2021-02-19T10:16:00+00:00"><meta property="og:image" content="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/cover.jpg"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="Go 1.16 中Module功能新变化"><meta name=twitter:description content="原文地址：https://blog.golang.org/go116-module-changes 原文作者：Jay Conrod 译者：Kevin 希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。发行说明中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。
 Module功能默认开启 go命令现在默认以module-aware模式构建包，即使没有go.mod文件存在。这是向在所有项目中使用Module功能迈出的一大步。
 通过设置GO111MODULE环境变量为off，仍然可以在GOPATH模式下构建包。你也可以将GO111MODULE设置为auto，只有当当前目录或任何父目录中存在go.mod文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用go env -w来永久地设置GO111MODULE和其他变量。
 go env -w GO111MODULE=auto 我们计划在 Go 1.17 中放弃对GOPATH模式的支持。换句话说，Go 1.17将忽略GO111MODULE。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交问题或体验报告。
@@ -36,241 +25,36 @@ go env -w GO111MODULE=auto 我们计划在 Go 1.17 中放弃对GOPATH模式的�
 $ go build example.go:3:8: no required module provides package golang.org/x/net/html; to add it: go get golang.org/x/net/html $ go get golang.org/x/net/html $ go build 和之前一样，如果存在vendor目录，go命令可能会使用该目录（详见Vendoring）。像go get和go mod tidy这样的命令仍然会修改go.mod和go.sum，因为它们的主要目的是管理依赖关系。
 在特定版本上安装可执行文件 go install命令现在可以通过指定@version后缀来安装特定版本的可执行文件。
 go install golang.org/x/tools/gopls@v0.6.5 当使用这种语法时，go install命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)
-我们曾经推荐使用go get -u程序来安装可执行文件，但这种使用方式对go."><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/cover.jpg">
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
-</head>
-<body class="article-page has-toc">
-<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
-<div class="container main-container flex
-extended">
-<div id=article-toolbar>
-<a href=../../../ class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg>
-<span>返回</span>
-</a>
-</div>
-<main class="main full-width">
-<article class="has-image main-article">
-<header class=article-header>
-<div class=article-image>
-<a href=../../../2021/02/2021-02-19-go116-module-changes/>
-<img src=../../../2021/02/2021-02-19-go116-module-changes/cover_huf957eb7cc0803733802fcc4099cfd7cb_47470_800x0_resize_q75_box.jpg srcset="../../../2021/02/2021-02-19-go116-module-changes/cover_huf957eb7cc0803733802fcc4099cfd7cb_47470_800x0_resize_q75_box.jpg 800w, ../../../2021/02/2021-02-19-go116-module-changes/cover_huf957eb7cc0803733802fcc4099cfd7cb_47470_1600x0_resize_q75_box.jpg 1600w" width=800 height=450 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化">
-</a>
-</div>
-<div class=article-details>
-<header class=article-category>
-<a href=../../../categories/translation/>
-Translation
-</a>
-<a href=../../../categories/golang/>
-Golang
-</a>
-</header>
-<h2 class=article-title>
-<a href=../../../2021/02/2021-02-19-go116-module-changes/>Go 1.16 中Module功能新变化</a>
-</h2>
-<footer class=article-time>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Feb 19, 2021</time>
-</div>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>
-阅读时长: 1 分钟
-</time>
-</div>
-</footer>
-</div>
-</header>
-<section class=article-content>
-<pre tabindex=0><code>原文地址：https://blog.golang.org/go116-module-changes
+我们曾经推荐使用go get -u程序来安装可执行文件，但这种使用方式对go."><meta name=twitter:card content="summary"><meta name=twitter:image content="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/cover.jpg"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,o,i,a,t,n,s){e.GoogleAnalyticsObject=t,e[t]=e[t]||function(){(e[t].q=e[t].q||[]).push(arguments)},e[t].l=1*new Date,n=o.createElement(i),s=o.getElementsByTagName(i)[0],n.async=1,n.src=a,s.parentNode.insertBefore(n,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-33841232-2","auto"),ga("send","pageview"))</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=../../../2021/02/2021-02-19-go116-module-changes/><img src=../../../2021/02/2021-02-19-go116-module-changes/cover_huf957eb7cc0803733802fcc4099cfd7cb_47470_800x0_resize_q75_box.jpg srcset="../../../2021/02/2021-02-19-go116-module-changes/cover_huf957eb7cc0803733802fcc4099cfd7cb_47470_800x0_resize_q75_box.jpg 800w, ../../../2021/02/2021-02-19-go116-module-changes/cover_huf957eb7cc0803733802fcc4099cfd7cb_47470_1600x0_resize_q75_box.jpg 1600w" width=800 height=450 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化"></a></div><div class=article-details><header class=article-category><a href=../../../categories/translation/>Translation</a>
+<a href=../../../categories/golang/>Golang</a></header><div class=article-title-wrapper><h2 class=article-title><a href=../../../2021/02/2021-02-19-go116-module-changes/>Go 1.16 中Module功能新变化</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Feb 19, 2021</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 1 分钟</time></div></footer></div></header><section class=article-content><pre tabindex=0><code>原文地址：https://blog.golang.org/go116-module-changes
 原文作者：Jay Conrod
 译者：Kevin
-</code></pre><p>希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。<a class=link href=https://golang.org/doc/go1.16 target=_blank rel=noopener>发行说明</a>中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。</p>
-<h2 id=module功能默认开启>Module功能默认开启</h2>
-<p>go命令现在默认以module-aware模式构建包，即使没有<code>go.mod</code>文件存在。这是向在所有项目中使用Module功能迈出的一大步。</p>
-<p>通过设置<code>GO111MODULE</code>环境变量为<code>off</code>，仍然可以在<code>GOPATH</code>模式下构建包。你也可以将<code>GO111MODULE</code>设置为<code>auto</code>，只有当当前目录或任何父目录中存在<code>go.mod</code>文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用<code>go env -w</code>来永久地设置<code>GO111MODULE</code>和其他变量。</p>
-<pre tabindex=0><code>go env -w GO111MODULE=auto
-</code></pre><p>我们计划在 Go 1.17 中放弃对<code>GOPATH</code>模式的支持。换句话说，Go 1.17将忽略<code>GO111MODULE</code>。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交<a class=link href=https://github.com/golang/go/issues/new target=_blank rel=noopener>问题</a>或<a class=link href=https://github.com/golang/go/wiki/ExperienceReports target=_blank rel=noopener>体验报告</a>。</p>
-<h2 id=不会自动更改-gomod-和-gosum>不会自动更改 go.mod 和 go.sum</h2>
-<p>在之前的版本中，当<code>go</code>命令发现<code>go.mod</code>或<code>go.sum</code>有问题时，比如缺少<code>require</code>指令或缺少<code>sum</code>，它会尝试自动修复问题。我们收到了很多反馈，认为这种行为是出乎大家意料的，尤其是对于像<code>go list</code>这样通常不会产生副作用的命令。自动修复并不总是可取的：如果一个导入的包没有被任何需要的Module提供，<code>go</code>命令会添加一个新的依赖关系，可能会触发普通依赖关系的升级。即使是拼写错误的导入路径也会导致（失败的）网络查找。</p>
-<p>在 Go 1.16 中，module-aware命令在发现<code>go.mod</code>或<code>go.sum</code>中的问题后会报告一个错误，而不是尝试自动修复问题。在大多数情况下，错误信息建议使用命令来修复问题。</p>
-<pre tabindex=0><code>$ go build
+</code></pre><p>希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。<a class=link href=https://golang.org/doc/go1.16 target=_blank rel=noopener>发行说明</a>中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。</p><h2 id=module功能默认开启>Module功能默认开启</h2><p>go命令现在默认以module-aware模式构建包，即使没有<code>go.mod</code>文件存在。这是向在所有项目中使用Module功能迈出的一大步。</p><p>通过设置<code>GO111MODULE</code>环境变量为<code>off</code>，仍然可以在<code>GOPATH</code>模式下构建包。你也可以将<code>GO111MODULE</code>设置为<code>auto</code>，只有当当前目录或任何父目录中存在<code>go.mod</code>文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用<code>go env -w</code>来永久地设置<code>GO111MODULE</code>和其他变量。</p><pre tabindex=0><code>go env -w GO111MODULE=auto
+</code></pre><p>我们计划在 Go 1.17 中放弃对<code>GOPATH</code>模式的支持。换句话说，Go 1.17将忽略<code>GO111MODULE</code>。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交<a class=link href=https://github.com/golang/go/issues/new target=_blank rel=noopener>问题</a>或<a class=link href=https://github.com/golang/go/wiki/ExperienceReports target=_blank rel=noopener>体验报告</a>。</p><h2 id=不会自动更改-gomod-和-gosum>不会自动更改 go.mod 和 go.sum</h2><p>在之前的版本中，当<code>go</code>命令发现<code>go.mod</code>或<code>go.sum</code>有问题时，比如缺少<code>require</code>指令或缺少<code>sum</code>，它会尝试自动修复问题。我们收到了很多反馈，认为这种行为是出乎大家意料的，尤其是对于像<code>go list</code>这样通常不会产生副作用的命令。自动修复并不总是可取的：如果一个导入的包没有被任何需要的Module提供，<code>go</code>命令会添加一个新的依赖关系，可能会触发普通依赖关系的升级。即使是拼写错误的导入路径也会导致（失败的）网络查找。</p><p>在 Go 1.16 中，module-aware命令在发现<code>go.mod</code>或<code>go.sum</code>中的问题后会报告一个错误，而不是尝试自动修复问题。在大多数情况下，错误信息建议使用命令来修复问题。</p><pre tabindex=0><code>$ go build
 example.go:3:8: no required module provides package golang.org/x/net/html; to add it:
     go get golang.org/x/net/html
 $ go get golang.org/x/net/html
 $ go build
-</code></pre><p>和之前一样，如果存在<code>vendor</code>目录，<code>go</code>命令可能会使用该目录（详见<a class=link href=https://golang.org/ref/mod#vendoring target=_blank rel=noopener><code>Vendoring</code></a>）。像<code>go get</code>和<code>go mod tidy</code>这样的命令仍然会修改<code>go.mod</code>和<code>go.sum</code>，因为它们的主要目的是管理依赖关系。</p>
-<h2 id=在特定版本上安装可执行文件>在特定版本上安装可执行文件</h2>
-<p><code>go install</code>命令现在可以通过指定<code>@version</code>后缀来安装特定版本的可执行文件。</p>
-<pre tabindex=0><code>go install golang.org/x/tools/gopls@v0.6.5
-</code></pre><p>当使用这种语法时，<code>go install</code>命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)</p>
-<p>我们曾经推荐使用<code>go get -u</code>程序来安装可执行文件，但这种使用方式对<code>go.mod</code>中添加或更改Module版本需求的意义造成了太多的混淆。而为了避免意外修改<code>go.mod</code>，人们开始建议使用更复杂的命令，比如：</p>
-<pre tabindex=0><code>cd $HOME; GO111MODULE=on go get program@latest
-</code></pre><p>现在我们都可以用<code>go install program@latest</code>来代替。详情请看<a class=link href=https://golang.org/ref/mod#go-install target=_blank rel=noopener>go install</a>。</p>
-<p>为了消除使用哪个版本的歧义，当使用这种安装语法时，对程序的go.mod文件中可能存在的指令有一些限制。特别是，至少在目前，替换和排除指令是不允许的。从长远来看，一旦新的<code>go install program@version</code>在足够多的用例中运行良好，我们计划让<code>go get</code>停止安装命令二进制文件。详情请参见<a class=link href=https://golang.org/issue/43684 target=_blank rel=noopener>issue 43684</a>。</p>
-<h2 id=module撤回>Module撤回</h2>
-<p>您是否曾经在Module版本准备好之前不小心发布过？或者您是否在版本发布后就发现了一个需要快速修复的问题？发布的版本中的错误是很难纠正的。为了保持Module构建的确定性，一个版本在发布后不能被修改。即使你删除或更改了版本标签，<a class=link href=https://proxy.golang.org/ target=_blank rel=noopener><code>proxy.golang.org</code></a>和其他代理可能已经有了原始版本的缓存。</p>
-<p>Module作者现在可以使用<code>go.mod</code>中的<code>retract</code>指令撤回Module版本。撤回的版本仍然存在，并且可以被下载（所以依赖它的构建不会中断），但在解析<code>@latest</code>这样的版本时，<code>go</code>命令不会自动选择它，<code>go get</code>和<code>go list -m -u</code>会打印关于现有使用版本的警告。</p>
-<p>例如，假设一个流行库<code>example.com/lib</code>的作者发布了<code>v1.0.5</code>，然后发现了一个新的安全问题。他们可以在他们的go.mod文件中添加如下指令。</p>
-<pre tabindex=0><code>// Remote-triggered crash in package foo. See CVE-2021-01234.
+</code></pre><p>和之前一样，如果存在<code>vendor</code>目录，<code>go</code>命令可能会使用该目录（详见<a class=link href=https://golang.org/ref/mod#vendoring target=_blank rel=noopener><code>Vendoring</code></a>）。像<code>go get</code>和<code>go mod tidy</code>这样的命令仍然会修改<code>go.mod</code>和<code>go.sum</code>，因为它们的主要目的是管理依赖关系。</p><h2 id=在特定版本上安装可执行文件>在特定版本上安装可执行文件</h2><p><code>go install</code>命令现在可以通过指定<code>@version</code>后缀来安装特定版本的可执行文件。</p><pre tabindex=0><code>go install golang.org/x/tools/gopls@v0.6.5
+</code></pre><p>当使用这种语法时，<code>go install</code>命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)</p><p>我们曾经推荐使用<code>go get -u</code>程序来安装可执行文件，但这种使用方式对<code>go.mod</code>中添加或更改Module版本需求的意义造成了太多的混淆。而为了避免意外修改<code>go.mod</code>，人们开始建议使用更复杂的命令，比如：</p><pre tabindex=0><code>cd $HOME; GO111MODULE=on go get program@latest
+</code></pre><p>现在我们都可以用<code>go install program@latest</code>来代替。详情请看<a class=link href=https://golang.org/ref/mod#go-install target=_blank rel=noopener>go install</a>。</p><p>为了消除使用哪个版本的歧义，当使用这种安装语法时，对程序的go.mod文件中可能存在的指令有一些限制。特别是，至少在目前，替换和排除指令是不允许的。从长远来看，一旦新的<code>go install program@version</code>在足够多的用例中运行良好，我们计划让<code>go get</code>停止安装命令二进制文件。详情请参见<a class=link href=https://golang.org/issue/43684 target=_blank rel=noopener>issue 43684</a>。</p><h2 id=module撤回>Module撤回</h2><p>您是否曾经在Module版本准备好之前不小心发布过？或者您是否在版本发布后就发现了一个需要快速修复的问题？发布的版本中的错误是很难纠正的。为了保持Module构建的确定性，一个版本在发布后不能被修改。即使你删除或更改了版本标签，<a class=link href=https://proxy.golang.org/ target=_blank rel=noopener><code>proxy.golang.org</code></a>和其他代理可能已经有了原始版本的缓存。</p><p>Module作者现在可以使用<code>go.mod</code>中的<code>retract</code>指令撤回Module版本。撤回的版本仍然存在，并且可以被下载（所以依赖它的构建不会中断），但在解析<code>@latest</code>这样的版本时，<code>go</code>命令不会自动选择它，<code>go get</code>和<code>go list -m -u</code>会打印关于现有使用版本的警告。</p><p>例如，假设一个流行库<code>example.com/lib</code>的作者发布了<code>v1.0.5</code>，然后发现了一个新的安全问题。他们可以在他们的go.mod文件中添加如下指令。</p><pre tabindex=0><code>// Remote-triggered crash in package foo. See CVE-2021-01234.
 retract v1.0.5
-</code></pre><p>接下来，作者可以标记并推送<code>v1.0.6</code>版本，即新的最高版本。在这之后，已经依赖v1.0.5的用户在检查更新或升级依赖的软件包时，就会被通知版本撤回。通知信息可能会包含来自<code>retract</code>指令上方注释的文字。</p>
-<pre tabindex=0><code>$ go list -m -u all
+</code></pre><p>接下来，作者可以标记并推送<code>v1.0.6</code>版本，即新的最高版本。在这之后，已经依赖v1.0.5的用户在检查更新或升级依赖的软件包时，就会被通知版本撤回。通知信息可能会包含来自<code>retract</code>指令上方注释的文字。</p><pre tabindex=0><code>$ go list -m -u all
 example.com/lib v1.0.0 (retracted)
 $ go get .
 go: warning: example.com/lib@v1.0.5: retracted by module author:
     Remote-triggered crash in package foo. See CVE-2021-01234.
 go: to switch to the latest unretracted version, run:
     go get example.com/lib@latest
-</code></pre><p>关于交互式的、基于浏览器的使用指南，请查看<a class=link href=https://play-with-go.dev/ target=_blank rel=noopener><code>play-with-go.dev</code></a>上的<a class=link href=https://play-with-go.dev/retract-module-versions_go116_en/ target=_blank rel=noopener><code>Retract Module Versions</code></a>。可以查看<a class=link href=https://golang.org/ref/mod#go-mod-file-retract target=_blank rel=noopener><code>retract指令文档</code></a>以了解语法细节。</p>
-<h2 id=用govcs控制版本管理工具>用GOVCS控制版本管理工具</h2>
-<p><code>go</code>命令可以从<a class=link href=https://proxy.golang.org/ target=_blank rel=noopener><code>proxy.golang.org</code></a>这样的镜像中下载Module源代码，或者直接从使用<code>git</code>、<code>hg</code>、<code>svn</code>、<code>bzr</code>或<code>fossil</code>的版本管理仓库中下载。直接的版本控制访问是很重要的，特别是对于那些在代理上无法使用的私有Module，但这也是一个潜在的安全问题：版本控制工具中的一个bug可能会被恶意服务器利用，运行非预期的代码。</p>
-<p>Go 1.16引入了一个新的配置变量<code>GOVCS</code>，让用户可以指定哪些Module可以使用特定的版本控制工具。<code>GOVCS</code>接受一个以逗号分隔的<code>pattern:vcslist</code>规则列表。<code>pattern</code>是一个<a class=link href=https://golang.org/pkg/path#Match target=_blank rel=noopener><code>path.Match</code></a>模式，匹配一个Module路径的一个或多个前缀元素。特殊模式public和private匹配公共和私有Module（private被定义为由GOPRIVATE中的模式匹配的Module；public是其他所有Module）。<code>vcslist</code>是一个以管道符分隔的允许的版本控制命令列表，或关键字<code>all</code>或<code>off</code>。</p>
-<p>例如</p>
-<pre tabindex=0><code>GOVCS=github.com:git,evil.com:off,*:git|hg
-</code></pre><p>在此设置下，路径在<code>github.com</code>上的Module可以使用<code>git</code>下载；路径在<code>evil.com</code>上的Module不能使用任何版本管理程序下载，其他所有路径（*匹配所有）可以使用<code>git</code>或<code>hg</code>下载。</p>
-<p>如果没有设置<code>GOVCS</code>，或者一个Module不符合任何模式，<code>go</code>命令就会使用这个默认值：公共Module允许使用<code>git</code>和<code>hg</code>，私有Module允许使用所有工具。只允许<code>Git</code>和<code>Mercurial</code>的理由是，这两个系统作为不受信任的服务器的客户端运行的问题最受关注。相比之下，<code>Bazaar</code>、<code>Fossil</code>和<code>Subversion</code>主要是在受信任的、经过认证的环境中使用，作为攻击面的审查程度不高。也就是说，默认的设置是</p>
-<pre tabindex=0><code>GOVCS=public:git|hg,private:all
-</code></pre><p>更多细节请参见使用<a class=link href=https://golang.org/ref/mod#vcs-govcs target=_blank rel=noopener><code>GOVCS控制版本管理工具</code></a>。</p>
-<h2 id=下一步>下一步？</h2>
-<p>我们希望您觉得这些功能很有用。我们已经在努力为Go 1.17开发新的Module功能，特别是<a class=link href=https://github.com/golang/go/issues/36460 target=_blank rel=noopener><code>懒惰Module加载</code></a>，这将使Module加载过程更快、更稳定。和以往一样，如果您遇到新的bug，请在<a class=link href=https://github.com/golang/go/issues target=_blank rel=noopener>问题跟踪</a>上告诉我们。Happy coding!</p>
-</section>
-<footer class=article-footer>
-<section class=article-tags>
-<a href=../../../tags/golang/>Golang</a>
-<a href=../../../tags/gomodules/>GoModules</a>
-</section>
-<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span>
-</section>
-</footer>
-</article>
-<aside class=related-contents--wrapper>
-<h2 class=section-title>相关文章</h2>
-<div class=related-contents>
-<div class="flex article-list--tile">
-<article>
-<a href=../../../2019/03/2019-03-20-using-go-modules/>
-<div class=article-details>
-<h2 class=article-title>使用Go Modules</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/02/2021-02-25-context-and-structs/>
-<div class=article-image>
-<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 上下文Context与结构体Struct" data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
-</div>
-<div class=article-details>
-<h2 class=article-title>上下文Context与结构体Struct</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
-<div class=article-image>
-<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
-</div>
-<div class=article-details>
-<h2 class=article-title>译：在Go中转向领域驱动设计</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
-<div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
-</div>
-<div class=article-details>
-<h2 class=article-title>OpenTelemetry入门</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2020/02/2020-02-05-golang-debug-instrumental/>
-<div class=article-details>
-<h2 class=article-title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</h2>
-</div>
-</a>
-</article>
-</div>
-</div>
-</aside>
-<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
-<div class=disqus-container>
-<div id=disqus_thread></div>
-<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-</div>
-<footer class=site-footer>
-<section class=copyright>
-&copy;
+</code></pre><p>关于交互式的、基于浏览器的使用指南，请查看<a class=link href=https://play-with-go.dev/ target=_blank rel=noopener><code>play-with-go.dev</code></a>上的<a class=link href=https://play-with-go.dev/retract-module-versions_go116_en/ target=_blank rel=noopener><code>Retract Module Versions</code></a>。可以查看<a class=link href=https://golang.org/ref/mod#go-mod-file-retract target=_blank rel=noopener><code>retract指令文档</code></a>以了解语法细节。</p><h2 id=用govcs控制版本管理工具>用GOVCS控制版本管理工具</h2><p><code>go</code>命令可以从<a class=link href=https://proxy.golang.org/ target=_blank rel=noopener><code>proxy.golang.org</code></a>这样的镜像中下载Module源代码，或者直接从使用<code>git</code>、<code>hg</code>、<code>svn</code>、<code>bzr</code>或<code>fossil</code>的版本管理仓库中下载。直接的版本控制访问是很重要的，特别是对于那些在代理上无法使用的私有Module，但这也是一个潜在的安全问题：版本控制工具中的一个bug可能会被恶意服务器利用，运行非预期的代码。</p><p>Go 1.16引入了一个新的配置变量<code>GOVCS</code>，让用户可以指定哪些Module可以使用特定的版本控制工具。<code>GOVCS</code>接受一个以逗号分隔的<code>pattern:vcslist</code>规则列表。<code>pattern</code>是一个<a class=link href=https://golang.org/pkg/path#Match target=_blank rel=noopener><code>path.Match</code></a>模式，匹配一个Module路径的一个或多个前缀元素。特殊模式public和private匹配公共和私有Module（private被定义为由GOPRIVATE中的模式匹配的Module；public是其他所有Module）。<code>vcslist</code>是一个以管道符分隔的允许的版本控制命令列表，或关键字<code>all</code>或<code>off</code>。</p><p>例如</p><pre tabindex=0><code>GOVCS=github.com:git,evil.com:off,*:git|hg
+</code></pre><p>在此设置下，路径在<code>github.com</code>上的Module可以使用<code>git</code>下载；路径在<code>evil.com</code>上的Module不能使用任何版本管理程序下载，其他所有路径（*匹配所有）可以使用<code>git</code>或<code>hg</code>下载。</p><p>如果没有设置<code>GOVCS</code>，或者一个Module不符合任何模式，<code>go</code>命令就会使用这个默认值：公共Module允许使用<code>git</code>和<code>hg</code>，私有Module允许使用所有工具。只允许<code>Git</code>和<code>Mercurial</code>的理由是，这两个系统作为不受信任的服务器的客户端运行的问题最受关注。相比之下，<code>Bazaar</code>、<code>Fossil</code>和<code>Subversion</code>主要是在受信任的、经过认证的环境中使用，作为攻击面的审查程度不高。也就是说，默认的设置是</p><pre tabindex=0><code>GOVCS=public:git|hg,private:all
+</code></pre><p>更多细节请参见使用<a class=link href=https://golang.org/ref/mod#vcs-govcs target=_blank rel=noopener><code>GOVCS控制版本管理工具</code></a>。</p><h2 id=下一步>下一步？</h2><p>我们希望您觉得这些功能很有用。我们已经在努力为Go 1.17开发新的Module功能，特别是<a class=link href=https://github.com/golang/go/issues/36460 target=_blank rel=noopener><code>懒惰Module加载</code></a>，这将使Module加载过程更快、更稳定。和以往一样，如果您遇到新的bug，请在<a class=link href=https://github.com/golang/go/issues target=_blank rel=noopener>问题跟踪</a>上告诉我们。Happy coding!</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/golang/>Golang</a>
+<a href=../../../tags/gomodules/>GoModules</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article><a href=../../../2019/03/2019-03-20-using-go-modules/><div class=article-details><h2 class=article-title>使用Go Modules</h2></div></a></article><article class=has-image><a href=../../../2021/02/2021-02-25-context-and-structs/><div class=article-image><img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 上下文Context与结构体Struct" data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA=="></div><div class=article-details><h2 class=article-title>上下文Context与结构体Struct</h2></div></a></article><article class=has-image><a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/><div class=article-image><img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ=="></div><div class=article-details><h2 class=article-title>译：在Go中转向领域驱动设计</h2></div></a></article><article class=has-image><a href=../../../2020/03/2020-03-31-intro-opentelemetry/><div class=article-image><img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ=="></div><div class=article-details><h2 class=article-title>OpenTelemetry入门</h2></div></a></article><article><a href=../../../2020/02/2020-02-05-golang-debug-instrumental/><div class=article-details><h2 class=article-title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</h2></div></a></article></div></div></aside><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
 2013 -
-2022 ipfans's Blog
-</section>
-<section class=powerby>
-Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
-</section>
-</footer>
-<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
-<div class=pswp__bg></div>
-<div class=pswp__scroll-wrap>
-<div class=pswp__container>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-</div>
-<div class="pswp__ui pswp__ui--hidden">
-<div class=pswp__top-bar>
-<div class=pswp__counter></div>
-<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2022 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.11.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-<div class=pswp__preloader>
-<div class=pswp__preloader__icn>
-<div class=pswp__preloader__cut>
-<div class=pswp__preloader__donut></div>
-</div>
-</div>
-</div>
-</div>
-<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-<div class=pswp__share-tooltip></div>
-</div>
-<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-</button>
-<div class=pswp__caption>
-<div class=pswp__caption__center></div>
-</div>
-</div>
-</div>
-</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
-</main>
-<aside class="sidebar right-sidebar sticky">
-<section class="widget archives">
-<div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg>
-</div>
-<h2 class="widget-title section-title">目录</h2>
-<div class=widget--toc>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#module功能默认开启>Module功能默认开启</a></li>
-<li><a href=#不会自动更改-gomod-和-gosum>不会自动更改 go.mod 和 go.sum</a></li>
-<li><a href=#在特定版本上安装可执行文件>在特定版本上安装可执行文件</a></li>
-<li><a href=#module撤回>Module撤回</a></li>
-<li><a href=#用govcs控制版本管理工具>用GOVCS控制版本管理工具</a></li>
-<li><a href=#下一步>下一步？</a></li>
-</ul>
-</nav>
-</div>
-</section>
-</aside>
-</div>
-<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
-<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
-</body>
-</html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

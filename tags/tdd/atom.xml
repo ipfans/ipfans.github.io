@@ -4,5 +4,4 @@
 而这些东西往往可以在开发人员编写单元测试用例时有效的节省时间和一些额外的环境准备成本。因此，这也给我们的程序的单元覆盖率带来了很多麻烦的地方：一些依赖于额外验证和表现的情况或者小几率出现的情况需要复杂的模拟步骤，对开发进度和效率带来了一些额外的影响。如何编写一个测试友好的 Golang 程序成为一个无法绕开的问题。
 从动态语言到静态语言 动态语言有良好的运行时修改属性，在运行时的动态修改函数，可以进行有效的 Mock。比如在 Python（以 3 为例，内置了 unittest.mock 标准库）程序中:
 with patch.object(ProductionClass,&amp;#39;method&amp;#39;, return_value=None) as mock_method: thing = ProductionClass() thing.method(1, 2, 3) 自然而然的，我们想到了这样的用法：
-var imp = func() bool {return true} func TestFunc(t *testing.T) {defer func(org func() bool) {imp = org}(imp) img = func() bool {return false} // testing or something else... } 这样实现 Mock 是完全可以的，但是实际上会带来一些额外的问题，比如说在 MVC 框架中，我们正常采用的方式一般是这样的：
-import (&amp;#34;models&amp;#34; ... ) func A(ctx Context) error { .</description></item></channel></rss>
+var imp = func() bool {return true} func TestFunc(t *testing.T) {defer func(org func() bool) {imp = org}(imp) img = func() bool {return false} // testing or something else... } 这样实现 Mock 是完全可以的，但是实际上会带来一些额外的问题，比如说在 MVC 框架中，我们正常采用的方式一般是这样的：</description></item></channel></rss>

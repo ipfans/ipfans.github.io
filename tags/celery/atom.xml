@@ -4,6 +4,4 @@ Celery 的使用比较简单，但是需要后端的数据库做消息队列存�
 r = requests.post(url, files=fh) 这个请求可能需要大量的时间实现上传，应用又有体验的原因需要实时返回结果，因此实现的方式就可以选择队列实现。更加普遍的场景还有发送邮件、短信等等的场景。
 首先是编写 Celery 的 Worker 进程。这个进程是作为队列的后端处理程序存在的，我在选择后端时使用的是 Redis，主要是比较方便，amq 安装相对麻烦。有人曾经反应说 Redis 的支持并不是十分完善，但是我看文档中并未提到，因此在实际生产环境的时候注意一下这个坑，如果发现 Redis 有问题，可以果断迁移至 amq，或者直接用它做后端。
 # tasks.py from celery import Celery redis_url = &amp;#39;redis://localhost:6379/0&amp;#39; app = Celery(&amp;#39;tasks&amp;#39;, backend=redis_url, broker=redis_url) # Celery 第一个参数同文件名 # 新异步任务 @app.task def upload_file(url, fh): r = requests.post(url, files=fh) 编写完成后就可以运行 Celery 的 Worker 进程：
-celery -A tasks worker 就可以执行 Worker 进程，记得同时启动数据库：）
-然后写一下前段处理模块：
-from task import upload_file result = upload_file.</description></item></channel></rss>
+celery -A tasks worker 就可以执行 Worker 进程，记得同时启动数据库：）</description></item></channel></rss>

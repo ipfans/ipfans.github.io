@@ -1,478 +1,242 @@
-<!doctype html><html lang=en>
-<head><meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。
 泛型有什么作用？ 在使用Go没有泛型之前我们怎么实现针对多类型的逻辑实现的呢？有很多方法，比如说使用interface{}作为变量类型参数，在内部通过类型判断进入对应的处理逻辑；将类型转化为特定表现的鸭子类型，通过接口定义的方法实现逻辑整合；还有人专门编写了Go的函数代码生成工具，通过批量生成不同类型的相同实现函数代替手工实现等等。这些方法多多少少存在一些问题：使用了interface{}作为参数意味着放弃了编译时检查，作为强类型语言的一个优势就被抹掉了。同样，无论使用代码生成还是手工书写，一旦出现问题，意味着这些方法都需要重复生成或者进行批量修改，工作量反而变得更多了。
 在Go中引入泛型会给程序开发带来很多好处：通过泛型，可以针对多种类型编写一次代码，大大节省了编码时间。你可以充分应用编译器的编译检查，保证程序变量类型的可靠性。借助泛型，你可以减少代码的重复度，也不会出现一处出现问题需要修改多处地方的尴尬问题。这也让很多测试工作变得更简单，借助类型安全，你甚至可以少考虑很多的边缘情况。
 Go语言官方有详细的泛型提案文档可以在这里和这里查看详情。
 如何使用泛型 前面理论我们仅仅只做介绍，这次尝鲜还是以实践为主。让我们先从一个小例子开始。
 从简单的例子开始 让我们先从一个最简单的例子开始：
-package main import ( &amp;#34;fmt&amp;#34; ) type Addable interface { type int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr, float32, float64, complex64, complex128, string } func add[T Addable](a, b T) T { return a + b } func main() { fmt.Println(add(1,2)) fmt.Println(add(&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;)) } 这个函数可以实现任何需要使用+符号进行运算的类型，我们通过定义Addable类型，枚举了所有可能可以使用add方法的所有的类型。比如我们在main函数中就使用了int和string两种不同类型。
-但是如果这时我们使用简单的go run命令运行，会发现提示语法错误：
-$ go version go version go1.17 darwin/arm64 $ go run ~/main."><title>Go 1.17 泛型尝鲜</title>
-<link rel=canonical href=https://www.4async.com/2021/08/golang-117-generics/>
-<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Go 1.17 泛型尝鲜">
-<meta property="og:description" content="今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。
+package main  import (  &amp;#34;fmt&amp;#34; )  type Addable interface { 	type int, int8, int16, int32, int64, 	uint, uint8, uint16, uint32, uint64, uintptr, 	float32, float64, complex64, complex128, 	string }  func add[T Addable](a, b T) T {  return a + b }  func main() {  fmt.Println(add(1,2))  fmt.Println(add(&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;)) } 这个函数可以实现任何需要使用+符号进行运算的类型，我们通过定义Addable类型，枚举了所有可能可以使用add方法的所有的类型。比如我们在main函数中就使用了int和string两种不同类型。"><title>Go 1.17 泛型尝鲜</title><link rel=canonical href=https://www.4async.com/2021/08/golang-117-generics/><link rel=stylesheet href=../../../scss/style.min.787c11515dc5d9a2a1ccd2c32e10ab2ce54935226bfd34de0eed651f4f0e0349.css><meta property="og:title" content="Go 1.17 泛型尝鲜"><meta property="og:description" content="今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。
 泛型有什么作用？ 在使用Go没有泛型之前我们怎么实现针对多类型的逻辑实现的呢？有很多方法，比如说使用interface{}作为变量类型参数，在内部通过类型判断进入对应的处理逻辑；将类型转化为特定表现的鸭子类型，通过接口定义的方法实现逻辑整合；还有人专门编写了Go的函数代码生成工具，通过批量生成不同类型的相同实现函数代替手工实现等等。这些方法多多少少存在一些问题：使用了interface{}作为参数意味着放弃了编译时检查，作为强类型语言的一个优势就被抹掉了。同样，无论使用代码生成还是手工书写，一旦出现问题，意味着这些方法都需要重复生成或者进行批量修改，工作量反而变得更多了。
 在Go中引入泛型会给程序开发带来很多好处：通过泛型，可以针对多种类型编写一次代码，大大节省了编码时间。你可以充分应用编译器的编译检查，保证程序变量类型的可靠性。借助泛型，你可以减少代码的重复度，也不会出现一处出现问题需要修改多处地方的尴尬问题。这也让很多测试工作变得更简单，借助类型安全，你甚至可以少考虑很多的边缘情况。
 Go语言官方有详细的泛型提案文档可以在这里和这里查看详情。
 如何使用泛型 前面理论我们仅仅只做介绍，这次尝鲜还是以实践为主。让我们先从一个小例子开始。
 从简单的例子开始 让我们先从一个最简单的例子开始：
-package main import ( &amp;#34;fmt&amp;#34; ) type Addable interface { type int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr, float32, float64, complex64, complex128, string } func add[T Addable](a, b T) T { return a + b } func main() { fmt.Println(add(1,2)) fmt.Println(add(&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;)) } 这个函数可以实现任何需要使用+符号进行运算的类型，我们通过定义Addable类型，枚举了所有可能可以使用add方法的所有的类型。比如我们在main函数中就使用了int和string两种不同类型。
-但是如果这时我们使用简单的go run命令运行，会发现提示语法错误：
-$ go version go version go1.17 darwin/arm64 $ go run ~/main.">
-<meta property="og:url" content="https://www.4async.com/2021/08/golang-117-generics/">
-<meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="golang"><meta property="article:published_time" content="2021-08-17T17:48:00+00:00"><meta property="article:modified_time" content="2021-08-17T17:48:00+00:00"><meta property="og:image" content="https://www.4async.com/2021/08/golang-117-generics/go.png">
-<meta name=twitter:site content="@janxin">
-<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="Go 1.17 泛型尝鲜">
-<meta name=twitter:description content="今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。
+package main  import (  &amp;#34;fmt&amp;#34; )  type Addable interface { 	type int, int8, int16, int32, int64, 	uint, uint8, uint16, uint32, uint64, uintptr, 	float32, float64, complex64, complex128, 	string }  func add[T Addable](a, b T) T {  return a + b }  func main() {  fmt.Println(add(1,2))  fmt.Println(add(&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;)) } 这个函数可以实现任何需要使用+符号进行运算的类型，我们通过定义Addable类型，枚举了所有可能可以使用add方法的所有的类型。比如我们在main函数中就使用了int和string两种不同类型。"><meta property="og:url" content="https://www.4async.com/2021/08/golang-117-generics/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="golang"><meta property="article:published_time" content="2021-08-17T17:48:00+00:00"><meta property="article:modified_time" content="2021-08-17T17:48:00+00:00"><meta property="og:image" content="https://www.4async.com/2021/08/golang-117-generics/go.png"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="Go 1.17 泛型尝鲜"><meta name=twitter:description content="今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。
 泛型有什么作用？ 在使用Go没有泛型之前我们怎么实现针对多类型的逻辑实现的呢？有很多方法，比如说使用interface{}作为变量类型参数，在内部通过类型判断进入对应的处理逻辑；将类型转化为特定表现的鸭子类型，通过接口定义的方法实现逻辑整合；还有人专门编写了Go的函数代码生成工具，通过批量生成不同类型的相同实现函数代替手工实现等等。这些方法多多少少存在一些问题：使用了interface{}作为参数意味着放弃了编译时检查，作为强类型语言的一个优势就被抹掉了。同样，无论使用代码生成还是手工书写，一旦出现问题，意味着这些方法都需要重复生成或者进行批量修改，工作量反而变得更多了。
 在Go中引入泛型会给程序开发带来很多好处：通过泛型，可以针对多种类型编写一次代码，大大节省了编码时间。你可以充分应用编译器的编译检查，保证程序变量类型的可靠性。借助泛型，你可以减少代码的重复度，也不会出现一处出现问题需要修改多处地方的尴尬问题。这也让很多测试工作变得更简单，借助类型安全，你甚至可以少考虑很多的边缘情况。
 Go语言官方有详细的泛型提案文档可以在这里和这里查看详情。
 如何使用泛型 前面理论我们仅仅只做介绍，这次尝鲜还是以实践为主。让我们先从一个小例子开始。
 从简单的例子开始 让我们先从一个最简单的例子开始：
-package main import ( &amp;#34;fmt&amp;#34; ) type Addable interface { type int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr, float32, float64, complex64, complex128, string } func add[T Addable](a, b T) T { return a + b } func main() { fmt.Println(add(1,2)) fmt.Println(add(&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;)) } 这个函数可以实现任何需要使用+符号进行运算的类型，我们通过定义Addable类型，枚举了所有可能可以使用add方法的所有的类型。比如我们在main函数中就使用了int和string两种不同类型。
-但是如果这时我们使用简单的go run命令运行，会发现提示语法错误：
-$ go version go version go1.17 darwin/arm64 $ go run ~/main."><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://www.4async.com/2021/08/golang-117-generics/go.png">
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
-</head>
-<body class="article-page has-toc">
-<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
-<div class="container main-container flex
-extended">
-<div id=article-toolbar>
-<a href=../../../ class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg>
-<span>返回</span>
-</a>
-</div>
-<main class="main full-width">
-<article class="has-image main-article">
-<header class=article-header>
-<div class=article-image>
-<a href=../../../2021/08/golang-117-generics/>
-<img src=../../../2021/08/golang-117-generics/go_hu0a44c8ca350ed766a7653d0fae9076f0_60746_800x0_resize_box_3.png srcset="../../../2021/08/golang-117-generics/go_hu0a44c8ca350ed766a7653d0fae9076f0_60746_800x0_resize_box_3.png 800w, ../../../2021/08/golang-117-generics/go_hu0a44c8ca350ed766a7653d0fae9076f0_60746_1600x0_resize_box_3.png 1600w" width=800 height=452 loading=lazy alt="Featured image of post Go 1.17 泛型尝鲜">
-</a>
-</div>
-<div class=article-details>
-<header class=article-category>
-<a href=../../../categories/golang/>
-Golang
-</a>
-</header>
-<h2 class=article-title>
-<a href=../../../2021/08/golang-117-generics/>Go 1.17 泛型尝鲜</a>
-</h2>
-<footer class=article-time>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Aug 17, 2021</time>
-</div>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>
-阅读时长: 3 分钟
-</time>
-</div>
-</footer>
-</div>
-</header>
-<section class=article-content>
-<p>今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。</p>
-<h2 id=泛型有什么作用>泛型有什么作用？</h2>
-<p>在使用Go没有泛型之前我们怎么实现针对多类型的逻辑实现的呢？有很多方法，比如说使用<code>interface{}</code>作为变量类型参数，在内部通过类型判断进入对应的处理逻辑；将类型转化为特定表现的鸭子类型，通过接口定义的方法实现逻辑整合；还有人专门编写了Go的<a class=link href=https://twitter.com/yogthos/status/883058510275149826 target=_blank rel=noopener>函数代码生成工具</a>，通过批量生成不同类型的相同实现函数代替手工实现等等。这些方法多多少少存在一些问题：使用了<code>interface{}</code>作为参数意味着放弃了编译时检查，作为强类型语言的一个优势就被抹掉了。同样，无论使用代码生成还是手工书写，一旦出现问题，意味着这些方法都需要重复生成或者进行批量修改，工作量反而变得更多了。</p>
-<p>在Go中引入泛型会给程序开发带来很多好处：通过泛型，可以针对多种类型编写一次代码，大大节省了编码时间。你可以充分应用编译器的编译检查，保证程序变量类型的可靠性。借助泛型，你可以减少代码的重复度，也不会出现一处出现问题需要修改多处地方的尴尬问题。这也让很多测试工作变得更简单，借助类型安全，你甚至可以少考虑很多的边缘情况。</p>
-<p>Go语言官方有详细的泛型提案文档可以在<a class=link href=https://go.googlesource.com/proposal/+/refs/heads/master/design/15292-generics.md target=_blank rel=noopener>这里</a>和<a class=link href=https://go.googlesource.com/proposal/+/refs/heads/master/design/15292/2013-12-type-params.md target=_blank rel=noopener>这里</a>查看详情。</p>
-<h2 id=如何使用泛型>如何使用泛型</h2>
-<p>前面理论我们仅仅只做介绍，这次尝鲜还是以实践为主。让我们先从一个小例子开始。</p>
-<h3 id=从简单的例子开始>从简单的例子开始</h3>
-<p>让我们先从一个最简单的例子开始：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
-
-<span style=color:#f92672>import</span> (
-    <span style=color:#e6db74>&#34;fmt&#34;</span>
-)
-
-<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Addable</span> <span style=color:#66d9ef>interface</span> {
-	<span style=color:#66d9ef>type</span> <span style=color:#66d9ef>int</span>, <span style=color:#66d9ef>int8</span>, <span style=color:#66d9ef>int16</span>, <span style=color:#66d9ef>int32</span>, <span style=color:#66d9ef>int64</span>,
-		<span style=color:#66d9ef>uint</span>, <span style=color:#66d9ef>uint8</span>, <span style=color:#66d9ef>uint16</span>, <span style=color:#66d9ef>uint32</span>, <span style=color:#66d9ef>uint64</span>, <span style=color:#66d9ef>uintptr</span>,
-		<span style=color:#66d9ef>float32</span>, <span style=color:#66d9ef>float64</span>, <span style=color:#66d9ef>complex64</span>, <span style=color:#66d9ef>complex128</span>,
-		<span style=color:#66d9ef>string</span>
-}
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>add</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>Addable</span>](<span style=color:#a6e22e>a</span>, <span style=color:#a6e22e>b</span> <span style=color:#a6e22e>T</span>) <span style=color:#a6e22e>T</span> {
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>a</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>b</span>
-}
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
-    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>add</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>))
-    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>add</span>(<span style=color:#e6db74>&#34;1&#34;</span>, <span style=color:#e6db74>&#34;2&#34;</span>))
-}
-</code></pre></div><p>这个函数可以实现任何需要使用<code>+</code>符号进行运算的类型，我们通过定义<code>Addable</code>类型，枚举了所有可能可以使用<code>add</code>方法的所有的类型。比如我们在<code>main</code>函数中就使用了<code>int</code>和<code>string</code>两种不同类型。</p>
-<p>但是如果这时我们使用简单的<code>go run</code>命令运行，会发现提示语法错误：</p>
-<pre tabindex=0><code>$ go version
+package main  import (  &amp;#34;fmt&amp;#34; )  type Addable interface { 	type int, int8, int16, int32, int64, 	uint, uint8, uint16, uint32, uint64, uintptr, 	float32, float64, complex64, complex128, 	string }  func add[T Addable](a, b T) T {  return a + b }  func main() {  fmt.Println(add(1,2))  fmt.Println(add(&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;)) } 这个函数可以实现任何需要使用+符号进行运算的类型，我们通过定义Addable类型，枚举了所有可能可以使用add方法的所有的类型。比如我们在main函数中就使用了int和string两种不同类型。"><meta name=twitter:card content="summary"><meta name=twitter:image content="https://www.4async.com/2021/08/golang-117-generics/go.png"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,o,i,a,t,n,s){e.GoogleAnalyticsObject=t,e[t]=e[t]||function(){(e[t].q=e[t].q||[]).push(arguments)},e[t].l=1*new Date,n=o.createElement(i),s=o.getElementsByTagName(i)[0],n.async=1,n.src=a,s.parentNode.insertBefore(n,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-33841232-2","auto"),ga("send","pageview"))</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=../../../2021/08/golang-117-generics/><img src=../../../2021/08/golang-117-generics/go_hu0a44c8ca350ed766a7653d0fae9076f0_60746_800x0_resize_box_3.png srcset="../../../2021/08/golang-117-generics/go_hu0a44c8ca350ed766a7653d0fae9076f0_60746_800x0_resize_box_3.png 800w, ../../../2021/08/golang-117-generics/go_hu0a44c8ca350ed766a7653d0fae9076f0_60746_1600x0_resize_box_3.png 1600w" width=800 height=452 loading=lazy alt="Featured image of post Go 1.17 泛型尝鲜"></a></div><div class=article-details><header class=article-category><a href=../../../categories/golang/>Golang</a></header><div class=article-title-wrapper><h2 class=article-title><a href=../../../2021/08/golang-117-generics/>Go 1.17 泛型尝鲜</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Aug 17, 2021</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 3 分钟</time></div></footer></div></header><section class=article-content><p>今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。</p><h2 id=泛型有什么作用>泛型有什么作用？</h2><p>在使用Go没有泛型之前我们怎么实现针对多类型的逻辑实现的呢？有很多方法，比如说使用<code>interface{}</code>作为变量类型参数，在内部通过类型判断进入对应的处理逻辑；将类型转化为特定表现的鸭子类型，通过接口定义的方法实现逻辑整合；还有人专门编写了Go的<a class=link href=https://twitter.com/yogthos/status/883058510275149826 target=_blank rel=noopener>函数代码生成工具</a>，通过批量生成不同类型的相同实现函数代替手工实现等等。这些方法多多少少存在一些问题：使用了<code>interface{}</code>作为参数意味着放弃了编译时检查，作为强类型语言的一个优势就被抹掉了。同样，无论使用代码生成还是手工书写，一旦出现问题，意味着这些方法都需要重复生成或者进行批量修改，工作量反而变得更多了。</p><p>在Go中引入泛型会给程序开发带来很多好处：通过泛型，可以针对多种类型编写一次代码，大大节省了编码时间。你可以充分应用编译器的编译检查，保证程序变量类型的可靠性。借助泛型，你可以减少代码的重复度，也不会出现一处出现问题需要修改多处地方的尴尬问题。这也让很多测试工作变得更简单，借助类型安全，你甚至可以少考虑很多的边缘情况。</p><p>Go语言官方有详细的泛型提案文档可以在<a class=link href=https://go.googlesource.com/proposal/+/refs/heads/master/design/15292-generics.md target=_blank rel=noopener>这里</a>和<a class=link href=https://go.googlesource.com/proposal/+/refs/heads/master/design/15292/2013-12-type-params.md target=_blank rel=noopener>这里</a>查看详情。</p><h2 id=如何使用泛型>如何使用泛型</h2><p>前面理论我们仅仅只做介绍，这次尝鲜还是以实践为主。让我们先从一个小例子开始。</p><h3 id=从简单的例子开始>从简单的例子开始</h3><p>让我们先从一个最简单的例子开始：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> (
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Addable</span> <span style=color:#66d9ef>interface</span> {
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>type</span> <span style=color:#66d9ef>int</span>, <span style=color:#66d9ef>int8</span>, <span style=color:#66d9ef>int16</span>, <span style=color:#66d9ef>int32</span>, <span style=color:#66d9ef>int64</span>,
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>uint</span>, <span style=color:#66d9ef>uint8</span>, <span style=color:#66d9ef>uint16</span>, <span style=color:#66d9ef>uint32</span>, <span style=color:#66d9ef>uint64</span>, <span style=color:#66d9ef>uintptr</span>,
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>float32</span>, <span style=color:#66d9ef>float64</span>, <span style=color:#66d9ef>complex64</span>, <span style=color:#66d9ef>complex128</span>,
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>string</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>add</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>Addable</span>](<span style=color:#a6e22e>a</span>, <span style=color:#a6e22e>b</span> <span style=color:#a6e22e>T</span>) <span style=color:#a6e22e>T</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>a</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>b</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>add</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>))
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>add</span>(<span style=color:#e6db74>&#34;1&#34;</span>, <span style=color:#e6db74>&#34;2&#34;</span>))
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>这个函数可以实现任何需要使用<code>+</code>符号进行运算的类型，我们通过定义<code>Addable</code>类型，枚举了所有可能可以使用<code>add</code>方法的所有的类型。比如我们在<code>main</code>函数中就使用了<code>int</code>和<code>string</code>两种不同类型。</p><p>但是如果这时我们使用简单的<code>go run</code>命令运行，会发现提示语法错误：</p><pre tabindex=0><code>$ go version
 go version go1.17 darwin/arm64
 $ go run ~/main.go
 # command-line-arguments
 ../main.go:8:2: syntax error: unexpected type, expecting method or interface name
 ../main.go:15:6: missing function body
 ../main.go:15:9: syntax error: unexpected [, expecting (
-</code></pre><p>因为在Go 1.17中，泛型并未默认开启，你需要定义<code>gcflags</code>方式启用泛型：</p>
-<pre tabindex=0><code>$ go run -gcflags=-G=3 ~/main.go
+</code></pre><p>因为在Go 1.17中，泛型并未默认开启，你需要定义<code>gcflags</code>方式启用泛型：</p><pre tabindex=0><code>$ go run -gcflags=-G=3 ~/main.go
 3
 12
-</code></pre><p>如果你觉得这种方式太过于复杂，每次都需要添加，也可以通过定义环境变量形式让每次都带此参数（不推荐，尤其是多版本环境时低版本Go中会报错）：</p>
-<pre tabindex=0><code>$ export GOFLAGS=&quot;-gcflags=-G=3&quot;
+</code></pre><p>如果你觉得这种方式太过于复杂，每次都需要添加，也可以通过定义环境变量形式让每次都带此参数（不推荐，尤其是多版本环境时低版本Go中会报错）：</p><pre tabindex=0><code>$ export GOFLAGS=&#34;-gcflags=-G=3&#34;
 $ go run ~/main.go
 3
 12
-</code></pre><p>在Go中，泛型可以做什么更多更复杂的事情吗？当然可以。除了最基础的算法实现以外，我们可以通过后面的几个场景看一下泛型可用的场景。</p>
-<h3 id=实现类型安全的map>实现类型安全的Map</h3>
-<p>在现实开发过程中，我们往往需要对slice中数据的每个值进行单独的处理，比如说需要对其中数值转换为平方值，在泛型中，我们可以抽取部分重复逻辑作为map函数：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
-
-<span style=color:#f92672>import</span> (
-    <span style=color:#e6db74>&#34;fmt&#34;</span>
-)
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>mapFunc</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>any</span>, <span style=color:#a6e22e>M</span> <span style=color:#a6e22e>any</span>](<span style=color:#a6e22e>a</span> []<span style=color:#a6e22e>T</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#a6e22e>M</span>) []<span style=color:#a6e22e>M</span> {
-    <span style=color:#a6e22e>n</span> <span style=color:#f92672>:=</span> make([]<span style=color:#a6e22e>M</span>, len(<span style=color:#a6e22e>a</span>), cap(<span style=color:#a6e22e>a</span>))
-    <span style=color:#66d9ef>for</span> <span style=color:#a6e22e>i</span>, <span style=color:#a6e22e>e</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>a</span> {
-        <span style=color:#a6e22e>n</span>[<span style=color:#a6e22e>i</span>] = <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>e</span>)
-    }
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>n</span>
-}
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
-    <span style=color:#a6e22e>vi</span> <span style=color:#f92672>:=</span> []<span style=color:#66d9ef>int</span>{<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>,<span style=color:#ae81ff>3</span>,<span style=color:#ae81ff>4</span>,<span style=color:#ae81ff>5</span>,<span style=color:#ae81ff>6</span>}
-    <span style=color:#a6e22e>vs</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>mapFunc</span>(<span style=color:#a6e22e>vi</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>int</span>) <span style=color:#66d9ef>int</span> {
-        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>v</span><span style=color:#f92672>*</span><span style=color:#a6e22e>v</span>
-    })
-    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vs</span>)
-}
-</code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
+</code></pre><p>在Go中，泛型可以做什么更多更复杂的事情吗？当然可以。除了最基础的算法实现以外，我们可以通过后面的几个场景看一下泛型可用的场景。</p><h3 id=实现类型安全的map>实现类型安全的Map</h3><p>在现实开发过程中，我们往往需要对slice中数据的每个值进行单独的处理，比如说需要对其中数值转换为平方值，在泛型中，我们可以抽取部分重复逻辑作为map函数：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> (
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>mapFunc</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>any</span>, <span style=color:#a6e22e>M</span> <span style=color:#a6e22e>any</span>](<span style=color:#a6e22e>a</span> []<span style=color:#a6e22e>T</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#a6e22e>M</span>) []<span style=color:#a6e22e>M</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>n</span> <span style=color:#f92672>:=</span> make([]<span style=color:#a6e22e>M</span>, len(<span style=color:#a6e22e>a</span>), cap(<span style=color:#a6e22e>a</span>))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> <span style=color:#a6e22e>i</span>, <span style=color:#a6e22e>e</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>a</span> {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>n</span>[<span style=color:#a6e22e>i</span>] = <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>e</span>)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>n</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>vi</span> <span style=color:#f92672>:=</span> []<span style=color:#66d9ef>int</span>{<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>,<span style=color:#ae81ff>3</span>,<span style=color:#ae81ff>4</span>,<span style=color:#ae81ff>5</span>,<span style=color:#ae81ff>6</span>}
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>vs</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>mapFunc</span>(<span style=color:#a6e22e>vi</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>int</span>) <span style=color:#66d9ef>int</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>v</span><span style=color:#f92672>*</span><span style=color:#a6e22e>v</span>
+</span></span><span style=display:flex><span>    })
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vs</span>)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
 [1 4 9 16 25 36]
-</code></pre><p>在这个例子中，我们定义了一个M类型，因此除了进行同样类型的转换外，也可以做不同类型的转换：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-diff data-lang=diff><span style=color:#f92672>-     vs := mapFunc(vi, func(v int) int {
-</span><span style=color:#f92672>-        return v*v
-</span><span style=color:#f92672></span><span style=color:#a6e22e>+     vs := mapFunc(vi, func(v int) string {
-</span><span style=color:#a6e22e>+        return &#34;&lt;&#34;+fmt.Sprint(v)+&#34;&gt;&#34;
-</span></code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
+</code></pre><p>在这个例子中，我们定义了一个M类型，因此除了进行同样类型的转换外，也可以做不同类型的转换：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-diff data-lang=diff><span style=display:flex><span><span style=color:#f92672>-     vs := mapFunc(vi, func(v int) int {
+</span></span></span><span style=display:flex><span><span style=color:#f92672>-        return v*v
+</span></span></span><span style=display:flex><span><span style=color:#f92672></span><span style=color:#a6e22e>+     vs := mapFunc(vi, func(v int) string {
+</span></span></span><span style=display:flex><span><span style=color:#a6e22e>+        return &#34;&lt;&#34;+fmt.Sprint(v)+&#34;&gt;&#34;
+</span></span></span></code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
 [&lt;1&gt; &lt;2&gt; &lt;3&gt; &lt;4&gt; &lt;5&gt; &lt;6&gt;]
-</code></pre><h3 id=实现类型安全的mapfilter>实现类型安全的Map/Filter</h3>
-<p>除了操作数据以外，我们通常还需要对数据进行筛选。在前面的例子上，我们可以通过实现<code>filterFunc</code>实现更好的通用逻辑：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
-
-<span style=color:#f92672>import</span> (
-	<span style=color:#e6db74>&#34;crypto/rand&#34;</span>
-	<span style=color:#e6db74>&#34;fmt&#34;</span>
-	<span style=color:#e6db74>&#34;math/big&#34;</span>
-	<span style=color:#e6db74>&#34;strings&#34;</span>
-)
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>mapFunc</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>any</span>, <span style=color:#a6e22e>M</span> <span style=color:#a6e22e>any</span>](<span style=color:#a6e22e>a</span> []<span style=color:#a6e22e>T</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#a6e22e>M</span>) []<span style=color:#a6e22e>M</span> {
-    <span style=color:#a6e22e>n</span> <span style=color:#f92672>:=</span> make([]<span style=color:#a6e22e>M</span>, len(<span style=color:#a6e22e>a</span>), cap(<span style=color:#a6e22e>a</span>))
-    <span style=color:#66d9ef>for</span> <span style=color:#a6e22e>i</span>, <span style=color:#a6e22e>e</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>a</span> {
-        <span style=color:#a6e22e>n</span>[<span style=color:#a6e22e>i</span>] = <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>e</span>)
-    }
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>n</span>
-}
-
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>filterFunc</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>any</span>](<span style=color:#a6e22e>a</span> []<span style=color:#a6e22e>T</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#66d9ef>bool</span>) []<span style=color:#a6e22e>T</span> {
-    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>n</span> []<span style=color:#a6e22e>T</span>
-    <span style=color:#66d9ef>for</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>e</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>a</span> {
-        <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>e</span>) {
-            <span style=color:#a6e22e>n</span> = append(<span style=color:#a6e22e>n</span>, <span style=color:#a6e22e>e</span>)
-        }
-    }
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>n</span>
-}
-
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
-    <span style=color:#a6e22e>vi</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>filterFunc</span>(
-		<span style=color:#a6e22e>mapFunc</span>([]<span style=color:#66d9ef>int</span>{<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>,<span style=color:#ae81ff>3</span>,<span style=color:#ae81ff>4</span>,<span style=color:#ae81ff>5</span>,<span style=color:#ae81ff>6</span>},
-			<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>int</span>) <span style=color:#66d9ef>int</span> {
-				<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>v</span><span style=color:#f92672>*</span><span style=color:#a6e22e>v</span>
-			},
-		), 
-		<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>int</span>) <span style=color:#66d9ef>bool</span> {
-			<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>v</span> &lt; <span style=color:#ae81ff>40</span>
-		})
-    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vi</span>)
-
-	<span style=color:#a6e22e>vs</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>filterFunc</span>(
-		<span style=color:#a6e22e>mapFunc</span>([]<span style=color:#66d9ef>string</span>{<span style=color:#e6db74>&#34;a&#34;</span>, <span style=color:#e6db74>&#34;b&#34;</span>, <span style=color:#e6db74>&#34;c&#34;</span>, <span style=color:#e6db74>&#34;d&#34;</span>, <span style=color:#e6db74>&#34;e&#34;</span>},
-			<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>string</span>) <span style=color:#66d9ef>string</span> {
-				<span style=color:#75715e>// 需要使用crypto/rand增加随机性
-</span><span style=color:#75715e></span>				<span style=color:#a6e22e>n</span>, <span style=color:#a6e22e>_</span> <span style=color:#f92672>:=</span><span style=color:#a6e22e>rand</span>.<span style=color:#a6e22e>Int</span>(<span style=color:#a6e22e>rand</span>.<span style=color:#a6e22e>Reader</span>, <span style=color:#a6e22e>big</span>.<span style=color:#a6e22e>NewInt</span>(<span style=color:#ae81ff>5</span>))
-				
-				<span style=color:#a6e22e>i</span> <span style=color:#f92672>:=</span> int(<span style=color:#a6e22e>n</span>.<span style=color:#a6e22e>Int64</span>())<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>
-				<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>strings</span>.<span style=color:#a6e22e>Repeat</span>(<span style=color:#a6e22e>v</span>, <span style=color:#a6e22e>i</span>)
-			},
-		), 
-		<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>string</span>) <span style=color:#66d9ef>bool</span> {
-			<span style=color:#66d9ef>return</span> len(<span style=color:#a6e22e>v</span>)&gt;<span style=color:#ae81ff>3</span>
-		})
-    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vs</span>)
-}
-</code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
+</code></pre><h3 id=实现类型安全的mapfilter>实现类型安全的Map/Filter</h3><p>除了操作数据以外，我们通常还需要对数据进行筛选。在前面的例子上，我们可以通过实现<code>filterFunc</code>实现更好的通用逻辑：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> (
+</span></span><span style=display:flex><span>	<span style=color:#e6db74>&#34;crypto/rand&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#e6db74>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#e6db74>&#34;math/big&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#e6db74>&#34;strings&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>mapFunc</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>any</span>, <span style=color:#a6e22e>M</span> <span style=color:#a6e22e>any</span>](<span style=color:#a6e22e>a</span> []<span style=color:#a6e22e>T</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#a6e22e>M</span>) []<span style=color:#a6e22e>M</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>n</span> <span style=color:#f92672>:=</span> make([]<span style=color:#a6e22e>M</span>, len(<span style=color:#a6e22e>a</span>), cap(<span style=color:#a6e22e>a</span>))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> <span style=color:#a6e22e>i</span>, <span style=color:#a6e22e>e</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>a</span> {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>n</span>[<span style=color:#a6e22e>i</span>] = <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>e</span>)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>n</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>filterFunc</span>[<span style=color:#a6e22e>T</span> <span style=color:#a6e22e>any</span>](<span style=color:#a6e22e>a</span> []<span style=color:#a6e22e>T</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T</span>) <span style=color:#66d9ef>bool</span>) []<span style=color:#a6e22e>T</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>n</span> []<span style=color:#a6e22e>T</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>e</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>a</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>e</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>n</span> = append(<span style=color:#a6e22e>n</span>, <span style=color:#a6e22e>e</span>)
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>n</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>vi</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>filterFunc</span>(
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>mapFunc</span>([]<span style=color:#66d9ef>int</span>{<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>,<span style=color:#ae81ff>3</span>,<span style=color:#ae81ff>4</span>,<span style=color:#ae81ff>5</span>,<span style=color:#ae81ff>6</span>},
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>int</span>) <span style=color:#66d9ef>int</span> {
+</span></span><span style=display:flex><span>				<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>v</span><span style=color:#f92672>*</span><span style=color:#a6e22e>v</span>
+</span></span><span style=display:flex><span>			},
+</span></span><span style=display:flex><span>		), 
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>int</span>) <span style=color:#66d9ef>bool</span> {
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>v</span> &lt; <span style=color:#ae81ff>40</span>
+</span></span><span style=display:flex><span>		})
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vi</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>vs</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>filterFunc</span>(
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>mapFunc</span>([]<span style=color:#66d9ef>string</span>{<span style=color:#e6db74>&#34;a&#34;</span>, <span style=color:#e6db74>&#34;b&#34;</span>, <span style=color:#e6db74>&#34;c&#34;</span>, <span style=color:#e6db74>&#34;d&#34;</span>, <span style=color:#e6db74>&#34;e&#34;</span>},
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>string</span>) <span style=color:#66d9ef>string</span> {
+</span></span><span style=display:flex><span>				<span style=color:#75715e>// 需要使用crypto/rand增加随机性
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>				<span style=color:#a6e22e>n</span>, <span style=color:#a6e22e>_</span> <span style=color:#f92672>:=</span><span style=color:#a6e22e>rand</span>.<span style=color:#a6e22e>Int</span>(<span style=color:#a6e22e>rand</span>.<span style=color:#a6e22e>Reader</span>, <span style=color:#a6e22e>big</span>.<span style=color:#a6e22e>NewInt</span>(<span style=color:#ae81ff>5</span>))
+</span></span><span style=display:flex><span>				
+</span></span><span style=display:flex><span>				<span style=color:#a6e22e>i</span> <span style=color:#f92672>:=</span> int(<span style=color:#a6e22e>n</span>.<span style=color:#a6e22e>Int64</span>())<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>				<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>strings</span>.<span style=color:#a6e22e>Repeat</span>(<span style=color:#a6e22e>v</span>, <span style=color:#a6e22e>i</span>)
+</span></span><span style=display:flex><span>			},
+</span></span><span style=display:flex><span>		), 
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>v</span> <span style=color:#66d9ef>string</span>) <span style=color:#66d9ef>bool</span> {
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>return</span> len(<span style=color:#a6e22e>v</span>)&gt;<span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>		})
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>vs</span>)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
 [1 4 9 16 25 36]
 [aaaa dddd eeeee]
-</code></pre><h3 id=实现类型可靠的worker-pool>实现类型可靠的Worker Pool</h3>
-<p>除了上面这个例子，我们还可以通过泛型实现一个类型可靠的通用批量类型转换函数：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
-
-<span style=color:#f92672>import</span> (
-	<span style=color:#e6db74>&#34;fmt&#34;</span>
-	<span style=color:#e6db74>&#34;strconv&#34;</span>
-	<span style=color:#e6db74>&#34;sync&#34;</span>
-)
-
-<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>T1</span> <span style=color:#66d9ef>interface</span>{}
-<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>T2</span> <span style=color:#66d9ef>interface</span>{}
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>ParallelMap</span>(<span style=color:#a6e22e>parallelism</span> <span style=color:#66d9ef>int</span>, <span style=color:#a6e22e>in</span> []<span style=color:#a6e22e>T1</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T1</span>) (<span style=color:#a6e22e>T2</span>, <span style=color:#66d9ef>error</span>)) ([]<span style=color:#a6e22e>T2</span>, <span style=color:#66d9ef>error</span>) {
-	<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>wg</span> <span style=color:#a6e22e>sync</span>.<span style=color:#a6e22e>WaitGroup</span>
-	<span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>wg</span>.<span style=color:#a6e22e>Wait</span>()
-
-	<span style=color:#a6e22e>inc</span>, <span style=color:#a6e22e>outc</span>, <span style=color:#a6e22e>errc</span> <span style=color:#f92672>:=</span> make(<span style=color:#66d9ef>chan</span> <span style=color:#a6e22e>T1</span>), make(<span style=color:#66d9ef>chan</span> <span style=color:#a6e22e>T2</span>), make(<span style=color:#66d9ef>chan</span> <span style=color:#66d9ef>error</span>)
-
-	<span style=color:#a6e22e>donec</span> <span style=color:#f92672>:=</span> make(<span style=color:#66d9ef>chan</span> <span style=color:#66d9ef>struct</span>{})
-	<span style=color:#66d9ef>defer</span> close(<span style=color:#a6e22e>donec</span>)
-
-	<span style=color:#a6e22e>wg</span>.<span style=color:#a6e22e>Add</span>(<span style=color:#a6e22e>parallelism</span>)
-	<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>i</span> <span style=color:#f92672>:=</span> <span style=color:#ae81ff>0</span>; <span style=color:#a6e22e>i</span> &lt; <span style=color:#a6e22e>parallelism</span>; <span style=color:#a6e22e>i</span><span style=color:#f92672>++</span> {
-		<span style=color:#66d9ef>go</span> <span style=color:#66d9ef>func</span>() {
-			<span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>wg</span>.<span style=color:#a6e22e>Done</span>()
-			<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>x</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>inc</span> {
-				<span style=color:#a6e22e>y</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>x</span>)
-				<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
-					<span style=color:#66d9ef>select</span> {
-					<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>errc</span> <span style=color:#f92672>&lt;-</span> <span style=color:#a6e22e>err</span>:
-					<span style=color:#66d9ef>case</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>donec</span>:
-					}
-					<span style=color:#66d9ef>return</span>
-				}
-				<span style=color:#66d9ef>select</span> {
-				<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>outc</span> <span style=color:#f92672>&lt;-</span> <span style=color:#a6e22e>y</span>:
-				<span style=color:#66d9ef>case</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>donec</span>:
-					<span style=color:#66d9ef>return</span>
-				}
-			}
-			<span style=color:#66d9ef>select</span> {
-			<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>errc</span> <span style=color:#f92672>&lt;-</span> <span style=color:#66d9ef>nil</span>:
-			<span style=color:#66d9ef>case</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>donec</span>:
-			}
-		}()
-	}
-
-	<span style=color:#66d9ef>go</span> <span style=color:#66d9ef>func</span>() {
-		<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>x</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>in</span> {
-			<span style=color:#a6e22e>inc</span> <span style=color:#f92672>&lt;-</span> <span style=color:#a6e22e>x</span>
-		}
-		close(<span style=color:#a6e22e>inc</span>)
-	}()
-
-	<span style=color:#a6e22e>out</span> <span style=color:#f92672>:=</span> make([]<span style=color:#a6e22e>T2</span>, <span style=color:#ae81ff>0</span>, len(<span style=color:#a6e22e>in</span>))
-	<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>rem</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>parallelism</span>; <span style=color:#a6e22e>rem</span> &gt; <span style=color:#ae81ff>0</span>; {
-		<span style=color:#66d9ef>select</span> {
-		<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>errc</span>:
-			<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
-				<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span>, <span style=color:#a6e22e>err</span>
-			}
-			<span style=color:#a6e22e>rem</span><span style=color:#f92672>--</span>
-		<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>y</span> <span style=color:#f92672>:=</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>outc</span>:
-			<span style=color:#a6e22e>out</span> = append(<span style=color:#a6e22e>out</span>, <span style=color:#a6e22e>y</span>)
-		}
-	}
-	<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>out</span>, <span style=color:#66d9ef>nil</span>
-}
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
-	<span style=color:#a6e22e>in</span> <span style=color:#f92672>:=</span> []<span style=color:#a6e22e>T1</span>{<span style=color:#e6db74>&#34;1&#34;</span>, <span style=color:#e6db74>&#34;2&#34;</span>, <span style=color:#e6db74>&#34;3&#34;</span>, <span style=color:#e6db74>&#34;4&#34;</span>, <span style=color:#e6db74>&#34;5&#34;</span>}
-	<span style=color:#a6e22e>out</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>ParallelMap</span>(<span style=color:#ae81ff>4</span>, <span style=color:#a6e22e>in</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>x</span> <span style=color:#a6e22e>T1</span>) (<span style=color:#a6e22e>T2</span>, <span style=color:#66d9ef>error</span>) {
-		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>strconv</span>.<span style=color:#a6e22e>Atoi</span>(<span style=color:#a6e22e>x</span>.(<span style=color:#66d9ef>string</span>))
-	})
-	<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
-		<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#e6db74>&#34;error: &#34;</span>, <span style=color:#a6e22e>err</span>)
-		<span style=color:#66d9ef>return</span>
-	}
-	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>out</span>)
-
-	<span style=color:#a6e22e>in2</span> <span style=color:#f92672>:=</span> []<span style=color:#a6e22e>T1</span>{<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>5</span>}
-	<span style=color:#a6e22e>out2</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>ParallelMap</span>(<span style=color:#ae81ff>4</span>, <span style=color:#a6e22e>in2</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>x</span> <span style=color:#a6e22e>T1</span>) (<span style=color:#a6e22e>T2</span>, <span style=color:#66d9ef>error</span>) {
-		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Sprintf</span>(<span style=color:#e6db74>&#34;&lt;%d&gt;&#34;</span>, <span style=color:#a6e22e>x</span>), <span style=color:#66d9ef>nil</span>
-	})
-	<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
-		<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#e6db74>&#34;error: &#34;</span>, <span style=color:#a6e22e>err</span>)
-		<span style=color:#66d9ef>return</span>
-	}
-	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>out2</span>)
-}
-</code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
+</code></pre><h3 id=实现类型可靠的worker-pool>实现类型可靠的Worker Pool</h3><p>除了上面这个例子，我们还可以通过泛型实现一个类型可靠的通用批量类型转换函数：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> (
+</span></span><span style=display:flex><span>	<span style=color:#e6db74>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#e6db74>&#34;strconv&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#e6db74>&#34;sync&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>T1</span> <span style=color:#66d9ef>interface</span>{}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>T2</span> <span style=color:#66d9ef>interface</span>{}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>ParallelMap</span>(<span style=color:#a6e22e>parallelism</span> <span style=color:#66d9ef>int</span>, <span style=color:#a6e22e>in</span> []<span style=color:#a6e22e>T1</span>, <span style=color:#a6e22e>f</span> <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>T1</span>) (<span style=color:#a6e22e>T2</span>, <span style=color:#66d9ef>error</span>)) ([]<span style=color:#a6e22e>T2</span>, <span style=color:#66d9ef>error</span>) {
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>wg</span> <span style=color:#a6e22e>sync</span>.<span style=color:#a6e22e>WaitGroup</span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>wg</span>.<span style=color:#a6e22e>Wait</span>()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>inc</span>, <span style=color:#a6e22e>outc</span>, <span style=color:#a6e22e>errc</span> <span style=color:#f92672>:=</span> make(<span style=color:#66d9ef>chan</span> <span style=color:#a6e22e>T1</span>), make(<span style=color:#66d9ef>chan</span> <span style=color:#a6e22e>T2</span>), make(<span style=color:#66d9ef>chan</span> <span style=color:#66d9ef>error</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>donec</span> <span style=color:#f92672>:=</span> make(<span style=color:#66d9ef>chan</span> <span style=color:#66d9ef>struct</span>{})
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>defer</span> close(<span style=color:#a6e22e>donec</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>wg</span>.<span style=color:#a6e22e>Add</span>(<span style=color:#a6e22e>parallelism</span>)
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>i</span> <span style=color:#f92672>:=</span> <span style=color:#ae81ff>0</span>; <span style=color:#a6e22e>i</span> &lt; <span style=color:#a6e22e>parallelism</span>; <span style=color:#a6e22e>i</span><span style=color:#f92672>++</span> {
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>go</span> <span style=color:#66d9ef>func</span>() {
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>wg</span>.<span style=color:#a6e22e>Done</span>()
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>x</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>inc</span> {
+</span></span><span style=display:flex><span>				<span style=color:#a6e22e>y</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>f</span>(<span style=color:#a6e22e>x</span>)
+</span></span><span style=display:flex><span>				<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+</span></span><span style=display:flex><span>					<span style=color:#66d9ef>select</span> {
+</span></span><span style=display:flex><span>					<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>errc</span> <span style=color:#f92672>&lt;-</span> <span style=color:#a6e22e>err</span>:
+</span></span><span style=display:flex><span>					<span style=color:#66d9ef>case</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>donec</span>:
+</span></span><span style=display:flex><span>					}
+</span></span><span style=display:flex><span>					<span style=color:#66d9ef>return</span>
+</span></span><span style=display:flex><span>				}
+</span></span><span style=display:flex><span>				<span style=color:#66d9ef>select</span> {
+</span></span><span style=display:flex><span>				<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>outc</span> <span style=color:#f92672>&lt;-</span> <span style=color:#a6e22e>y</span>:
+</span></span><span style=display:flex><span>				<span style=color:#66d9ef>case</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>donec</span>:
+</span></span><span style=display:flex><span>					<span style=color:#66d9ef>return</span>
+</span></span><span style=display:flex><span>				}
+</span></span><span style=display:flex><span>			}
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>select</span> {
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>errc</span> <span style=color:#f92672>&lt;-</span> <span style=color:#66d9ef>nil</span>:
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>case</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>donec</span>:
+</span></span><span style=display:flex><span>			}
+</span></span><span style=display:flex><span>		}()
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>go</span> <span style=color:#66d9ef>func</span>() {
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>x</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>in</span> {
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>inc</span> <span style=color:#f92672>&lt;-</span> <span style=color:#a6e22e>x</span>
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>		close(<span style=color:#a6e22e>inc</span>)
+</span></span><span style=display:flex><span>	}()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>out</span> <span style=color:#f92672>:=</span> make([]<span style=color:#a6e22e>T2</span>, <span style=color:#ae81ff>0</span>, len(<span style=color:#a6e22e>in</span>))
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span> <span style=color:#a6e22e>rem</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>parallelism</span>; <span style=color:#a6e22e>rem</span> &gt; <span style=color:#ae81ff>0</span>; {
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>select</span> {
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>errc</span>:
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+</span></span><span style=display:flex><span>				<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span>, <span style=color:#a6e22e>err</span>
+</span></span><span style=display:flex><span>			}
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>rem</span><span style=color:#f92672>--</span>
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>case</span> <span style=color:#a6e22e>y</span> <span style=color:#f92672>:=</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>outc</span>:
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>out</span> = append(<span style=color:#a6e22e>out</span>, <span style=color:#a6e22e>y</span>)
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>out</span>, <span style=color:#66d9ef>nil</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>in</span> <span style=color:#f92672>:=</span> []<span style=color:#a6e22e>T1</span>{<span style=color:#e6db74>&#34;1&#34;</span>, <span style=color:#e6db74>&#34;2&#34;</span>, <span style=color:#e6db74>&#34;3&#34;</span>, <span style=color:#e6db74>&#34;4&#34;</span>, <span style=color:#e6db74>&#34;5&#34;</span>}
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>out</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>ParallelMap</span>(<span style=color:#ae81ff>4</span>, <span style=color:#a6e22e>in</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>x</span> <span style=color:#a6e22e>T1</span>) (<span style=color:#a6e22e>T2</span>, <span style=color:#66d9ef>error</span>) {
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>strconv</span>.<span style=color:#a6e22e>Atoi</span>(<span style=color:#a6e22e>x</span>.(<span style=color:#66d9ef>string</span>))
+</span></span><span style=display:flex><span>	})
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#e6db74>&#34;error: &#34;</span>, <span style=color:#a6e22e>err</span>)
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>return</span>
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>out</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>in2</span> <span style=color:#f92672>:=</span> []<span style=color:#a6e22e>T1</span>{<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>5</span>}
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>out2</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>ParallelMap</span>(<span style=color:#ae81ff>4</span>, <span style=color:#a6e22e>in2</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>x</span> <span style=color:#a6e22e>T1</span>) (<span style=color:#a6e22e>T2</span>, <span style=color:#66d9ef>error</span>) {
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Sprintf</span>(<span style=color:#e6db74>&#34;&lt;%d&gt;&#34;</span>, <span style=color:#a6e22e>x</span>), <span style=color:#66d9ef>nil</span>
+</span></span><span style=display:flex><span>	})
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#e6db74>&#34;error: &#34;</span>, <span style=color:#a6e22e>err</span>)
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>return</span>
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>out2</span>)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><pre tabindex=0><code>$ go run -gcflags=-G=3 main.go
 [3 5 2 4 1]
 [&lt;1&gt; &lt;4&gt; &lt;5&gt; &lt;3&gt; &lt;2&gt;]
-</code></pre><h3 id=其他应用>其他应用</h3>
-<p>我们可以预见在Go 1.18版本中，多个标准库会被新增或者扩展，包括：类型定义库<a class=link href=https://github.com/golang/go/discussions/47319 target=_blank rel=noopener><code>constraints</code></a>，通用slice操作库<a class=link href=https://github.com/golang/go/discussions/47203 target=_blank rel=noopener><code>slices</code></a>，通用类型安全map<a class=link href=https://github.com/golang/go/discussions/47330 target=_blank rel=noopener><code>maps</code></a>等等。因为这些会进入标准库，大家可以先自行实现试用，真正线上使用建议等待标准库添加内容即可。</p>
-<h2 id=go泛型的实现原理>Go泛型的实现原理</h2>
-<p>我们回归到最原始的例子快速看一下Go中是如何实现泛型的。为了方便分析，我们在所有<code>func</code>上添加<code>go:noinline</code>防止内联，然后编译程序进行分析。这里可能Go 1.17实现问题未能支持如<code>go tool</code>或<code>go build -gcflags=all=-S</code>之类的命令传递<code>-G=3</code>参数，因此这里我们选择第三方的反汇编工具看一下具体的实现：</p>
-<p><figure class=gallery-image style=flex-grow:231;flex-basis:556px>
-<a href=../../../2021/08/golang-117-generics/asm.png data-size=598x258>
-<img src=../../../2021/08/golang-117-generics/asm.png width=598 height=258 srcset="../../../2021/08/golang-117-generics/asm_hufeba331bc8c7a90eb05253426857297a_63728_480x0_resize_box_3.png 480w, ../../../2021/08/golang-117-generics/asm_hufeba331bc8c7a90eb05253426857297a_63728_1024x0_resize_box_3.png 1024w" loading=lazy alt=ASM>
-</a>
-<figcaption>ASM</figcaption>
-</figure></p>
-<p>可以看到目前Go会根据类型将泛型展开成对应类型函数，这样也会小小的增加编译时间和编译后文件大小。因为我测试使用Apple Silicon平台，考虑大家可能不熟悉相关汇编，具体执行逻辑不再具体展示。</p>
-<h2 id=其他注意事项>其他注意事项</h2>
-<p>目前Go的泛型仍在开发过程中，即便在1.17beta到正式版过程中，很多泛型的corner case也正在完善过程中，比如在之前测试中我发现某些代码在beta版本无法正确编译，但是在RC中已可以正确编译。目前的泛型实现未必代表1.18版本中是相同的实现细节，甚至可能在1.18中提供更多的功能。同时，<strong>目前1.17泛型类型是无法在package中导出的</strong>，这导致在1.17版本中它的应用场景大大的受限。如果你仍有计划在某些场景中使用，我仍旧建议单元测试覆盖你使用的场景情况，防止出现版本迭代可能导致的问题。</p>
-</section>
-<footer class=article-footer>
-<section class=article-tags>
-<a href=../../../tags/golang/>Golang</a>
-</section>
-<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span>
-</section>
-</footer>
-</article>
-<aside class=related-contents--wrapper>
-<h2 class=section-title>相关文章</h2>
-<div class=related-contents>
-<div class="flex article-list--tile">
-<article class=has-image>
-<a href=../../../2021/05/building-your-own-dapr-binding/>
-<div class=article-image>
-<img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=building-your-own-dapr-binding data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg>
-</div>
-<div class=article-details>
-<h2 class=article-title>构建属于你自己的dapr绑定组件</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/05/building-your-own-dapr-service-discovery/>
-<div class=article-image>
-<img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=building-your-own-dapr-service-discovery data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg>
-</div>
-<div class=article-details>
-<h2 class=article-title>构建属于你自己的dapr服务发现</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/03/2021-03-11-running-dapr-without-container/>
-<div class=article-image>
-<img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=2021-03-11-running-dapr-without-container data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg>
-</div>
-<div class=article-details>
-<h2 class=article-title>在非容器(集群)环境下运行dapr</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/03/2021-03-02-nats-server-usage/>
-<div class=article-image>
-<img src=https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg loading=lazy data-key=2021-03-02-nats-server-usage data-hash=https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg>
-</div>
-<div class=article-details>
-<h2 class=article-title>NATS-Server(JetStream)和NATS Streaming Server对比</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/02/2021-02-25-context-and-structs/>
-<div class=article-image>
-<img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 上下文Context与结构体Struct" data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA==">
-</div>
-<div class=article-details>
-<h2 class=article-title>上下文Context与结构体Struct</h2>
-</div>
-</a>
-</article>
-</div>
-</div>
-</aside>
-<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
-<div class=disqus-container>
-<div id=disqus_thread></div>
-<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-</div>
-<footer class=site-footer>
-<section class=copyright>
-&copy;
+</code></pre><h3 id=其他应用>其他应用</h3><p>我们可以预见在Go 1.18版本中，多个标准库会被新增或者扩展，包括：类型定义库<a class=link href=https://github.com/golang/go/discussions/47319 target=_blank rel=noopener><code>constraints</code></a>，通用slice操作库<a class=link href=https://github.com/golang/go/discussions/47203 target=_blank rel=noopener><code>slices</code></a>，通用类型安全map<a class=link href=https://github.com/golang/go/discussions/47330 target=_blank rel=noopener><code>maps</code></a>等等。因为这些会进入标准库，大家可以先自行实现试用，真正线上使用建议等待标准库添加内容即可。</p><h2 id=go泛型的实现原理>Go泛型的实现原理</h2><p>我们回归到最原始的例子快速看一下Go中是如何实现泛型的。为了方便分析，我们在所有<code>func</code>上添加<code>go:noinline</code>防止内联，然后编译程序进行分析。这里可能Go 1.17实现问题未能支持如<code>go tool</code>或<code>go build -gcflags=all=-S</code>之类的命令传递<code>-G=3</code>参数，因此这里我们选择第三方的反汇编工具看一下具体的实现：</p><p><img src=../../../2021/08/golang-117-generics/asm.png width=598 height=258 srcset="../../../2021/08/golang-117-generics/asm_hufeba331bc8c7a90eb05253426857297a_63728_480x0_resize_box_3.png 480w, ../../../2021/08/golang-117-generics/asm_hufeba331bc8c7a90eb05253426857297a_63728_1024x0_resize_box_3.png 1024w" loading=lazy alt=ASM class=gallery-image data-flex-grow=231 data-flex-basis=556px></p><p>可以看到目前Go会根据类型将泛型展开成对应类型函数，这样也会小小的增加编译时间和编译后文件大小。因为我测试使用Apple Silicon平台，考虑大家可能不熟悉相关汇编，具体执行逻辑不再具体展示。</p><h2 id=其他注意事项>其他注意事项</h2><p>目前Go的泛型仍在开发过程中，即便在1.17beta到正式版过程中，很多泛型的corner case也正在完善过程中，比如在之前测试中我发现某些代码在beta版本无法正确编译，但是在RC中已可以正确编译。目前的泛型实现未必代表1.18版本中是相同的实现细节，甚至可能在1.18中提供更多的功能。同时，<strong>目前1.17泛型类型是无法在package中导出的</strong>，这导致在1.17版本中它的应用场景大大的受限。如果你仍有计划在某些场景中使用，我仍旧建议单元测试覆盖你使用的场景情况，防止出现版本迭代可能导致的问题。</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/golang/>Golang</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article class=has-image><a href=../../../2021/05/building-your-own-dapr-binding/><div class=article-image><img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=building-your-own-dapr-binding data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg></div><div class=article-details><h2 class=article-title>构建属于你自己的dapr绑定组件</h2></div></a></article><article class=has-image><a href=../../../2021/05/building-your-own-dapr-service-discovery/><div class=article-image><img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=building-your-own-dapr-service-discovery data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg></div><div class=article-details><h2 class=article-title>构建属于你自己的dapr服务发现</h2></div></a></article><article class=has-image><a href=../../../2021/03/2021-03-11-running-dapr-without-container/><div class=article-image><img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=2021-03-11-running-dapr-without-container data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg></div><div class=article-details><h2 class=article-title>在非容器(集群)环境下运行dapr</h2></div></a></article><article class=has-image><a href=../../../2021/03/2021-03-02-nats-server-usage/><div class=article-image><img src=https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg loading=lazy data-key=2021-03-02-nats-server-usage data-hash=https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg></div><div class=article-details><h2 class=article-title>NATS-Server(JetStream)和NATS Streaming Server对比</h2></div></a></article><article class=has-image><a href=../../../2021/02/2021-02-25-context-and-structs/><div class=article-image><img src=../../../2021/02/2021-02-25-context-and-structs/cover.f25d2558526337e99daa4db6444c5cc8_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 上下文Context与结构体Struct" data-key=2021-02-25-context-and-structs data-hash="md5-8l0lWFJjN+mdqk22RExcyA=="></div><div class=article-details><h2 class=article-title>上下文Context与结构体Struct</h2></div></a></article></div></div></aside><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
 2013 -
-2022 ipfans's Blog
-</section>
-<section class=powerby>
-Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
-</section>
-</footer>
-<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
-<div class=pswp__bg></div>
-<div class=pswp__scroll-wrap>
-<div class=pswp__container>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-</div>
-<div class="pswp__ui pswp__ui--hidden">
-<div class=pswp__top-bar>
-<div class=pswp__counter></div>
-<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2022 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.11.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-<div class=pswp__preloader>
-<div class=pswp__preloader__icn>
-<div class=pswp__preloader__cut>
-<div class=pswp__preloader__donut></div>
-</div>
-</div>
-</div>
-</div>
-<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-<div class=pswp__share-tooltip></div>
-</div>
-<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-</button>
-<div class=pswp__caption>
-<div class=pswp__caption__center></div>
-</div>
-</div>
-</div>
-</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
-</main>
-<aside class="sidebar right-sidebar sticky">
-<section class="widget archives">
-<div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg>
-</div>
-<h2 class="widget-title section-title">目录</h2>
-<div class=widget--toc>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#泛型有什么作用>泛型有什么作用？</a></li>
-<li><a href=#如何使用泛型>如何使用泛型</a>
-<ul>
-<li><a href=#从简单的例子开始>从简单的例子开始</a></li>
-<li><a href=#实现类型安全的map>实现类型安全的Map</a></li>
-<li><a href=#实现类型安全的mapfilter>实现类型安全的Map/Filter</a></li>
-<li><a href=#实现类型可靠的worker-pool>实现类型可靠的Worker Pool</a></li>
-<li><a href=#其他应用>其他应用</a></li>
-</ul>
-</li>
-<li><a href=#go泛型的实现原理>Go泛型的实现原理</a></li>
-<li><a href=#其他注意事项>其他注意事项</a></li>
-</ul>
-</nav>
-</div>
-</section>
-</aside>
-</div>
-<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
-<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
-</body>
-</html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

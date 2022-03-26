@@ -1,295 +1,80 @@
-<!doctype html><html lang=en>
-<head><meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
 在context的文档中写道。
 上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。  本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。
 倾向于将上下文作为参数传递 为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。
-type Worker struct { /* … */ } type Work struct { /* … */ } func New() *Worker { return &amp;amp;Worker{} } func (w *Worker) Fetch(ctx context.Context) (*Work, error) { _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 } func (w *Worker) Process(ctx context.Context, w *Work) error { _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker).Fetch和(*Worker).Process方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的context.Context将如何被使用：没有期望传递给一个方法的context.Context将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。"><title>上下文Context与结构体Struct</title>
-<link rel=canonical href=https://www.4async.com/2021/02/2021-02-25-context-and-structs/>
-<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="上下文Context与结构体Struct">
-<meta property="og:description" content="原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
+type Worker struct { /* … */ }  type Work struct { /* … */ }  func New() *Worker {  return &amp;amp;Worker{} }  func (w *Worker) Fetch(ctx context.Context) (*Work, error) {  _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 }  func (w *Worker) Process(ctx context.Context, w *Work) error {  _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker)."><title>上下文Context与结构体Struct</title><link rel=canonical href=https://www.4async.com/2021/02/2021-02-25-context-and-structs/><link rel=stylesheet href=../../../scss/style.min.787c11515dc5d9a2a1ccd2c32e10ab2ce54935226bfd34de0eed651f4f0e0349.css><meta property="og:title" content="上下文Context与结构体Struct"><meta property="og:description" content="原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
 在context的文档中写道。
 上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。  本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。
 倾向于将上下文作为参数传递 为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。
-type Worker struct { /* … */ } type Work struct { /* … */ } func New() *Worker { return &amp;amp;Worker{} } func (w *Worker) Fetch(ctx context.Context) (*Work, error) { _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 } func (w *Worker) Process(ctx context.Context, w *Work) error { _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker).Fetch和(*Worker).Process方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的context.Context将如何被使用：没有期望传递给一个方法的context.Context将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。">
-<meta property="og:url" content="https://www.4async.com/2021/02/2021-02-25-context-and-structs/">
-<meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:published_time" content="2021-02-25T10:30:00+00:00"><meta property="article:modified_time" content="2021-02-25T10:30:00+00:00"><meta property="og:image" content="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png">
-<meta name=twitter:site content="@janxin">
-<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="上下文Context与结构体Struct">
-<meta name=twitter:description content="原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
+type Worker struct { /* … */ }  type Work struct { /* … */ }  func New() *Worker {  return &amp;amp;Worker{} }  func (w *Worker) Fetch(ctx context.Context) (*Work, error) {  _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 }  func (w *Worker) Process(ctx context.Context, w *Work) error {  _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker)."><meta property="og:url" content="https://www.4async.com/2021/02/2021-02-25-context-and-structs/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:published_time" content="2021-02-25T10:30:00+00:00"><meta property="article:modified_time" content="2021-02-25T10:30:00+00:00"><meta property="og:image" content="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="上下文Context与结构体Struct"><meta name=twitter:description content="原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
 在context的文档中写道。
 上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。  本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。
 倾向于将上下文作为参数传递 为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。
-type Worker struct { /* … */ } type Work struct { /* … */ } func New() *Worker { return &amp;amp;Worker{} } func (w *Worker) Fetch(ctx context.Context) (*Work, error) { _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 } func (w *Worker) Process(ctx context.Context, w *Work) error { _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker).Fetch和(*Worker).Process方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的context.Context将如何被使用：没有期望传递给一个方法的context.Context将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。"><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png">
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
-</head>
-<body class="article-page has-toc">
-<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
-<div class="container main-container flex
-extended">
-<div id=article-toolbar>
-<a href=../../../ class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg>
-<span>返回</span>
-</a>
-</div>
-<main class="main full-width">
-<article class="has-image main-article">
-<header class=article-header>
-<div class=article-image>
-<a href=../../../2021/02/2021-02-25-context-and-structs/>
-<img src=../../../2021/02/2021-02-25-context-and-structs/cover_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_800x0_resize_box_3.png srcset="../../../2021/02/2021-02-25-context-and-structs/cover_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_800x0_resize_box_3.png 800w, ../../../2021/02/2021-02-25-context-and-structs/cover_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_1600x0_resize_box_3.png 1600w" width=800 height=322 loading=lazy alt="Featured image of post 上下文Context与结构体Struct">
-</a>
-</div>
-<div class=article-details>
-<header class=article-category>
-<a href=../../../categories/translation/>
-Translation
-</a>
-<a href=../../../categories/golang/>
-Golang
-</a>
-</header>
-<h2 class=article-title>
-<a href=../../../2021/02/2021-02-25-context-and-structs/>上下文Context与结构体Struct</a>
-</h2>
-<footer class=article-time>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Feb 25, 2021</time>
-</div>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>
-阅读时长: 1 分钟
-</time>
-</div>
-</footer>
-</div>
-</header>
-<section class=article-content>
-<pre tabindex=0><code>原文地址：https://blog.golang.org/context-and-structs
+type Worker struct { /* … */ }  type Work struct { /* … */ }  func New() *Worker {  return &amp;amp;Worker{} }  func (w *Worker) Fetch(ctx context.Context) (*Work, error) {  _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 }  func (w *Worker) Process(ctx context.Context, w *Work) error {  _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker)."><meta name=twitter:card content="summary"><meta name=twitter:image content="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,o,i,a,t,n,s){e.GoogleAnalyticsObject=t,e[t]=e[t]||function(){(e[t].q=e[t].q||[]).push(arguments)},e[t].l=1*new Date,n=o.createElement(i),s=o.getElementsByTagName(i)[0],n.async=1,n.src=a,s.parentNode.insertBefore(n,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-33841232-2","auto"),ga("send","pageview"))</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=../../../2021/02/2021-02-25-context-and-structs/><img src=../../../2021/02/2021-02-25-context-and-structs/cover_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_800x0_resize_box_3.png srcset="../../../2021/02/2021-02-25-context-and-structs/cover_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_800x0_resize_box_3.png 800w, ../../../2021/02/2021-02-25-context-and-structs/cover_huc83bc740bc3d410b7e22e27a8fb6bc1c_61028_1600x0_resize_box_3.png 1600w" width=800 height=322 loading=lazy alt="Featured image of post 上下文Context与结构体Struct"></a></div><div class=article-details><header class=article-category><a href=../../../categories/translation/>Translation</a>
+<a href=../../../categories/golang/>Golang</a></header><div class=article-title-wrapper><h2 class=article-title><a href=../../../2021/02/2021-02-25-context-and-structs/>上下文Context与结构体Struct</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Feb 25, 2021</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 1 分钟</time></div></footer></div></header><section class=article-content><pre tabindex=0><code>原文地址：https://blog.golang.org/context-and-structs
 原文作者：Jean de Klerk, Matt T. Proud
 译者：Kevin
-</code></pre><h2 id=介紹>介紹</h2>
-<p>在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是<a class=link href=https://golang.org/pkg/context/ target=_blank rel=noopener><code>context.Context</code></a>。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。</p>
-<p>在<a class=link href=https://golang.org/pkg/context/ target=_blank rel=noopener>context的文档</a>中写道。</p>
-<pre><code>上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。
-</code></pre>
-<p>本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。</p>
-<h2 id=倾向于将上下文作为参数传递>倾向于将上下文作为参数传递</h2>
-<p>为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Worker</span> <span style=color:#66d9ef>struct</span> { <span style=color:#75715e>/* … */</span> }
-
-<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Work</span> <span style=color:#66d9ef>struct</span> { <span style=color:#75715e>/* … */</span> }
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>New</span>() <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span> {
-  <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>Worker</span>{}
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span>) <span style=color:#a6e22e>Fetch</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Work</span>, <span style=color:#66d9ef>error</span>) {
-  <span style=color:#a6e22e>_</span> = <span style=color:#a6e22e>ctx</span> <span style=color:#75715e>// 每次调用中ctx用于取消操作，截止时间和元数据。
-</span><span style=color:#75715e></span>}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span>) <span style=color:#a6e22e>Process</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>, <span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Work</span>) <span style=color:#66d9ef>error</span> {
-  <span style=color:#a6e22e>_</span> = <span style=color:#a6e22e>ctx</span> <span style=color:#75715e>// A每次调用中ctx用于取消操作，截止时间和元数据。
-</span><span style=color:#75715e></span>}
-</code></pre></div><p>在这个例子中，<code>(*Worker).Fetch</code>和<code>(*Worker).Process</code>方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的<code>context.Context</code>将如何被使用：没有期望传递给一个方法的<code>context.Context</code>将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。</p>
-<h2 id=将上下文存储在结构中会导致混乱>将上下文存储在结构中会导致混乱</h2>
-<p>让我们再次使用上下文存储在结构体中这种方式审视一下上面的<code>Worker</code>例子。它的问题是，当你把上下文存储在一个结构中时，你会向调用者隐藏它的生命周期，甚至可能的是把两个不同的作用域以不可预料的方式互相干扰：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Worker</span> <span style=color:#66d9ef>struct</span> {
-  <span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>
-}
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>New</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>) <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span> {
-  <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>Worker</span>{<span style=color:#a6e22e>ctx</span>: <span style=color:#a6e22e>ctx</span>}
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span>) <span style=color:#a6e22e>Fetch</span>() (<span style=color:#f92672>*</span><span style=color:#a6e22e>Work</span>, <span style=color:#66d9ef>error</span>) {
-  <span style=color:#a6e22e>_</span> = <span style=color:#a6e22e>w</span>.<span style=color:#a6e22e>ctx</span> <span style=color:#75715e>// 共享的w.ctx用于取消操作，截止时间和元数据。
-</span><span style=color:#75715e></span>}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span>) <span style=color:#a6e22e>Process</span>(<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Work</span>) <span style=color:#66d9ef>error</span> {
-  <span style=color:#a6e22e>_</span> = <span style=color:#a6e22e>w</span>.<span style=color:#a6e22e>ctx</span> <span style=color:#75715e>// 共享的w.ctx用于取消操作，截止时间和元数据。
-</span><span style=color:#75715e></span>}
-</code></pre></div><p><code>(*Worker).Fetch</code>和<code>(*Worker).Process</code>方法都使用存储在<code>Worker</code>中的上下文。这防止了<code>Fetch</code>和<code>Process</code>的调用者（它们本身可能有不同的上下文）在每次调用的基础上指定截止日期、请求取消和附加元数据。例如：用户无法只为<code>(*Worker).Fetch</code>提供截止日期，也无法只取消<code>(*Worker).Process</code>的调用。调用者的生命期与共享上下文交织在一起，上下文的范围是创建<code>Worker</code>的生命周期。</p>
-<p>与上下文作为参数的方法相比，该API也更容易让用户感到疑惑。用户可能会问自己：</p>
-<ul>
-<li>既然<code>New</code>需要一个<code>context.Context</code>，那么构造函数是否在做取消或截止时间控制的工作？</li>
-<li><code>New</code>传递进来的<code>context.Context</code>是否适用于<code>(*Worker).Fetch</code>和<code>(*Worker).Process</code>？都不适用？有一个而没有另一个？</li>
-</ul>
-<p>API需要大量的文档来明确告诉用户<code>context.Context</code>到底是用来做什么的。用户可能还需要阅读代码，而不是能够依靠API结构获得信息。</p>
-<p>最后，如果设计一个生产级服务器，其每个请求没有上下文，从而不能充分重视取消操作，这可能是相当危险的。如果没有能力设置每个调用的截止日期，<a class=link href=https://sre.google/sre-book/handling-overload/ target=_blank rel=noopener>你的进程可能会积压资源</a>并导致资源耗尽（如内存）!</p>
-<h2 id=规则的例外保存向后的兼容性>规则的例外：保存向后的兼容性</h2>
-<p>当<a class=link href=https://golang.org/doc/go1.7 target=_blank rel=noopener>引入context.Context</a>的Go 1.7发布时，大量的 API 必须以向后兼容的方式添加上下文支持。例如，<a class=link href=https://golang.org/pkg/net/http/ target=_blank rel=noopener><code>net/http</code>的<code>Client</code>方法</a>，如<code>Get</code>和<code>Do</code>，就是很好的上下文取消操作的应用。每一个用这些方法发送的外部请求都会受益于<code>context.Context</code>带来的截止时间、取消和元数据支持。</p>
-<p>有两种方法可以以向后兼容的方式添加对<code>context.Context</code>的支持：将上下文包在一个结构中，正如我们稍后将看到的那样；复制函数，复制的函数接受<code>context.Context</code>作为参数，并将<code>Context</code>作为其函数名的后缀。复制的方法应该比在结构体中嵌入上下文的方式更可取，在<a class=link href=https://blog.golang.org/module-compatibility target=_blank rel=noopener>保持模块的兼容性</a>中会进一步讨论。然而，在某些情况下，这是不切实际的：例如，如果你的API暴露了大量的函数，那么复制所有的函数可能是不可行的。</p>
-<p><code>net/http</code>包选择了上下文存储在结构体方式，这提供了一个有用的案例研究。让我们看看<code>net/http</code>的<code>Do</code>方法。在引入<code>context.Context</code>之前，<code>Do</code>的定义如下：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>Do</span>(<span style=color:#a6e22e>req</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Request</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Response</span>, <span style=color:#66d9ef>error</span>)
-</code></pre></div><p>在Go 1.7之后，如果不考虑破坏向后的兼容性的问题，Do可能看起来像下面这样：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>Do</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>, <span style=color:#a6e22e>req</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Request</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Response</span>, <span style=color:#66d9ef>error</span>)
-</code></pre></div><p>但是，保留向后的兼容性，遵守<a class=link href=https://golang.org/doc/go1compat target=_blank rel=noopener>Go 1的兼容性承诺</a>对于标准库来说是至关重要的。所以，维护者选择在<code>http.Request</code>结构上添加一个<code>context.Context</code>，以便在不破坏向后兼容性的情况下支持<code>context.Context</code>：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Request</span> <span style=color:#66d9ef>struct</span> {
-  <span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>
-
-  <span style=color:#75715e>// ...
-</span><span style=color:#75715e></span>}
-
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>NewRequestWithContext</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>, <span style=color:#a6e22e>method</span>, <span style=color:#a6e22e>url</span> <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>body</span> <span style=color:#a6e22e>io</span>.<span style=color:#a6e22e>Reader</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Request</span>, <span style=color:#66d9ef>error</span>) {
-  <span style=color:#75715e>// 为了本文演示需要做了简化。
-</span><span style=color:#75715e></span>  <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>Request</span>{
-    <span style=color:#a6e22e>ctx</span>: <span style=color:#a6e22e>ctx</span>,
-    <span style=color:#75715e>// ...
-</span><span style=color:#75715e></span>  }
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>Do</span>(<span style=color:#a6e22e>req</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Request</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Response</span>, <span style=color:#66d9ef>error</span>)
-
-</code></pre></div><p>当改造你的API以支持上下文时，像上面那样在一个结构中添加一个<code>context.Context</code>可能是有意义的。但是，你需要首先考虑复制你的函数，这样可以在不牺牲实用性和理解性的前提下，向后兼容地改造<code>context.Context</code>。例如：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>Call</span>() <span style=color:#66d9ef>error</span> {
-  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>CallContext</span>(<span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Background</span>())
-}
-
-<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>CallContext</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>) <span style=color:#66d9ef>error</span> {
-  <span style=color:#75715e>// ...
-</span><span style=color:#75715e></span>}
-</code></pre></div><h2 id=总结>总结</h2>
-<p>上下文使得重要的跨库和跨API信息很容易在调用栈中传播。但是，为了保持可理解性、易调试性和有效性，必须统一清晰地使用它。</p>
-<p>当作为方法中的第一个参数而不是存储在结构类型中时，用户可以充分利用它的可扩展性，以便通过调用栈建立一个强大的取消、截止日期和元数据信息树。而且，最重要的是，当它作为一个参数传递进来时，它的范围被清晰的理解，从而导致堆栈上下的理解更加清晰和调试更加容易。</p>
-<p>当设计一个带有上下文的API时，请记住这样的建议：将<code>context.Context</code>作为一个参数传递进来，不要将它存储在结构体中。</p>
-</section>
-<footer class=article-footer>
-<section class=article-tags>
-<a href=../../../tags/golang/>Golang</a>
-</section>
-<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span>
-</section>
-</footer>
-</article>
-<aside class=related-contents--wrapper>
-<h2 class=section-title>相关文章</h2>
-<div class=related-contents>
-<div class="flex article-list--tile">
-<article class=has-image>
-<a href=../../../2021/02/2021-02-19-go116-module-changes/>
-<div class=article-image>
-<img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化" data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA==">
-</div>
-<div class=article-details>
-<h2 class=article-title>Go 1.16 中Module功能新变化</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/>
-<div class=article-image>
-<img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ==">
-</div>
-<div class=article-details>
-<h2 class=article-title>译：在Go中转向领域驱动设计</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2019/03/2019-03-20-using-go-modules/>
-<div class=article-details>
-<h2 class=article-title>使用Go Modules</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2020/03/2020-03-31-intro-opentelemetry/>
-<div class=article-image>
-<img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ==">
-</div>
-<div class=article-details>
-<h2 class=article-title>OpenTelemetry入门</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2020/02/2020-02-05-golang-debug-instrumental/>
-<div class=article-details>
-<h2 class=article-title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</h2>
-</div>
-</a>
-</article>
-</div>
-</div>
-</aside>
-<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
-<div class=disqus-container>
-<div id=disqus_thread></div>
-<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-</div>
-<footer class=site-footer>
-<section class=copyright>
-&copy;
+</code></pre><h2 id=介紹>介紹</h2><p>在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是<a class=link href=https://golang.org/pkg/context/ target=_blank rel=noopener><code>context.Context</code></a>。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。</p><p>在<a class=link href=https://golang.org/pkg/context/ target=_blank rel=noopener>context的文档</a>中写道。</p><pre><code>上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。
+</code></pre><p>本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。</p><h2 id=倾向于将上下文作为参数传递>倾向于将上下文作为参数传递</h2><p>为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Worker</span> <span style=color:#66d9ef>struct</span> { <span style=color:#75715e>/* … */</span> }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Work</span> <span style=color:#66d9ef>struct</span> { <span style=color:#75715e>/* … */</span> }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>New</span>() <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span> {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>Worker</span>{}
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span>) <span style=color:#a6e22e>Fetch</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Work</span>, <span style=color:#66d9ef>error</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>_</span> = <span style=color:#a6e22e>ctx</span> <span style=color:#75715e>// 每次调用中ctx用于取消操作，截止时间和元数据。
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span>) <span style=color:#a6e22e>Process</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>, <span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Work</span>) <span style=color:#66d9ef>error</span> {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>_</span> = <span style=color:#a6e22e>ctx</span> <span style=color:#75715e>// A每次调用中ctx用于取消操作，截止时间和元数据。
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
+</span></span></code></pre></div><p>在这个例子中，<code>(*Worker).Fetch</code>和<code>(*Worker).Process</code>方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的<code>context.Context</code>将如何被使用：没有期望传递给一个方法的<code>context.Context</code>将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。</p><h2 id=将上下文存储在结构中会导致混乱>将上下文存储在结构中会导致混乱</h2><p>让我们再次使用上下文存储在结构体中这种方式审视一下上面的<code>Worker</code>例子。它的问题是，当你把上下文存储在一个结构中时，你会向调用者隐藏它的生命周期，甚至可能的是把两个不同的作用域以不可预料的方式互相干扰：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Worker</span> <span style=color:#66d9ef>struct</span> {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>New</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>) <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span> {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>Worker</span>{<span style=color:#a6e22e>ctx</span>: <span style=color:#a6e22e>ctx</span>}
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span>) <span style=color:#a6e22e>Fetch</span>() (<span style=color:#f92672>*</span><span style=color:#a6e22e>Work</span>, <span style=color:#66d9ef>error</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>_</span> = <span style=color:#a6e22e>w</span>.<span style=color:#a6e22e>ctx</span> <span style=color:#75715e>// 共享的w.ctx用于取消操作，截止时间和元数据。
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Worker</span>) <span style=color:#a6e22e>Process</span>(<span style=color:#a6e22e>w</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Work</span>) <span style=color:#66d9ef>error</span> {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>_</span> = <span style=color:#a6e22e>w</span>.<span style=color:#a6e22e>ctx</span> <span style=color:#75715e>// 共享的w.ctx用于取消操作，截止时间和元数据。
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
+</span></span></code></pre></div><p><code>(*Worker).Fetch</code>和<code>(*Worker).Process</code>方法都使用存储在<code>Worker</code>中的上下文。这防止了<code>Fetch</code>和<code>Process</code>的调用者（它们本身可能有不同的上下文）在每次调用的基础上指定截止日期、请求取消和附加元数据。例如：用户无法只为<code>(*Worker).Fetch</code>提供截止日期，也无法只取消<code>(*Worker).Process</code>的调用。调用者的生命期与共享上下文交织在一起，上下文的范围是创建<code>Worker</code>的生命周期。</p><p>与上下文作为参数的方法相比，该API也更容易让用户感到疑惑。用户可能会问自己：</p><ul><li>既然<code>New</code>需要一个<code>context.Context</code>，那么构造函数是否在做取消或截止时间控制的工作？</li><li><code>New</code>传递进来的<code>context.Context</code>是否适用于<code>(*Worker).Fetch</code>和<code>(*Worker).Process</code>？都不适用？有一个而没有另一个？</li></ul><p>API需要大量的文档来明确告诉用户<code>context.Context</code>到底是用来做什么的。用户可能还需要阅读代码，而不是能够依靠API结构获得信息。</p><p>最后，如果设计一个生产级服务器，其每个请求没有上下文，从而不能充分重视取消操作，这可能是相当危险的。如果没有能力设置每个调用的截止日期，<a class=link href=https://sre.google/sre-book/handling-overload/ target=_blank rel=noopener>你的进程可能会积压资源</a>并导致资源耗尽（如内存）!</p><h2 id=规则的例外保存向后的兼容性>规则的例外：保存向后的兼容性</h2><p>当<a class=link href=https://golang.org/doc/go1.7 target=_blank rel=noopener>引入context.Context</a>的Go 1.7发布时，大量的 API 必须以向后兼容的方式添加上下文支持。例如，<a class=link href=https://golang.org/pkg/net/http/ target=_blank rel=noopener><code>net/http</code>的<code>Client</code>方法</a>，如<code>Get</code>和<code>Do</code>，就是很好的上下文取消操作的应用。每一个用这些方法发送的外部请求都会受益于<code>context.Context</code>带来的截止时间、取消和元数据支持。</p><p>有两种方法可以以向后兼容的方式添加对<code>context.Context</code>的支持：将上下文包在一个结构中，正如我们稍后将看到的那样；复制函数，复制的函数接受<code>context.Context</code>作为参数，并将<code>Context</code>作为其函数名的后缀。复制的方法应该比在结构体中嵌入上下文的方式更可取，在<a class=link href=https://blog.golang.org/module-compatibility target=_blank rel=noopener>保持模块的兼容性</a>中会进一步讨论。然而，在某些情况下，这是不切实际的：例如，如果你的API暴露了大量的函数，那么复制所有的函数可能是不可行的。</p><p><code>net/http</code>包选择了上下文存储在结构体方式，这提供了一个有用的案例研究。让我们看看<code>net/http</code>的<code>Do</code>方法。在引入<code>context.Context</code>之前，<code>Do</code>的定义如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>Do</span>(<span style=color:#a6e22e>req</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Request</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Response</span>, <span style=color:#66d9ef>error</span>)
+</span></span></code></pre></div><p>在Go 1.7之后，如果不考虑破坏向后的兼容性的问题，Do可能看起来像下面这样：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>Do</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>, <span style=color:#a6e22e>req</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Request</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Response</span>, <span style=color:#66d9ef>error</span>)
+</span></span></code></pre></div><p>但是，保留向后的兼容性，遵守<a class=link href=https://golang.org/doc/go1compat target=_blank rel=noopener>Go 1的兼容性承诺</a>对于标准库来说是至关重要的。所以，维护者选择在<code>http.Request</code>结构上添加一个<code>context.Context</code>，以便在不破坏向后兼容性的情况下支持<code>context.Context</code>：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Request</span> <span style=color:#66d9ef>struct</span> {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>NewRequestWithContext</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>, <span style=color:#a6e22e>method</span>, <span style=color:#a6e22e>url</span> <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>body</span> <span style=color:#a6e22e>io</span>.<span style=color:#a6e22e>Reader</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Request</span>, <span style=color:#66d9ef>error</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// 为了本文演示需要做了简化。
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>Request</span>{
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ctx</span>: <span style=color:#a6e22e>ctx</span>,
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>Do</span>(<span style=color:#a6e22e>req</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Request</span>) (<span style=color:#f92672>*</span><span style=color:#a6e22e>Response</span>, <span style=color:#66d9ef>error</span>)
+</span></span></code></pre></div><p>当改造你的API以支持上下文时，像上面那样在一个结构中添加一个<code>context.Context</code>可能是有意义的。但是，你需要首先考虑复制你的函数，这样可以在不牺牲实用性和理解性的前提下，向后兼容地改造<code>context.Context</code>。例如：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>Call</span>() <span style=color:#66d9ef>error</span> {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>CallContext</span>(<span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Background</span>())
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>c</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Client</span>) <span style=color:#a6e22e>CallContext</span>(<span style=color:#a6e22e>ctx</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Context</span>) <span style=color:#66d9ef>error</span> {
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
+</span></span></code></pre></div><h2 id=总结>总结</h2><p>上下文使得重要的跨库和跨API信息很容易在调用栈中传播。但是，为了保持可理解性、易调试性和有效性，必须统一清晰地使用它。</p><p>当作为方法中的第一个参数而不是存储在结构类型中时，用户可以充分利用它的可扩展性，以便通过调用栈建立一个强大的取消、截止日期和元数据信息树。而且，最重要的是，当它作为一个参数传递进来时，它的范围被清晰的理解，从而导致堆栈上下的理解更加清晰和调试更加容易。</p><p>当设计一个带有上下文的API时，请记住这样的建议：将<code>context.Context</code>作为一个参数传递进来，不要将它存储在结构体中。</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/golang/>Golang</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article class=has-image><a href=../../../2021/02/2021-02-19-go116-module-changes/><div class=article-image><img src=../../../2021/02/2021-02-19-go116-module-changes/cover.5743a435c8de3db31b9489fe96aebba4_huf957eb7cc0803733802fcc4099cfd7cb_47470_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post Go 1.16 中Module功能新变化" data-key=2021-02-19-go116-module-changes data-hash="md5-V0OkNcjePbMblIn+lq67pA=="></div><div class=article-details><h2 class=article-title>Go 1.16 中Module功能新变化</h2></div></a></article><article class=has-image><a href=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/><div class=article-image><img src=../../../2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.0725510cb99a1c9f7e802fc8d2075eb9_huea63e6370dcf0c375755d886a5d0b9c6_97708_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post 译：在Go中转向领域驱动设计" data-key=2020-02-16-moving-towards-domain-driven-design-in-go data-hash="md5-ByVRDLmaHJ9+gC/I0gdeuQ=="></div><div class=article-details><h2 class=article-title>译：在Go中转向领域驱动设计</h2></div></a></article><article><a href=../../../2019/03/2019-03-20-using-go-modules/><div class=article-details><h2 class=article-title>使用Go Modules</h2></div></a></article><article class=has-image><a href=../../../2020/03/2020-03-31-intro-opentelemetry/><div class=article-image><img src=../../../2020/03/2020-03-31-intro-opentelemetry/cover.ef80ecef711837ebaa962cabc69d4e29_hu2c1469b7ee57dc12d272d4e1f195b2aa_29271_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post OpenTelemetry入门" data-key=2020-03-31-intro-opentelemetry data-hash="md5-74Ds73EYN+uqliyrxp1OKQ=="></div><div class=article-details><h2 class=article-title>OpenTelemetry入门</h2></div></a></article><article><a href=../../../2020/02/2020-02-05-golang-debug-instrumental/><div class=article-details><h2 class=article-title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</h2></div></a></article></div></div></aside><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
 2013 -
-2022 ipfans's Blog
-</section>
-<section class=powerby>
-Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
-</section>
-</footer>
-<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
-<div class=pswp__bg></div>
-<div class=pswp__scroll-wrap>
-<div class=pswp__container>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-</div>
-<div class="pswp__ui pswp__ui--hidden">
-<div class=pswp__top-bar>
-<div class=pswp__counter></div>
-<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2022 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.11.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-<div class=pswp__preloader>
-<div class=pswp__preloader__icn>
-<div class=pswp__preloader__cut>
-<div class=pswp__preloader__donut></div>
-</div>
-</div>
-</div>
-</div>
-<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-<div class=pswp__share-tooltip></div>
-</div>
-<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-</button>
-<div class=pswp__caption>
-<div class=pswp__caption__center></div>
-</div>
-</div>
-</div>
-</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
-</main>
-<aside class="sidebar right-sidebar sticky">
-<section class="widget archives">
-<div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg>
-</div>
-<h2 class="widget-title section-title">目录</h2>
-<div class=widget--toc>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#介紹>介紹</a></li>
-<li><a href=#倾向于将上下文作为参数传递>倾向于将上下文作为参数传递</a></li>
-<li><a href=#将上下文存储在结构中会导致混乱>将上下文存储在结构中会导致混乱</a></li>
-<li><a href=#规则的例外保存向后的兼容性>规则的例外：保存向后的兼容性</a></li>
-<li><a href=#总结>总结</a></li>
-</ul>
-</nav>
-</div>
-</section>
-</aside>
-</div>
-<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
-<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
-</body>
-</html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

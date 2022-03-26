@@ -1,257 +1,48 @@
-<!doctype html><html lang=en>
-<head><meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="在升级到Python 3.5+版本之后，最大的项目管理优化来自于PEP-484 Type Hint的引入。借助Type Hint，我们可以进一步提升Python代码的类型标注，保障在重构过程中避免出现一些低级失误。
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="在升级到Python 3.5+版本之后，最大的项目管理优化来自于PEP-484 Type Hint的引入。借助Type Hint，我们可以进一步提升Python代码的类型标注，保障在重构过程中避免出现一些低级失误。
 我们可以通过高版本Python新加的新语法启用这项特性，然后通过mypy等工具检查：
-def greeting(name: str) -&amp;gt; str: return &amp;#39;Hello &amp;#39; + name 然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：
-"><title>利用Stub File标注Python文件</title>
-<link rel=canonical href=https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/>
-<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="利用Stub File标注Python文件">
-<meta property="og:description" content="在升级到Python 3.5+版本之后，最大的项目管理优化来自于PEP-484 Type Hint的引入。借助Type Hint，我们可以进一步提升Python代码的类型标注，保障在重构过程中避免出现一些低级失误。
+def greeting(name: str) -&amp;gt; str:  return &amp;#39;Hello &amp;#39; + name 然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：
+"><title>利用Stub File标注Python文件</title><link rel=canonical href=https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/><link rel=stylesheet href=../../../scss/style.min.787c11515dc5d9a2a1ccd2c32e10ab2ce54935226bfd34de0eed651f4f0e0349.css><meta property="og:title" content="利用Stub File标注Python文件"><meta property="og:description" content="在升级到Python 3.5+版本之后，最大的项目管理优化来自于PEP-484 Type Hint的引入。借助Type Hint，我们可以进一步提升Python代码的类型标注，保障在重构过程中避免出现一些低级失误。
 我们可以通过高版本Python新加的新语法启用这项特性，然后通过mypy等工具检查：
-def greeting(name: str) -&amp;gt; str: return &amp;#39;Hello &amp;#39; + name 然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：
-">
-<meta property="og:url" content="https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/">
-<meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Python"><meta property="article:tag" content="PEP484"><meta property="article:published_time" content="2019-01-29T14:30:00+00:00"><meta property="article:modified_time" content="2019-01-29T14:30:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<meta name=twitter:site content="@janxin">
-<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="利用Stub File标注Python文件">
-<meta name=twitter:description content="在升级到Python 3.5+版本之后，最大的项目管理优化来自于PEP-484 Type Hint的引入。借助Type Hint，我们可以进一步提升Python代码的类型标注，保障在重构过程中避免出现一些低级失误。
+def greeting(name: str) -&amp;gt; str:  return &amp;#39;Hello &amp;#39; + name 然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：
+"><meta property="og:url" content="https://www.4async.com/2019/01/2019-01-28-python-typing-with-stub-files/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Python"><meta property="article:tag" content="PEP484"><meta property="article:published_time" content="2019-01-29T14:30:00+00:00"><meta property="article:modified_time" content="2019-01-29T14:30:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="利用Stub File标注Python文件"><meta name=twitter:description content="在升级到Python 3.5+版本之后，最大的项目管理优化来自于PEP-484 Type Hint的引入。借助Type Hint，我们可以进一步提升Python代码的类型标注，保障在重构过程中避免出现一些低级失误。
 我们可以通过高版本Python新加的新语法启用这项特性，然后通过mypy等工具检查：
-def greeting(name: str) -&amp;gt; str: return &amp;#39;Hello &amp;#39; + name 然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：
-"><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
-</head>
-<body class=article-page>
-<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
-<div class="container main-container flex
-on-phone--column extended">
-<aside class="sidebar left-sidebar sticky">
-<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box>
-<span class=hamburger-inner></span>
-</span>
-</button>
-<header class=site-info>
-<figure class=site-avatar>
-<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
-</figure>
-<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
-<h2 class=site-description></h2></header>
-<ol class=menu id=main-menu>
-<li>
-<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
-<span>Home</span>
-</a>
-</li>
-<li>
-<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
-<span>About</span>
-</a>
-</li>
-<li>
-<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-<span>Archives</span>
-</a>
-</li>
-<li>
-<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
-<span>Feed</span>
-</a>
-</li>
-<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span>
-</li>
-</ol>
-</aside>
-<main class="main full-width">
-<article class=main-article>
-<header class=article-header>
-<div class=article-details>
-<header class=article-category>
-<a href=../../../categories/technical-investigations/>
-Technical Investigations
-</a>
-<a href=../../../categories/python/>
-Python
-</a>
-</header>
-<h2 class=article-title>
-<a href=../../../2019/01/2019-01-28-python-typing-with-stub-files/>利用Stub File标注Python文件</a>
-</h2>
-<footer class=article-time>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Jan 29, 2019</time>
-</div>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>
-阅读时长: 1 分钟
-</time>
-</div>
-</footer>
-</div>
-</header>
-<section class=article-content>
-<p>在升级到<code>Python 3.5+</code>版本之后，最大的项目管理优化来自于<a class=link href=https://www.python.org/dev/peps/pep-0484/ target=_blank rel=noopener><code>PEP-484 Type Hint</code></a>的引入。借助<code>Type Hint</code>，我们可以进一步提升<code>Python</code>代码的类型标注，保障在重构过程中避免出现一些低级失误。</p>
-<p>我们可以通过高版本<code>Python</code>新加的新语法启用这项特性，然后通过<code>mypy</code>等工具检查：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>greeting</span>(name: str) <span style=color:#f92672>-&gt;</span> str:
-    <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;Hello &#39;</span> <span style=color:#f92672>+</span> name
-</code></pre></div><p>然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：</p>
-<ul>
-<li>你难免有一些历史性代码，这些代码需要同时支持<code>Python2</code>和<code>Python3</code>。</li>
-<li>你使用的<code>Python 3 Only</code>的第三方库没有<code>Type Hint</code>定义，作者看起来并不打算近期支持或者某些原因（比如你正在用的某个老版本不维护了）导致你不能贡献代码。</li>
-</ul>
-<p>这些时候你往往是不能直接使用<code>Type Hint</code>带来的便利的，不过<code>PEP-484</code>中也考虑到了这种情况，包含了一种<a class=link href=https://www.python.org/dev/peps/pep-0484/#stub-files target=_blank rel=noopener><code>stub file</code></a>的定义形式，可以通过第三方文件<code>.pyi</code>文件，定义函数参数类型与返回值类型。</p>
-<p>比如官方文档中就定义了一个比较简单的<code>stub</code>例子。假设我们对一个名叫<code>HttpRequest </code>的类进行类型标记：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># request.py</span>
-
-
-<span style=color:#66d9ef>class</span> <span style=color:#a6e22e>HttpRequest</span>:
-    <span style=color:#e6db74>&#34;&#34;&#34;A basic HTTP request.&#34;&#34;&#34;</span>
-
-    <span style=color:#66d9ef>def</span> __init__(self):
-        self<span style=color:#f92672>.</span>META <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#34;SERVER_NAME&#34;</span>: <span style=color:#e6db74>&#34;hello.com&#34;</span>}
-
-    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_raw_host</span>(self):
-        <span style=color:#e6db74>&#34;&#34;&#34;
-</span><span style=color:#e6db74>        Return the HTTP host using the environment or request headers. Skip
-</span><span style=color:#e6db74>        allowed hosts protection, so may return an insecure host.
-</span><span style=color:#e6db74>        &#34;&#34;&#34;</span>
-        <span style=color:#75715e># Reconstruct the host using the algorithm from PEP 333.</span>
-        host <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>META[<span style=color:#e6db74>&#34;SERVER_NAME&#34;</span>]
-        <span style=color:#66d9ef>return</span> host
-
-</code></pre></div><p>接下来，我们可以在当前文件的文件夹下新建一个名叫<code>bytes.pyi</code>的文件，填写如下内容：</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># request.py</span>
-
-
-<span style=color:#66d9ef>class</span> <span style=color:#a6e22e>HttpRequest</span>:
-    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_raw_host</span>(self) <span style=color:#f92672>-&gt;</span> str: <span style=color:#f92672>...</span>
-</code></pre></div><p>让我们先构建一个存在类型混淆的例子，如果你使用了<code>mypy</code>之类的工具进行检查，则可以快速发现下面例子中本来为<code>int</code>型的<code>i</code>被重新赋值了<code>str</code>类型。</p>
-<p><figure>
-<a href=https://ws1.sinaimg.cn/large/006tNc79ly1fznfkmgn7ij30ve0ew0us.jpg>
-<img src=https://ws1.sinaimg.cn/large/006tNc79ly1fznfkmgn7ij30ve0ew0us.jpg loading=lazy alt=checked>
-</a>
-<figcaption>checked</figcaption>
-</figure></p>
-<p>通过这样的方法，可以快速将已有的代码库快速添加类型。不过实际中并不是这么简单。我们之前也说过，很多项目并不是由我们自行维护的，这个时候，我们很难去修改上游仓库时，应该如何做呢？</p>
-<p>这里，我们以<code>mypy</code>工具和<code>Django</code>这个<code>Python</code>常用为例去演示一下如何配置<code>Django</code>项目的类型检查。</p>
-<p>这里有一个第三方提供的<code>Django</code>类型标注库<code>django-stubs</code>，我们可以通过<code>pip</code>命令进行安装：</p>
-<pre tabindex=0><code>pip install django-stubs
-</code></pre><p>在安装完成之后，因为这个标注文件时单独发布的包，因此我们需要修改<code>mypy</code>的指向，让<code>mypy</code>使用这个包的标注。需要修改<code>mypy.ini</code>文件用于定义。关于这个文件的具体配置，则可以参考<code>mypy</code>工具的<a class=link href=https://mypy.readthedocs.io/en/latest/extending_mypy.html#extending-mypy-using-plugins target=_blank rel=noopener>官方文档</a>。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#66d9ef>[mypy]</span>
-<span style=color:#a6e22e>plugins</span> <span style=color:#f92672>=</span><span style=color:#e6db74>
-</span><span style=color:#e6db74>     mypy_django_plugin.main</span>
-</code></pre></div><p>接下来就可以使用<code>mypy</code>针对<code>Django</code>部分进行检查了。</p>
-</section>
-<footer class=article-footer>
-<section class=article-tags>
-<a href=../../../tags/python/>Python</a>
-<a href=../../../tags/pep484/>PEP484</a>
-</section>
-<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span>
-</section>
-</footer>
-</article>
-<aside class=related-contents--wrapper>
-<h2 class=section-title>相关文章</h2>
-<div class=related-contents>
-<div class="flex article-list--tile">
-<article>
-<a href=../../../2016/07/2016-07-13-type-hint-improve-python-programming/>
-<div class=article-details>
-<h2 class=article-title>利用 Type Hint 提升 Python 程序开发效率</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2017/08/2017-08-02-install-face-recognition-on-osx/>
-<div class=article-details>
-<h2 class=article-title>OSX 下安装 face_recognition</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/>
-<div class=article-details>
-<h2 class=article-title>从 asyncio 简单实现看异步是如何工作的</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/>
-<div class=article-details>
-<h2 class=article-title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2016/09/2016-09-15-tracing-python-program-with-dtrace/>
-<div class=article-details>
-<h2 class=article-title>使用 dtrace 跟踪 Python 应用</h2>
-</div>
-</a>
-</article>
-</div>
-</div>
-</aside>
-<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
-<div class=disqus-container>
-<div id=disqus_thread></div>
-<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-</div>
-<footer class=site-footer>
-<section class=copyright>
-&copy;
+def greeting(name: str) -&amp;gt; str:  return &amp;#39;Hello &amp;#39; + name 然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：
+"><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,o,i,a,t,n,s){e.GoogleAnalyticsObject=t,e[t]=e[t]||function(){(e[t].q=e[t].q||[]).push(arguments)},e[t].l=1*new Date,n=o.createElement(i),s=o.getElementsByTagName(i)[0],n.async=1,n.src=a,s.parentNode.insertBefore(n,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-33841232-2","auto"),ga("send","pageview"))</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=../../../categories/technical-investigations/>Technical Investigations</a>
+<a href=../../../categories/python/>Python</a></header><div class=article-title-wrapper><h2 class=article-title><a href=../../../2019/01/2019-01-28-python-typing-with-stub-files/>利用Stub File标注Python文件</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Jan 29, 2019</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 1 分钟</time></div></footer></div></header><section class=article-content><p>在升级到<code>Python 3.5+</code>版本之后，最大的项目管理优化来自于<a class=link href=https://www.python.org/dev/peps/pep-0484/ target=_blank rel=noopener><code>PEP-484 Type Hint</code></a>的引入。借助<code>Type Hint</code>，我们可以进一步提升<code>Python</code>代码的类型标注，保障在重构过程中避免出现一些低级失误。</p><p>我们可以通过高版本<code>Python</code>新加的新语法启用这项特性，然后通过<code>mypy</code>等工具检查：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>greeting</span>(name: str) <span style=color:#f92672>-&gt;</span> str:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;Hello &#39;</span> <span style=color:#f92672>+</span> name
+</span></span></code></pre></div><p>然而，在实际实践过程中，也往往存在一些问题，这些问题来自于很多方面：</p><ul><li>你难免有一些历史性代码，这些代码需要同时支持<code>Python2</code>和<code>Python3</code>。</li><li>你使用的<code>Python 3 Only</code>的第三方库没有<code>Type Hint</code>定义，作者看起来并不打算近期支持或者某些原因（比如你正在用的某个老版本不维护了）导致你不能贡献代码。</li></ul><p>这些时候你往往是不能直接使用<code>Type Hint</code>带来的便利的，不过<code>PEP-484</code>中也考虑到了这种情况，包含了一种<a class=link href=https://www.python.org/dev/peps/pep-0484/#stub-files target=_blank rel=noopener><code>stub file</code></a>的定义形式，可以通过第三方文件<code>.pyi</code>文件，定义函数参数类型与返回值类型。</p><p>比如官方文档中就定义了一个比较简单的<code>stub</code>例子。假设我们对一个名叫<code>HttpRequest </code>的类进行类型标记：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># request.py</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>HttpRequest</span>:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;A basic HTTP request.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> __init__(self):
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>META <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#34;SERVER_NAME&#34;</span>: <span style=color:#e6db74>&#34;hello.com&#34;</span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_raw_host</span>(self):
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        Return the HTTP host using the environment or request headers. Skip
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        allowed hosts protection, so may return an insecure host.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Reconstruct the host using the algorithm from PEP 333.</span>
+</span></span><span style=display:flex><span>        host <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>META[<span style=color:#e6db74>&#34;SERVER_NAME&#34;</span>]
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> host
+</span></span></code></pre></div><p>接下来，我们可以在当前文件的文件夹下新建一个名叫<code>bytes.pyi</code>的文件，填写如下内容：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># request.py</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>HttpRequest</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_raw_host</span>(self) <span style=color:#f92672>-&gt;</span> str: <span style=color:#f92672>...</span>
+</span></span></code></pre></div><p>让我们先构建一个存在类型混淆的例子，如果你使用了<code>mypy</code>之类的工具进行检查，则可以快速发现下面例子中本来为<code>int</code>型的<code>i</code>被重新赋值了<code>str</code>类型。</p><p><img src=https://ws1.sinaimg.cn/large/006tNc79ly1fznfkmgn7ij30ve0ew0us.jpg loading=lazy alt=checked></p><p>通过这样的方法，可以快速将已有的代码库快速添加类型。不过实际中并不是这么简单。我们之前也说过，很多项目并不是由我们自行维护的，这个时候，我们很难去修改上游仓库时，应该如何做呢？</p><p>这里，我们以<code>mypy</code>工具和<code>Django</code>这个<code>Python</code>常用为例去演示一下如何配置<code>Django</code>项目的类型检查。</p><p>这里有一个第三方提供的<code>Django</code>类型标注库<code>django-stubs</code>，我们可以通过<code>pip</code>命令进行安装：</p><pre tabindex=0><code>pip install django-stubs
+</code></pre><p>在安装完成之后，因为这个标注文件时单独发布的包，因此我们需要修改<code>mypy</code>的指向，让<code>mypy</code>使用这个包的标注。需要修改<code>mypy.ini</code>文件用于定义。关于这个文件的具体配置，则可以参考<code>mypy</code>工具的<a class=link href=https://mypy.readthedocs.io/en/latest/extending_mypy.html#extending-mypy-using-plugins target=_blank rel=noopener>官方文档</a>。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=display:flex><span><span style=color:#66d9ef>[mypy]</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>plugins</span> <span style=color:#f92672>=</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>     mypy_django_plugin.main</span>
+</span></span></code></pre></div><p>接下来就可以使用<code>mypy</code>针对<code>Django</code>部分进行检查了。</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/python/>Python</a>
+<a href=../../../tags/pep484/>PEP484</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article><a href=../../../2016/07/2016-07-13-type-hint-improve-python-programming/><div class=article-details><h2 class=article-title>利用 Type Hint 提升 Python 程序开发效率</h2></div></a></article><article><a href=../../../2017/08/2017-08-02-install-face-recognition-on-osx/><div class=article-details><h2 class=article-title>OSX 下安装 face_recognition</h2></div></a></article><article><a href=../../../2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/><div class=article-details><h2 class=article-title>从 asyncio 简单实现看异步是如何工作的</h2></div></a></article><article><a href=../../../2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/><div class=article-details><h2 class=article-title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</h2></div></a></article><article><a href=../../../2016/09/2016-09-15-tracing-python-program-with-dtrace/><div class=article-details><h2 class=article-title>使用 dtrace 跟踪 Python 应用</h2></div></a></article></div></div></aside><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
 2013 -
-2022 ipfans's Blog
-</section>
-<section class=powerby>
-Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
-</section>
-</footer>
-<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
-<div class=pswp__bg></div>
-<div class=pswp__scroll-wrap>
-<div class=pswp__container>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-</div>
-<div class="pswp__ui pswp__ui--hidden">
-<div class=pswp__top-bar>
-<div class=pswp__counter></div>
-<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2022 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.11.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-<div class=pswp__preloader>
-<div class=pswp__preloader__icn>
-<div class=pswp__preloader__cut>
-<div class=pswp__preloader__donut></div>
-</div>
-</div>
-</div>
-</div>
-<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-<div class=pswp__share-tooltip></div>
-</div>
-<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-</button>
-<div class=pswp__caption>
-<div class=pswp__caption__center></div>
-</div>
-</div>
-</div>
-</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
-</main>
-</div>
-<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
-<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
-</body>
-</html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

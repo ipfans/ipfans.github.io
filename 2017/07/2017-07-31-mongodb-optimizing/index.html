@@ -1,228 +1,24 @@
-<!doctype html><html lang=en>
-<head><meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。
 但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。
 集合使用不当问题 在使用 MongoDB 过程中，我们创建了大量的集合。这种情况在 WiredTriger 引擎下创建大量零散文件。这个在使用过程中暂时未对我们造成实际的业务较大影响，但是从实际使用而言，对整体数据库性能、后续主从复制集群同步，都是有一定影响的。在实际应用过程中应该避免：拥有过多 DB、一个 DB 下有过多 Collection，这样都会导致部分指令的性能大幅度下滑。同时，过多的 DB 也会导致主从同步失败 (listDatabse 超时导致失败，从库退出)。
 数据库索引建立 MongoDB Collection 索引建立功能支持前台创建模式与后台创建模式两种。默认模式为前台创建模式。这种模式下会发生：DB 被锁，主库所有读写被禁止、从库无法访问。从另一方面来说，会导致业务系统的数据库访问受到影响。虽然前台创建模式效率更高，但是如果是线上操作，并且有一定数量级，创建索引时需要添加 {background:true} 让创建索引操作转换为后台操作，尽管时间较长，但是对业务影响较小。同时，该操作也应该在业务量小时进行。
 数据库主从切换 虽然 MongoDB 的 Replica Set 功能可以方便的进行自动主从切换。但是实际使用过程中，我们也会遇到一些需要手工进行主从库切换的情况。比如，进行进行版本升级修复 BUG 或者安全漏洞。但是如果这个时候强行进行 Primary 的重启，则可能会出现未同步至 Secondary 的数据丢失的情况（血泪教训）。这种情况下，重启集群的方式是，优先进行 Secondary 的更新操作，在 Secondary 更新完成后，对 Primary 进行 stepDown 操作，等待主节点降级成为 Secondary 节点，之后进行操作。这样的好处是不会丢失数据。但是如果主从数据差异较大时，有可能会造成降级失败，此时可以重复执行 stepDown 直至成功。还有一个值得注意的是，即便 Secondary 可以停机维护，但是仍旧有可能丢数据，这个与 oplog 大小有关，我们放在后面说。
-慢查询问题 慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 db.setProfilingLevel() 进行管理。同时，主动分析也可以通过 explain 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 db.currentOp() 和 db.killOp() 功能干掉长时间执行、浪费资源的操作。"><title>一些 MongoDB 的坑</title>
-<link rel=canonical href=https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/>
-<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="一些 MongoDB 的坑">
-<meta property="og:description" content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。
+慢查询问题 慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 db.setProfilingLevel() 进行管理。同时，主动分析也可以通过 explain 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 db.currentOp() 和 db.killOp() 功能干掉长时间执行、浪费资源的操作。"><title>一些 MongoDB 的坑</title><link rel=canonical href=https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/><link rel=stylesheet href=../../../scss/style.min.787c11515dc5d9a2a1ccd2c32e10ab2ce54935226bfd34de0eed651f4f0e0349.css><meta property="og:title" content="一些 MongoDB 的坑"><meta property="og:description" content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。
 但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。
 集合使用不当问题 在使用 MongoDB 过程中，我们创建了大量的集合。这种情况在 WiredTriger 引擎下创建大量零散文件。这个在使用过程中暂时未对我们造成实际的业务较大影响，但是从实际使用而言，对整体数据库性能、后续主从复制集群同步，都是有一定影响的。在实际应用过程中应该避免：拥有过多 DB、一个 DB 下有过多 Collection，这样都会导致部分指令的性能大幅度下滑。同时，过多的 DB 也会导致主从同步失败 (listDatabse 超时导致失败，从库退出)。
 数据库索引建立 MongoDB Collection 索引建立功能支持前台创建模式与后台创建模式两种。默认模式为前台创建模式。这种模式下会发生：DB 被锁，主库所有读写被禁止、从库无法访问。从另一方面来说，会导致业务系统的数据库访问受到影响。虽然前台创建模式效率更高，但是如果是线上操作，并且有一定数量级，创建索引时需要添加 {background:true} 让创建索引操作转换为后台操作，尽管时间较长，但是对业务影响较小。同时，该操作也应该在业务量小时进行。
 数据库主从切换 虽然 MongoDB 的 Replica Set 功能可以方便的进行自动主从切换。但是实际使用过程中，我们也会遇到一些需要手工进行主从库切换的情况。比如，进行进行版本升级修复 BUG 或者安全漏洞。但是如果这个时候强行进行 Primary 的重启，则可能会出现未同步至 Secondary 的数据丢失的情况（血泪教训）。这种情况下，重启集群的方式是，优先进行 Secondary 的更新操作，在 Secondary 更新完成后，对 Primary 进行 stepDown 操作，等待主节点降级成为 Secondary 节点，之后进行操作。这样的好处是不会丢失数据。但是如果主从数据差异较大时，有可能会造成降级失败，此时可以重复执行 stepDown 直至成功。还有一个值得注意的是，即便 Secondary 可以停机维护，但是仍旧有可能丢数据，这个与 oplog 大小有关，我们放在后面说。
-慢查询问题 慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 db.setProfilingLevel() 进行管理。同时，主动分析也可以通过 explain 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 db.currentOp() 和 db.killOp() 功能干掉长时间执行、浪费资源的操作。">
-<meta property="og:url" content="https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/">
-<meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="MongoDB"><meta property="article:published_time" content="2017-07-31T18:45:00+00:00"><meta property="article:modified_time" content="2017-07-31T18:45:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<meta name=twitter:site content="@janxin">
-<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="一些 MongoDB 的坑">
-<meta name=twitter:description content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。
+慢查询问题 慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 db.setProfilingLevel() 进行管理。同时，主动分析也可以通过 explain 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 db.currentOp() 和 db.killOp() 功能干掉长时间执行、浪费资源的操作。"><meta property="og:url" content="https://www.4async.com/2017/07/2017-07-31-mongodb-optimizing/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="MongoDB"><meta property="article:published_time" content="2017-07-31T18:45:00+00:00"><meta property="article:modified_time" content="2017-07-31T18:45:00+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="一些 MongoDB 的坑"><meta name=twitter:description content="由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。
 但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。
 集合使用不当问题 在使用 MongoDB 过程中，我们创建了大量的集合。这种情况在 WiredTriger 引擎下创建大量零散文件。这个在使用过程中暂时未对我们造成实际的业务较大影响，但是从实际使用而言，对整体数据库性能、后续主从复制集群同步，都是有一定影响的。在实际应用过程中应该避免：拥有过多 DB、一个 DB 下有过多 Collection，这样都会导致部分指令的性能大幅度下滑。同时，过多的 DB 也会导致主从同步失败 (listDatabse 超时导致失败，从库退出)。
 数据库索引建立 MongoDB Collection 索引建立功能支持前台创建模式与后台创建模式两种。默认模式为前台创建模式。这种模式下会发生：DB 被锁，主库所有读写被禁止、从库无法访问。从另一方面来说，会导致业务系统的数据库访问受到影响。虽然前台创建模式效率更高，但是如果是线上操作，并且有一定数量级，创建索引时需要添加 {background:true} 让创建索引操作转换为后台操作，尽管时间较长，但是对业务影响较小。同时，该操作也应该在业务量小时进行。
 数据库主从切换 虽然 MongoDB 的 Replica Set 功能可以方便的进行自动主从切换。但是实际使用过程中，我们也会遇到一些需要手工进行主从库切换的情况。比如，进行进行版本升级修复 BUG 或者安全漏洞。但是如果这个时候强行进行 Primary 的重启，则可能会出现未同步至 Secondary 的数据丢失的情况（血泪教训）。这种情况下，重启集群的方式是，优先进行 Secondary 的更新操作，在 Secondary 更新完成后，对 Primary 进行 stepDown 操作，等待主节点降级成为 Secondary 节点，之后进行操作。这样的好处是不会丢失数据。但是如果主从数据差异较大时，有可能会造成降级失败，此时可以重复执行 stepDown 直至成功。还有一个值得注意的是，即便 Secondary 可以停机维护，但是仍旧有可能丢数据，这个与 oplog 大小有关，我们放在后面说。
-慢查询问题 慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 db.setProfilingLevel() 进行管理。同时，主动分析也可以通过 explain 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 db.currentOp() 和 db.killOp() 功能干掉长时间执行、浪费资源的操作。"><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
-</head>
-<body class="article-page has-toc">
-<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
-<div class="container main-container flex
-extended">
-<div id=article-toolbar>
-<a href=../../../ class=back-home><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="15 6 9 12 15 18"/></svg>
-<span>返回</span>
-</a>
-</div>
-<main class="main full-width">
-<article class=main-article>
-<header class=article-header>
-<div class=article-details>
-<header class=article-category>
-<a href=../../../categories/golang/>
-Golang
-</a>
-</header>
-<h2 class=article-title>
-<a href=../../../2017/07/2017-07-31-mongodb-optimizing/>一些 MongoDB 的坑</a>
-</h2>
-<footer class=article-time>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Jul 31, 2017</time>
-</div>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>
-阅读时长: 1 分钟
-</time>
-</div>
-</footer>
-</div>
-</header>
-<section class=article-content>
-<p>由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。</p>
-<p>但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。</p>
-<h2 id=集合使用不当问题>集合使用不当问题</h2>
-<p>在使用 MongoDB 过程中，我们创建了大量的集合。这种情况在 WiredTriger 引擎下创建大量零散文件。这个在使用过程中暂时未对我们造成实际的业务较大影响，但是从实际使用而言，对整体数据库性能、后续主从复制集群同步，都是有一定影响的。在实际应用过程中应该避免：拥有过多 DB、一个 DB 下有过多 Collection，这样都会导致部分指令的性能大幅度下滑。同时，过多的 DB 也会导致主从同步失败 (listDatabse 超时导致失败，从库退出)。</p>
-<h2 id=数据库索引建立>数据库索引建立</h2>
-<p>MongoDB Collection 索引建立功能支持前台创建模式与后台创建模式两种。默认模式为前台创建模式。这种模式下会发生：DB 被锁，主库所有读写被禁止、从库无法访问。从另一方面来说，会导致业务系统的数据库访问受到影响。虽然前台创建模式效率更高，但是如果是线上操作，并且有一定数量级，创建索引时需要添加 <code>{background:true}</code> 让创建索引操作转换为后台操作，尽管时间较长，但是对业务影响较小。同时，该操作也应该在业务量小时进行。</p>
-<h2 id=数据库主从切换>数据库主从切换</h2>
-<p>虽然 MongoDB 的 Replica Set 功能可以方便的进行自动主从切换。但是实际使用过程中，我们也会遇到一些需要手工进行主从库切换的情况。比如，进行进行版本升级修复 BUG 或者安全漏洞。但是如果这个时候强行进行 Primary 的重启，则可能会出现未同步至 Secondary 的数据丢失的情况（血泪教训）。这种情况下，重启集群的方式是，优先进行 Secondary 的更新操作，在 Secondary 更新完成后，对 Primary 进行 <a class=link href=https://docs.mongodb.com/manual/reference/method/rs.stepDown/ target=_blank rel=noopener>stepDown</a> 操作，等待主节点降级成为 Secondary 节点，之后进行操作。这样的好处是不会丢失数据。但是如果主从数据差异较大时，有可能会造成降级失败，此时可以重复执行 stepDown 直至成功。还有一个值得注意的是，即便 Secondary 可以停机维护，但是仍旧有可能丢数据，这个与 <code>oplog</code> 大小有关，我们放在后面说。</p>
-<h2 id=慢查询问题>慢查询问题</h2>
-<p>慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 <code>db.setProfilingLevel()</code> 进行管理。同时，主动分析也可以通过 <code>explain</code> 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 <code>db.currentOp()</code> 和 <code>db.killOp()</code> 功能干掉长时间执行、浪费资源的操作。</p>
-<h2 id=主从同步延迟问题>主从同步延迟问题</h2>
-<p>主从同步问题是比较常见的延迟问题了，主要问题都是出在 <code>oplog</code> 上。毕竟主从同步机制都是通过此实现的。<code>oplog</code> 是固定大小的集合，如果满了，就会自动删除老的数据。</p>
-<p><figure>
-<a href=https://ww1.sinaimg.cn/large/69e37fdbgy1fi38mlkzgvj20kt0u277g.jpg>
-<img src=https://ww1.sinaimg.cn/large/69e37fdbgy1fi38mlkzgvj20kt0u277g.jpg loading=lazy>
-</a>
-</figure></p>
-<p>这里可以看到，此处查询 <code>oplog</code> 操作记录到从库同步，已经执行了 194 毫秒。</p>
-<p>上面我们提到，当 Secondary 停机维护时也可能出现问题，就是因为，当 <code>oplog</code> 不足时，那么就有可能会导致数据同步失败。因此一般数据库停机维护操作，也应该放在业务量小的时候进行。不过 <code>oplog</code> 是可以调整的，可以参考 <a class=link href=https://docs.mongodb.com/v3.2/tutorial/change-oplog-size target=_blank rel=noopener>官方文档</a> 进行调整。注意，这需要重启数据库来执行。</p>
-<p>主从同步延迟一般出现的情况都是数据出现大量插入和修改的情况。在 Secondary 进行 <code>oplog</code> 重放时，开销会大于 <code>Primary</code> 进行操作的开销。这种情况会产生大量的 <code>oplog</code>（每条修改记录一条，非操作），记录越多，同步速度越慢。同时，某些操作也会大幅度提高单条记录的同步成本，比如 <code>$inc</code>、<code>$push</code> 等等会让同步更慢。如果你对数据库中较大量数据进行 <code>$set</code> 操作，同样也会造成数据延迟。我们的一位工程师就因为这样曾经造成了分钟级别的延迟，教训也是非常惨痛的。这种操作比较频繁时，我们可以通过调整 <code>replWriterThreadCount</code> 参数进行 Secondary 重放线程数量调整。在 MongoDB 中默认为 16，这个可以根据情况进行具体调整。不过该参数为 MongoDB 启动参数，调整该参数会要求重启 MongoDB。另外一个值得注意的是这种操作会加大内存开销，如果内存紧张时也需要注意。</p>
-</section>
-<footer class=article-footer>
-<section class=article-tags>
-<a href=../../../tags/mongodb/>MongoDB</a>
-</section>
-<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span>
-</section>
-</footer>
-</article>
-<aside class=related-contents--wrapper>
-<h2 class=section-title>相关文章</h2>
-<div class=related-contents>
-<div class="flex article-list--tile">
-<article class=has-image>
-<a href=../../../2021/08/golang-117-generics/>
-<div class=article-image>
-<img src=../../../2021/08/golang-117-generics/go.0e79e445e19a9abee9b3fd879464ff15_hu0a44c8ca350ed766a7653d0fae9076f0_60746_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Go 1.17 泛型尝鲜" data-key=golang-117-generics data-hash="md5-DnnkReGamr7ps/2HlGT/FQ==">
-</div>
-<div class=article-details>
-<h2 class=article-title>Go 1.17 泛型尝鲜</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/05/building-your-own-dapr-binding/>
-<div class=article-image>
-<img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=building-your-own-dapr-binding data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg>
-</div>
-<div class=article-details>
-<h2 class=article-title>构建属于你自己的dapr绑定组件</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/05/building-your-own-dapr-service-discovery/>
-<div class=article-image>
-<img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=building-your-own-dapr-service-discovery data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg>
-</div>
-<div class=article-details>
-<h2 class=article-title>构建属于你自己的dapr服务发现</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/03/2021-03-11-running-dapr-without-container/>
-<div class=article-image>
-<img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=2021-03-11-running-dapr-without-container data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg>
-</div>
-<div class=article-details>
-<h2 class=article-title>在非容器(集群)环境下运行dapr</h2>
-</div>
-</a>
-</article>
-<article class=has-image>
-<a href=../../../2021/03/2021-03-02-nats-server-usage/>
-<div class=article-image>
-<img src=https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg loading=lazy data-key=2021-03-02-nats-server-usage data-hash=https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg>
-</div>
-<div class=article-details>
-<h2 class=article-title>NATS-Server(JetStream)和NATS Streaming Server对比</h2>
-</div>
-</a>
-</article>
-</div>
-</div>
-</aside>
-<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
-<div class=disqus-container>
-<div id=disqus_thread></div>
-<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-</div>
-<footer class=site-footer>
-<section class=copyright>
-&copy;
+慢查询问题 慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 db.setProfilingLevel() 进行管理。同时，主动分析也可以通过 explain 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 db.currentOp() 和 db.killOp() 功能干掉长时间执行、浪费资源的操作。"><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,o,i,a,t,n,s){e.GoogleAnalyticsObject=t,e[t]=e[t]||function(){(e[t].q=e[t].q||[]).push(arguments)},e[t].l=1*new Date,n=o.createElement(i),s=o.getElementsByTagName(i)[0],n.async=1,n.src=a,s.parentNode.insertBefore(n,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-33841232-2","auto"),ga("send","pageview"))</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=../../../categories/golang/>Golang</a></header><div class=article-title-wrapper><h2 class=article-title><a href=../../../2017/07/2017-07-31-mongodb-optimizing/>一些 MongoDB 的坑</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Jul 31, 2017</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 1 分钟</time></div></footer></div></header><section class=article-content><p>由于过去的历史原因，我们使用的默认 DB 是 MongoDB 数据库。MongoDB 数据库本身在支持非格式化的数据存储方面有比较大的优势，也不需要额外做很多的 Schema Migration，在我们项目初期，数据存储结构变动频繁时帮助非常大。</p><p>但是，随着我们的业务不断增长，我们也遇到了一些问题，这篇文章总结了一些我们在过去的过程中出现的一些问题或者失误，帮助大家在实践过程中进行规避。</p><h2 id=集合使用不当问题>集合使用不当问题</h2><p>在使用 MongoDB 过程中，我们创建了大量的集合。这种情况在 WiredTriger 引擎下创建大量零散文件。这个在使用过程中暂时未对我们造成实际的业务较大影响，但是从实际使用而言，对整体数据库性能、后续主从复制集群同步，都是有一定影响的。在实际应用过程中应该避免：拥有过多 DB、一个 DB 下有过多 Collection，这样都会导致部分指令的性能大幅度下滑。同时，过多的 DB 也会导致主从同步失败 (listDatabse 超时导致失败，从库退出)。</p><h2 id=数据库索引建立>数据库索引建立</h2><p>MongoDB Collection 索引建立功能支持前台创建模式与后台创建模式两种。默认模式为前台创建模式。这种模式下会发生：DB 被锁，主库所有读写被禁止、从库无法访问。从另一方面来说，会导致业务系统的数据库访问受到影响。虽然前台创建模式效率更高，但是如果是线上操作，并且有一定数量级，创建索引时需要添加 <code>{background:true}</code> 让创建索引操作转换为后台操作，尽管时间较长，但是对业务影响较小。同时，该操作也应该在业务量小时进行。</p><h2 id=数据库主从切换>数据库主从切换</h2><p>虽然 MongoDB 的 Replica Set 功能可以方便的进行自动主从切换。但是实际使用过程中，我们也会遇到一些需要手工进行主从库切换的情况。比如，进行进行版本升级修复 BUG 或者安全漏洞。但是如果这个时候强行进行 Primary 的重启，则可能会出现未同步至 Secondary 的数据丢失的情况（血泪教训）。这种情况下，重启集群的方式是，优先进行 Secondary 的更新操作，在 Secondary 更新完成后，对 Primary 进行 <a class=link href=https://docs.mongodb.com/manual/reference/method/rs.stepDown/ target=_blank rel=noopener>stepDown</a> 操作，等待主节点降级成为 Secondary 节点，之后进行操作。这样的好处是不会丢失数据。但是如果主从数据差异较大时，有可能会造成降级失败，此时可以重复执行 stepDown 直至成功。还有一个值得注意的是，即便 Secondary 可以停机维护，但是仍旧有可能丢数据，这个与 <code>oplog</code> 大小有关，我们放在后面说。</p><h2 id=慢查询问题>慢查询问题</h2><p>慢查询的记录可以通过 Profiling 进行记录，这部分资料比较多，可以通过 <code>db.setProfilingLevel()</code> 进行管理。同时，主动分析也可以通过 <code>explain</code> 进行预分析。这一部分资料比较多，我这里就不再啰嗦了。但是还有一个问题是，部分慢查询操作不会随着客户端断开中断执行，需要通过 <code>db.currentOp()</code> 和 <code>db.killOp()</code> 功能干掉长时间执行、浪费资源的操作。</p><h2 id=主从同步延迟问题>主从同步延迟问题</h2><p>主从同步问题是比较常见的延迟问题了，主要问题都是出在 <code>oplog</code> 上。毕竟主从同步机制都是通过此实现的。<code>oplog</code> 是固定大小的集合，如果满了，就会自动删除老的数据。</p><p><img src=https://ww1.sinaimg.cn/large/69e37fdbgy1fi38mlkzgvj20kt0u277g.jpg loading=lazy></p><p>这里可以看到，此处查询 <code>oplog</code> 操作记录到从库同步，已经执行了 194 毫秒。</p><p>上面我们提到，当 Secondary 停机维护时也可能出现问题，就是因为，当 <code>oplog</code> 不足时，那么就有可能会导致数据同步失败。因此一般数据库停机维护操作，也应该放在业务量小的时候进行。不过 <code>oplog</code> 是可以调整的，可以参考 <a class=link href=https://docs.mongodb.com/v3.2/tutorial/change-oplog-size target=_blank rel=noopener>官方文档</a> 进行调整。注意，这需要重启数据库来执行。</p><p>主从同步延迟一般出现的情况都是数据出现大量插入和修改的情况。在 Secondary 进行 <code>oplog</code> 重放时，开销会大于 <code>Primary</code> 进行操作的开销。这种情况会产生大量的 <code>oplog</code>（每条修改记录一条，非操作），记录越多，同步速度越慢。同时，某些操作也会大幅度提高单条记录的同步成本，比如 <code>$inc</code>、<code>$push</code> 等等会让同步更慢。如果你对数据库中较大量数据进行 <code>$set</code> 操作，同样也会造成数据延迟。我们的一位工程师就因为这样曾经造成了分钟级别的延迟，教训也是非常惨痛的。这种操作比较频繁时，我们可以通过调整 <code>replWriterThreadCount</code> 参数进行 Secondary 重放线程数量调整。在 MongoDB 中默认为 16，这个可以根据情况进行具体调整。不过该参数为 MongoDB 启动参数，调整该参数会要求重启 MongoDB。另外一个值得注意的是这种操作会加大内存开销，如果内存紧张时也需要注意。</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/mongodb/>MongoDB</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article class=has-image><a href=../../../2021/08/golang-117-generics/><div class=article-image><img src=../../../2021/08/golang-117-generics/go.0e79e445e19a9abee9b3fd879464ff15_hu0a44c8ca350ed766a7653d0fae9076f0_60746_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Go 1.17 泛型尝鲜" data-key=golang-117-generics data-hash="md5-DnnkReGamr7ps/2HlGT/FQ=="></div><div class=article-details><h2 class=article-title>Go 1.17 泛型尝鲜</h2></div></a></article><article class=has-image><a href=../../../2021/05/building-your-own-dapr-binding/><div class=article-image><img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=building-your-own-dapr-binding data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg></div><div class=article-details><h2 class=article-title>构建属于你自己的dapr绑定组件</h2></div></a></article><article class=has-image><a href=../../../2021/05/building-your-own-dapr-service-discovery/><div class=article-image><img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=building-your-own-dapr-service-discovery data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg></div><div class=article-details><h2 class=article-title>构建属于你自己的dapr服务发现</h2></div></a></article><article class=has-image><a href=../../../2021/03/2021-03-11-running-dapr-without-container/><div class=article-image><img src=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg loading=lazy data-key=2021-03-11-running-dapr-without-container data-hash=https://tvax4.sinaimg.cn/large/69e37fdbly1goh3xmm6kxj20zk0hsaex.jpg></div><div class=article-details><h2 class=article-title>在非容器(集群)环境下运行dapr</h2></div></a></article><article class=has-image><a href=../../../2021/03/2021-03-02-nats-server-usage/><div class=article-image><img src=https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg loading=lazy data-key=2021-03-02-nats-server-usage data-hash=https://tva2.sinaimg.cn/large/69e37fdbly1goh41lqpmtj213y0esq4n.jpg></div><div class=article-details><h2 class=article-title>NATS-Server(JetStream)和NATS Streaming Server对比</h2></div></a></article></div></div></aside><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
 2013 -
-2022 ipfans's Blog
-</section>
-<section class=powerby>
-Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
-</section>
-</footer>
-<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
-<div class=pswp__bg></div>
-<div class=pswp__scroll-wrap>
-<div class=pswp__container>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-</div>
-<div class="pswp__ui pswp__ui--hidden">
-<div class=pswp__top-bar>
-<div class=pswp__counter></div>
-<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2022 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.11.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-<div class=pswp__preloader>
-<div class=pswp__preloader__icn>
-<div class=pswp__preloader__cut>
-<div class=pswp__preloader__donut></div>
-</div>
-</div>
-</div>
-</div>
-<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-<div class=pswp__share-tooltip></div>
-</div>
-<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-</button>
-<div class=pswp__caption>
-<div class=pswp__caption__center></div>
-</div>
-</div>
-</div>
-</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
-</main>
-<aside class="sidebar right-sidebar sticky">
-<section class="widget archives">
-<div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg>
-</div>
-<h2 class="widget-title section-title">目录</h2>
-<div class=widget--toc>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#集合使用不当问题>集合使用不当问题</a></li>
-<li><a href=#数据库索引建立>数据库索引建立</a></li>
-<li><a href=#数据库主从切换>数据库主从切换</a></li>
-<li><a href=#慢查询问题>慢查询问题</a></li>
-<li><a href=#主从同步延迟问题>主从同步延迟问题</a></li>
-</ul>
-</nav>
-</div>
-</section>
-</aside>
-</div>
-<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
-<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
-</body>
-</html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

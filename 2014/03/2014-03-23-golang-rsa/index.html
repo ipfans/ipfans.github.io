@@ -1,300 +1,159 @@
-<!doctype html><html lang=en>
-<head><meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="话不多说，自己看吧，比较明白。
-package main import (&amp;#34;crypto&amp;#34; &amp;#34;crypto/rand&amp;#34; &amp;#34;crypto/rsa&amp;#34; &amp;#34;crypto/sha256&amp;#34; &amp;#34;crypto/x509&amp;#34; &amp;#34;encoding/base64&amp;#34; &amp;#34;encoding/pem&amp;#34; &amp;#34;errors&amp;#34; &amp;#34;fmt&amp;#34; ) func main() {signer, err := loadPrivateKey(&amp;#34;private.pem&amp;#34;) if err != nil {fmt.Errorf(&amp;#34;signer is damaged: %v&amp;#34;, err) } toSign := &amp;#34;date: Thu, 05 Jan 2012 21:31:40 GMT&amp;#34; signed, err := signer.Sign([]byte(toSign)) if err != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } sig := base64.StdEncoding.EncodeToString(signed) fmt.Printf(&amp;#34;Signature: %v\n&amp;#34;, sig) parser, perr := loadPublicKey(&amp;#34;public.pem&amp;#34;) if perr != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } err = parser."><title>Golang 的 RSA 公私钥方法实现</title>
-<link rel=canonical href=https://www.4async.com/2014/03/2014-03-23-golang-rsa/>
-<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Golang 的 RSA 公私钥方法实现">
-<meta property="og:description" content="话不多说，自己看吧，比较明白。
-package main import (&amp;#34;crypto&amp;#34; &amp;#34;crypto/rand&amp;#34; &amp;#34;crypto/rsa&amp;#34; &amp;#34;crypto/sha256&amp;#34; &amp;#34;crypto/x509&amp;#34; &amp;#34;encoding/base64&amp;#34; &amp;#34;encoding/pem&amp;#34; &amp;#34;errors&amp;#34; &amp;#34;fmt&amp;#34; ) func main() {signer, err := loadPrivateKey(&amp;#34;private.pem&amp;#34;) if err != nil {fmt.Errorf(&amp;#34;signer is damaged: %v&amp;#34;, err) } toSign := &amp;#34;date: Thu, 05 Jan 2012 21:31:40 GMT&amp;#34; signed, err := signer.Sign([]byte(toSign)) if err != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } sig := base64.StdEncoding.EncodeToString(signed) fmt.Printf(&amp;#34;Signature: %v\n&amp;#34;, sig) parser, perr := loadPublicKey(&amp;#34;public.pem&amp;#34;) if perr != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } err = parser.">
-<meta property="og:url" content="https://www.4async.com/2014/03/2014-03-23-golang-rsa/">
-<meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:published_time" content="2014-03-23T20:25:52+00:00"><meta property="article:modified_time" content="2014-03-23T20:25:52+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<meta name=twitter:site content="@janxin">
-<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="Golang 的 RSA 公私钥方法实现">
-<meta name=twitter:description content="话不多说，自己看吧，比较明白。
-package main import (&amp;#34;crypto&amp;#34; &amp;#34;crypto/rand&amp;#34; &amp;#34;crypto/rsa&amp;#34; &amp;#34;crypto/sha256&amp;#34; &amp;#34;crypto/x509&amp;#34; &amp;#34;encoding/base64&amp;#34; &amp;#34;encoding/pem&amp;#34; &amp;#34;errors&amp;#34; &amp;#34;fmt&amp;#34; ) func main() {signer, err := loadPrivateKey(&amp;#34;private.pem&amp;#34;) if err != nil {fmt.Errorf(&amp;#34;signer is damaged: %v&amp;#34;, err) } toSign := &amp;#34;date: Thu, 05 Jan 2012 21:31:40 GMT&amp;#34; signed, err := signer.Sign([]byte(toSign)) if err != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } sig := base64.StdEncoding.EncodeToString(signed) fmt.Printf(&amp;#34;Signature: %v\n&amp;#34;, sig) parser, perr := loadPublicKey(&amp;#34;public.pem&amp;#34;) if perr != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err) } err = parser."><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
-</head>
-<body class=article-page>
-<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
-<div class="container main-container flex
-on-phone--column extended">
-<aside class="sidebar left-sidebar sticky">
-<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box>
-<span class=hamburger-inner></span>
-</span>
-</button>
-<header class=site-info>
-<figure class=site-avatar>
-<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
-</figure>
-<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
-<h2 class=site-description></h2></header>
-<ol class=menu id=main-menu>
-<li>
-<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
-<span>Home</span>
-</a>
-</li>
-<li>
-<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
-<span>About</span>
-</a>
-</li>
-<li>
-<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-<span>Archives</span>
-</a>
-</li>
-<li>
-<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
-<span>Feed</span>
-</a>
-</li>
-<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span>
-</li>
-</ol>
-</aside>
-<main class="main full-width">
-<article class=main-article>
-<header class=article-header>
-<div class=article-details>
-<h2 class=article-title>
-<a href=../../../2014/03/2014-03-23-golang-rsa/>Golang 的 RSA 公私钥方法实现</a>
-</h2>
-<footer class=article-time>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Mar 23, 2014</time>
-</div>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>
-阅读时长: 3 分钟
-</time>
-</div>
-</footer>
-</div>
-</header>
-<section class=article-content>
-<p>话不多说，自己看吧，比较明白。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>package main
-
-<span style=color:#f92672>import</span> (<span style=color:#e6db74>&#34;crypto&#34;</span>
-    <span style=color:#e6db74>&#34;crypto/rand&#34;</span>
-    <span style=color:#e6db74>&#34;crypto/rsa&#34;</span>
-    <span style=color:#e6db74>&#34;crypto/sha256&#34;</span>
-    <span style=color:#e6db74>&#34;crypto/x509&#34;</span>
-    <span style=color:#e6db74>&#34;encoding/base64&#34;</span>
-    <span style=color:#e6db74>&#34;encoding/pem&#34;</span>
-    <span style=color:#e6db74>&#34;errors&#34;</span>
-    <span style=color:#e6db74>&#34;fmt&#34;</span>
-)
-
-func main() {signer, err <span style=color:#f92672>:=</span> loadPrivateKey(<span style=color:#e6db74>&#34;private.pem&#34;</span>)
-    <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;signer is damaged: %v&#34;</span>, err)
-    }
-
-    toSign <span style=color:#f92672>:=</span> <span style=color:#e6db74>&#34;date: Thu, 05 Jan 2012 21:31:40 GMT&#34;</span>
-
-    signed, err <span style=color:#f92672>:=</span> signer<span style=color:#f92672>.</span>Sign([]byte(toSign))
-    <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;could not sign request: %v&#34;</span>, err)
-    }
-    sig <span style=color:#f92672>:=</span> base64<span style=color:#f92672>.</span>StdEncoding<span style=color:#f92672>.</span>EncodeToString(signed)
-    fmt<span style=color:#f92672>.</span>Printf(<span style=color:#e6db74>&#34;Signature: %v</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, sig)
-
-    parser, perr <span style=color:#f92672>:=</span> loadPublicKey(<span style=color:#e6db74>&#34;public.pem&#34;</span>)
-    <span style=color:#66d9ef>if</span> perr <span style=color:#f92672>!=</span> nil {fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;could not sign request: %v&#34;</span>, err)
-    }
-
-    err <span style=color:#f92672>=</span> parser<span style=color:#f92672>.</span>Unsign([]byte(toSign), signed)
-    <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;could not sign request: %v&#34;</span>, err)
-    }
-
-    fmt<span style=color:#f92672>.</span>Printf(<span style=color:#e6db74>&#34;Unsign error: %v</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, err)
-}
-
-<span style=color:#f92672>//</span> loadPrivateKey loads an parses a PEM encoded private key file<span style=color:#f92672>.</span>
-func loadPublicKey(path string) (Unsigner, error) {<span style=color:#66d9ef>return</span> parsePublicKey([]byte(<span style=color:#960050;background-color:#1e0010>`</span><span style=color:#f92672>-----</span>BEGIN PUBLIC KEY<span style=color:#f92672>-----</span>
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCFENGw33yGihy92pDjZQhl0C3
-<span style=color:#ae81ff>6</span>rPJj<span style=color:#f92672>+</span>CvfSC8<span style=color:#f92672>+</span>q28hxA161QFNUd13wuCTUcq0Qd2qsBe<span style=color:#f92672>/</span><span style=color:#ae81ff>2</span>hFyc2DCJJg0h1L78<span style=color:#f92672>+</span><span style=color:#ae81ff>6</span>
-Z4UMR7EOcpfdUE9Hf3m<span style=color:#f92672>/</span>hs<span style=color:#f92672>+</span>FUR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc<span style=color:#f92672>+</span><span style=color:#ae81ff>2</span>xjJw
-oYi<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>hqp1fIekaxsyQIDAQAB
-<span style=color:#f92672>-----</span>END PUBLIC KEY<span style=color:#f92672>-----</span><span style=color:#960050;background-color:#1e0010>`</span>))
-}
-
-<span style=color:#f92672>//</span> parsePublicKey parses a PEM encoded private key<span style=color:#f92672>.</span>
-func parsePublicKey(pemBytes []byte) (Unsigner, error) {block, _ <span style=color:#f92672>:=</span> pem<span style=color:#f92672>.</span>Decode(pemBytes)
-    <span style=color:#66d9ef>if</span> block <span style=color:#f92672>==</span> nil {<span style=color:#66d9ef>return</span> nil, errors<span style=color:#f92672>.</span>New(<span style=color:#e6db74>&#34;ssh: no key found&#34;</span>)}
-
-    var rawkey interface{}
-    switch block<span style=color:#f92672>.</span>Type {case<span style=color:#e6db74>&#34;PUBLIC KEY&#34;</span>:
-        rsa, err <span style=color:#f92672>:=</span> x509<span style=color:#f92672>.</span>ParsePKIXPublicKey(block<span style=color:#f92672>.</span>Bytes)
-        <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {<span style=color:#66d9ef>return</span> nil, err}
-        rawkey <span style=color:#f92672>=</span> rsa
-    default:
-        <span style=color:#66d9ef>return</span> nil, fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;ssh: unsupported key type %q&#34;</span>, block<span style=color:#f92672>.</span>Type)
-    }
-
-    <span style=color:#66d9ef>return</span> newUnsignerFromKey(rawkey)
-}
-
-<span style=color:#f92672>//</span> loadPrivateKey loads an parses a PEM encoded private key file<span style=color:#f92672>.</span>
-func loadPrivateKey(path string) (Signer, error) {<span style=color:#66d9ef>return</span> parsePrivateKey([]byte(<span style=color:#960050;background-color:#1e0010>`</span><span style=color:#f92672>-----</span>BEGIN RSA PRIVATE KEY<span style=color:#f92672>-----</span>
-MIICXgIBAAKBgQDCFENGw33yGihy92pDjZQhl0C36rPJj<span style=color:#f92672>+</span>CvfSC8<span style=color:#f92672>+</span>q28hxA161QF
-NUd13wuCTUcq0Qd2qsBe<span style=color:#f92672>/</span><span style=color:#ae81ff>2</span>hFyc2DCJJg0h1L78<span style=color:#f92672>+</span><span style=color:#ae81ff>6</span>Z4UMR7EOcpfdUE9Hf3m<span style=color:#f92672>/</span>hs<span style=color:#f92672>+</span>F
-UR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc<span style=color:#f92672>+</span><span style=color:#ae81ff>2</span>xjJwoYi<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>hqp1fIekaxsyQIDAQAB
-AoGBAJR8ZkCUvx5kzv<span style=color:#f92672>+</span>utdl7T5MnordT1TvoXXJGXK7ZZ<span style=color:#f92672>+</span>UuvMNUCdN2QPc4sBiA
-QWvLw1cSKt5DsKZ8UETpYPy8pPYnnDEz2dDYiaew9<span style=color:#f92672>+</span>xEpubyeW2oH4Zx71wqBtOK
-kqwrXa<span style=color:#f92672>/</span>pzdpiucRRjk6vE6YY7EBBs<span style=color:#f92672>/</span>g7uanVpGibOVAEsqH1AkEA7DkjVH28WDUg
-f1nqvfn2Kj6CT7nIcE3jGJsZZ7zlZmBmHFDONMLUrXR<span style=color:#f92672>/</span>Zm3pR5m0tCmBqa5RK95u
-<span style=color:#ae81ff>412</span>jt1dPIwJBANJT3v8pnkth48bQo<span style=color:#f92672>/</span>fKel6uEYyboRtA5<span style=color:#f92672>/</span>uHuHkZ6FQF7OUkGogc
-mSJluOdc5t6hI1VsLn0QZEjQZMEOWr<span style=color:#f92672>+</span>wKSMCQQCC4kXJEsHAve77oP6HtG<span style=color:#f92672>/</span>IiEn7
-kpyUXRNvFsDE0czpJJBvL<span style=color:#f92672>/</span>aRFUJxuRK91jhjC68sA7NsKMGg5OXb5I5Jj36xAkEA
-gIT7aFOYBFwGgQAQkWNKLvySgKbAZRTeLBacpHMuQdl1DfdntvAyqpAZ0lY0RKmW
-G6aFKaqQfOXKCyWoUiVknQJAXrlgySFci<span style=color:#f92672>/</span><span style=color:#ae81ff>2</span>ueKlIE1QqIiLSZ8V8OlpFLRnb1pzI
-<span style=color:#ae81ff>7</span>U1yQXnTAEFYM560yJlzUpOb1V4cScGd365tiSMvxLOvTA<span style=color:#f92672>==</span>
-<span style=color:#f92672>-----</span>END RSA PRIVATE KEY<span style=color:#f92672>-----</span><span style=color:#960050;background-color:#1e0010>`</span>))
-}
-
-<span style=color:#f92672>//</span> parsePublicKey parses a PEM encoded private key<span style=color:#f92672>.</span>
-func parsePrivateKey(pemBytes []byte) (Signer, error) {block, _ <span style=color:#f92672>:=</span> pem<span style=color:#f92672>.</span>Decode(pemBytes)
-    <span style=color:#66d9ef>if</span> block <span style=color:#f92672>==</span> nil {<span style=color:#66d9ef>return</span> nil, errors<span style=color:#f92672>.</span>New(<span style=color:#e6db74>&#34;ssh: no key found&#34;</span>)}
-
-    var rawkey interface{}
-    switch block<span style=color:#f92672>.</span>Type {case<span style=color:#e6db74>&#34;RSA PRIVATE KEY&#34;</span>:
-        rsa, err <span style=color:#f92672>:=</span> x509<span style=color:#f92672>.</span>ParsePKCS1PrivateKey(block<span style=color:#f92672>.</span>Bytes)
-        <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {<span style=color:#66d9ef>return</span> nil, err}
-        rawkey <span style=color:#f92672>=</span> rsa
-    default:
-        <span style=color:#66d9ef>return</span> nil, fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;ssh: unsupported key type %q&#34;</span>, block<span style=color:#f92672>.</span>Type)
-    }
-    <span style=color:#66d9ef>return</span> newSignerFromKey(rawkey)
-}
-
-<span style=color:#f92672>//</span> A Signer <span style=color:#f92672>is</span> can create signatures that verify against a public key<span style=color:#f92672>.</span>
-type Signer interface {
-    <span style=color:#f92672>//</span> Sign returns raw signature <span style=color:#66d9ef>for</span> the given data<span style=color:#f92672>.</span> This method
-    <span style=color:#f92672>//</span> will apply the hash specified <span style=color:#66d9ef>for</span> the keytype to the data<span style=color:#f92672>.</span>
-    Sign(data []byte) ([]byte, error)
-}
-
-<span style=color:#f92672>//</span> A Signer <span style=color:#f92672>is</span> can create signatures that verify against a public key<span style=color:#f92672>.</span>
-type Unsigner interface {
-    <span style=color:#f92672>//</span> Sign returns raw signature <span style=color:#66d9ef>for</span> the given data<span style=color:#f92672>.</span> This method
-    <span style=color:#f92672>//</span> will apply the hash specified <span style=color:#66d9ef>for</span> the keytype to the data<span style=color:#f92672>.</span>
-    Unsign(data[]byte, sig []byte) error
-}
-
-func newSignerFromKey(k interface{}) (Signer, error) {
-    var sshKey Signer
-    switch t <span style=color:#f92672>:=</span> k<span style=color:#f92672>.</span>(type) {
-    case <span style=color:#f92672>*</span>rsa<span style=color:#f92672>.</span>PrivateKey:
-        sshKey <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span>rsaPrivateKey{t}
-    default:
-        <span style=color:#66d9ef>return</span> nil, fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;ssh: unsupported key type %T&#34;</span>, k)
-    }
-    <span style=color:#66d9ef>return</span> sshKey, nil
-}
-
-func newUnsignerFromKey(k interface{}) (Unsigner, error) {
-    var sshKey Unsigner
-    switch t <span style=color:#f92672>:=</span> k<span style=color:#f92672>.</span>(type) {
-    case <span style=color:#f92672>*</span>rsa<span style=color:#f92672>.</span>PublicKey:
-        sshKey <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span>rsaPublicKey{t}
-    default:
-        <span style=color:#66d9ef>return</span> nil, fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;ssh: unsupported key type %T&#34;</span>, k)
-    }
-    <span style=color:#66d9ef>return</span> sshKey, nil
-}
-
-type rsaPublicKey struct {<span style=color:#f92672>*</span>rsa<span style=color:#f92672>.</span>PublicKey}
-
-type rsaPrivateKey struct {<span style=color:#f92672>*</span>rsa<span style=color:#f92672>.</span>PrivateKey}
-
-<span style=color:#f92672>//</span> Sign signs data <span style=color:#66d9ef>with</span> rsa<span style=color:#f92672>-</span>sha256
-func (r <span style=color:#f92672>*</span>rsaPrivateKey) Sign(data []byte) ([]byte, error) {h <span style=color:#f92672>:=</span> sha256<span style=color:#f92672>.</span>New()
-    h<span style=color:#f92672>.</span>Write(data)
-    d <span style=color:#f92672>:=</span> h<span style=color:#f92672>.</span>Sum(nil)
-    <span style=color:#66d9ef>return</span> rsa<span style=color:#f92672>.</span>SignPKCS1v15(rand<span style=color:#f92672>.</span>Reader, r<span style=color:#f92672>.</span>PrivateKey, crypto<span style=color:#f92672>.</span>SHA256, d)
-}
-
-<span style=color:#f92672>//</span> Unsign verifies the message using a rsa<span style=color:#f92672>-</span>sha256 signature
-func (r <span style=color:#f92672>*</span>rsaPublicKey) Unsign(message []byte, sig []byte) error {h <span style=color:#f92672>:=</span> sha256<span style=color:#f92672>.</span>New()
-    h<span style=color:#f92672>.</span>Write(message)
-    d <span style=color:#f92672>:=</span> h<span style=color:#f92672>.</span>Sum(nil)
-    <span style=color:#66d9ef>return</span> rsa<span style=color:#f92672>.</span>VerifyPKCS1v15(r<span style=color:#f92672>.</span>PublicKey, crypto<span style=color:#f92672>.</span>SHA256, d, sig)
-}
-</code></pre></div>
-</section>
-<footer class=article-footer>
-<section class=article-tags>
-<a href=../../../tags/golang/>Golang</a>
-</section>
-<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span>
-</section>
-</footer>
-</article>
-<aside class=related-contents--wrapper>
-</aside>
-<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
-<div class=disqus-container>
-<div id=disqus_thread></div>
-<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-</div>
-<footer class=site-footer>
-<section class=copyright>
-&copy;
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="话不多说，自己看吧，比较明白。
+package main  import (&amp;#34;crypto&amp;#34;  &amp;#34;crypto/rand&amp;#34;  &amp;#34;crypto/rsa&amp;#34;  &amp;#34;crypto/sha256&amp;#34;  &amp;#34;crypto/x509&amp;#34;  &amp;#34;encoding/base64&amp;#34;  &amp;#34;encoding/pem&amp;#34;  &amp;#34;errors&amp;#34;  &amp;#34;fmt&amp;#34; )  func main() {signer, err := loadPrivateKey(&amp;#34;private.pem&amp;#34;)  if err != nil {fmt.Errorf(&amp;#34;signer is damaged: %v&amp;#34;, err)  }   toSign := &amp;#34;date: Thu, 05 Jan 2012 21:31:40 GMT&amp;#34;   signed, err := signer.Sign([]byte(toSign))  if err != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err)  }  sig := base64."><title>Golang 的 RSA 公私钥方法实现</title><link rel=canonical href=https://www.4async.com/2014/03/2014-03-23-golang-rsa/><link rel=stylesheet href=../../../scss/style.min.787c11515dc5d9a2a1ccd2c32e10ab2ce54935226bfd34de0eed651f4f0e0349.css><meta property="og:title" content="Golang 的 RSA 公私钥方法实现"><meta property="og:description" content="话不多说，自己看吧，比较明白。
+package main  import (&amp;#34;crypto&amp;#34;  &amp;#34;crypto/rand&amp;#34;  &amp;#34;crypto/rsa&amp;#34;  &amp;#34;crypto/sha256&amp;#34;  &amp;#34;crypto/x509&amp;#34;  &amp;#34;encoding/base64&amp;#34;  &amp;#34;encoding/pem&amp;#34;  &amp;#34;errors&amp;#34;  &amp;#34;fmt&amp;#34; )  func main() {signer, err := loadPrivateKey(&amp;#34;private.pem&amp;#34;)  if err != nil {fmt.Errorf(&amp;#34;signer is damaged: %v&amp;#34;, err)  }   toSign := &amp;#34;date: Thu, 05 Jan 2012 21:31:40 GMT&amp;#34;   signed, err := signer.Sign([]byte(toSign))  if err != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err)  }  sig := base64."><meta property="og:url" content="https://www.4async.com/2014/03/2014-03-23-golang-rsa/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Golang"><meta property="article:published_time" content="2014-03-23T20:25:52+00:00"><meta property="article:modified_time" content="2014-03-23T20:25:52+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="Golang 的 RSA 公私钥方法实现"><meta name=twitter:description content="话不多说，自己看吧，比较明白。
+package main  import (&amp;#34;crypto&amp;#34;  &amp;#34;crypto/rand&amp;#34;  &amp;#34;crypto/rsa&amp;#34;  &amp;#34;crypto/sha256&amp;#34;  &amp;#34;crypto/x509&amp;#34;  &amp;#34;encoding/base64&amp;#34;  &amp;#34;encoding/pem&amp;#34;  &amp;#34;errors&amp;#34;  &amp;#34;fmt&amp;#34; )  func main() {signer, err := loadPrivateKey(&amp;#34;private.pem&amp;#34;)  if err != nil {fmt.Errorf(&amp;#34;signer is damaged: %v&amp;#34;, err)  }   toSign := &amp;#34;date: Thu, 05 Jan 2012 21:31:40 GMT&amp;#34;   signed, err := signer.Sign([]byte(toSign))  if err != nil {fmt.Errorf(&amp;#34;could not sign request: %v&amp;#34;, err)  }  sig := base64."><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,o,i,a,t,n,s){e.GoogleAnalyticsObject=t,e[t]=e[t]||function(){(e[t].q=e[t].q||[]).push(arguments)},e[t].l=1*new Date,n=o.createElement(i),s=o.getElementsByTagName(i)[0],n.async=1,n.src=a,s.parentNode.insertBefore(n,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-33841232-2","auto"),ga("send","pageview"))</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><div class=article-title-wrapper><h2 class=article-title><a href=../../../2014/03/2014-03-23-golang-rsa/>Golang 的 RSA 公私钥方法实现</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Mar 23, 2014</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 3 分钟</time></div></footer></div></header><section class=article-content><p>话不多说，自己看吧，比较明白。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>package main
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> (<span style=color:#e6db74>&#34;crypto&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;crypto/rand&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;crypto/rsa&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;crypto/sha256&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;crypto/x509&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;encoding/base64&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;encoding/pem&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;errors&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>func main() {signer, err <span style=color:#f92672>:=</span> loadPrivateKey(<span style=color:#e6db74>&#34;private.pem&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;signer is damaged: %v&#34;</span>, err)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    toSign <span style=color:#f92672>:=</span> <span style=color:#e6db74>&#34;date: Thu, 05 Jan 2012 21:31:40 GMT&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    signed, err <span style=color:#f92672>:=</span> signer<span style=color:#f92672>.</span>Sign([]byte(toSign))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;could not sign request: %v&#34;</span>, err)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    sig <span style=color:#f92672>:=</span> base64<span style=color:#f92672>.</span>StdEncoding<span style=color:#f92672>.</span>EncodeToString(signed)
+</span></span><span style=display:flex><span>    fmt<span style=color:#f92672>.</span>Printf(<span style=color:#e6db74>&#34;Signature: %v</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, sig)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    parser, perr <span style=color:#f92672>:=</span> loadPublicKey(<span style=color:#e6db74>&#34;public.pem&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> perr <span style=color:#f92672>!=</span> nil {fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;could not sign request: %v&#34;</span>, err)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    err <span style=color:#f92672>=</span> parser<span style=color:#f92672>.</span>Unsign([]byte(toSign), signed)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;could not sign request: %v&#34;</span>, err)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    fmt<span style=color:#f92672>.</span>Printf(<span style=color:#e6db74>&#34;Unsign error: %v</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, err)
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>//</span> loadPrivateKey loads an parses a PEM encoded private key file<span style=color:#f92672>.</span>
+</span></span><span style=display:flex><span>func loadPublicKey(path string) (Unsigner, error) {<span style=color:#66d9ef>return</span> parsePublicKey([]byte(<span style=color:#960050;background-color:#1e0010>`</span><span style=color:#f92672>-----</span>BEGIN PUBLIC KEY<span style=color:#f92672>-----</span>
+</span></span><span style=display:flex><span>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCFENGw33yGihy92pDjZQhl0C3
+</span></span><span style=display:flex><span><span style=color:#ae81ff>6</span>rPJj<span style=color:#f92672>+</span>CvfSC8<span style=color:#f92672>+</span>q28hxA161QFNUd13wuCTUcq0Qd2qsBe<span style=color:#f92672>/</span><span style=color:#ae81ff>2</span>hFyc2DCJJg0h1L78<span style=color:#f92672>+</span><span style=color:#ae81ff>6</span>
+</span></span><span style=display:flex><span>Z4UMR7EOcpfdUE9Hf3m<span style=color:#f92672>/</span>hs<span style=color:#f92672>+</span>FUR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc<span style=color:#f92672>+</span><span style=color:#ae81ff>2</span>xjJw
+</span></span><span style=display:flex><span>oYi<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>hqp1fIekaxsyQIDAQAB
+</span></span><span style=display:flex><span><span style=color:#f92672>-----</span>END PUBLIC KEY<span style=color:#f92672>-----</span><span style=color:#960050;background-color:#1e0010>`</span>))
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>//</span> parsePublicKey parses a PEM encoded private key<span style=color:#f92672>.</span>
+</span></span><span style=display:flex><span>func parsePublicKey(pemBytes []byte) (Unsigner, error) {block, _ <span style=color:#f92672>:=</span> pem<span style=color:#f92672>.</span>Decode(pemBytes)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> block <span style=color:#f92672>==</span> nil {<span style=color:#66d9ef>return</span> nil, errors<span style=color:#f92672>.</span>New(<span style=color:#e6db74>&#34;ssh: no key found&#34;</span>)}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    var rawkey interface{}
+</span></span><span style=display:flex><span>    switch block<span style=color:#f92672>.</span>Type {case<span style=color:#e6db74>&#34;PUBLIC KEY&#34;</span>:
+</span></span><span style=display:flex><span>        rsa, err <span style=color:#f92672>:=</span> x509<span style=color:#f92672>.</span>ParsePKIXPublicKey(block<span style=color:#f92672>.</span>Bytes)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {<span style=color:#66d9ef>return</span> nil, err}
+</span></span><span style=display:flex><span>        rawkey <span style=color:#f92672>=</span> rsa
+</span></span><span style=display:flex><span>    default:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> nil, fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;ssh: unsupported key type %q&#34;</span>, block<span style=color:#f92672>.</span>Type)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> newUnsignerFromKey(rawkey)
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>//</span> loadPrivateKey loads an parses a PEM encoded private key file<span style=color:#f92672>.</span>
+</span></span><span style=display:flex><span>func loadPrivateKey(path string) (Signer, error) {<span style=color:#66d9ef>return</span> parsePrivateKey([]byte(<span style=color:#960050;background-color:#1e0010>`</span><span style=color:#f92672>-----</span>BEGIN RSA PRIVATE KEY<span style=color:#f92672>-----</span>
+</span></span><span style=display:flex><span>MIICXgIBAAKBgQDCFENGw33yGihy92pDjZQhl0C36rPJj<span style=color:#f92672>+</span>CvfSC8<span style=color:#f92672>+</span>q28hxA161QF
+</span></span><span style=display:flex><span>NUd13wuCTUcq0Qd2qsBe<span style=color:#f92672>/</span><span style=color:#ae81ff>2</span>hFyc2DCJJg0h1L78<span style=color:#f92672>+</span><span style=color:#ae81ff>6</span>Z4UMR7EOcpfdUE9Hf3m<span style=color:#f92672>/</span>hs<span style=color:#f92672>+</span>F
+</span></span><span style=display:flex><span>UR45uBJeDK1HSFHD8bHKD6kv8FPGfJTotc<span style=color:#f92672>+</span><span style=color:#ae81ff>2</span>xjJwoYi<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>hqp1fIekaxsyQIDAQAB
+</span></span><span style=display:flex><span>AoGBAJR8ZkCUvx5kzv<span style=color:#f92672>+</span>utdl7T5MnordT1TvoXXJGXK7ZZ<span style=color:#f92672>+</span>UuvMNUCdN2QPc4sBiA
+</span></span><span style=display:flex><span>QWvLw1cSKt5DsKZ8UETpYPy8pPYnnDEz2dDYiaew9<span style=color:#f92672>+</span>xEpubyeW2oH4Zx71wqBtOK
+</span></span><span style=display:flex><span>kqwrXa<span style=color:#f92672>/</span>pzdpiucRRjk6vE6YY7EBBs<span style=color:#f92672>/</span>g7uanVpGibOVAEsqH1AkEA7DkjVH28WDUg
+</span></span><span style=display:flex><span>f1nqvfn2Kj6CT7nIcE3jGJsZZ7zlZmBmHFDONMLUrXR<span style=color:#f92672>/</span>Zm3pR5m0tCmBqa5RK95u
+</span></span><span style=display:flex><span><span style=color:#ae81ff>412</span>jt1dPIwJBANJT3v8pnkth48bQo<span style=color:#f92672>/</span>fKel6uEYyboRtA5<span style=color:#f92672>/</span>uHuHkZ6FQF7OUkGogc
+</span></span><span style=display:flex><span>mSJluOdc5t6hI1VsLn0QZEjQZMEOWr<span style=color:#f92672>+</span>wKSMCQQCC4kXJEsHAve77oP6HtG<span style=color:#f92672>/</span>IiEn7
+</span></span><span style=display:flex><span>kpyUXRNvFsDE0czpJJBvL<span style=color:#f92672>/</span>aRFUJxuRK91jhjC68sA7NsKMGg5OXb5I5Jj36xAkEA
+</span></span><span style=display:flex><span>gIT7aFOYBFwGgQAQkWNKLvySgKbAZRTeLBacpHMuQdl1DfdntvAyqpAZ0lY0RKmW
+</span></span><span style=display:flex><span>G6aFKaqQfOXKCyWoUiVknQJAXrlgySFci<span style=color:#f92672>/</span><span style=color:#ae81ff>2</span>ueKlIE1QqIiLSZ8V8OlpFLRnb1pzI
+</span></span><span style=display:flex><span><span style=color:#ae81ff>7</span>U1yQXnTAEFYM560yJlzUpOb1V4cScGd365tiSMvxLOvTA<span style=color:#f92672>==</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>-----</span>END RSA PRIVATE KEY<span style=color:#f92672>-----</span><span style=color:#960050;background-color:#1e0010>`</span>))
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>//</span> parsePublicKey parses a PEM encoded private key<span style=color:#f92672>.</span>
+</span></span><span style=display:flex><span>func parsePrivateKey(pemBytes []byte) (Signer, error) {block, _ <span style=color:#f92672>:=</span> pem<span style=color:#f92672>.</span>Decode(pemBytes)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> block <span style=color:#f92672>==</span> nil {<span style=color:#66d9ef>return</span> nil, errors<span style=color:#f92672>.</span>New(<span style=color:#e6db74>&#34;ssh: no key found&#34;</span>)}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    var rawkey interface{}
+</span></span><span style=display:flex><span>    switch block<span style=color:#f92672>.</span>Type {case<span style=color:#e6db74>&#34;RSA PRIVATE KEY&#34;</span>:
+</span></span><span style=display:flex><span>        rsa, err <span style=color:#f92672>:=</span> x509<span style=color:#f92672>.</span>ParsePKCS1PrivateKey(block<span style=color:#f92672>.</span>Bytes)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> err <span style=color:#f92672>!=</span> nil {<span style=color:#66d9ef>return</span> nil, err}
+</span></span><span style=display:flex><span>        rawkey <span style=color:#f92672>=</span> rsa
+</span></span><span style=display:flex><span>    default:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> nil, fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;ssh: unsupported key type %q&#34;</span>, block<span style=color:#f92672>.</span>Type)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> newSignerFromKey(rawkey)
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>//</span> A Signer <span style=color:#f92672>is</span> can create signatures that verify against a public key<span style=color:#f92672>.</span>
+</span></span><span style=display:flex><span>type Signer interface {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>//</span> Sign returns raw signature <span style=color:#66d9ef>for</span> the given data<span style=color:#f92672>.</span> This method
+</span></span><span style=display:flex><span>    <span style=color:#f92672>//</span> will apply the hash specified <span style=color:#66d9ef>for</span> the keytype to the data<span style=color:#f92672>.</span>
+</span></span><span style=display:flex><span>    Sign(data []byte) ([]byte, error)
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>//</span> A Signer <span style=color:#f92672>is</span> can create signatures that verify against a public key<span style=color:#f92672>.</span>
+</span></span><span style=display:flex><span>type Unsigner interface {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>//</span> Sign returns raw signature <span style=color:#66d9ef>for</span> the given data<span style=color:#f92672>.</span> This method
+</span></span><span style=display:flex><span>    <span style=color:#f92672>//</span> will apply the hash specified <span style=color:#66d9ef>for</span> the keytype to the data<span style=color:#f92672>.</span>
+</span></span><span style=display:flex><span>    Unsign(data[]byte, sig []byte) error
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>func newSignerFromKey(k interface{}) (Signer, error) {
+</span></span><span style=display:flex><span>    var sshKey Signer
+</span></span><span style=display:flex><span>    switch t <span style=color:#f92672>:=</span> k<span style=color:#f92672>.</span>(type) {
+</span></span><span style=display:flex><span>    case <span style=color:#f92672>*</span>rsa<span style=color:#f92672>.</span>PrivateKey:
+</span></span><span style=display:flex><span>        sshKey <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span>rsaPrivateKey{t}
+</span></span><span style=display:flex><span>    default:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> nil, fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;ssh: unsupported key type %T&#34;</span>, k)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> sshKey, nil
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>func newUnsignerFromKey(k interface{}) (Unsigner, error) {
+</span></span><span style=display:flex><span>    var sshKey Unsigner
+</span></span><span style=display:flex><span>    switch t <span style=color:#f92672>:=</span> k<span style=color:#f92672>.</span>(type) {
+</span></span><span style=display:flex><span>    case <span style=color:#f92672>*</span>rsa<span style=color:#f92672>.</span>PublicKey:
+</span></span><span style=display:flex><span>        sshKey <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span>rsaPublicKey{t}
+</span></span><span style=display:flex><span>    default:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> nil, fmt<span style=color:#f92672>.</span>Errorf(<span style=color:#e6db74>&#34;ssh: unsupported key type %T&#34;</span>, k)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> sshKey, nil
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>type rsaPublicKey struct {<span style=color:#f92672>*</span>rsa<span style=color:#f92672>.</span>PublicKey}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>type rsaPrivateKey struct {<span style=color:#f92672>*</span>rsa<span style=color:#f92672>.</span>PrivateKey}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>//</span> Sign signs data <span style=color:#66d9ef>with</span> rsa<span style=color:#f92672>-</span>sha256
+</span></span><span style=display:flex><span>func (r <span style=color:#f92672>*</span>rsaPrivateKey) Sign(data []byte) ([]byte, error) {h <span style=color:#f92672>:=</span> sha256<span style=color:#f92672>.</span>New()
+</span></span><span style=display:flex><span>    h<span style=color:#f92672>.</span>Write(data)
+</span></span><span style=display:flex><span>    d <span style=color:#f92672>:=</span> h<span style=color:#f92672>.</span>Sum(nil)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> rsa<span style=color:#f92672>.</span>SignPKCS1v15(rand<span style=color:#f92672>.</span>Reader, r<span style=color:#f92672>.</span>PrivateKey, crypto<span style=color:#f92672>.</span>SHA256, d)
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>//</span> Unsign verifies the message using a rsa<span style=color:#f92672>-</span>sha256 signature
+</span></span><span style=display:flex><span>func (r <span style=color:#f92672>*</span>rsaPublicKey) Unsign(message []byte, sig []byte) error {h <span style=color:#f92672>:=</span> sha256<span style=color:#f92672>.</span>New()
+</span></span><span style=display:flex><span>    h<span style=color:#f92672>.</span>Write(message)
+</span></span><span style=display:flex><span>    d <span style=color:#f92672>:=</span> h<span style=color:#f92672>.</span>Sum(nil)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> rsa<span style=color:#f92672>.</span>VerifyPKCS1v15(r<span style=color:#f92672>.</span>PublicKey, crypto<span style=color:#f92672>.</span>SHA256, d, sig)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></section><footer class=article-footer><section class=article-tags><a href=../../../tags/golang/>Golang</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
 2013 -
-2022 ipfans's Blog
-</section>
-<section class=powerby>
-Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
-</section>
-</footer>
-<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
-<div class=pswp__bg></div>
-<div class=pswp__scroll-wrap>
-<div class=pswp__container>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-</div>
-<div class="pswp__ui pswp__ui--hidden">
-<div class=pswp__top-bar>
-<div class=pswp__counter></div>
-<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2022 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.11.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-<div class=pswp__preloader>
-<div class=pswp__preloader__icn>
-<div class=pswp__preloader__cut>
-<div class=pswp__preloader__donut></div>
-</div>
-</div>
-</div>
-</div>
-<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-<div class=pswp__share-tooltip></div>
-</div>
-<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-</button>
-<div class=pswp__caption>
-<div class=pswp__caption__center></div>
-</div>
-</div>
-</div>
-</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
-</main>
-</div>
-<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
-<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
-</body>
-</html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

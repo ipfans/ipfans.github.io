@@ -1,233 +1,29 @@
-<!doctype html><html lang=en>
-<head><meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？
 为了搞清楚这个问题，我对线上环境应用使用了性能探针系统。性能出人意料 (CPython 2.7.10)：
- 线上性能 
 似乎真实来说，Python 本身的性能问题才是影响 Python 性能的真凶。
 在此以前，我们谈这个之前，还是先复习一下什么是 GIL 吧。无论是 CPython(普通的 Python 2.7.x 和 Python 3.5.x) 还是 pypy，都是有一个名曰『Global Interpreter Lock』的东西限制了它的性能，用一张图可以生动的表现带 GIL 的 Python 在多核下的 CPU 压力：
- CPU 性能演示 
 GIL 限制了 Python 的 bytecode 只能在一个线程中运行，使用这种 GIL 避免多线程编程时隐含并发访问对象可能带来的潜在问题，但是也让 Python 在多核下性能表现感人。这种实现方式一直备受诟病，这也导致 Python 在某些高并发场景时会出现较严重的性能下滑问题。
-在 Python 性能提升上，比较常见的性能提升的方式，是将多线程转化为多进程方式，以充分利用 CPU 多核心。但是这样带来直接的问题是进程间通讯会严重影响整体程序的吞吐量。一个简单的 CPU 密集 Python socket 的通讯程序，非 Block 状态下，吞吐量能有大概 10 倍以上的差距。(参考 Python Concurrency From the Ground Up )"><title>Python 异步与性能迷思</title>
-<link rel=canonical href=https://www.4async.com/2015/11/2015-11-11-async-python/>
-<link rel=stylesheet href=../../../scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css><meta property="og:title" content="Python 异步与性能迷思">
-<meta property="og:description" content="今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？
+在 Python 性能提升上，比较常见的性能提升的方式，是将多线程转化为多进程方式，以充分利用 CPU 多核心。但是这样带来直接的问题是进程间通讯会严重影响整体程序的吞吐量。一个简单的 CPU 密集 Python socket 的通讯程序，非 Block 状态下，吞吐量能有大概 10 倍以上的差距。(参考 Python Concurrency From the Ground Up )
+不过相对来说，这样虽然影响了最大吞吐量，但是在利用多核效率上提升明显，即便是 CPU 密集的情况，也能保证程序的整体吞吐量不会出现线程模式的成百上千倍的性能差距。"><title>Python 异步与性能迷思</title><link rel=canonical href=https://www.4async.com/2015/11/2015-11-11-async-python/><link rel=stylesheet href=../../../scss/style.min.787c11515dc5d9a2a1ccd2c32e10ab2ce54935226bfd34de0eed651f4f0e0349.css><meta property="og:title" content="Python 异步与性能迷思"><meta property="og:description" content="今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？
 为了搞清楚这个问题，我对线上环境应用使用了性能探针系统。性能出人意料 (CPython 2.7.10)：
- 线上性能 
 似乎真实来说，Python 本身的性能问题才是影响 Python 性能的真凶。
 在此以前，我们谈这个之前，还是先复习一下什么是 GIL 吧。无论是 CPython(普通的 Python 2.7.x 和 Python 3.5.x) 还是 pypy，都是有一个名曰『Global Interpreter Lock』的东西限制了它的性能，用一张图可以生动的表现带 GIL 的 Python 在多核下的 CPU 压力：
- CPU 性能演示 
 GIL 限制了 Python 的 bytecode 只能在一个线程中运行，使用这种 GIL 避免多线程编程时隐含并发访问对象可能带来的潜在问题，但是也让 Python 在多核下性能表现感人。这种实现方式一直备受诟病，这也导致 Python 在某些高并发场景时会出现较严重的性能下滑问题。
-在 Python 性能提升上，比较常见的性能提升的方式，是将多线程转化为多进程方式，以充分利用 CPU 多核心。但是这样带来直接的问题是进程间通讯会严重影响整体程序的吞吐量。一个简单的 CPU 密集 Python socket 的通讯程序，非 Block 状态下，吞吐量能有大概 10 倍以上的差距。(参考 Python Concurrency From the Ground Up )">
-<meta property="og:url" content="https://www.4async.com/2015/11/2015-11-11-async-python/">
-<meta property="og:site_name" content="ipfans's Blog">
-<meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Python"><meta property="article:tag" content="async"><meta property="article:tag" content="asyncio"><meta property="article:published_time" content="2015-11-11T18:18:18+00:00"><meta property="article:modified_time" content="2015-11-11T18:18:18+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<meta name=twitter:site content="@janxin">
-<meta name=twitter:creator content="@janxin"><meta name=twitter:title content="Python 异步与性能迷思">
-<meta name=twitter:description content="今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？
+在 Python 性能提升上，比较常见的性能提升的方式，是将多线程转化为多进程方式，以充分利用 CPU 多核心。但是这样带来直接的问题是进程间通讯会严重影响整体程序的吞吐量。一个简单的 CPU 密集 Python socket 的通讯程序，非 Block 状态下，吞吐量能有大概 10 倍以上的差距。(参考 Python Concurrency From the Ground Up )
+不过相对来说，这样虽然影响了最大吞吐量，但是在利用多核效率上提升明显，即便是 CPU 密集的情况，也能保证程序的整体吞吐量不会出现线程模式的成百上千倍的性能差距。"><meta property="og:url" content="https://www.4async.com/2015/11/2015-11-11-async-python/"><meta property="og:site_name" content="ipfans's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="Python"><meta property="article:tag" content="async"><meta property="article:tag" content="asyncio"><meta property="article:published_time" content="2015-11-11T18:18:18+00:00"><meta property="article:modified_time" content="2015-11-11T18:18:18+00:00"><meta property="og:image" content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="Python 异步与性能迷思"><meta name=twitter:description content="今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？
 为了搞清楚这个问题，我对线上环境应用使用了性能探针系统。性能出人意料 (CPython 2.7.10)：
- 线上性能 
 似乎真实来说，Python 本身的性能问题才是影响 Python 性能的真凶。
 在此以前，我们谈这个之前，还是先复习一下什么是 GIL 吧。无论是 CPython(普通的 Python 2.7.x 和 Python 3.5.x) 还是 pypy，都是有一个名曰『Global Interpreter Lock』的东西限制了它的性能，用一张图可以生动的表现带 GIL 的 Python 在多核下的 CPU 压力：
- CPU 性能演示 
 GIL 限制了 Python 的 bytecode 只能在一个线程中运行，使用这种 GIL 避免多线程编程时隐含并发访问对象可能带来的潜在问题，但是也让 Python 在多核下性能表现感人。这种实现方式一直备受诟病，这也导致 Python 在某些高并发场景时会出现较严重的性能下滑问题。
-在 Python 性能提升上，比较常见的性能提升的方式，是将多线程转化为多进程方式，以充分利用 CPU 多核心。但是这样带来直接的问题是进程间通讯会严重影响整体程序的吞吐量。一个简单的 CPU 密集 Python socket 的通讯程序，非 Block 状态下，吞吐量能有大概 10 倍以上的差距。(参考 Python Concurrency From the Ground Up )"><meta name=twitter:card content="summary">
-<meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460">
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-33841232-2','auto'),ga('send','pageview'))</script>
-</head>
-<body class=article-page>
-<script>(function(){const a='StackColorScheme';localStorage.getItem(a)||localStorage.setItem(a,"auto")})()</script><script>(function(){const b='StackColorScheme',a=localStorage.getItem(b),c=window.matchMedia('(prefers-color-scheme: dark)').matches===!0;a=='dark'||a==='auto'&&c?document.documentElement.dataset.scheme='dark':document.documentElement.dataset.scheme='light'})()</script>
-<div class="container main-container flex
-on-phone--column extended">
-<aside class="sidebar left-sidebar sticky">
-<button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
-<span class=hamburger-box>
-<span class=hamburger-inner></span>
-</span>
-</button>
-<header class=site-info>
-<figure class=site-avatar>
-<img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
-</figure>
-<h1 class=site-name><a href=../../../>ipfans's Blog</a></h1>
-<h2 class=site-description></h2></header>
-<ol class=menu id=main-menu>
-<li>
-<a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
-<span>Home</span>
-</a>
-</li>
-<li>
-<a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
-<span>About</span>
-</a>
-</li>
-<li>
-<a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-<span>Archives</span>
-</a>
-</li>
-<li>
-<a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
-<span>Feed</span>
-</a>
-</li>
-<li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span>
-</li>
-</ol>
-</aside>
-<main class="main full-width">
-<article class=main-article>
-<header class=article-header>
-<div class=article-details>
-<h2 class=article-title>
-<a href=../../../2015/11/2015-11-11-async-python/>Python 异步与性能迷思</a>
-</h2>
-<footer class=article-time>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Nov 11, 2015</time>
-</div>
-<div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>
-阅读时长: 1 分钟
-</time>
-</div>
-</footer>
-</div>
-</header>
-<section class=article-content>
-<p>今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？</p>
-<p>为了搞清楚这个问题，我对线上环境应用使用了性能探针系统。性能出人意料 (CPython 2.7.10)：</p>
-<p><figure>
-<a href=http://ww3.sinaimg.cn/bmiddle/69e37fdbgw1exx27zl4eij211q0nw0vk.jpg>
-<img src=http://ww3.sinaimg.cn/bmiddle/69e37fdbgw1exx27zl4eij211q0nw0vk.jpg loading=lazy alt=线上性能>
-</a>
-<figcaption>线上性能</figcaption>
-</figure></p>
-<p>似乎真实来说，Python 本身的性能问题才是影响 Python 性能的真凶。</p>
-<p>在此以前，我们谈这个之前，还是先复习一下什么是 GIL 吧。无论是 CPython(普通的 Python 2.7.x 和 Python 3.5.x) 还是 pypy，都是有一个名曰『Global Interpreter Lock』的东西限制了它的性能，用一张图可以生动的表现带 GIL 的 Python 在多核下的 CPU 压力：</p>
-<p><figure>
-<a href=http://ww4.sinaimg.cn/bmiddle/d90975f6gw1ev933py5p9g208w050kjm.gif>
-<img src=http://ww4.sinaimg.cn/bmiddle/d90975f6gw1ev933py5p9g208w050kjm.gif loading=lazy alt="CPU 性能演示">
-</a>
-<figcaption>CPU 性能演示</figcaption>
-</figure></p>
-<p>GIL 限制了 Python 的 bytecode 只能在一个线程中运行，使用这种 GIL 避免多线程编程时隐含并发访问对象可能带来的潜在问题，但是也让 Python 在多核下性能表现感人。这种实现方式一直备受诟病，这也导致 Python 在某些高并发场景时会出现较严重的性能下滑问题。</p>
-<p>在 Python 性能提升上，比较常见的性能提升的方式，是将多线程转化为多进程方式，以充分利用 CPU 多核心。但是这样带来直接的问题是进程间通讯会严重影响整体程序的吞吐量。一个简单的 CPU 密集 Python socket 的通讯程序，非 Block 状态下，吞吐量能有大概 10 倍以上的差距。(参考 <a class=link href=http://pyvideo.org/video/3432/python-concurrency-from-the-ground-up-live target=_blank rel=noopener>Python Concurrency From the Ground Up</a> )</p>
-<p>不过相对来说，这样虽然影响了最大吞吐量，但是在利用多核效率上提升明显，即便是 CPU 密集的情况，也能保证程序的整体吞吐量不会出现线程模式的成百上千倍的性能差距。</p>
-<p>那么，这些与异步又有什么关系呢？</p>
-<p>对异步情况而言，对 Python 的代码执行并没有影响，我们所提到的异步，能够提升的性能，也仅仅限于针对针对于较长 IO 等待的问题，比如常见的就是请求远程 API 接口 (http query) 等等情况。对这种情况而言，当进入 Blocking 的 socket 等待时间时，将 CPU 时间释放，用于去做更有意义的其他操作是完全合理的。对于数据库操作而言，则也需要根据不同的情况进行对待。比如连接远程网络数据库，那么使用异步则根据实际的性能消耗时间而定，如果是本地的数据库，那么我想回到第一张图，相信根本无需使用异步库就可以解决这个问题。</p>
-<p>从一个 <a class=link href=http://ipfans.github.io/2014/05/speed-python-code-with-cython/ target=_blank rel=noopener>CPU 密集的例子</a>，我们也能看出，其实，使用 JIT 带来的性能提升比较明显。然而，对异步库的异步队列仍是按顺序单个处理的，当队列较长时，同样会带来更严重的性能损耗：因为对那些快速的网络连接而言，Python GIL 则更加限制了 Python 的执行性能。</p>
-</section>
-<footer class=article-footer>
-<section class=article-tags>
-<a href=../../../tags/python/>Python</a>
+在 Python 性能提升上，比较常见的性能提升的方式，是将多线程转化为多进程方式，以充分利用 CPU 多核心。但是这样带来直接的问题是进程间通讯会严重影响整体程序的吞吐量。一个简单的 CPU 密集 Python socket 的通讯程序，非 Block 状态下，吞吐量能有大概 10 倍以上的差距。(参考 Python Concurrency From the Ground Up )
+不过相对来说，这样虽然影响了最大吞吐量，但是在利用多核效率上提升明显，即便是 CPU 密集的情况，也能保证程序的整体吞吐量不会出现线程模式的成百上千倍的性能差距。"><meta name=twitter:card content="summary"><meta name=twitter:image content="https://avatars0.githubusercontent.com/u/363344?v=3&s=460"><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,o,i,a,t,n,s){e.GoogleAnalyticsObject=t,e[t]=e[t]||function(){(e[t].q=e[t].q||[]).push(arguments)},e[t].l=1*new Date,n=o.createElement(i),s=o.getElementsByTagName(i)[0],n.async=1,n.src=a,s.parentNode.insertBefore(n,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-33841232-2","auto"),ga("send","pageview"))</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg><span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><div class=article-title-wrapper><h2 class=article-title><a href=../../../2015/11/2015-11-11-async-python/>Python 异步与性能迷思</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Nov 11, 2015</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 1 分钟</time></div></footer></div></header><section class=article-content><p>今天在讨论 Python 的异步编程的时候提到的问题：到底为什么现在 Python 的异步数据库那么少呢？到底针对 Python 而言，什么是影响 Python 性能最大的门槛呢？</p><p>为了搞清楚这个问题，我对线上环境应用使用了性能探针系统。性能出人意料 (CPython 2.7.10)：</p><p><img src=http://ww3.sinaimg.cn/bmiddle/69e37fdbgw1exx27zl4eij211q0nw0vk.jpg loading=lazy alt=线上性能></p><p>似乎真实来说，Python 本身的性能问题才是影响 Python 性能的真凶。</p><p>在此以前，我们谈这个之前，还是先复习一下什么是 GIL 吧。无论是 CPython(普通的 Python 2.7.x 和 Python 3.5.x) 还是 pypy，都是有一个名曰『Global Interpreter Lock』的东西限制了它的性能，用一张图可以生动的表现带 GIL 的 Python 在多核下的 CPU 压力：</p><p><img src=http://ww4.sinaimg.cn/bmiddle/d90975f6gw1ev933py5p9g208w050kjm.gif loading=lazy alt="CPU 性能演示"></p><p>GIL 限制了 Python 的 bytecode 只能在一个线程中运行，使用这种 GIL 避免多线程编程时隐含并发访问对象可能带来的潜在问题，但是也让 Python 在多核下性能表现感人。这种实现方式一直备受诟病，这也导致 Python 在某些高并发场景时会出现较严重的性能下滑问题。</p><p>在 Python 性能提升上，比较常见的性能提升的方式，是将多线程转化为多进程方式，以充分利用 CPU 多核心。但是这样带来直接的问题是进程间通讯会严重影响整体程序的吞吐量。一个简单的 CPU 密集 Python socket 的通讯程序，非 Block 状态下，吞吐量能有大概 10 倍以上的差距。(参考 <a class=link href=http://pyvideo.org/video/3432/python-concurrency-from-the-ground-up-live target=_blank rel=noopener>Python Concurrency From the Ground Up</a> )</p><p>不过相对来说，这样虽然影响了最大吞吐量，但是在利用多核效率上提升明显，即便是 CPU 密集的情况，也能保证程序的整体吞吐量不会出现线程模式的成百上千倍的性能差距。</p><p>那么，这些与异步又有什么关系呢？</p><p>对异步情况而言，对 Python 的代码执行并没有影响，我们所提到的异步，能够提升的性能，也仅仅限于针对针对于较长 IO 等待的问题，比如常见的就是请求远程 API 接口 (http query) 等等情况。对这种情况而言，当进入 Blocking 的 socket 等待时间时，将 CPU 时间释放，用于去做更有意义的其他操作是完全合理的。对于数据库操作而言，则也需要根据不同的情况进行对待。比如连接远程网络数据库，那么使用异步则根据实际的性能消耗时间而定，如果是本地的数据库，那么我想回到第一张图，相信根本无需使用异步库就可以解决这个问题。</p><p>从一个 <a class=link href=http://ipfans.github.io/2014/05/speed-python-code-with-cython/ target=_blank rel=noopener>CPU 密集的例子</a>，我们也能看出，其实，使用 JIT 带来的性能提升比较明显。然而，对异步库的异步队列仍是按顺序单个处理的，当队列较长时，同样会带来更严重的性能损耗：因为对那些快速的网络连接而言，Python GIL 则更加限制了 Python 的执行性能。</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/python/>Python</a>
 <a href=../../../tags/async/>async</a>
-<a href=../../../tags/asyncio/>asyncio</a>
-</section>
-<section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span>
-</section>
-</footer>
-</article>
-<aside class=related-contents--wrapper>
-<h2 class=section-title>相关文章</h2>
-<div class=related-contents>
-<div class="flex article-list--tile">
-<article>
-<a href=../../../2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/>
-<div class=article-details>
-<h2 class=article-title>从 asyncio 简单实现看异步是如何工作的</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/>
-<div class=article-details>
-<h2 class=article-title>PEP 0492 Coroutines with async and await syntax 中文翻译</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/>
-<div class=article-details>
-<h2 class=article-title>从零实现一个 Redis 客户端（二）</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/>
-<div class=article-details>
-<h2 class=article-title>零基础编写 Python Redis Client（一）</h2>
-</div>
-</a>
-</article>
-<article>
-<a href=../../../2015/08/2015-08-14-introduction-to-async-and-await/>
-<div class=article-details>
-<h2 class=article-title>Python async/await 入门</h2>
-</div>
-</a>
-</article>
-</div>
-</div>
-</aside>
-<link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css>
-<div class=disqus-container>
-<div id=disqus_thread></div>
-<script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}let a=document.createElement('script');a.src='https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js',a.async=!1,document.body.appendChild(a),a.onload=()=>{loadDisqusJS(),window.addEventListener('onColorSchemeChange',a=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let a=new IntersectionObserver(function(b){b[0].isIntersecting&&(lazyLoadDisqusJS(),a.disconnect())});a.observe(document.getElementById('disqus_thread'))}else lazyLoadDisqusJS()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-</div>
-<footer class=site-footer>
-<section class=copyright>
-&copy;
+<a href=../../../tags/asyncio/>asyncio</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-contents--wrapper><h2 class=section-title>相关文章</h2><div class=related-contents><div class="flex article-list--tile"><article><a href=../../../2016/02/2016-02-03-simple-implement-asyncio-to-understand-how-async-works/><div class=article-details><h2 class=article-title>从 asyncio 简单实现看异步是如何工作的</h2></div></a></article><article><a href=../../../2015/10/2015-10-31-coroutines-with-async-and-await-syntax-chinese/><div class=article-details><h2 class=article-title>PEP 0492 Coroutines with async and await syntax 中文翻译</h2></div></a></article><article><a href=../../../2015/10/2015-10-30-write-aio-python-redis-client-as-dummy-2/><div class=article-details><h2 class=article-title>从零实现一个 Redis 客户端（二）</h2></div></a></article><article><a href=../../../2015/10/2015-10-10-write-aio-python-redis-client-as-dummy-1/><div class=article-details><h2 class=article-title>零基础编写 Python Redis Client（一）</h2></div></a></article><article><a href=../../../2015/08/2015-08-14-introduction-to-async-and-await/><div class=article-details><h2 class=article-title>Python async/await 入门</h2></div></a></article></div></div></aside><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
 2013 -
-2022 ipfans's Blog
-</section>
-<section class=powerby>
-Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <br>
-Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.6.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a>
-</section>
-</footer>
-<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
-<div class=pswp__bg></div>
-<div class=pswp__scroll-wrap>
-<div class=pswp__container>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-<div class=pswp__item></div>
-</div>
-<div class="pswp__ui pswp__ui--hidden">
-<div class=pswp__top-bar>
-<div class=pswp__counter></div>
-<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+2022 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.11.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-<div class=pswp__preloader>
-<div class=pswp__preloader__icn>
-<div class=pswp__preloader__cut>
-<div class=pswp__preloader__donut></div>
-</div>
-</div>
-</div>
-</div>
-<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-<div class=pswp__share-tooltip></div>
-</div>
-<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-</button>
-<div class=pswp__caption>
-<div class=pswp__caption__center></div>
-</div>
-</div>
-</div>
-</div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous>
-</main>
-</div>
-<script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous defer></script><script type=text/javascript src=../../../ts/main.js defer></script>
-<script>(function(){const a=document.createElement('link');a.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",a.type="text/css",a.rel="stylesheet",document.head.appendChild(a)})()</script>
-</body>
-</html>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css integrity="sha256-c0uckgykQ9v5k+IqViZOZKc47Jn7KQil4/MP3ySA3F8=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE=" crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
