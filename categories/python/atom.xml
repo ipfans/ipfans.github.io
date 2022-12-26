@@ -29,4 +29,5 @@ Type Hint 类型检查器 目前，比如 JetBrains 家的 PyCharm 已经支持 
 by ipfans
 注：请使用 Python 3.5+ 版本运行以下代码。
 先从例子看起 首先我们来看一个 socket 通讯的例子，这个例子我们可以在官方 socket 模块的文档中找到部分原型代码：
-# echo.py from socket import * # 是的，这是一个不好的写法 def echo_server(address): sock = socket(AF_INET, SOCK_STREAM) sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) sock.bind(address) sock.listen(5) while True: client, addr = sock.accept() print(&amp;#34;connect from&amp;#34;, addr) echo_handler(client) def echo_handler(client): while True: data = client.recv(10000) if not data: break client.</description></item></channel></rss>
+# echo.py from socket import * # 是的，这是一个不好的写法 def echo_server(address): sock = socket(AF_INET, SOCK_STREAM) sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) sock.bind(address) sock.listen(5) while True: client, addr = sock.accept() print(&amp;#34;connect from&amp;#34;, addr) echo_handler(client) def echo_handler(client): while True: data = client.recv(10000) if not data: break client.send(str.encode(&amp;#34;Got: &amp;#34;) + data) print(&amp;#34;connection closed.&amp;#34;) if __name__ == &amp;#39;__main__&amp;#39;: echo_server((&amp;#39;&amp;#39;, 25000)) 但是同步模式会有一个问题，当进行通讯是阻塞的，当一个连接占用时就会阻碍其他连接的继续，这个时候应该怎么更快的运行呢？
+回顾历史 在 asyncio 出现之前，我们都是怎么提高效率的呢？首先想到的方法就是多线程处理：</description></item></channel></rss>

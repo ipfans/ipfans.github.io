@@ -3,4 +3,4 @@
 在 Golang1.5 之后，Go 提供了 GO15VENDOREXPERIMENT 环境变量，用于将 go build 时的应用路径搜索调整成为 当前项目目录 / vendor 目录方式。通过这种形式，我们可以实现类似于 godep 方式的项目依赖管理。不过起码在程序编译过程中，再也无需在其他端部署一个 godep 工具。
 在使用之前，需要安装一个辅助工具（如果 Golang 自改一个就好了）：go get -u -v github.com/kardianos/govendor。
 下面，我们用一个例子来说明。首先有一个名为 vendorproj 的项目。假如只有一个文件：
-package main import (&amp;#34;github.com/yeeuu/echoic&amp;#34;) func main() {e := echoic.New() e.</description></item></channel></rss>
+package main import (&amp;#34;github.com/yeeuu/echoic&amp;#34;) func main() {e := echoic.New() e.SetDebug(true) e.Run(&amp;#34;127.0.0.1:4321&amp;#34;) } 执行一下命令就可以生成 vendor 文件夹：</description></item></channel></rss>

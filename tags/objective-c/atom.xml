@@ -8,4 +8,6 @@ NSConcreteGlobalBlock NSConcreteStackBlock NSConcreteMallocBlock 这三种类型
 在 ARC 下，访问了局部变量的 Block 是 NSConcreteMallocBlock 类型的，未访问局部变量的 Block 是 NSConcreteGlobalBlock 类型的。
 具体的实现代码可以参考 llvm 的 BlockRuntime。
 对于研究 block 的具体代码翻译，则可以使用 clang 的 rewrite-objc 功能，将 OC 文件转换成 cpp 文件。比如：
-clang -rewrite-objc blocktest.c 这样就可以生成对应的 blocktest.cpp 文件。</description></item></channel></rss>
+clang -rewrite-objc blocktest.c 这样就可以生成对应的 blocktest.cpp 文件。
+从源码看 NSConcreteGlobalBlock 首先先看一下 NSConcreteGlobalBlock 的代码，从简单的开始：
+#include &amp;lt;stdio.h&amp;gt; int main() {^{printf(&amp;#34;Hello World!</description></item></channel></rss>

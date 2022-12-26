@@ -6,4 +6,4 @@ zbar 的安装依赖于 ImageMagick，ImageMagick 则依赖于 jpeg 提供 jpeg 
 export MAGICK_CFLAGS=&amp;quot;/usr/local/include/ImageMagick-6/&amp;quot; export MAGICK_LIBS=&amp;quot;/usr/local/lib/libMagickWand-6.Q16.so&amp;quot; 安装 zbar 接下来编译 zbar 了，这个之前配置好了会方便一点，同时禁用一些不用的功能：
 ./configure --enable-shared --without-gtk --without-qt --without-python CPPFLAGS=-I/usr/local/include/ImageMagick-6 make &amp;amp;&amp;amp; make install 接下来添加 ldconfig 文件让 libzbar.so 生效。
 ldconfig 测试安装 测试一下 zbar 是否安装成功：
-wget http://i1.hexunimg.cn/2012-03-13/139256375.jpg /usr/local/bin/zbarimg 139256375.</description></item></channel></rss>
+wget http://i1.hexunimg.cn/2012-03-13/139256375.jpg /usr/local/bin/zbarimg 139256375.jpg QR-Code:http://www.baidu.com QR-Code:http://apk.hiapk.com/m/downloads?id=com.qq.reader&amp;amp;vcode=11 QR-Code:http://apk.hiapk.com/m/downloads?id=cn.ibuka.manga.ui&amp;amp;vcode=16843778 QR-Code:http://apk.</description></item></channel></rss>
