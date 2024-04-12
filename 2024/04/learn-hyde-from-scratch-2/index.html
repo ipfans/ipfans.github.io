@@ -1,0 +1,322 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='在开始看这篇文章之前，推荐你阅读前一篇概念介绍文章。这篇文章之内不会再额外介绍概念上的内容，仅仅从实践角度演示如何是用 HyDE 和 RAG 结合。正如同前文提到的那样，我们会是用 LangChain 构建这个演示 Demo。当然，如果你熟悉 LlamaIndex 或者其他框架，其实主要流程大致差不多，只不过是用的 API 和库有一些区别。这些就不再赘述。
+问题背景 让我们假设你在为麦当劳制作一个问答系统。这个问答系统的目的是帮助用户解决一些常见问题，比如：麦当劳的营业时间，麦当劳的菜单，麦当劳的优惠活动等等。这些问题的答案通常是可以在麦当劳的官方网站上找到的，但是用户可能并不知道这些信息，或者他们可能会用自己的方式提出问题。这时候，我们就需要一个 RAG 模型来帮助我们回答这些问题。但是麦当劳实际上有非常多的商品，那么它的知识库可能会非常大，而且用户提出的问题可能并不在知识库中。这时候 HyDE 就可以帮助我们处理这些问题。
+准备工作 我们会是用一些基本的 Python 相关工具(pdm 等等)、Ollama和chroma。关于 Ollama 的介绍，可以查看我的之前的文章。出于成本考虑，这里使用了开源的本地模型实现，请确保你的 Ollama 是在运行的状态。当然，如果你是用 GPT-4 Turbo（今天凌晨刚刚发布了新版本），效果要远比开源模型好很多。
+mkdir hydemo &amp;amp;&amp;amp; cd hydemo pdm init pdm add langchain chromadb beautifulsoup4 source .venv/bin/activate 请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。
+功能实现 实现生成模拟文档 from langchain.chains.hyde.base import HypotheticalDocumentEmbedder from langchain.chains.llm import LLMChain from langchain.embeddings.ollama import OllamaEmbeddings from langchain.globals import set_debug from langchain.llms.ollama import Ollama from langchain.'><title>从零学习 Hypothetical Document Embeddings (HyDE) - 2</title>
+<link rel=canonical href=https://www.4async.com/2024/04/learn-hyde-from-scratch-2/><link rel=stylesheet href=../../../scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css><meta property='og:title' content='从零学习 Hypothetical Document Embeddings (HyDE) - 2'><meta property='og:description' content='在开始看这篇文章之前，推荐你阅读前一篇概念介绍文章。这篇文章之内不会再额外介绍概念上的内容，仅仅从实践角度演示如何是用 HyDE 和 RAG 结合。正如同前文提到的那样，我们会是用 LangChain 构建这个演示 Demo。当然，如果你熟悉 LlamaIndex 或者其他框架，其实主要流程大致差不多，只不过是用的 API 和库有一些区别。这些就不再赘述。
+问题背景 让我们假设你在为麦当劳制作一个问答系统。这个问答系统的目的是帮助用户解决一些常见问题，比如：麦当劳的营业时间，麦当劳的菜单，麦当劳的优惠活动等等。这些问题的答案通常是可以在麦当劳的官方网站上找到的，但是用户可能并不知道这些信息，或者他们可能会用自己的方式提出问题。这时候，我们就需要一个 RAG 模型来帮助我们回答这些问题。但是麦当劳实际上有非常多的商品，那么它的知识库可能会非常大，而且用户提出的问题可能并不在知识库中。这时候 HyDE 就可以帮助我们处理这些问题。
+准备工作 我们会是用一些基本的 Python 相关工具(pdm 等等)、Ollama和chroma。关于 Ollama 的介绍，可以查看我的之前的文章。出于成本考虑，这里使用了开源的本地模型实现，请确保你的 Ollama 是在运行的状态。当然，如果你是用 GPT-4 Turbo（今天凌晨刚刚发布了新版本），效果要远比开源模型好很多。
+mkdir hydemo &amp;amp;&amp;amp; cd hydemo pdm init pdm add langchain chromadb beautifulsoup4 source .venv/bin/activate 请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。
+功能实现 实现生成模拟文档 from langchain.chains.hyde.base import HypotheticalDocumentEmbedder from langchain.chains.llm import LLMChain from langchain.embeddings.ollama import OllamaEmbeddings from langchain.globals import set_debug from langchain.llms.ollama import Ollama from langchain.'><meta property='og:url' content='https://www.4async.com/2024/04/learn-hyde-from-scratch-2/'><meta property='og:site_name' content="ipfans's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Generative AI'><meta property='article:tag' content='LLM'><meta property='article:tag' content='Python'><meta property='article:published_time' content='2024-04-10T09:15:00+00:00'><meta property='article:modified_time' content='2024-04-10T09:15:00+00:00'><meta property='og:image' content='https://www.4async.com/2024/04/learn-hyde-from-scratch-2/cover.png'><meta name=twitter:site content="@janxin"><meta name=twitter:creator content="@janxin"><meta name=twitter:title content="从零学习 Hypothetical Document Embeddings (HyDE) - 2"><meta name=twitter:description content="在开始看这篇文章之前，推荐你阅读前一篇概念介绍文章。这篇文章之内不会再额外介绍概念上的内容，仅仅从实践角度演示如何是用 HyDE 和 RAG 结合。正如同前文提到的那样，我们会是用 LangChain 构建这个演示 Demo。当然，如果你熟悉 LlamaIndex 或者其他框架，其实主要流程大致差不多，只不过是用的 API 和库有一些区别。这些就不再赘述。
+问题背景 让我们假设你在为麦当劳制作一个问答系统。这个问答系统的目的是帮助用户解决一些常见问题，比如：麦当劳的营业时间，麦当劳的菜单，麦当劳的优惠活动等等。这些问题的答案通常是可以在麦当劳的官方网站上找到的，但是用户可能并不知道这些信息，或者他们可能会用自己的方式提出问题。这时候，我们就需要一个 RAG 模型来帮助我们回答这些问题。但是麦当劳实际上有非常多的商品，那么它的知识库可能会非常大，而且用户提出的问题可能并不在知识库中。这时候 HyDE 就可以帮助我们处理这些问题。
+准备工作 我们会是用一些基本的 Python 相关工具(pdm 等等)、Ollama和chroma。关于 Ollama 的介绍，可以查看我的之前的文章。出于成本考虑，这里使用了开源的本地模型实现，请确保你的 Ollama 是在运行的状态。当然，如果你是用 GPT-4 Turbo（今天凌晨刚刚发布了新版本），效果要远比开源模型好很多。
+mkdir hydemo &amp;amp;&amp;amp; cd hydemo pdm init pdm add langchain chromadb beautifulsoup4 source .venv/bin/activate 请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。
+功能实现 实现生成模拟文档 from langchain.chains.hyde.base import HypotheticalDocumentEmbedder from langchain.chains.llm import LLMChain from langchain.embeddings.ollama import OllamaEmbeddings from langchain.globals import set_debug from langchain.llms.ollama import Ollama from langchain."><meta name=twitter:card content="summary"><meta name=twitter:image content='https://www.4async.com/2024/04/learn-hyde-from-scratch-2/cover.png'><script async src="https://www.googletagmanager.com/gtag/js?id=G-G9H3Z8QND5"></script><script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-G9H3Z8QND5",{anonymize_ip:!1})}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=../../../><img src=../../../img/avatar_huae056372e08c63f80862e9295e80f934_12087_300x0_resize_q75_box.jpeg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=../../../>ipfans's Blog</a></h1><h2 class=site-description></h2></div></header><ol class=menu id=main-menu><li><a href=../../../><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=../../../about><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span></a></li><li><a href=../../../archives><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=../../../atom.xml><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg>
+<span>Feed</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ul><li><a href=#问题背景>问题背景</a></li><li><a href=#准备工作>准备工作</a></li><li><a href=#功能实现>功能实现</a><ul><li><a href=#实现生成模拟文档>实现生成模拟文档</a></li><li><a href=#构建-rag-文档>构建 RAG 文档</a></li><li><a href=#组合在一起>组合在一起</a></li></ul></li><li><a href=#下一步也许>下一步（也许？）</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=../../../2024/04/learn-hyde-from-scratch-2/><img src=../../../2024/04/learn-hyde-from-scratch-2/cover_hu6b0ea1d5f2852bb784935e026d2921fc_63908_800x0_resize_box_3.png srcset="../../../2024/04/learn-hyde-from-scratch-2/cover_hu6b0ea1d5f2852bb784935e026d2921fc_63908_800x0_resize_box_3.png 800w, ../../../2024/04/learn-hyde-from-scratch-2/cover_hu6b0ea1d5f2852bb784935e026d2921fc_63908_1600x0_resize_box_3.png 1600w" width=800 height=419 loading=lazy alt="Featured image of post 从零学习 Hypothetical Document Embeddings (HyDE) - 2"></a></div><div class=article-details><header class=article-category><a href=../../../categories/genai/>GenAI</a></header><div class=article-title-wrapper><h2 class=article-title><a href=../../../2024/04/learn-hyde-from-scratch-2/>从零学习 Hypothetical Document Embeddings (HyDE) - 2</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 10, 2024</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 4 分钟</time></div></footer></div></header><section class=article-content><p>在开始看这篇文章之前，推荐你阅读前一篇<a class=link href=https://www.4async.com/2024/04/learn-hyde-from-scratch-1/ title=概念介绍文章 target=_blank rel=noopener>概念介绍文章</a>。这篇文章之内不会再额外介绍概念上的内容，仅仅从实践角度演示如何是用 HyDE 和 RAG 结合。正如同前文提到的那样，我们会是用 LangChain 构建这个演示 Demo。当然，如果你熟悉 LlamaIndex 或者其他框架，其实主要流程大致差不多，只不过是用的 API 和库有一些区别。这些就不再赘述。</p><h2 id=问题背景>问题背景</h2><p>让我们假设你在为麦当劳制作一个问答系统。这个问答系统的目的是帮助用户解决一些常见问题，比如：麦当劳的营业时间，麦当劳的菜单，麦当劳的优惠活动等等。这些问题的答案通常是可以在麦当劳的官方网站上找到的，但是用户可能并不知道这些信息，或者他们可能会用自己的方式提出问题。这时候，我们就需要一个 RAG 模型来帮助我们回答这些问题。但是麦当劳实际上有非常多的商品，那么它的知识库可能会非常大，而且用户提出的问题可能并不在知识库中。这时候 HyDE 就可以帮助我们处理这些问题。</p><h2 id=准备工作>准备工作</h2><p>我们会是用一些基本的 Python 相关工具(<a class=link href=https://pdm.fming.dev/latest/ title=pdm target=_blank rel=noopener>pdm</a> 等等)、<a class=link href=https://ollama.com/ title=Ollama target=_blank rel=noopener>Ollama</a>和<a class=link href=https://www.trychroma.com/ title=chroma target=_blank rel=noopener>chroma</a>。关于 Ollama 的介绍，可以查看<a class=link href=https://www.4async.com/2024/02/deploy-local-llm-using-ollama/ title=我的之前的文章 target=_blank rel=noopener>我的之前的文章</a>。出于成本考虑，这里使用了开源的本地模型实现，请确保你的 Ollama 是在运行的状态。当然，如果你是用 <a class=link href=https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4 title="GPT-4 Turbo" target=_blank rel=noopener>GPT-4 Turbo</a>（今天凌晨刚刚发布了新版本），效果要远比开源模型好很多。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>mkdir hydemo <span style=color:#f92672>&amp;&amp;</span> cd hydemo
+</span></span><span style=display:flex><span>pdm init
+</span></span><span style=display:flex><span>pdm add langchain chromadb beautifulsoup4
+</span></span><span style=display:flex><span>source .venv/bin/activate
+</span></span></code></pre></div><blockquote><p>请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。</p></blockquote><h2 id=功能实现>功能实现</h2><h3 id=实现生成模拟文档>实现生成模拟文档</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> langchain.chains.hyde.base <span style=color:#f92672>import</span> HypotheticalDocumentEmbedder
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.chains.llm <span style=color:#f92672>import</span> LLMChain
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.embeddings.ollama <span style=color:#f92672>import</span> OllamaEmbeddings
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.globals <span style=color:#f92672>import</span> set_debug
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.llms.ollama <span style=color:#f92672>import</span> Ollama
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.vectorstores.chroma <span style=color:#f92672>import</span> Chroma
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>main</span>():
+</span></span><span style=display:flex><span>    set_debug(<span style=color:#66d9ef>True</span>)  <span style=color:#75715e># 设置 langchain 的调试模式，后面我们会看到具体的效果</span>
+</span></span><span style=display:flex><span>    llm <span style=color:#f92672>=</span> Ollama(model<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;qwen:7b&#34;</span>)  <span style=color:#75715e># 使用通义千问 7b 模型</span>
+</span></span><span style=display:flex><span>    olemb <span style=color:#f92672>=</span> OllamaEmbeddings(
+</span></span><span style=display:flex><span>        model<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nomic-embed-text&#34;</span>
+</span></span><span style=display:flex><span>    )  <span style=color:#75715e># 嵌入模型我们是使用的 nomic-embed-text</span>
+</span></span><span style=display:flex><span>    embeddings <span style=color:#f92672>=</span> HypotheticalDocumentEmbedder<span style=color:#f92672>.</span>from_llm(
+</span></span><span style=display:flex><span>        llm,
+</span></span><span style=display:flex><span>        base_embeddings<span style=color:#f92672>=</span>olemb,
+</span></span><span style=display:flex><span>        prompt_key<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;web_search&#34;</span>,  <span style=color:#75715e># 加载预置的 Web Search Prompt</span>
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>    print(embeddings<span style=color:#f92672>.</span>llm_chain<span style=color:#f92672>.</span>prompt)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;__main__&#34;</span>:
+</span></span><span style=display:flex><span>    main()
+</span></span></code></pre></div><p>让我们先执行一下，看一下 Prompt 会是什么样子的：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>python -m src.hydemo.main
+</span></span><span style=display:flex><span>input_variables<span style=color:#f92672>=[</span><span style=color:#e6db74>&#39;QUESTION&#39;</span><span style=color:#f92672>]</span> template<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Please write a passage to answer the question \nQuestion: {QUESTION}\nPassage:&#39;</span>
+</span></span></code></pre></div><p>让我们开始对它进行提问吧，这个问题我们可能没有提供一些具体的指向，比如：“麦当劳生产哪些商品？”:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>    <span style=color:#75715e># 上面的一些代码重复代码我们就省略了</span>
+</span></span><span style=display:flex><span>    embeddings <span style=color:#f92672>=</span> HypotheticalDocumentEmbedder<span style=color:#f92672>.</span>from_llm(
+</span></span><span style=display:flex><span>        llm,
+</span></span><span style=display:flex><span>        base_embeddings<span style=color:#f92672>=</span>olemb,
+</span></span><span style=display:flex><span>        prompt_key<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;web_search&#34;</span>,  <span style=color:#75715e># 加载预置的 Web Search Prompt</span>
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>    result <span style=color:#f92672>=</span> embeddings<span style=color:#f92672>.</span>embed_query(<span style=color:#e6db74>&#34;麦当劳生产哪些商品？&#34;</span>)
+</span></span><span style=display:flex><span>    print(result)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;__main__&#34;</span>:
+</span></span><span style=display:flex><span>    main()
+</span></span></code></pre></div><p>现在我们重复执行一下获取一下结果：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; python -m src.hydemo.main
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>llm/start<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>1:llm:Ollama<span style=color:#f92672>]</span> Entering LLM run with input:
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;prompts&#34;</span>: <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;Please write a passage to answer the question \nQuestion: 麦当劳生产哪些商品？\nPassage:&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>llm/end<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>1:llm:Ollama<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>10.39s<span style=color:#f92672>]</span> Exiting LLM run with output:
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;generations&#34;</span>: <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;text&#34;</span>: <span style=color:#e6db74>&#34;麦当劳是一家全球知名的快餐连锁企业，主要生产和销售一系列快餐商品。这些商品包括：\n\n1. 快餐汉堡：如麦当劳的经典汉堡（Big Mac）、薯条汉堡（Filet-O-Fish）等。\n\n2. 炸鸡和鸡肉产品：例如麦辣鸡腿堡（McChicken Leg Sandwich）。\n\n3. 薯条和其他小食：比如炸薯条、麦乐鸡翅等。\n\n4. 饮料和咖啡：包括碳酸饮料、果汁、茶以及麦当劳的特调饮品，如冰爽可乐（Coca-Cola Ice Blast）。\n\n总之，麦当劳生产和销售的商品种类丰富多样，满足了不同消费者的需求。\n&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;generation_info&#34;</span>: <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;qwen:7b&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;created_at&#34;</span>: <span style=color:#e6db74>&#34;2024-04-09T11:15:31.251426Z&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;response&#34;</span>: <span style=color:#e6db74>&#34;&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;done&#34;</span>: true,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;context&#34;</span>: <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>            151644,
+</span></span><span style=display:flex><span>            ...省略内容...
+</span></span><span style=display:flex><span>            <span style=color:#ae81ff>8997</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>]</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;total_duration&#34;</span>: 10384822542,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;load_duration&#34;</span>: 5002751375,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;prompt_eval_count&#34;</span>: 33,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;prompt_eval_duration&#34;</span>: 279537000,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;eval_count&#34;</span>: 153,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;eval_duration&#34;</span>: <span style=color:#ae81ff>5101916000</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;Generation&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>]</span>,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;llm_output&#34;</span>: null,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;run&#34;</span>: null
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>0.1035556048154831,...省略内容..., -0.0629570260643959<span style=color:#f92672>]</span>
+</span></span></code></pre></div><p>这看上去似乎是有点太长了，我们能否把内容缩减的更短一点呢？这可以通过自定义模板实现：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> langchain.chains.hyde.base <span style=color:#f92672>import</span> HypotheticalDocumentEmbedder
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.chains.llm <span style=color:#f92672>import</span> LLMChain
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.embeddings.ollama <span style=color:#f92672>import</span> OllamaEmbeddings
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.globals <span style=color:#f92672>import</span> set_debug
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.llms.ollama <span style=color:#f92672>import</span> Ollama
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.prompts <span style=color:#f92672>import</span> PromptTemplate
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.vectorstores.chroma <span style=color:#f92672>import</span> Chroma
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>main</span>():
+</span></span><span style=display:flex><span>    set_debug(<span style=color:#66d9ef>True</span>)  <span style=color:#75715e># 设置 langchain 的调试模式，后面我们会看到具体的效果</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    prompt_template <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&#34;&#34;请使用单个食物回答用户的问题
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>问题: </span><span style=color:#e6db74>{question}</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>答案:&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    prompt <span style=color:#f92672>=</span> PromptTemplate(input_variables<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#34;question&#34;</span>], template<span style=color:#f92672>=</span>prompt_template)
+</span></span><span style=display:flex><span>    llm <span style=color:#f92672>=</span> Ollama(model<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;qwen:7b&#34;</span>)  <span style=color:#75715e># 使用通义千问 7b 模型</span>
+</span></span><span style=display:flex><span>    llm_chain <span style=color:#f92672>=</span> LLMChain(llm<span style=color:#f92672>=</span>llm, prompt<span style=color:#f92672>=</span>prompt)
+</span></span><span style=display:flex><span>    olemb <span style=color:#f92672>=</span> OllamaEmbeddings(
+</span></span><span style=display:flex><span>        model<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nomic-embed-text&#34;</span>
+</span></span><span style=display:flex><span>    )  <span style=color:#75715e># 嵌入模型我们是使用的 nomic-embed-text</span>
+</span></span><span style=display:flex><span>    embeddings <span style=color:#f92672>=</span> HypotheticalDocumentEmbedder(
+</span></span><span style=display:flex><span>        llm_chain<span style=color:#f92672>=</span>llm_chain,
+</span></span><span style=display:flex><span>        base_embeddings<span style=color:#f92672>=</span>olemb,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>    result <span style=color:#f92672>=</span> embeddings<span style=color:#f92672>.</span>embed_query(<span style=color:#e6db74>&#34;麦当劳生产哪些商品？&#34;</span>)
+</span></span><span style=display:flex><span>    print(result)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;__main__&#34;</span>:
+</span></span><span style=display:flex><span>    main()
+</span></span></code></pre></div><p>我们执行一下获取结果：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; python -m src.hydemo.main
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>llm/start<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>1:llm:Ollama<span style=color:#f92672>]</span> Entering LLM run with input:
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;prompts&#34;</span>: <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;请使用单个食物回答用户的问题\n问题: 麦当劳生产哪些商品？\n答案:&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>llm/end<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>1:llm:Ollama<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>4.92s<span style=color:#f92672>]</span> Exiting LLM run with output:
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;generations&#34;</span>: <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;text&#34;</span>: <span style=color:#e6db74>&#34;汉堡、薯条和饮料等快餐产品。\n&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;generation_info&#34;</span>: <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;qwen:7b&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;created_at&#34;</span>: <span style=color:#e6db74>&#34;2024-04-09T11:18:14.114445Z&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;response&#34;</span>: <span style=color:#e6db74>&#34;&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;done&#34;</span>: true,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;context&#34;</span>: <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>            151644,
+</span></span><span style=display:flex><span>            ..省略内容...
+</span></span><span style=display:flex><span>            <span style=color:#ae81ff>8997</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>]</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;total_duration&#34;</span>: 4913308166,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;load_duration&#34;</span>: 4352575416,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;prompt_eval_count&#34;</span>: 31,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;prompt_eval_duration&#34;</span>: 164615000,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;eval_count&#34;</span>: 13,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;eval_duration&#34;</span>: <span style=color:#ae81ff>395684000</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;Generation&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>]</span>,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;llm_output&#34;</span>: null,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;run&#34;</span>: null
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>-0.00834527239203453, ...省略内容..., -0.5279630422592163<span style=color:#f92672>]</span>
+</span></span></code></pre></div><p>当然，这一般适用于你知道目标的范围并且希望添加一些限制条件让结果更加聚焦。</p><p>你拿到这些向量数据之后就可以去具体的向量数据库中去搜索了。这里我使用一些来自于网络的麦当劳数据进行统计。</p><h3 id=构建-rag-文档>构建 RAG 文档</h3><p>构建 RAG 文档有多种方式，可以读取网页上的内容，也可以通过 TXT，DOCX，PDF 等文件方式导入到向量数据库中。这里我是用 HTML 读取方式演示：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> langchain.chains.hyde.base <span style=color:#f92672>import</span> HypotheticalDocumentEmbedder
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.chains.llm <span style=color:#f92672>import</span> LLMChain
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.document_loaders.web_base <span style=color:#f92672>import</span> WebBaseLoader
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.embeddings.ollama <span style=color:#f92672>import</span> OllamaEmbeddings
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.globals <span style=color:#f92672>import</span> set_debug
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.llms.ollama <span style=color:#f92672>import</span> Ollama
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.prompts <span style=color:#f92672>import</span> PromptTemplate
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.text_splitter <span style=color:#f92672>import</span> CharacterTextSplitter
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.vectorstores.chroma <span style=color:#f92672>import</span> Chroma
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>main</span>():
+</span></span><span style=display:flex><span>    set_debug(<span style=color:#66d9ef>True</span>)  <span style=color:#75715e># 设置 langchain 的调试模式，后面我们会看到具体的效果</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    prompt_template <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&#34;&#34;请使用单个食物回答用户的问题
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>问题: </span><span style=color:#e6db74>{question}</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>答案:&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    prompt <span style=color:#f92672>=</span> PromptTemplate(input_variables<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#34;question&#34;</span>], template<span style=color:#f92672>=</span>prompt_template)
+</span></span><span style=display:flex><span>    llm <span style=color:#f92672>=</span> Ollama(model<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;qwen:7b&#34;</span>)  <span style=color:#75715e># 使用通义千问 7b 模型</span>
+</span></span><span style=display:flex><span>    llm_chain <span style=color:#f92672>=</span> LLMChain(llm<span style=color:#f92672>=</span>llm, prompt<span style=color:#f92672>=</span>prompt)
+</span></span><span style=display:flex><span>    olemb <span style=color:#f92672>=</span> OllamaEmbeddings(
+</span></span><span style=display:flex><span>        model<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nomic-embed-text&#34;</span>
+</span></span><span style=display:flex><span>    )  <span style=color:#75715e># 嵌入模型我们是使用的 nomic-embed-text</span>
+</span></span><span style=display:flex><span>    embeddings <span style=color:#f92672>=</span> HypotheticalDocumentEmbedder(
+</span></span><span style=display:flex><span>        llm_chain<span style=color:#f92672>=</span>llm_chain,
+</span></span><span style=display:flex><span>        base_embeddings<span style=color:#f92672>=</span>olemb,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>    <span style=color:#75715e># result = embeddings.embed_query(&#34;麦当劳生产哪些商品？&#34;)</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># print(result)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 从指定的 URL 获取内容生成 RAG 内容。当然也可以从 txt，docx，pdf 之类的文件中读取。</span>
+</span></span><span style=display:flex><span>    docs <span style=color:#f92672>=</span> WebBaseLoader(
+</span></span><span style=display:flex><span>        web_paths<span style=color:#f92672>=</span>(<span style=color:#e6db74>&#34;https://www.sohu.com/a/396117591_100107516&#34;</span>,)
+</span></span><span style=display:flex><span>    )<span style=color:#f92672>.</span>load()
+</span></span><span style=display:flex><span>    text_splitter <span style=color:#f92672>=</span> CharacterTextSplitter(
+</span></span><span style=display:flex><span>        chunk_size<span style=color:#f92672>=</span><span style=color:#ae81ff>500</span>,
+</span></span><span style=display:flex><span>        chunk_overlap<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>    texts <span style=color:#f92672>=</span> text_splitter<span style=color:#f92672>.</span>split_documents(docs)
+</span></span><span style=display:flex><span>    searcher <span style=color:#f92672>=</span> Chroma<span style=color:#f92672>.</span>from_documents(texts, embedding<span style=color:#f92672>=</span>embeddings)
+</span></span><span style=display:flex><span>    query <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;麦当劳哪个最畅销？&#34;</span>
+</span></span><span style=display:flex><span>    found <span style=color:#f92672>=</span> searcher<span style=color:#f92672>.</span>similarity_search(query)
+</span></span><span style=display:flex><span>    print(found[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>page_content)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;__main__&#34;</span>:
+</span></span><span style=display:flex><span>    main()
+</span></span></code></pre></div><p>让我们执行一下这个命令看一下返回结果</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; python -m src.hydemo.main
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>llm/start<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>1:llm:Ollama<span style=color:#f92672>]</span> Entering LLM run with input:
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;prompts&#34;</span>: <span style=color:#f92672>[</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;请使用单个食物回答用户的问题\n问题: 麦当劳哪个最畅销？\n答案:&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>llm/end<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>1:llm:Ollama<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>3.57s<span style=color:#f92672>]</span> Exiting LLM run with output:
+</span></span><span style=display:flex><span>...省略的内容...
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;llm_output&#34;</span>: null,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;run&#34;</span>: null
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>Filet-O-Fish 麦香鱼堡
+</span></span><span style=display:flex><span>很多人心中的麦当劳单品top1，鱼柳外皮炸得金黄酥脆，内里又保留了鱼肉的鲜嫩多汁。美味鱼肉与滋味沙拉酱配搭，风味独特。返回搜狐，查看更多
+</span></span><span style=display:flex><span>...省略的内容...
+</span></span></code></pre></div><h3 id=组合在一起>组合在一起</h3><p>我们已经有希望获得的结果了，我们需要把这个结果嵌入到我们的 LLM Chain 中去。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> langchain.chains.hyde.base <span style=color:#f92672>import</span> HypotheticalDocumentEmbedder
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.chains.llm <span style=color:#f92672>import</span> LLMChain
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.document_loaders.web_base <span style=color:#f92672>import</span> WebBaseLoader
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.embeddings.ollama <span style=color:#f92672>import</span> OllamaEmbeddings
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.globals <span style=color:#f92672>import</span> set_debug
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.llms.ollama <span style=color:#f92672>import</span> Ollama
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.prompts <span style=color:#f92672>import</span> PromptTemplate
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.text_splitter <span style=color:#f92672>import</span> CharacterTextSplitter
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain.vectorstores.chroma <span style=color:#f92672>import</span> Chroma
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain_core.output_parsers <span style=color:#f92672>import</span> StrOutputParser
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain_core.runnables <span style=color:#f92672>import</span> RunnablePassthrough
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>main</span>():
+</span></span><span style=display:flex><span>    set_debug(<span style=color:#66d9ef>True</span>)  <span style=color:#75715e># 设置 langchain 的调试模式，后面我们会看到具体的效果</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    prompt_template <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&#34;&#34;请使用单个食物商品回答用户的问题
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>问题: </span><span style=color:#e6db74>{question}</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>答案:&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    prompt <span style=color:#f92672>=</span> PromptTemplate(input_variables<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#34;question&#34;</span>], template<span style=color:#f92672>=</span>prompt_template)
+</span></span><span style=display:flex><span>    llm <span style=color:#f92672>=</span> Ollama(model<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;qwen:7b&#34;</span>)  <span style=color:#75715e># 使用通义千问 7b 模型</span>
+</span></span><span style=display:flex><span>    llm_chain <span style=color:#f92672>=</span> LLMChain(llm<span style=color:#f92672>=</span>llm, prompt<span style=color:#f92672>=</span>prompt)
+</span></span><span style=display:flex><span>    olemb <span style=color:#f92672>=</span> OllamaEmbeddings(
+</span></span><span style=display:flex><span>        model<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nomic-embed-text&#34;</span>
+</span></span><span style=display:flex><span>    )  <span style=color:#75715e># 嵌入模型我们是使用的 nomic-embed-text</span>
+</span></span><span style=display:flex><span>    embeddings <span style=color:#f92672>=</span> HypotheticalDocumentEmbedder(
+</span></span><span style=display:flex><span>        llm_chain<span style=color:#f92672>=</span>llm_chain,
+</span></span><span style=display:flex><span>        base_embeddings<span style=color:#f92672>=</span>olemb,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 从指定的 URL 获取内容生成 RAG 内容。当然也可以从 txt，docx，pdf 之类的文件中读取。</span>
+</span></span><span style=display:flex><span>    docs <span style=color:#f92672>=</span> WebBaseLoader(
+</span></span><span style=display:flex><span>        web_paths<span style=color:#f92672>=</span>(<span style=color:#e6db74>&#34;https://www.sohu.com/a/396117591_100107516&#34;</span>,)
+</span></span><span style=display:flex><span>    )<span style=color:#f92672>.</span>load()
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 切割成 chunk</span>
+</span></span><span style=display:flex><span>    text_splitter <span style=color:#f92672>=</span> CharacterTextSplitter(
+</span></span><span style=display:flex><span>        chunk_size<span style=color:#f92672>=</span><span style=color:#ae81ff>150</span>,
+</span></span><span style=display:flex><span>        chunk_overlap<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>    texts <span style=color:#f92672>=</span> text_splitter<span style=color:#f92672>.</span>split_documents(docs)
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 将 chunks 向量化保存</span>
+</span></span><span style=display:flex><span>    searcher <span style=color:#f92672>=</span> Chroma<span style=color:#f92672>.</span>from_documents(texts, embedding<span style=color:#f92672>=</span>embeddings)
+</span></span><span style=display:flex><span>    retriever <span style=color:#f92672>=</span> searcher<span style=color:#f92672>.</span>as_retriever()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 模拟用户问题</span>
+</span></span><span style=display:flex><span>    query <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;麦当劳哪个商品在德布勒森最受喜爱？&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 拼合数据</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>format_docs</span>(docs):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span><span style=color:#f92672>.</span>join([d<span style=color:#f92672>.</span>page_content <span style=color:#66d9ef>for</span> d <span style=color:#f92672>in</span> docs])
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 构建链，并使用它</span>
+</span></span><span style=display:flex><span>    chain <span style=color:#f92672>=</span> (
+</span></span><span style=display:flex><span>        {<span style=color:#e6db74>&#34;context&#34;</span>: retriever <span style=color:#f92672>|</span> format_docs, <span style=color:#e6db74>&#34;question&#34;</span>: RunnablePassthrough()}
+</span></span><span style=display:flex><span>        <span style=color:#f92672>|</span> prompt
+</span></span><span style=display:flex><span>        <span style=color:#f92672>|</span> llm
+</span></span><span style=display:flex><span>        <span style=color:#f92672>|</span> StrOutputParser()
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>    chain<span style=color:#f92672>.</span>invoke(query)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;__main__&#34;</span>:
+</span></span><span style=display:flex><span>    main()
+</span></span></code></pre></div><p>让我们直接获取一下答案：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; python -m src.hydemo.main
+</span></span><span style=display:flex><span>...省略内容...
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>chain/start<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>1:chain:RunnableSequence &gt; 9:parser:StrOutputParser<span style=color:#f92672>]</span> Entering Parser run with input:
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;input&#34;</span>: <span style=color:#e6db74>&#34;在德布勒森最受喜爱的麦当劳商品可能是“薯条”（Potato Strips）。薯条是麦当劳经典菜单之一，深受各地消费者的喜爱。不过，具体最受欢迎的商品可能会因地区和时间而有所不同。\n&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>chain/end<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>1:chain:RunnableSequence &gt; 9:parser:StrOutputParser<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>0ms<span style=color:#f92672>]</span> Exiting Parser run with output:
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;output&#34;</span>: <span style=color:#e6db74>&#34;在德布勒森最受喜爱的麦当劳商品可能是“薯条”（Potato Strips）。薯条是麦当劳经典菜单之一，深受各地消费者的喜爱。不过，具体最受欢迎的商品可能会因地区和时间而有所不同。\n&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>chain/end<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>1:chain:RunnableSequence<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>6.67s<span style=color:#f92672>]</span> Exiting Chain run with output:
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;output&#34;</span>: <span style=color:#e6db74>&#34;在德布勒森最受喜爱的麦当劳商品可能是“薯条”（Potato Strips）。薯条是麦当劳经典菜单之一，深受各地消费者的喜爱。不过，具体最受欢迎的商品可能会因地区和时间而有所不同。\n&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>原始内容如下：</p><p><img src=../../../2024/04/learn-hyde-from-scratch-2/content.png width=1322 height=1156 srcset="../../../2024/04/learn-hyde-from-scratch-2/content_hu9aeef0fb333e79fd3fc0506f9d9ae61f_1405591_480x0_resize_box_3.png 480w, ../../../2024/04/learn-hyde-from-scratch-2/content_hu9aeef0fb333e79fd3fc0506f9d9ae61f_1405591_1024x0_resize_box_3.png 1024w" loading=lazy class=gallery-image data-flex-grow=114 data-flex-basis=274px></p><h2 id=下一步也许>下一步（也许？）</h2><p>本篇文章演示了如何是用 HyDE 和 RAG 结合的实际用例，其实这个例子基本上还没有达到生产环境的使用标准。当然实际是用过程中，可能会更加复杂，比如替换成一个更好的向量数据库。至于有没有第三篇&mldr;可能有可能没有，不过希望有吧！</p><p>STAY TUNED!</p></section><footer class=article-footer><section class=article-tags><a href=../../../tags/generative-ai/>Generative AI</a>
+<a href=../../../tags/llm/>LLM</a>
+<a href=../../../tags/python/>Python</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=../../../2024/04/learn-hyde-from-scratch-1/><div class=article-image><img src=../../../2024/04/learn-hyde-from-scratch-1/cover.a2fe65ad898976e1d27310fa7823bb5a_hua9bada4ff4643b8c5d0bd42b9fa020ef_200642_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 从零学习 Hypothetical Document Embeddings (HyDE) - 1" data-key=learn-hyde-from-scratch-1 data-hash="md5-ov5lrYmJduHScxD6eCO7Wg=="></div><div class=article-details><h2 class=article-title>从零学习 Hypothetical Document Embeddings (HyDE) - 1</h2></div></a></article><article class=has-image><a href=../../../2024/02/deploy-local-llm-using-ollama/><div class=article-image><img src=../../../2024/02/deploy-local-llm-using-ollama/cover.528ea28d416e897875d5c7b67c43b8fa_hua4e12490b5b2c9e61f4b88388eb5eb25_619303_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 使用 Ollama 快速部署本地开源大语言模型" data-key=deploy-local-llm-using-ollama data-hash="md5-Uo6ijUFuiXh11ce2fEO4+g=="></div><div class=article-details><h2 class=article-title>使用 Ollama 快速部署本地开源大语言模型</h2></div></a></article></div></div></aside><link rel=stylesheet href=../../../scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"s1mbily",siteName:"ipfans's Blog",apikey:"NSu2reOKTOwm8Iba75jmsUms7HzJABSWOwuPJpRjlownWgBCCHeR2JA78iUsmtcw",admin:"ipfans",adminLabel:"Master"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2013 -
+2024 ipfans's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.22.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=../../../ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
