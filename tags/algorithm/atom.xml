@@ -1,3 +1,36 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Algorithm on ipfans's Blog</title><link>https://www.4async.com/tags/algorithm/</link><description>Recent content in Algorithm on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 11 Apr 2014 13:19:46 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/algorithm/atom.xml" rel="self" type="application/rss+xml"/><item><title>几种常见加密 / hash 算法效率 (OpenSSL)</title><link>https://www.4async.com/2014/04/2014-04-11-openssl-algorithm-speed-result/</link><pubDate>Fri, 11 Apr 2014 13:19:46 +0000</pubDate><guid>https://www.4async.com/2014/04/2014-04-11-openssl-algorithm-speed-result/</guid><description>正好群里面有人在讨论这个，就单独拿出来记录一下，下次就不用单独跑了。结果只是包含常见的算法性能。
-说到常用的算法，之前 QQ 的协议中最早使用的是 xxTEA 算法 [^1]，运算效率高，但是同样的，被破解的几率随着系统硬件性能的提升和手段的进化破解难度大幅降低，所以后来更换成了 blowfish 的算法 [^2]，从效率上来说可以接受，并且强度也是可以接受的范围。当然了，至于密钥，那是另外一个话题了。
-OpenSSL 1.0.1g 7 Apr 2014 built on: Mon Apr 7 19:24:10 BST 2014 options:bn(64,64) rc4(ptr,char) des(idx,cisc,16,int) aes(partial) idea(int) blowfish(idx) compiler: clang -fPIC -fno-common -DOPENSSL_PIC -DZLIB_SHARED -DZLIB -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -arch x86_64 -O3 -DL_ENDIAN -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM The &amp;#39;numbers&amp;#39; are in 1000s of bytes per second processed. type 16 bytes 64 bytes 256 bytes 1024 bytes 8192 bytes md5 27012.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Algorithm on ipfans's Blog</title><link>https://www.4async.com/tags/algorithm/</link><description>Recent content in Algorithm on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 11 Apr 2014 13:19:46 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/algorithm/atom.xml" rel="self" type="application/rss+xml"/><item><title>几种常见加密 / hash 算法效率 (OpenSSL)</title><link>https://www.4async.com/2014/04/2014-04-11-openssl-algorithm-speed-result/</link><pubDate>Fri, 11 Apr 2014 13:19:46 +0000</pubDate><guid>https://www.4async.com/2014/04/2014-04-11-openssl-algorithm-speed-result/</guid><description>&lt;p>正好群里面有人在讨论这个，就单独拿出来记录一下，下次就不用单独跑了。结果只是包含常见的算法性能。&lt;/p>
+&lt;p>说到常用的算法，之前 QQ 的协议中最早使用的是 xxTEA 算法 [^1]，运算效率高，但是同样的，被破解的几率随着系统硬件性能的提升和手段的进化破解难度大幅降低，所以后来更换成了 blowfish 的算法 [^2]，从效率上来说可以接受，并且强度也是可以接受的范围。当然了，至于密钥，那是另外一个话题了。&lt;/p>
+&lt;pre tabindex="0">&lt;code>OpenSSL 1.0.1g 7 Apr 2014
+built on: Mon Apr 7 19:24:10 BST 2014
+options:bn(64,64) rc4(ptr,char) des(idx,cisc,16,int) aes(partial) idea(int) blowfish(idx)
+compiler: clang -fPIC -fno-common -DOPENSSL_PIC -DZLIB_SHARED -DZLIB -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -arch x86_64 -O3 -DL_ENDIAN -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM
+The &amp;#39;numbers&amp;#39; are in 1000s of bytes per second processed.
+type 16 bytes 64 bytes 256 bytes 1024 bytes 8192 bytes
+md5 27012.47k 83668.96k 193662.90k 288870.40k 339611.95k
+hmac(md5) 22436.27k 72562.60k 176476.05k 277375.28k 337510.40k
+sha1 30214.31k 86946.66k 183855.45k 259266.33k 297429.61k
+rc4 196157.50k 211073.87k 232483.09k 233261.75k 235103.97k
+des cbc 36183.51k 37559.07k 38393.90k 38166.10k 38460.60k
+des ede3 14248.36k 14433.49k 14513.37k 14586.23k 14629.00k
+idea cbc 29515.76k 30455.99k 30819.81k 30886.49k 30909.05k
+seed cbc 42818.52k 46288.05k 47289.80k 47466.82k 47201.72k
+blowfish cbc 61676.43k 64869.07k 66887.52k 66720.19k 66823.31k
+aes-128 cbc 53756.63k 58966.27k 59666.27k 126935.19k 127531.60k
+aes-192 cbc 46063.28k 50037.52k 50891.14k 109122.65k 109760.48k
+aes-256 cbc 40039.57k 42316.96k 43542.15k 93052.84k 93731.72k
+sha256 24619.03k 53308.64k 90030.81k 109692.87k 117423.88k
+sha512 19076.43k 74213.38k 114250.08k 162023.40k 183772.75k
+whirlpool 15034.42k 31777.43k 52066.33k 61904.05k 56250.74k
+aes-128 ige 53897.17k 56852.04k 57523.48k 57741.98k 57742.06k
+aes-192 ige 45658.29k 47596.69k 48166.72k 48698.26k 48257.35k
+aes-256 ige 40110.70k 41541.96k 41726.01k 41792.81k 41839.56k
+sign verify sign/s verify/s
+rsa 512 bits 0.000169s 0.000015s 5921.3 64569.3
+rsa 1024 bits 0.000554s 0.000035s 1805.6 28181.2
+rsa 2048 bits 0.003531s 0.000112s 283.2 8923.1
+rsa 4096 bits 0.025068s 0.000405s 39.9 2466.8
+sign verify sign/s verify/s
+dsa 512 bits 0.000145s 0.000153s 6890.8 6518.5
+dsa 1024 bits 0.000338s 0.000393s 2961.0 2547.0
+dsa 2048 bits 0.001081s 0.001332s 925.1 750.6
+&lt;/code>&lt;/pre>&lt;p>刚刚开始那系统自带的去跑，发现干脆升级到最新的 OpenSSL 跑一下吧。结果跑了两遍之后，Air 直接烫手了，这种测试也就做一次就够了吧。&lt;/p></description></item></channel></rss>

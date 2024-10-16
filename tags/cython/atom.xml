@@ -1,3 +1,35 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cython on ipfans's Blog</title><link>https://www.4async.com/tags/cython/</link><description>Recent content in Cython on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 17 May 2014 17:41:14 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/cython/atom.xml" rel="self" type="application/rss+xml"/><item><title>利用 Cython 加速 Python 代码</title><link>https://www.4async.com/2014/05/2014-05-17-speed-python-code-with-cython/</link><pubDate>Sat, 17 May 2014 17:41:14 +0000</pubDate><guid>https://www.4async.com/2014/05/2014-05-17-speed-python-code-with-cython/</guid><description>先从一个例子来说，一个斐波那契数列数列例子说起：
-# fib.py #!/usr/bin/env python # -*- coding: utf-8 -*- def fib(i): a = 0 b = 1 while i &amp;gt; 0: i -= 1 a, b = b, a+b return True # try_c.py #!/usr/bin/env python # -*- coding: utf-8 -*- import time from fib import fib startTime = time.time() for i in xrange(1,10): fib(10**6) print time.time() - startTime 在 CPython 下执行效果如下：
-➜ cython python try_c.py 429.003911972 换成 pypy 的话，效率会更高一些：</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cython on ipfans's Blog</title><link>https://www.4async.com/tags/cython/</link><description>Recent content in Cython on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 17 May 2014 17:41:14 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/cython/atom.xml" rel="self" type="application/rss+xml"/><item><title>利用 Cython 加速 Python 代码</title><link>https://www.4async.com/2014/05/2014-05-17-speed-python-code-with-cython/</link><pubDate>Sat, 17 May 2014 17:41:14 +0000</pubDate><guid>https://www.4async.com/2014/05/2014-05-17-speed-python-code-with-cython/</guid><description>&lt;p>先从一个例子来说，一个斐波那契数列数列例子说起：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># fib.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/usr/bin/env python&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># -*- coding: utf-8 -*-&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">fib&lt;/span>(i):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> a &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> i &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> i &lt;span style="color:#f92672">-=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> a, b &lt;span style="color:#f92672">=&lt;/span> b, a&lt;span style="color:#f92672">+&lt;/span>b
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># try_c.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/usr/bin/env python&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># -*- coding: utf-8 -*-&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> time
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> fib &lt;span style="color:#f92672">import&lt;/span> fib
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>startTime &lt;span style="color:#f92672">=&lt;/span> time&lt;span style="color:#f92672">.&lt;/span>time()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> xrange(&lt;span style="color:#ae81ff">1&lt;/span>,&lt;span style="color:#ae81ff">10&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fib(&lt;span style="color:#ae81ff">10&lt;/span>&lt;span style="color:#f92672">**&lt;/span>&lt;span style="color:#ae81ff">6&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print time&lt;span style="color:#f92672">.&lt;/span>time() &lt;span style="color:#f92672">-&lt;/span> startTime
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在 CPython 下执行效果如下：&lt;/p>
+&lt;pre>&lt;code>➜ cython python try_c.py
+429.003911972
+&lt;/code>&lt;/pre>
+&lt;p>换成 pypy 的话，效率会更高一些：&lt;/p>
+&lt;pre>&lt;code>(pypy)➜ cython pypy try_c.py
+355.186796904
+&lt;/code>&lt;/pre>
+&lt;p>能不能有更快的效率呢？Python 的执行效率确实令人诟病，如果有 Python 的编写速度，C 的执行效率更好了（你说的是 Golang 嘛？）。这就是需要 Cython 出场了。&lt;/p></description></item></channel></rss>

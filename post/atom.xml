@@ -1,154 +1,722 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 03 Jun 2024 11:15:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>RAG 技术在实际工程中的应用：OpenAI 的最佳实践分享</title><link>https://www.4async.com/2024/06/openai-survey-of-techniques-for-maximizing-llm-performance/</link><pubDate>Mon, 03 Jun 2024 11:15:00 +0000</pubDate><guid>https://www.4async.com/2024/06/openai-survey-of-techniques-for-maximizing-llm-performance/</guid><description>&lt;img src="https://www.4async.com/2024/06/openai-survey-of-techniques-for-maximizing-llm-performance/cover.png" alt="Featured image of post RAG 技术在实际工程中的应用：OpenAI 的最佳实践分享" />检索增强生成（Retrieval Augmented Generation，简称RAG）技术正逐渐成为提升大型语言模型（LLM）性能的关键。OpenAI 的 John Allard 和 Colin Jarvis 在一场分享中，以实际案例为基础，深入浅出地讲解了如何将 RAG 技术应用于实际工程问题，并分享了他们的最佳实践经验。这些内容对于 RAG 技术的应用者来说，无疑是非常有价值的。事实上，OpenAI 开放了很多的他们的最佳实践内容，包括不限于 Prompt Engineering、Data Augmentation、Fine-tuning、Inference Optimization 等等。有空除了多看一下相关论文，OpenAI 的 Github 和 Youtube 频道都值得看一下。比如说这次分享就是来源于 OpenAI 的 Youtube 频道。
-优化 LLM 性能的挑战 优化 LLM 性能并非易事，哪怕丁点的区别都可能导致结果上出现很大的差异。目前优化性能主要存在以下挑战：
-难以确定问题根源： LLM 的输出结果受多种因素影响，如提示工程、训练数据、模型架构等。当模型性能不佳时，难以从这些复杂的交互中分离出导致问题的具体原因。 难以衡量性能： 对于许多 LLM 应用，例如文本摘要、问答系统等，难以找到一个客观的、可量化的指标来准确评估模型的性能。 难以选择优化方法： 即使确定了问题，也难以选择最合适的优化方法。开发者需要根据具体问题选择合适的技术，例如提示工程、微调、RAG 等。 OpenAI 的优化框架 为了解决上述挑战，OpenAI 提出了一个二维优化框架，将优化方向分为__内容优化__和__LLM优化__两个部分。
-内容优化 内容优化指的是优化模型可访问的知识内容。如果模型缺乏必要的知识或信息质量较差，那么即使模型本身的能力很强，也难以给出令人满意的答案。
-为了补全这部分的知识内容，可以采用以下方法进行：
-RAG： 将外部知识库与 LLM 集成，允许模型访问更广泛、更专业的知识。 数据增强： 通过对现有数据进行扩展或转换，增加训练数据的数量和多样性。 数据清洗： 识别和纠正训练数据中的错误或噪声，提高数据质量。 LLM 优化 通过优化模型本身提升效果。如果模型本身存在缺陷，例如容易产生幻觉或难以理解复杂指令，那么即使有充足的知识，也难以给出合理的答案。
-在这个优化方案中，可以采用下面的方式进行：
-提示工程： 通过设计更清晰、更明确的提示，引导模型生成符合预期的输出。 微调： 使用特定任务的数据集对预训练模型进行进一步训练，使模型更适应特定任务。 模型架构优化： 调整模型的架构或参数，提高模型的学习能力和泛化能力。 OpenAI 的建议 在这个框架下，OpenAI 建议开发者采用以下流程进行优化：</description></item><item><title>从零学习 Hypothetical Document Embeddings (HyDE) - 2</title><link>https://www.4async.com/2024/04/learn-hyde-from-scratch-2/</link><pubDate>Wed, 10 Apr 2024 09:15:00 +0000</pubDate><guid>https://www.4async.com/2024/04/learn-hyde-from-scratch-2/</guid><description>&lt;img src="https://www.4async.com/2024/04/learn-hyde-from-scratch-2/cover.png" alt="Featured image of post 从零学习 Hypothetical Document Embeddings (HyDE) - 2" />在开始看这篇文章之前，推荐你阅读前一篇概念介绍文章。这篇文章之内不会再额外介绍概念上的内容，仅仅从实践角度演示如何是用 HyDE 和 RAG 结合。正如同前文提到的那样，我们会是用 LangChain 构建这个演示 Demo。当然，如果你熟悉 LlamaIndex 或者其他框架，其实主要流程大致差不多，只不过是用的 API 和库有一些区别。这些就不再赘述。
-问题背景 让我们假设你在为麦当劳制作一个问答系统。这个问答系统的目的是帮助用户解决一些常见问题，比如：麦当劳的营业时间，麦当劳的菜单，麦当劳的优惠活动等等。这些问题的答案通常是可以在麦当劳的官方网站上找到的，但是用户可能并不知道这些信息，或者他们可能会用自己的方式提出问题。这时候，我们就需要一个 RAG 模型来帮助我们回答这些问题。但是麦当劳实际上有非常多的商品，那么它的知识库可能会非常大，而且用户提出的问题可能并不在知识库中。这时候 HyDE 就可以帮助我们处理这些问题。
-准备工作 我们会是用一些基本的 Python 相关工具(pdm 等等)、Ollama和chroma。关于 Ollama 的介绍，可以查看我的之前的文章。出于成本考虑，这里使用了开源的本地模型实现，请确保你的 Ollama 是在运行的状态。当然，如果你是用 GPT-4 Turbo（今天凌晨刚刚发布了新版本），效果要远比开源模型好很多。
-mkdir hydemo &amp;amp;&amp;amp; cd hydemo pdm init pdm add langchain chromadb beautifulsoup4 source .venv/bin/activate 请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。
-功能实现 实现生成模拟文档 from langchain.chains.hyde.base import HypotheticalDocumentEmbedder from langchain.chains.llm import LLMChain from langchain.embeddings.ollama import OllamaEmbeddings from langchain.globals import set_debug from langchain.llms.ollama import Ollama from langchain.</description></item><item><title>从零学习 Hypothetical Document Embeddings (HyDE) - 1</title><link>https://www.4async.com/2024/04/learn-hyde-from-scratch-1/</link><pubDate>Tue, 09 Apr 2024 14:15:00 +0000</pubDate><guid>https://www.4async.com/2024/04/learn-hyde-from-scratch-1/</guid><description>&lt;img src="https://www.4async.com/2024/04/learn-hyde-from-scratch-1/cover.png" alt="Featured image of post 从零学习 Hypothetical Document Embeddings (HyDE) - 1" />最近看到了一篇新的论文，关于评估 RAG 中的各种技术的评估。这篇《ARAGOG: Advanced RAG Output Grading》提供了一个对比多种 RAG 技术的评估。其中提到 HyDE 和 LLM re-rank 能够很好的提高检索精度。不过似乎 HyDE 其实讨论并不是很多，那么咱就对这块内容添砖加瓦一下，让我们从零开始进行一段 HyDE 的冒险。
-什么是 RAG？ 大语言模型(LLM)虽然在过去的一段时间中成为大家眼中的香馍馍，但它们也存在一些关键的局限性:
-知识局限性: LLM 的知识范围主要局限于其训练数据，难以涵盖所有知识领域，在一些专业或冷门话题上表现不佳。尤其是现在 AI 应用场景需要使用来自于企业内部知识库或者外部知识库中的相关信息，而这些内部知识库往往是不在外部公开的。 可靠性问题: LLM 依赖于概率模型生成文本，结果难免存在事实性错误或缺乏可靠性，在某些关键应用中存在风险。比如之前的加拿大航空赔偿事件，尤其是对敏感的需要正确信息的场景，一旦出现错误的信息往往意味着潜在的损失。 要解决这些问题，那么就需要是用 RAG 来帮助解决。那么，什么是 RAG 呢？
-Retrieval-Augmented Generation (RAG) 是一种基于检索的生成式模型，它结合了检索式和生成式的优点，可以在生成式模型(Generative Model)中引入外部知识。RAG 模型由两部分组成：一个是检索器，另一个是生成器。检索器负责从知识库中检索相关信息，生成器则负责生成答案。与传统的大语言模型(LLM)仅依靠自身有限的知识进行文本生成不同，RAG 模型能够动态地从海量的外部知识库中检索相关信息，并将这些信息融入到生成过程中，产生更加准确、连贯的输出内容。
-换句话说，当用户提出一个查询或者需要生成某种类型的文本时，RAG 模型首先会利用一个信息检索子模块，从知识库中检索出与查询相关的信息。然后，RAG 的生成子模块会结合这些检索到的相关信息，生成最终的输出文本。这种结合检索和生成的方式，使 RAG 模型能够弥补传统 LLM 的局限性，提高生成内容的准确性和可靠性。
-简单点来说，RAG 的基本流程如下：
-什么是 HyDE？ 但是在是用 RAG 的时候，你往往也会遇到一些问题。
-让我们设想一个场景：我们有一个知识库，里面存储了大量的文档，我们希望使用 RAG 模型来回答用户的问题。但是，原始的 RAG 只能处理知识库中包含的数据，但是对于知识库中不存在的数据，RAG 无法处理。比较常见的场景包含用户的问答系统，帮助中心，对话系统等。用户通常对你的系统或者专有名词并不了解，他们通常会提出一些根据自己理解或者自己熟悉概念中的名词问题，这些表达方式可能并不在你的知识库中。这时候 RAG 就无法从知识库中检索到相关信息。
-HyDE (Hypothetical Document Embeddings) 是一种基于 RAG 模型的模式，它使用 LLM 生成一个假设的回答文档，然后将这个假设的回答文档与知识库中的文档进行比较，从而找到与用户问题相关的信息。</description></item><item><title>No GIL Python 的冒险</title><link>https://www.4async.com/2024/03/adventure-of-no-gil-python/</link><pubDate>Mon, 18 Mar 2024 10:11:00 +0000</pubDate><guid>https://www.4async.com/2024/03/adventure-of-no-gil-python/</guid><description>&lt;img src="https://www.4async.com/2024/03/adventure-of-no-gil-python/cover.png" alt="Featured image of post No GIL Python 的冒险" />在前几周的时候，Python的允许禁用 GIL PR 正式合并进入了 Python 3.13 的master分支。这是一个非常重要的 PR，因为它在未来将会对 Python 的并发性能产生非常大的影响。在即将到来的 Python 3.13 中，这个允许禁用 GIL和包含了 Copy and Paste JIT 技术，这些同时都对 Python 的性能产生了非常大的影响。
-什么是 GIL GIL，即全局解释器锁，是 Python 语言中一个技术术语。官方实现的 CPython 中包含了 GIL 的实现，同时也是最广泛使用的实现。GIL 的主要目的是在任何时候只允许一个线程执行 Python 字节码，这意味着即使你的程序在多核处理器上运行，也无法实现真正的并行执行。GIL 的存在主要是为了简化 CPython 的内存管理。Python 的对象，如列表、字典等，不是线程安全的，这意味着如果多个线程同时从不同的核心修改同一个对象，可能会导致数据不一致或者程序崩溃。GIL 通过限制同时执行的线程数来避免这种情况。
-换句话说：如果一个系统线程想要执行 Python 的字节码，必须要获取到 GIL 锁，然后才可以执行 Python 字节码。而如果没有获取到锁，那么线程就会休眠，直到获得信号而被唤醒。为了保证 Python 的效率，Python 也会自动切换线程，比如 IO 阻塞时，或者执行了指定数量的 Python 字节码时。这样就尽量保证了 Python 的效率。当然，你也可以选择手工释放 GIL 锁，比如使用 C/C++/Rust 扩展，或者使用 Cython 等开发高性能扩展时。
-但是这个 GIL 也是 Python 的一个瓶颈，因为它限制了 Python 的并发性能。在多核处理器上，Python 的并发性能并不是很好。这也是为什么很多人选择使用多进程而不是多线程来提高 Python 的并发性能。在现代的计算机上，多核处理器已经是标配，因此 Python 的并发性能成为了一个非常重要的问题。这也是为什么这么多年来，Python 的 GIL 一直是一个非常热门的话题。</description></item><item><title>使用 Ollama 快速部署本地开源大语言模型</title><link>https://www.4async.com/2024/02/deploy-local-llm-using-ollama/</link><pubDate>Wed, 28 Feb 2024 17:39:00 +0000</pubDate><guid>https://www.4async.com/2024/02/deploy-local-llm-using-ollama/</guid><description>&lt;img src="https://www.4async.com/2024/02/deploy-local-llm-using-ollama/cover.png" alt="Featured image of post 使用 Ollama 快速部署本地开源大语言模型" />如果你是第一次开始研究如何使用开源大语言模型(LLM)测试 GenerativeAI 时，一开始所有的信息一股脑在你的眼前，令人望而生畏。互联网上存在着来自许多不同来源的大量碎片信息，使得快速启动项目变得困难。
-这篇文章的目标是提供一篇简易上手的文章，帮助你使用名为 Ollama 的模型的启动程序在本地设置和运行开源 AI 模型，当然，这些步骤也同样可以让你在你的服务器上运行它。
-什么是 Ollama Ollama 是一款帮助我们在本地机器上运行大型语言模型的工具，它让你在本地测试 LLM 变得更加容易。Ollama 提供了本地命令行和 API 调用多种方式进行交互。如果你是想快速测试，那么 CLI 则是一个非常不错的方式；如果你是想开始一个产品，你也可以选择试用/api/chat进行开发一个应用。
-Ollama 分为两个部分：一个是运行 LLM 的服务端，另外一个则是可选组件：用于和服务端和 LLM进行交互的 CLI。
-安装 Ollama Ollama 官方提供了安装包用于 MacOS/Linux/Windows 下载。其中 Windows 支持截止到目前(2024/02/27)为止，还是预览支持，可能存在问题。因此这里我们演示使用 MacOS 安装这个应用。
-下载安装 下载完成后，解压这个 zip 文件即可得到Ollama 的应用程序，你可以把它拖到系统的应用程序文件夹中，双击打开：
-如果是第一次打开，会遇到安全提示，选择打开即可。
-接下来需要安装 Ollama 的命令行工具，这样你就可以在命令行中访问LLM 了。
-命令行安装 当然，如果你安装了[homebrew](https://brew.sh/)包管理工具，也可以使用下面的方式快速安装 Ollama：
-brew install ollama 命令行方式安装时，需要额外注意我们无法像图形界面进行后台服务启动。你需要施工执行下面的命令启动Ollama 服务端：
-ollama serve 试用 Ollama 现在你已经安装完成 Ollama 了，接下来让我们运行一个基础的模型试用一下。Ollama 支持了很多的开源模型，包括 Google 最新开源的 Gemma。不过这里我推荐使用Mistral 7B 模型。我们可以使用下面的命令快速安装对应模型：
-ollama pull mistral 这会安装 Mistral 7B 模型，这是一个效率很高，效果不错的模型。这个命令通常会下载几个 G 到几十个 G 的模型到本地，请注意确保网速和本地磁盘空间足以安装模型。</description></item><item><title>使用子解释器运行Python并行应用</title><link>https://www.4async.com/2023/11/python-312-sub-interpreters/</link><pubDate>Thu, 23 Nov 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/11/python-312-sub-interpreters/</guid><description>&lt;img src="https://www.4async.com/2023/11/python-312-sub-interpreters/cover.webp" alt="Featured image of post 使用子解释器运行Python并行应用" />译者注：最近 Python 3.12 引入了子解释器概念，非常火热，更好的消息是已经在FastAPI应用成功了，虽然是很简单的那种。因此顺腾摸瓜，找到了作者的博客，翻译分享给大家。
-Python 3.12 引入了一个新的 API 用于“子解释器”（sub interpreters），这是 Python 的一种不同的并行执行模型，提供了真正并行处理和多进程处理之间的良好折中，且具有更快的启动时间。在这篇文章中，我将解释什么是子解释器，为什么它对 Python 中的并行代码执行很重要，以及它与其他方法的比较。
-什么是子解释器？ Python 的系统架构大致由三部分组成：
-一个包含一个或多个解释器的 Python 进程 一个包含锁（GIL）和一个或多个 Python 线程的解释器 一个包含当前执行代码信息的线程。 要了解更多关于这方面的信息，你可以阅读我的书《CPython 内部实现》中的“并行性和并发性”章节。
-自 Python 1.5 以来，就有一个 C-API 可以支持多个解释器，但这个功能由于 GIL 的限制而受到严重限制，没有真正实现真正的并行性。因此，运行并行代码最常用的技术（不使用第三方库）是使用 multiprocessing 模块。
-2017 年，CPython 核心开发人员提出改变解释器结构的提议，使它们更好地与拥有它们的 Python 进程隔离，并能够并行操作。实现这一目标的工作相当巨大（6 年后仍未完成），并分为两个 PEP。PEP684 将 GIL 在各个解释器独立开，PEP554 提供了一个创建解释器和在它们之间共享数据的 API。
-GIL 是“全局解释器锁”，是 Python 进程中的一个锁，意味着在任何时间点 Python 进程中只能执行一条指令，即使它有多个线程。这实际上意味着，即使你在拥有 4 核 CPU 的电脑上同时启动 4 个 Python 线程，也只有一个线程会在任何时候运行。
-你可以通过创建一个 numpy 数组或整数，并粗略计算每个值与 50 的距离来进行一个简单的测试：
-import numpy # Create a random array of 100,000 integers between 0 and 100 a = numpy.</description></item><item><title>Twirp初相识</title><link>https://www.4async.com/2023/01/twirp-first-step/</link><pubDate>Wed, 25 Jan 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/01/twirp-first-step/</guid><description>&lt;img src="https://www.4async.com/2023/01/twirp-first-step/cover.png" alt="Featured image of post Twirp初相识" />什么是Twirp？ Twirp是Twitch在2018年开源的RPC框架。正如同他们在发布文章中说的那样，RPC相对于普通的RESTful API更方便设计、组织和维护，让开发者更加专注于业务。但是同样的，在Go社区中重要的gRPC方案严重与HTTP/2绑定，这也成为一个制约其推广的问题：HTTP/2的复杂性其实并不必要；与Go Runtime的割裂也是另外一个问题，导致部分优化难以直接通过升级Go版本在gRPC上显现。
-Twirp则选择保留了部分好的地方：使用Protobuf这个IDL约束请求/返回类型，这样可以最大化借助Protobuf带来的优势，生成客户端和服务端代码。但是Twirp选择与Go标准库集成，这样可以更好的利用Go本身升级带来的优化。这同时也保证了Twirp本身的简洁性。同时，你也可以很方便的使用cURL等传统工具，借助json请求测试，而不需要手工处理二进制数据。同样的，借助Go标准库，未来Twirp可以更好的升级成HTTP/3而不是像gRPC一样等待上游更新。当然如果你更倾向于使用gRPC相关的实践，那么connect-go可能是你的另外一个不错选择。
-当然，如果说缺点，Twirp并不完美：小众的社区，缺少生态，缺少相关信息内容等等。不过这些仍旧是瑕不掩瑜。毕竟实现一个相关的功能其实并不那么复杂。
-如何使用Twirp Twirp虽然官网比较简单，甚至社区也不是很大的样子，但是基本上需求的数据基本都可以在官网上找到入口。但是这也有个问题，导致整个流程对新手并不友好，有比较高的上手门槛。接下来的内容主要是完善这部分的内容，方便新手用户使用。
-安装Protobuf相关工具 由于Twirp同样使用Protobuf，我们需要使用相关工具。首先是Protobuf，接下来是一些protoc-gen工具：
-brew install protobuf # Mac Only go install google.golang.org/protobuf/cmd/protoc-gen-go@latest go install github.com/twitchtv/twirp/protoc-gen-twirp@latest 可选项：Buf Buf是一个Protobuf管理工具，帮助你实现Schema Driven Development实践。它提供了一个CLI管理工具（支持lint，生成和破坏性检查等功能）和类似注册中心机制的BSR(Buf Schema Registry)，你可以在这里管理你的Schema版本和引用其他公开服务的Schema。不使用Buf并不会带来功能缺失，并且Buf提供了付费SaaS服务(测试期间免费)，可以根据你的情况选择是否使用。
-brew install bufbuild/buf/buf # Mac Only 可选项：Taskfile Taskfile是我常用来替代Makefile的工具。这并不是必须的工具，你同样可以使用手工执行命令行和Makefile命令进行。事实上，使用Makefile其实可以更好的在Jenkins之类的pipeline里执行，但是对Github Action等现代pipeline而言，区别并不大。
-brew install go-task/tap/go-task # Mac Only 生成项目文件 这里我们使用一个简单的Greeter程序演示使用。假设我们已经存在了一个Go的空项目，那么我们接下来需要创建对应的目录和文件。按照官方的建议，我们可以使用如下结构创建我们的项目，你可以在Github上查看完整的代码：
-$ tree . . ├── README.md ├── Taskfile.yaml ├── buf.gen-ts.yaml ├── buf.gen.yaml ├── buf.yaml ├── build ├── client │ ├── package.json │ ├── pnpm-lock.yaml │ └── src │ └── protoc-gen-twirp-es.</description></item><item><title>Twirp基本概念：Hooks和Interceptors</title><link>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</link><pubDate>Wed, 25 Jan 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</guid><description>&lt;img src="https://www.4async.com/2023/01/twirp-hooks-and-interceptors/cover.png" alt="Featured image of post Twirp基本概念：Hooks和Interceptors" />Twirp做了足够多的抽象工作，使得我们可以在不同的层次上进行扩展。在最基础的使用层面上，你可以像net/http一样去简单的使用。但是往往这样也不能满足我们实际项目中的需求在这篇文章中，我们将介绍Twirp的Hooks和Interceptors基本概念，以及如何使用这些Twirp的扩展机制。</description></item><item><title>去年的一点小工作(1)：从BFF谈起</title><link>https://www.4async.com/2023/01/something-happend-in-2022-1/</link><pubDate>Sat, 21 Jan 2023 17:55:39 +0000</pubDate><guid>https://www.4async.com/2023/01/something-happend-in-2022-1/</guid><description>&lt;img src="https://www.4async.com/2023/01/something-happend-in-2022-1/cover.jpg" alt="Featured image of post 去年的一点小工作(1)：从BFF谈起" />&lt;p>前年底，之前创业的公司关掉正式回归了打工生活。现在在一家SaaS公司做一些新业务开发和架构的工作。这个系列的文章也是想整理一下2022年的一些小成果，有一些内容和相关背景可能因为各种原因无法描述更细节的内容，也请各位见谅。&lt;/p>
-&lt;h1 id="后端和前端的配合我们遇到了什么问题">后端和前端的配合，我们遇到了什么问题？&lt;/h1></description></item><item><title>Byebye 2022, Hello 2023</title><link>https://www.4async.com/2023/01/byebye-2022-hello-2023/</link><pubDate>Sun, 01 Jan 2023 17:53:39 +0000</pubDate><guid>https://www.4async.com/2023/01/byebye-2022-hello-2023/</guid><description>&lt;img src="https://www.4async.com/2023/01/byebye-2022-hello-2023/2022-2023.jpg" alt="Featured image of post Byebye 2022, Hello 2023" /></description></item><item><title>给hugo添加mermaid支持</title><link>https://www.4async.com/2022/12/add-mermaid-support-for-hugo/</link><pubDate>Mon, 26 Dec 2022 17:48:00 +0000</pubDate><guid>https://www.4async.com/2022/12/add-mermaid-support-for-hugo/</guid><description>&lt;img src="https://www.4async.com/2022/12/add-mermaid-support-for-hugo/gohugo.png" alt="Featured image of post 给hugo添加mermaid支持" />&lt;p>发现2022年居然一篇博客都没写，一方面是疫情原因实在太糟心，另外一方面是环境使然，2022年一年都在适应新环境和拼命的推动项目前行。立个Flag，保证明年至少一个季度有一篇文章吧。&lt;/p>
-&lt;p>这篇文章是为了提示如何在hugo中添加mermaid支持，mermaid是一个流程图的工具，可以在markdown中直接使用，非常方便。其实在hugo官方文档中已经有了说明，但是我在使用的时候发现对新人不是特别友好，所以这里记录一下，顺便水一个。&lt;/p></description></item><item><title>一些实用工具列表</title><link>https://www.4async.com/2021/11/awesome-toolkit/</link><pubDate>Mon, 29 Nov 2021 17:48:00 +0000</pubDate><guid>https://www.4async.com/2021/11/awesome-toolkit/</guid><description>&lt;img src="https://www.4async.com/2021/11/awesome-toolkit/toolkit.png" alt="Featured image of post 一些实用工具列表" />一些在工作中经常使用的一些工具。如果有什么推荐的，也欢迎在评论中提供。这个列表后续会持续更新
-HTTP工具 curlie - httpie-like 工具，底层是curl lego - Let&amp;rsquo;s Encrypt证书工具 mkcert - 方便导入本地证书 paw.cloud - 原生的macOS HTTP调试工具，现在每年都会免费送，有兴趣关注一下 编译工具 go-task - 我用来替代Makefile，并无什么特殊必要，主要是不想写Makefile 代码质量 golangci-lint - 感觉无需介绍了，集成了很多实用工具，重复的就不列举了 pre-commit - 提交前检查代码质量，比如代码风格，缩进，空格等等 dcd - 查找代码中的重复代码 代码统计 scc - 高性能统计代码行数 图表工具 go-diagrams - 使用Go语言描述系统架构图 ndiag - 如果不想用Go描述，也可以选择用YAML描述系统架构 draft - 另外一个用YAML描述的工具，风格不一样 k8sviz - 你也可以从现成的K8s环境中生成系统架构图 archview - 通过代码中注释生成应用内部分层结构 go-plantuml - 根据Go代码生成结构体的PlantUML图 goplantuml - 另外一种生成PlantUML的工具 go-erd - 不想用PlantUML也可以换这种风格 asciiflow - 可以画ASCII图，ASCII图好处是可以放在代码里，如果你愿意的话 sequence - 嫌弃asciiflow比较原始，做时序图的时候可以用这个 mermaid-js - 方便集成在网页中，也可以导出成图片 kroki - 上面没提到的图类型的生成？看看这个 IaC pulumi - Terraform业界比较常用，不过要学习HCL比较蛋疼，我个人比较喜欢pulumi，可以选择自己的习惯的语言，tf-cdk目前还比较初级。</description></item><item><title>Go 1.17 泛型尝鲜</title><link>https://www.4async.com/2021/08/golang-117-generics/</link><pubDate>Tue, 17 Aug 2021 17:48:00 +0000</pubDate><guid>https://www.4async.com/2021/08/golang-117-generics/</guid><description>&lt;img src="https://www.4async.com/2021/08/golang-117-generics/go.png" alt="Featured image of post Go 1.17 泛型尝鲜" />今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。
-泛型有什么作用？ 在使用Go没有泛型之前我们怎么实现针对多类型的逻辑实现的呢？有很多方法，比如说使用interface{}作为变量类型参数，在内部通过类型判断进入对应的处理逻辑；将类型转化为特定表现的鸭子类型，通过接口定义的方法实现逻辑整合；还有人专门编写了Go的函数代码生成工具，通过批量生成不同类型的相同实现函数代替手工实现等等。这些方法多多少少存在一些问题：使用了interface{}作为参数意味着放弃了编译时检查，作为强类型语言的一个优势就被抹掉了。同样，无论使用代码生成还是手工书写，一旦出现问题，意味着这些方法都需要重复生成或者进行批量修改，工作量反而变得更多了。
-在Go中引入泛型会给程序开发带来很多好处：通过泛型，可以针对多种类型编写一次代码，大大节省了编码时间。你可以充分应用编译器的编译检查，保证程序变量类型的可靠性。借助泛型，你可以减少代码的重复度，也不会出现一处出现问题需要修改多处地方的尴尬问题。这也让很多测试工作变得更简单，借助类型安全，你甚至可以少考虑很多的边缘情况。
-Go语言官方有详细的泛型提案文档可以在这里和这里查看详情。
-如何使用泛型 前面理论我们仅仅只做介绍，这次尝鲜还是以实践为主。让我们先从一个小例子开始。
-从简单的例子开始 让我们先从一个最简单的例子开始：
-package main import ( &amp;#34;fmt&amp;#34; ) type Addable interface { type int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr, float32, float64, complex64, complex128, string } func add[T Addable](a, b T) T { return a + b } func main() { fmt.Println(add(1,2)) fmt.Println(add(&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;)) } 这个函数可以实现任何需要使用+符号进行运算的类型，我们通过定义Addable类型，枚举了所有可能可以使用add方法的所有的类型。比如我们在main函数中就使用了int和string两种不同类型。
-但是如果这时我们使用简单的go run命令运行，会发现提示语法错误：
-$ go version go version go1.17 darwin/arm64 $ go run ~/main.</description></item><item><title>Go Web应用中常见的反模式</title><link>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</link><pubDate>Fri, 13 Aug 2021 14:09:00 +0000</pubDate><guid>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</guid><description>&lt;img src="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg" alt="Featured image of post Go Web应用中常见的反模式" />作者：Miłosz Smółka 译者：Kevin 原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/
-在我职业生涯的某个阶段，我对我所构建的软件不再感到兴奋。
-我最喜欢的工作内容是底层的细节和复杂的算法。在转到面向用户的应用开发之后，这些内容基本消失了。编程似乎是利用现有的库和工具把数据从一处移至另一处。到目前为止，我所学到的关于软件的知识不再那么有用了。
-让我们面对现实吧：大多数Web应用无法解决棘手的技术挑战。他们需要做到的是正确的对产品进行建模，并且比竞争对手更快的改进产品。
-这起初看起来似乎是那么的无聊，但是你很快会意识到实现这个目标比听起来要难。这是一项完全不同的挑战。即使它们技术上实现并没有那么复杂，但时解决它们会对产品产生巨大影响并且让人获得满足。
-Web应用面临的最大挑战不是变成了一个无法维护的屎山，而是会减慢你的速度，让你的业务最终失败。
-这是他们如何在Go中发生和我是如何避免他们的。
-松耦合是关键 应用难以维护的一个重要原因是强耦合。
-在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。
-相比之下，松耦合应用保持了清晰的边界。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？
-微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了分布式单体的陷阱，处理和之前相同的问题，而且还增加了网络开销。
-❌ 反模式：分布式单体 在你了解边界之前，不要将你的应用切分成为微服务。
-微服务并不会降低耦合，因为拆分服务的次数并不重要。重要的是如何连接各个服务。
-✅ 策略：松耦合 以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。
-DRY引入了耦合 强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。
-简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：
-每条知识在系统中都必须有一个单一的、明确的、权威的表述。
-&amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。
-当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。
-在Go中保持DRY 相比于其他现代语言，Go是清晰的，缺少很多特性，没有太多的语法糖来隐藏复杂性。
-我们习惯了捷径，所以一开始很难接受Go的冗长。就像我们已经开发出一种去寻找一种更加聪明的编写代码的方式的本能。
-最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
-if err != nil { return err } 但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。
-最终，大家都接受了Go的工作方式。它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。
-单一数据模型带来的应用耦合 Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
-这里有一个流行的方式保存单个User模型的方法：
-type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;` FirstName string `json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;` LastName string `json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;` DisplayName string `json:&amp;#34;display_name&amp;#34;` Email string `json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;` Emails []Email `json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;` PasswordHash string `json:&amp;#34;-&amp;#34;` LastIP string `json:&amp;#34;-&amp;#34;` CreatedAt *time.</description></item><item><title>什么是事件建模Event Modeling?</title><link>https://www.4async.com/2021/07/introducing-event-modeling/</link><pubDate>Tue, 06 Jul 2021 11:41:00 +0000</pubDate><guid>https://www.4async.com/2021/07/introducing-event-modeling/</guid><description>&lt;img src="https://www.4async.com/2021/07/introducing-event-modeling/event-modeling-tutorial.jpg" alt="Featured image of post 什么是事件建模Event Modeling?" />基本概念 事件建模（Event Modeling）是一种描述系统的方法，展示信息如何随时间变化的例子。具体来说，这种方式省略了瞬息万变的细节，而着眼于在任何特定的时间点上的持久化存储和用户所见数据的变化。这些时间轴上的事件，构成了对系统的描述。
-近年来，很多系统使用事件通过事件存储数据库或者使用特定方式使用常规数据库构建了状态和信息传播的模块。然而，大多数方法仍然依赖于通过SQL数据库、文档数据库或者其他技术实现严格意义上的当前时间点信息的视图。
-对很多系统而言，特别是对于非小型系统而言，随着系统复杂性的增加，变更成本将会随着时间的推移难度指数级上升。与现有的设计和建模方式对比，事件建模可以在短时间内创建一个基础蓝图，将返工工作量降到最低。
-从过去谈起 讲故事自古以来就是人类能够将知识传递给后代的方法，它在很大程度上依赖于我们如何存储记忆-无论是逻辑的、视觉的、听觉的还是其他的。这一点很重要，因为这与信息系统的构建方式有相似之处。 用具体的例子说明某物应该如何工作是一种常见的方式。这种方式可以在软件开发的成功实践中看到，如行为驱动开发。这种方式很有效，因为我们通过故事来沟通更有效。将它和讲故事联系在一起，是一种保持社会信息的方式。我们的大脑是为它而建的，而不是为流程图和其他格式而建的。 而事件建模模型就是遵循这种讲故事模式而建立的产品建模方式。
-事件建模模式 时间线是最好描述故事主线的方式，对我们的系统而言，时间线也是描述我们系统核心部分概念的重要组成部分。我们可以通过在一条时间线上，系统从开始到结束，在没有分支情况下应该做什么方式展示我们系统的一部分功能。这就是一个典型的事件模型的组成。我们可以用这种方式跟踪所有UI界面中字段值如何存储和如何展示的。比如在上面的示例图中，我们使用了3种不同模块的内容和传统的线框模型就展示了整个系统的模型。但是简单性是我们重要的一个目标，因此我们只依赖于4种模式构建这种模型图。
-保持简单性 当我们想采用某些做法或流程来帮助彼此理解和沟通时，它与个人为熟练掌握这些方法而进行的学习量成反比。换句话说，如果我们可以更快的掌握一个名叫X的方法时，我们就可以更好的通过这种方式进行知识分享和互动；反之，无论这种方法多么好，昂贵的学习成本总会搞砸一切。
-当一本书是团队中的必读书目时，每个人都会说他们读过；但事实上只有一半的人会真正读过；这些真正读过的人中一半的人会声称他们理解了这本书；而这些声称理解的人中只有一半的人真正的理解了这本书；而这些真正理解了这本书的人只有一半的人能够使用它。
-这就是为什么使用3个模块和基于2个想法的4种模式进行事件建模。因为这只需要几分钟就可以将所有的东西向所有人解释清楚。其他的学习则可以在实践中进行。即便理解出现了不足和错误，也可以很快在实践中得到纠正。
-事件 假设我们想为连锁酒店设计一个酒店网站，让我们的客户可以在线预订房间，并让我们安排清洁和任何其他酒店问题。 我们可以显示在该业务的年度时间线上存储了哪些事件。 我们可以假装我们已经有了这个系统，然后问自己随着时间的推移存储了哪些事件。
-线框图 让我们看一下在图片的最上面的部分的第一个模块。为了让讲故事这个事情更加可视化，我们可以在顶部显示功能的线框图或者网页模拟图。这也可以被具象化为具体的泳道图，以方便不同的人（也可以是系统）与我们的系统进行互动。这里一些自动化的内容可以用齿轮表示，同时说明系统正在做什么。通过这种方式，我们可以非常容易的展示出系统需要实现的功能列表，执行流程和项目完成标记。这里的图是示例了一个酒店的预订、支付和通知系统的过程，我们可以重点关注一下所有相关高亮显示的内容。
-借助这个模块，我们可以很方便的和设计师一起沟通设计系统，当然，这里需要注意在设计中，两个重要的内容需要添加到整个设计中：用户所拥有的权限和用户可以获取的信息。
-命令 大多数信息系统必须给用户一种影响系统的状态的能力，而这种能力就是命令。在我们的例子中，我们必须允许房间预订改变系统状态，这样我们就不会发生超额预订情况。当那个人在未来的预订日期到达时，他们就有一个为他们准备的房间。
-改变系统状态的意图会被封装在一个命令中。相对于简单地将表单数据保存到数据库中的一个表中，这可以让我们以非技术性的方式来显示意图，同时允许任何实现 - 尽管我们可以看到某些方法更具优势。
-从UI和UX的角度来看，这就是一个&amp;quot;命令响应式用户界面&amp;quot;，对帮助制作可组合的UI大有帮助。使用这种模式，从技术和商业的角度来看，交易的界限就更清楚了。以酒店入住为例，酒店的客人要么登记成功，要么没有。
-当命令成功的前提条件有细微的差别时，它们会在&amp;quot;Given-When-Then&amp;quot;风格的描述方式中进行阐述。这种方式也是行为测试模式惯用的描述方式，也是一种成功的讲述故事的方式。实际执行过程中，可能会有几个这样的故事来说明一个命令如何能成功执行和不能成功执行。
-这里我们可以用一个例子来描述一下：
-Given：我们已经注册并添加了一个支付方式
-When：我们试图预订一个房间
-Then：一个房间被预订了
-这种描述方式也通常被叫做“安排、行动、断言”，在UI/UX的世界中，也被称为“情景、统计、价值”。 在图中我们也可以发现，所有的命令都是用蓝色进行标记的。
-视图（或者叫读模型） 任何信息系统的一个重要能力是将系统中保存的状态告知用户。我们的酒店客人需要知道他们感兴趣的某些类型的房间在哪一天可以入住。这通常有很多种情况，需要支持信息系统的多个模型。
-随着这些新事件的存储，系统中的视图也会一直变化。在我们的酒店系统中，这个日历视图随着影响库存的新事件的发生而被更新。其他视图中清洁团队可以在客户离店事件存储后在其他视图中看到房间已经可以被清理了。
-指定视图的行为方式与我们指定接受命令的方式非常相似，但有一处不同。视图是被动的，并且不能在事件被存储到系统中之后撤销事件。
-举个例子：
-Given：酒店设置了12间海景房，海景房从4月4日到12日被预订
-Then：日历上应该显示除4月4日到12日以外的所有海景房的日期
-从上面图中我们也可以注意到，所有的读都是用绿色进行标记的。
-集成 我们刚刚介绍了描述大多数系统所需的 4 种模式中的前 2 种模式。 系统可以从其他系统获取信息并且将信息发送到其他系统。 强迫这 2 个模式成为前 2 个模式的扩展并共享相同的空间是很诱人的选择。 然而这会让交流变得更加困难，因为它们没有人类可见的方面，并且需要一些更高级别的模式。
-翻译 当我们有一个为我们提供信息的外部系统时，将这些信息转换成我们自己系统中的更熟悉的形式会很有帮助。 在我们的酒店系统中，如果选择让我们的清洁人员反应更加灵敏，我们可以从客人的 GPS 坐标中获取事件。 我们不想使用经度和纬度对作为事件来指定我们系统中的先决条件。 我们宁愿选择对我们有意义的活动，例如“客人离开酒店”、“客人回到酒店房间”。
-通常，翻译很简单，可以表示为从外部事件中获取信息的视图。如果我们不将它们用作测试的任何“Given”部分，则它们存储在该视图模型中的值仅在我们的状态更改测试中的命令参数中表示。
-自动化 我们的系统一般都需要与外部服务进行通信。当我们酒店的客人在退房时支付住宿费用时，我们的系统会调用付款处理程序。我们可以通过系统中某个处理程序的“待办事项列表”的概念来了解这是如何发生的。这个待办事项列表显示了我们需要完成的任务。例如，我们的处理程序会不时查看该列表（可能是几毫秒或几天）并向外部系统发送命令以处理付款。然后将来自外部系统的回复转换为我们存储回系统中的事件。通过这种方式，我们将系统中使用的构建块保留为对我们有意义的东西。
-我们通过在具有线框的蓝图顶部放置一个处理程序来展示这一点。这表明这些东西在屏幕上无法看到但在后台发生。由于需要完成后台任务，用户可能期望旋转图标提示延迟。此规范的形式为“Given：要执行的任务的视图，When：每个项目启动此命令时，Then：这些事件会返回。”
-实际上，这些可以通过许多不同的方式实现，例如队列、响应式或实时构造。它们甚至可能是我们使用的待办事项列表。这里的目标是传达我们的系统在需要影响外部时是如何与之沟通的。
-落地实现 事件建模分7个步骤进行。我们已经解释了最终的目标。因此，让我们倒退到开头，展示如何建立起蓝图。</description></item><item><title>构建属于你自己的dapr绑定组件</title><link>https://www.4async.com/2021/05/building-your-own-dapr-binding/</link><pubDate>Sat, 15 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-binding/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/uJdVWNeXC6Z3Hq8.png" alt="Featured image of post 构建属于你自己的dapr绑定组件" />在上一篇文章中，吐槽了拖延症的危害，因此这次我来分享一下我最新推送到dapr的最新的一个新的绑定组件，通过这个来看一下如何实现自己的绑定组件。
-文中提到的PR可以在 dapr/components-contrib#872 查看对应的具体代码。
-什么是 dapr 的绑定组件？ 在dapr中，绑定是用于使用外部系统功能（比如事件或者接口）的扩展组件。它的优势在于：
-免除连接到消息传递系统(如队列和消息总线)并进行轮询的复杂性； 聚焦于业务逻辑，而不是如何与系统交互的实现细节； 使代码不受 SDK 或库的跟踪； 处理重试和故障恢复； 在运行时在绑定之间切换； 构建具有特定于环境的绑定的可移植应用程序，不需要进行代码更改； 在官方文档中，也提到了一个具体的例子：以twilio发送短信为例，一般开发过程中应用程序需要依赖Twilio SDK才可以实现功能，但是借助绑定组件，你可以将SDK的绑定转移至dapr程序领域内，在本身应用程序中不再绑定对应的SDK，不用担心未来SDK过期或者变更带来的重复工作（仅需要更新dapr即可）。
-根据订阅的进出方向，绑定组件也分为输入绑定和输出绑定。这些绑定均是通过yaml文件描述类型和元数据，通过HTTP/gRPC进行调用。
-如何实现自己的绑定组件？ 官方例子中提供了一个基础的介绍，上一节中我们也提到了在程序中，根据进出方向可以把绑定组件分为输出绑定和输入绑定。你可以通过官方教程中的例子提供查看：
-在这个例子用，你可以看到，根据方向吧dapr发布消息到Kafka作为输出组件，把Kafka读取消息到dapr作为输入组件。
-绑定的声明yaml文件的规范则如下：
-apiVersion: dapr.io/v1alpha1 kind: Component metadata: name: &amp;lt;NAME&amp;gt; namespace: &amp;lt;NAMESPACE&amp;gt; spec: type: bindings.&amp;lt;TYPE&amp;gt; version: v1 metadata: - name: &amp;lt;NAME&amp;gt; value: &amp;lt;VALUE&amp;gt; 其中metadata.name则是绑定置名称，spec.metadata.name和spec.metadata.value则是配置的属性和对应值。这个值我们可以通过实现接口InputBinding或者OutputBinding实现输入绑定和输出绑定.
-type InputBinding interface { Init(metadata Metadata) error Read(handler func(*ReadResponse) ([]byte, error)) error } type OutputBinding interface { Init(metadata Metadata) error Invoke(req *InvokeRequest) (*InvokeResponse, error) Operations() []OperationKind } 接下来需要实现一个生成对象的方法，比如说我们需要实现一个飞书推送Webhook的绑定组件，则可以：</description></item><item><title>构建属于你自己的dapr服务发现</title><link>https://www.4async.com/2021/05/building-your-own-dapr-service-discovery/</link><pubDate>Sat, 08 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-service-discovery/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/uJdVWNeXC6Z3Hq8.png" alt="Featured image of post 构建属于你自己的dapr服务发现" />写在最前: 这篇文章其实算是马后炮了，因为一直拖延症的问题，顺带过了一个五一假期，结果发现已经有社区贡献者提供了Consul的服务发现实现，于是本来写了一半的文章只能进行调整了。拖延症害人啊！几个草稿的文章看来要尽快赶出来了🤦‍♂️
-在上一篇文章中，我其实遗留了一个问题：如何定义dapr的服务发现呢？其实在后面阅读dapr的源码之后也前一篇文章的评论中提到了答案：目前dapr提供了内置两种服务发现模式：K8s模式和用于独立部署的mDNS模式。mDNS模式在某些网络环境下可能存在问题（比如跨机房），不过没有关系，dapr同时提供了可扩展能力，可以通过定义自主的服务发现能力扩展dapr的边界。
-从 NameResolution 到 Resolver 接口 在 pkg/components/nameresolution/registry.go 文件中，dapr定义了一个 NameResolution 结构体用于服务注册和发现：
-type ( // NameResolution is a name resolution component definition. NameResolution struct { Name string FactoryMethod func() nr.Resolver } // Registry handles registering and creating name resolution components. Registry interface { Register(components ...NameResolution) Create(name, version string) (nr.Resolver, error) } nameResolutionRegistry struct { resolvers map[string]func() nr.Resolver } ) 其中真正的服务解析则是依靠 components-contrib 中实现了 Resolver 接口的具体实现执行。
-// Resolver is the interface of name resolver.</description></item><item><title>在非容器(集群)环境下运行dapr</title><link>https://www.4async.com/2021/03/2021-03-11-running-dapr-without-container/</link><pubDate>Thu, 11 Mar 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/03/2021-03-11-running-dapr-without-container/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/uJdVWNeXC6Z3Hq8.png" alt="Featured image of post 在非容器(集群)环境下运行dapr" />前一段时间一直关注的dapr正式发布了v1.0版本(实际上本文发布时还更新了v1.0.1)，代表dapr在某些程度上进入稳定状态，可以尝试在实际中进行运用。作为我一直关注的项目，在第一时间中进行了尝试，并试图引入实际项目中，本文则是针对这些的一些先期测试内容.
-什么是dapr？ dapr最早是由微软开源的(不愧是你)，一个可移植的、事件驱动的程序运行时，它使任何开发者都能轻松地构建运行在云和边缘的弹性、无状态/有状态的应用程序，并且可以灵活支持多种开发语言。换而言之，在我看来，dapr可以作为一个serverless落地方案看待和处理，对程序而言，只关注提供的store和消息队列接口，无需关心架构层面更多内容。
-不过在官方的示例教程中，使用的环境为容器环境部署和管理dapr。实际上，除了在容器环境或者容器集群环境下，dapr可以配置为在本地机器上以自托管模式运行。
-本地安装 dapr安装可以通过官方的dapr-cli实现，dapr-cli可以通过一键安装命令快速安装：
-# wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash Your system is linux_amd64 Dapr CLI is detected: main: line 86: 43656 Segmentation fault $DAPR_CLI_FILE --version Reinstalling Dapr CLI - /usr/local/bin/dapr... Getting the latest Dapr CLI... Installing v1.0.0 Dapr CLI... Downloading https://github.com/dapr/cli/releases/download/v1.0.0/dapr_linux_amd64.tar.gz ... dapr installed into /usr/local/bin successfully. CLI version: 1.0.0 Runtime version: n/a To get started with Dapr, please visit https://docs.dapr.io/getting-started/ 可以通过输入dapr命令确认dapr-cli程序是否被正常安装成功。
-接下来使用dapr-cli安装所有的runtime等应用。
-# dapr init --slim ⌛ Making the jump to hyperspace.</description></item><item><title>NATS-Server(JetStream)和NATS Streaming Server对比</title><link>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</link><pubDate>Tue, 02 Mar 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/Cv92HUNpYyjDTVK.png" alt="Featured image of post NATS-Server(JetStream)和NATS Streaming Server对比" />在我吐槽了无数次之后，NATS JetStream终于结束了beta阶段正式进入RC阶段。终于官方也在最近刚刚正式回复了我正式版本在处理几个问题之后就会正式发布。那么在这个比较重要的NATS-Server特性发布之际聊一下NATS产品本身区别和新特性的使用，还有更多的潜在的区别。
-概念区分：NATS-Server / NATS Streaming Server / NATS JetStream NATS-Server NATS-Server（或者叫nats）是一个开源的、云原生的、高性能的消息传递系统，是NATS的最基础的产品。它的核心是一个发布/订阅（Pub/Sub）系统，客户端可以在不同集群中的服务间nats进行通讯，而不需要关注具体的消息在哪个服务上。换而言之，客户端可以在任意一个集群的服务端上发布消息，同时在任意集群客户端上尝试读取消息。在官方与其他同类消息队列产品功能对比中，我们也可以管窥一下产品的功能列表。nats支持多流多服务进行pub/sub，负载均衡，保障消息最多/最少一次送达，多租户和用户认证等功能。虽然看上去优点很多，但是nats不是一个应用很广的消息队列的重要原因是，它缺少了一些对消息队列而言很最重要的产品特性，比如持久化支持，比如消息确保一次送达。这意味着当你的消息发送出去之后，你的消息是在处理过程中可能丢失的，甚至是可能送达不到的。
-NATS Streaming Server NATS Streaming Server（或者叫stan）是用于尝试解决上面提到的nats的已存在问题的。stan添加了持久化功能和消息送达策略支持。stan中自带了nats服务端，但是在使用过程中，nats和stan不能进行混用。在官方文档中，是这么描述stan和nats之间的关系的：
-NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。
-stan的具体架构如下图：
-但是stan虽然提供了持久化和消息传递策略支持，但是在架构设计上却出现了问题，导致在最开始设计时遗留了很多问题，比如当你确定stan集群是固定的不能无限制水平扩容(#999)，比如不支持多租户功能(#1122)，比如客户端无法主动拉取消息只能被推送等等
-NATS JetStream NATS JetStream（或者叫JetStream）是NATS基于Raft算法实现的最新的架构设计尝试解决上述问题的新方案。在区别于原有的stan功能上，提供了新的持久化功能和消息送达策略，同时支持水平扩容。同时，新的JetStream也为大消息做了一些优化，不再将这特性功能作为nats的客户端存在而是嵌入NATS Server中作为其中的一个功能存在。也就是说，如果在对这几项技术进行选择时，JetStream应该是最应该被选择的方案。更多详细情况具体可以查看官方的指导文档。
-NATS JetStream使用 理论介绍过了，接下来说说实际使用的事情。现在JetStream还是RC阶段，
-编译和启动客户端 下载nats-server源码，解压之后执行：
-cd nats-server-master go build -o nats-server -ldflags=&amp;#34;-s -w -buildid=&amp;#34; . ./nats-server -js 这样就可以启动一个支持JetStream功能的服务端了。
-[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server [54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2 [54738] 2021/03/02 18:27:02.605238 [INF] Git: [not set] [54738] 2021/03/02 18:27:02.</description></item><item><title>上下文Context与结构体Struct</title><link>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</link><pubDate>Thu, 25 Feb 2021 10:30:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png" alt="Featured image of post 上下文Context与结构体Struct" />原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
-在context的文档中写道。
-上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。 本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。
-倾向于将上下文作为参数传递 为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。
-type Worker struct { /* … */ } type Work struct { /* … */ } func New() *Worker { return &amp;amp;Worker{} } func (w *Worker) Fetch(ctx context.Context) (*Work, error) { _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 } func (w *Worker) Process(ctx context.Context, w *Work) error { _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker).Fetch和(*Worker).Process方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的context.Context将如何被使用：没有期望传递给一个方法的context.Context将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。
-将上下文存储在结构中会导致混乱 让我们再次使用上下文存储在结构体中这种方式审视一下上面的Worker例子。它的问题是，当你把上下文存储在一个结构中时，你会向调用者隐藏它的生命周期，甚至可能的是把两个不同的作用域以不可预料的方式互相干扰：</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 03 Jun 2024 11:15:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>RAG 技术在实际工程中的应用：OpenAI 的最佳实践分享</title><link>https://www.4async.com/2024/06/openai-survey-of-techniques-for-maximizing-llm-performance/</link><pubDate>Mon, 03 Jun 2024 11:15:00 +0000</pubDate><guid>https://www.4async.com/2024/06/openai-survey-of-techniques-for-maximizing-llm-performance/</guid><description>&lt;img src="https://www.4async.com/2024/06/openai-survey-of-techniques-for-maximizing-llm-performance/cover.png" alt="Featured image of post RAG 技术在实际工程中的应用：OpenAI 的最佳实践分享" />&lt;p>检索增强生成（Retrieval Augmented Generation，简称RAG）技术正逐渐成为提升大型语言模型（LLM）性能的关键。OpenAI 的 John Allard 和 Colin Jarvis 在&lt;a class="link" href="https://www.youtube.com/watch?v=ahnGLM-RC1Y" target="_blank" rel="noopener"
+>一场分享&lt;/a>中，以实际案例为基础，深入浅出地讲解了如何将 RAG 技术应用于实际工程问题，并分享了他们的最佳实践经验。这些内容对于 RAG 技术的应用者来说，无疑是非常有价值的。事实上，OpenAI 开放了很多的他们的最佳实践内容，包括不限于 Prompt Engineering、Data Augmentation、Fine-tuning、Inference Optimization 等等。有空除了多看一下相关论文，OpenAI 的 Github 和 Youtube 频道都值得看一下。比如说这次分享就是来源于 OpenAI 的 Youtube 频道。&lt;/p>
+&lt;h2 id="优化-llm-性能的挑战">优化 LLM 性能的挑战
+&lt;/h2>&lt;p>优化 LLM 性能并非易事，哪怕丁点的区别都可能导致结果上出现很大的差异。目前优化性能主要存在以下挑战：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>难以确定问题根源&lt;/strong>： LLM 的输出结果受多种因素影响，如提示工程、训练数据、模型架构等。当模型性能不佳时，难以从这些复杂的交互中分离出导致问题的具体原因。&lt;/li>
+&lt;li>&lt;strong>难以衡量性能&lt;/strong>： 对于许多 LLM 应用，例如文本摘要、问答系统等，难以找到一个客观的、可量化的指标来准确评估模型的性能。&lt;/li>
+&lt;li>&lt;strong>难以选择优化方法&lt;/strong>： 即使确定了问题，也难以选择最合适的优化方法。开发者需要根据具体问题选择合适的技术，例如提示工程、微调、RAG 等。&lt;/li>
+&lt;/ul>
+&lt;h2 id="openai-的优化框架">OpenAI 的优化框架
+&lt;/h2>&lt;p>为了解决上述挑战，OpenAI 提出了一个二维优化框架，将优化方向分为__内容优化__和__LLM优化__两个部分。&lt;/p>
+&lt;h3 id="内容优化">内容优化
+&lt;/h3>&lt;p>内容优化指的是优化模型可访问的知识内容。如果模型缺乏必要的知识或信息质量较差，那么即使模型本身的能力很强，也难以给出令人满意的答案。&lt;/p>
+&lt;p>为了补全这部分的知识内容，可以采用以下方法进行：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>RAG&lt;/strong>： 将外部知识库与 LLM 集成，允许模型访问更广泛、更专业的知识。&lt;/li>
+&lt;li>&lt;strong>数据增强&lt;/strong>： 通过对现有数据进行扩展或转换，增加训练数据的数量和多样性。&lt;/li>
+&lt;li>&lt;strong>数据清洗&lt;/strong>： 识别和纠正训练数据中的错误或噪声，提高数据质量。&lt;/li>
+&lt;/ul>
+&lt;h3 id="llm-优化">LLM 优化
+&lt;/h3>&lt;p>通过优化模型本身提升效果。如果模型本身存在缺陷，例如容易产生幻觉或难以理解复杂指令，那么即使有充足的知识，也难以给出合理的答案。&lt;/p>
+&lt;p>在这个优化方案中，可以采用下面的方式进行：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>提示工程&lt;/strong>： 通过设计更清晰、更明确的提示，引导模型生成符合预期的输出。&lt;/li>
+&lt;li>&lt;strong>微调&lt;/strong>： 使用特定任务的数据集对预训练模型进行进一步训练，使模型更适应特定任务。&lt;/li>
+&lt;li>&lt;strong>模型架构优化&lt;/strong>： 调整模型的架构或参数，提高模型的学习能力和泛化能力。&lt;/li>
+&lt;/ul>
+&lt;h3 id="openai-的建议">OpenAI 的建议
+&lt;/h3>&lt;p>在这个框架下，OpenAI 建议开发者采用以下流程进行优化：&lt;/p></description></item><item><title>从零学习 Hypothetical Document Embeddings (HyDE) - 2</title><link>https://www.4async.com/2024/04/learn-hyde-from-scratch-2/</link><pubDate>Wed, 10 Apr 2024 09:15:00 +0000</pubDate><guid>https://www.4async.com/2024/04/learn-hyde-from-scratch-2/</guid><description>&lt;img src="https://www.4async.com/2024/04/learn-hyde-from-scratch-2/cover.png" alt="Featured image of post 从零学习 Hypothetical Document Embeddings (HyDE) - 2" />&lt;p>在开始看这篇文章之前，推荐你阅读前一篇&lt;a class="link" href="https://www.4async.com/2024/04/learn-hyde-from-scratch-1/" title="概念介绍文章"
+target="_blank" rel="noopener"
+>概念介绍文章&lt;/a>。这篇文章之内不会再额外介绍概念上的内容，仅仅从实践角度演示如何是用 HyDE 和 RAG 结合。正如同前文提到的那样，我们会是用 LangChain 构建这个演示 Demo。当然，如果你熟悉 LlamaIndex 或者其他框架，其实主要流程大致差不多，只不过是用的 API 和库有一些区别。这些就不再赘述。&lt;/p>
+&lt;h2 id="问题背景">问题背景
+&lt;/h2>&lt;p>让我们假设你在为麦当劳制作一个问答系统。这个问答系统的目的是帮助用户解决一些常见问题，比如：麦当劳的营业时间，麦当劳的菜单，麦当劳的优惠活动等等。这些问题的答案通常是可以在麦当劳的官方网站上找到的，但是用户可能并不知道这些信息，或者他们可能会用自己的方式提出问题。这时候，我们就需要一个 RAG 模型来帮助我们回答这些问题。但是麦当劳实际上有非常多的商品，那么它的知识库可能会非常大，而且用户提出的问题可能并不在知识库中。这时候 HyDE 就可以帮助我们处理这些问题。&lt;/p>
+&lt;h2 id="准备工作">准备工作
+&lt;/h2>&lt;p>我们会是用一些基本的 Python 相关工具(&lt;a class="link" href="https://pdm.fming.dev/latest/" title="pdm"
+target="_blank" rel="noopener"
+>pdm&lt;/a> 等等)、&lt;a class="link" href="https://ollama.com/" title="Ollama"
+target="_blank" rel="noopener"
+>Ollama&lt;/a>和&lt;a class="link" href="https://www.trychroma.com/" title="chroma"
+target="_blank" rel="noopener"
+>chroma&lt;/a>。关于 Ollama 的介绍，可以查看&lt;a class="link" href="https://www.4async.com/2024/02/deploy-local-llm-using-ollama/" title="我的之前的文章"
+target="_blank" rel="noopener"
+>我的之前的文章&lt;/a>。出于成本考虑，这里使用了开源的本地模型实现，请确保你的 Ollama 是在运行的状态。当然，如果你是用 &lt;a class="link" href="https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4" title="GPT-4 Turbo"
+target="_blank" rel="noopener"
+>GPT-4 Turbo&lt;/a>（今天凌晨刚刚发布了新版本），效果要远比开源模型好很多。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>mkdir hydemo &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> cd hydemo
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pdm init
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pdm add langchain chromadb beautifulsoup4
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source .venv/bin/activate
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="功能实现">功能实现
+&lt;/h2>&lt;h3 id="实现生成模拟文档">实现生成模拟文档
+&lt;/h3>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> langchain.chains.hyde.base &lt;span style="color:#f92672">import&lt;/span> HypotheticalDocumentEmbedder
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> langchain.chains.llm &lt;span style="color:#f92672">import&lt;/span> LLMChain
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> langchain.embeddings.ollama &lt;span style="color:#f92672">import&lt;/span> OllamaEmbeddings
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> langchain.globals &lt;span style="color:#f92672">import&lt;/span> set_debug
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> langchain.llms.ollama &lt;span style="color:#f92672">import&lt;/span> Ollama
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> langchain.vectorstores.chroma &lt;span style="color:#f92672">import&lt;/span> Chroma
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> set_debug(&lt;span style="color:#66d9ef">True&lt;/span>) &lt;span style="color:#75715e"># 设置 langchain 的调试模式，后面我们会看到具体的效果&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> llm &lt;span style="color:#f92672">=&lt;/span> Ollama(model&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;qwen:7b&amp;#34;&lt;/span>) &lt;span style="color:#75715e"># 使用通义千问 7b 模型&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> olemb &lt;span style="color:#f92672">=&lt;/span> OllamaEmbeddings(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;nomic-embed-text&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ) &lt;span style="color:#75715e"># 嵌入模型我们是使用的 nomic-embed-text&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> embeddings &lt;span style="color:#f92672">=&lt;/span> HypotheticalDocumentEmbedder&lt;span style="color:#f92672">.&lt;/span>from_llm(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> llm,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> base_embeddings&lt;span style="color:#f92672">=&lt;/span>olemb,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> prompt_key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;web_search&amp;#34;&lt;/span>, &lt;span style="color:#75715e"># 加载预置的 Web Search Prompt&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(embeddings&lt;span style="color:#f92672">.&lt;/span>llm_chain&lt;span style="color:#f92672">.&lt;/span>prompt)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;__main__&amp;#34;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> main()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>让我们先执行一下，看一下 Prompt 会是什么样子的：&lt;/p></description></item><item><title>从零学习 Hypothetical Document Embeddings (HyDE) - 1</title><link>https://www.4async.com/2024/04/learn-hyde-from-scratch-1/</link><pubDate>Tue, 09 Apr 2024 14:15:00 +0000</pubDate><guid>https://www.4async.com/2024/04/learn-hyde-from-scratch-1/</guid><description>&lt;img src="https://www.4async.com/2024/04/learn-hyde-from-scratch-1/cover.png" alt="Featured image of post 从零学习 Hypothetical Document Embeddings (HyDE) - 1" />&lt;p>最近看到了一篇新的论文，关于评估 RAG 中的各种技术的评估。这篇&lt;a class="link" href="https://arxiv.org/pdf/2404.01037.pdf" target="_blank" rel="noopener"
+>《ARAGOG: Advanced RAG Output Grading》&lt;/a>提供了一个对比多种 RAG 技术的评估。其中提到 HyDE 和 LLM re-rank 能够很好的提高检索精度。不过似乎 HyDE 其实讨论并不是很多，那么咱就对这块内容添砖加瓦一下，让我们从零开始进行一段 HyDE 的冒险。&lt;/p>
+&lt;h2 id="什么是-rag">什么是 RAG？
+&lt;/h2>&lt;p>大语言模型(LLM)虽然在过去的一段时间中成为大家眼中的香馍馍，但它们也存在一些关键的局限性:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>知识局限性&lt;/strong>: LLM 的知识范围主要局限于其训练数据，难以涵盖所有知识领域，在一些专业或冷门话题上表现不佳。尤其是现在 AI 应用场景需要使用来自于企业内部知识库或者外部知识库中的相关信息，而这些内部知识库往往是不在外部公开的。&lt;/li>
+&lt;li>&lt;strong>可靠性问题&lt;/strong>: LLM 依赖于概率模型生成文本，结果难免存在事实性错误或缺乏可靠性，在某些关键应用中存在风险。比如之前的&lt;a class="link" href="https://bc.ctvnews.ca/air-canada-s-chatbot-gave-a-b-c-man-the-wrong-information-now-the-airline-has-to-pay-for-the-mistake-1.6769454" target="_blank" rel="noopener"
+>加拿大航空赔偿事件&lt;/a>，尤其是对敏感的需要正确信息的场景，一旦出现错误的信息往往意味着潜在的损失。&lt;/li>
+&lt;/ul>
+&lt;p>要解决这些问题，那么就需要是用 RAG 来帮助解决。那么，什么是 RAG 呢？&lt;/p>
+&lt;p>Retrieval-Augmented Generation (RAG) 是一种基于检索的生成式模型，它结合了检索式和生成式的优点，可以在生成式模型(Generative Model)中引入外部知识。RAG 模型由两部分组成：一个是检索器，另一个是生成器。检索器负责从知识库中检索相关信息，生成器则负责生成答案。与传统的大语言模型(LLM)仅依靠自身有限的知识进行文本生成不同，RAG 模型能够动态地从海量的外部知识库中检索相关信息，并将这些信息融入到生成过程中，产生更加准确、连贯的输出内容。&lt;/p>
+&lt;p>换句话说，当用户提出一个查询或者需要生成某种类型的文本时，RAG 模型首先会利用一个信息检索子模块，从知识库中检索出与查询相关的信息。然后，RAG 的生成子模块会结合这些检索到的相关信息，生成最终的输出文本。这种结合检索和生成的方式，使 RAG 模型能够弥补传统 LLM 的局限性，提高生成内容的准确性和可靠性。&lt;/p>
+&lt;p>简单点来说，RAG 的基本流程如下：&lt;/p>
+&lt;p>&lt;img src="../2024/04/learn-hyde-from-scratch-1/vanilla-rag.webp"
+width="1527"
+height="654"
+srcset="../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu5351873011583491433.webp 480w, ../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu17629515767707187602.webp 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="233"
+data-flex-basis="560px"
+>&lt;/p>
+&lt;h2 id="什么是-hyde">什么是 HyDE？
+&lt;/h2>&lt;p>但是在是用 RAG 的时候，你往往也会遇到一些问题。&lt;/p>
+&lt;p>让我们设想一个场景：我们有一个知识库，里面存储了大量的文档，我们希望使用 RAG 模型来回答用户的问题。但是，原始的 RAG 只能处理知识库中包含的数据，但是对于知识库中不存在的数据，RAG 无法处理。比较常见的场景包含用户的问答系统，帮助中心，对话系统等。用户通常对你的系统或者专有名词并不了解，他们通常会提出一些根据自己理解或者自己熟悉概念中的名词问题，这些表达方式可能并不在你的知识库中。这时候 RAG 就无法从知识库中检索到相关信息。&lt;/p></description></item><item><title>No GIL Python 的冒险</title><link>https://www.4async.com/2024/03/adventure-of-no-gil-python/</link><pubDate>Mon, 18 Mar 2024 10:11:00 +0000</pubDate><guid>https://www.4async.com/2024/03/adventure-of-no-gil-python/</guid><description>&lt;img src="https://www.4async.com/2024/03/adventure-of-no-gil-python/cover.png" alt="Featured image of post No GIL Python 的冒险" />&lt;p>在前几周的时候，Python的&lt;a class="link" href="https://github.com/python/cpython/pull/116338" target="_blank" rel="noopener"
+>允许禁用 GIL PR&lt;/a> 正式合并进入了 Python 3.13 的master分支。这是一个非常重要的 PR，因为它在未来将会对 Python 的并发性能产生非常大的影响。在即将到来的 Python 3.13 中，这个允许禁用 GIL和包含了 Copy and Paste JIT 技术，这些同时都对 Python 的性能产生了非常大的影响。&lt;/p>
+&lt;h2 id="什么是-gil">什么是 GIL
+&lt;/h2>&lt;p>GIL，即全局解释器锁，是 Python 语言中一个技术术语。官方实现的 CPython 中包含了 GIL 的实现，同时也是最广泛使用的实现。GIL 的主要目的是在任何时候只允许一个线程执行 Python 字节码，这意味着即使你的程序在多核处理器上运行，也无法实现真正的并行执行。GIL 的存在主要是为了简化 CPython 的内存管理。Python 的对象，如列表、字典等，不是线程安全的，这意味着如果多个线程同时从不同的核心修改同一个对象，可能会导致数据不一致或者程序崩溃。GIL 通过限制同时执行的线程数来避免这种情况。&lt;/p>
+&lt;p>换句话说：如果一个系统线程想要执行 Python 的字节码，必须要获取到 GIL 锁，然后才可以执行 Python 字节码。而如果没有获取到锁，那么线程就会休眠，直到获得信号而被唤醒。为了保证 Python 的效率，Python 也会自动切换线程，比如 IO 阻塞时，或者执行了指定数量的 Python 字节码时。这样就尽量保证了 Python 的效率。当然，你也可以选择手工释放 GIL 锁，比如使用 C/C++/Rust 扩展，或者使用 Cython 等开发高性能扩展时。&lt;/p>
+&lt;p>但是这个 GIL 也是 Python 的一个瓶颈，因为它限制了 Python 的并发性能。在多核处理器上，Python 的并发性能并不是很好。这也是为什么很多人选择使用多进程而不是多线程来提高 Python 的并发性能。在现代的计算机上，多核处理器已经是标配，因此 Python 的并发性能成为了一个非常重要的问题。这也是为什么这么多年来，Python 的 GIL 一直是一个非常热门的话题。&lt;/p></description></item><item><title>使用 Ollama 快速部署本地开源大语言模型</title><link>https://www.4async.com/2024/02/deploy-local-llm-using-ollama/</link><pubDate>Wed, 28 Feb 2024 17:39:00 +0000</pubDate><guid>https://www.4async.com/2024/02/deploy-local-llm-using-ollama/</guid><description>&lt;img src="https://www.4async.com/2024/02/deploy-local-llm-using-ollama/cover.png" alt="Featured image of post 使用 Ollama 快速部署本地开源大语言模型" />&lt;p>如果你是第一次开始研究如何使用开源大语言模型(LLM)测试 GenerativeAI 时，一开始所有的信息一股脑在你的眼前，令人望而生畏。互联网上存在着来自许多不同来源的大量碎片信息，使得快速启动项目变得困难。&lt;/p>
+&lt;p>这篇文章的目标是提供一篇简易上手的文章，帮助你使用名为 Ollama 的模型的启动程序在本地设置和运行开源 AI 模型，当然，这些步骤也同样可以让你在你的服务器上运行它。&lt;/p>
+&lt;h2 id="什么是-ollama">什么是 Ollama
+&lt;/h2>&lt;p>Ollama 是一款帮助我们在本地机器上运行大型语言模型的工具，它让你在本地测试 LLM 变得更加容易。Ollama 提供了本地命令行和 API 调用多种方式进行交互。如果你是想快速测试，那么 CLI 则是一个非常不错的方式；如果你是想开始一个产品，你也可以选择试用&lt;code>/api/chat&lt;/code>进行开发一个应用。&lt;/p>
+&lt;p>Ollama 分为两个部分：一个是运行 LLM 的服务端，另外一个则是可选组件：用于和服务端和 LLM进行交互的 CLI。&lt;/p>
+&lt;h3 id="安装-ollama">安装 Ollama
+&lt;/h3>&lt;p>&lt;a class="link" href="https://ollama.com/" target="_blank" rel="noopener"
+>Ollama&lt;/a> 官方提供了&lt;a class="link" href="https://ollama.com/download" target="_blank" rel="noopener"
+>安装包&lt;/a>用于 MacOS/Linux/Windows 下载。其中 Windows 支持截止到目前(2024/02/27)为止，还是预览支持，可能存在问题。因此这里我们演示使用 MacOS 安装这个应用。&lt;/p>
+&lt;h4 id="下载安装">下载安装
+&lt;/h4>&lt;p>下载完成后，解压这个 zip 文件即可得到Ollama 的应用程序，你可以把它拖到系统的应用程序文件夹中，双击打开：&lt;/p>
+&lt;p>&lt;img src="https://res.craft.do/user/full/1adcdc5f-9fec-35eb-9cb6-9d25a1858140/doc/AC77186B-279D-42E3-94E6-1210D21445CF/7F776093-3862-4581-8084-8B3BA0E87381_2/xtp78WzaqBigmWTxPFklpEhcyiwIjyJ6WBYdsoYkN6oz/Image.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>如果是第一次打开，会遇到安全提示，选择打开即可。&lt;/p>
+&lt;p>&lt;img src="https://res.craft.do/user/full/1adcdc5f-9fec-35eb-9cb6-9d25a1858140/doc/AC77186B-279D-42E3-94E6-1210D21445CF/47F99D14-8F4F-4C2F-AEED-71C8F8894B2C_2/glL5swE2IRE6DUeLCVYDYywm0ksnNLB1FxhstNkbAGwz/2024-02-27%2011.44.33.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>接下来需要安装 Ollama 的命令行工具，这样你就可以在命令行中访问LLM 了。&lt;/p>
+&lt;p>&lt;img src="https://res.craft.do/user/full/1adcdc5f-9fec-35eb-9cb6-9d25a1858140/doc/AC77186B-279D-42E3-94E6-1210D21445CF/043C01CF-0F92-4B75-A566-43CFDAB1E541_2/rOmbRmEOsdZek1JwIw5fDvoMAy6eUli2mziQFEEWTKwz/2024-02-27%2011.46.18.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;h4 id="命令行安装">命令行安装
+&lt;/h4>&lt;p>当然，如果你安装了&lt;code>[homebrew](https://brew.sh/)&lt;/code>包管理工具，也可以使用下面的方式快速安装 Ollama：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>brew install ollama
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>命令行方式安装时，需要额外注意我们无法像图形界面进行后台服务启动。你需要施工执行下面的命令启动Ollama 服务端：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>ollama serve
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="试用-ollama">试用 Ollama
+&lt;/h2>&lt;p>现在你已经安装完成 Ollama 了，接下来让我们运行一个基础的模型试用一下。Ollama 支持了&lt;a class="link" href="https://ollama.com/library" target="_blank" rel="noopener"
+>很多的开源模型&lt;/a>，包括 Google 最新开源的 &lt;a class="link" href="https://ollama.com/library/gemma" target="_blank" rel="noopener"
+>Gemma&lt;/a>。不过这里我推荐使用&lt;a class="link" href="https://ollama.com/library/mistral" target="_blank" rel="noopener"
+>Mistral&lt;/a> 7B 模型。我们可以使用下面的命令快速安装对应模型：&lt;/p></description></item><item><title>使用子解释器运行Python并行应用</title><link>https://www.4async.com/2023/11/python-312-sub-interpreters/</link><pubDate>Thu, 23 Nov 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/11/python-312-sub-interpreters/</guid><description>&lt;img src="https://www.4async.com/2023/11/python-312-sub-interpreters/cover.webp" alt="Featured image of post 使用子解释器运行Python并行应用" />&lt;blockquote>
+&lt;p>译者注：最近 Python 3.12 引入了子解释器概念，非常火热，更好的消息是已经&lt;a class="link" href="https://twitter.com/anthonypjshaw/status/1723916190202945761" target="_blank" rel="noopener"
+>在FastAPI应用成功&lt;/a>了，虽然是很简单的那种。因此顺腾摸瓜，找到了作者的&lt;a class="link" href="https://tonybaloney.github.io/posts/sub-interpreter-web-workers.html" target="_blank" rel="noopener"
+>博客&lt;/a>，翻译分享给大家。&lt;/p>
+&lt;/blockquote>
+&lt;p>Python 3.12 引入了一个新的 API 用于“子解释器”（sub interpreters），这是 Python 的一种不同的并行执行模型，提供了真正并行处理和多进程处理之间的良好折中，且具有更快的启动时间。在这篇文章中，我将解释什么是子解释器，为什么它对 Python 中的并行代码执行很重要，以及它与其他方法的比较。&lt;/p>
+&lt;h2 id="什么是子解释器">什么是子解释器？
+&lt;/h2>&lt;p>Python 的系统架构大致由三部分组成：&lt;/p>
+&lt;ul>
+&lt;li>一个包含一个或多个解释器的 Python 进程&lt;/li>
+&lt;li>一个包含锁（GIL）和一个或多个 Python 线程的解释器&lt;/li>
+&lt;li>一个包含当前执行代码信息的线程。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="../2023/11/python-312-sub-interpreters/interpreter-states-1.png"
+width="2111"
+height="1898"
+srcset="../2023/11/python-312-sub-interpreters/interpreter-states-1_hu15682165194778488945.png 480w, ../2023/11/python-312-sub-interpreters/interpreter-states-1_hu15867741242815948022.png 1024w"
+loading="lazy"
+alt="interpreter states"
+class="gallery-image"
+data-flex-grow="111"
+data-flex-basis="266px"
+>&lt;/p>
+&lt;p>要了解更多关于这方面的信息，你可以阅读我的书&lt;a class="link" href="https://tonybaloney.github.io/#books" target="_blank" rel="noopener"
+>《CPython 内部实现》&lt;/a>中的“并行性和并发性”章节。&lt;/p>
+&lt;p>自 Python 1.5 以来，就有一个 C-API 可以支持多个解释器，但这个功能由于 GIL 的限制而受到严重限制，没有真正实现真正的并行性。因此，运行并行代码最常用的技术（不使用第三方库）是使用 &lt;a class="link" href="https://docs.python.org/3/library/multiprocessing.html" target="_blank" rel="noopener"
+>multiprocessing 模块&lt;/a>。&lt;/p>
+&lt;p>2017 年，CPython 核心开发人员提出改变解释器结构的提议，使它们更好地与拥有它们的 Python 进程隔离，并能够并行操作。实现这一目标的工作相当巨大（6 年后仍未完成），并分为两个 PEP。PEP684 将 GIL 在各个解释器独立开，PEP554 提供了一个创建解释器和在它们之间共享数据的 API。&lt;/p>
+&lt;p>GIL 是“全局解释器锁”，是 Python 进程中的一个锁，意味着在任何时间点 Python 进程中只能执行一条指令，即使它有多个线程。这实际上意味着，即使你在拥有 4 核 CPU 的电脑上同时启动 4 个 Python 线程，也只有一个线程会在任何时候运行。&lt;/p></description></item><item><title>Twirp初相识</title><link>https://www.4async.com/2023/01/twirp-first-step/</link><pubDate>Wed, 25 Jan 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/01/twirp-first-step/</guid><description>&lt;img src="https://www.4async.com/2023/01/twirp-first-step/cover.png" alt="Featured image of post Twirp初相识" />&lt;h2 id="什么是twirp">什么是Twirp？
+&lt;/h2>&lt;p>Twirp是Twitch在&lt;a class="link" href="https://blog.twitch.tv/en/2018/01/16/twirp-a-sweet-new-rpc-framework-for-go-5f2febbf35f/" target="_blank" rel="noopener"
+>2018年&lt;/a>开源的RPC框架。正如同他们在发布文章中说的那样，RPC相对于普通的RESTful API更方便设计、组织和维护，让开发者更加专注于业务。但是同样的，在Go社区中重要的gRPC方案严重与HTTP/2绑定，这也成为一个制约其推广的问题：HTTP/2的复杂性其实并不必要；与Go Runtime的割裂也是另外一个问题，导致部分优化难以直接通过升级Go版本在gRPC上显现。&lt;/p>
+&lt;p>Twirp则选择保留了部分好的地方：使用Protobuf这个IDL约束请求/返回类型，这样可以最大化借助Protobuf带来的优势，生成客户端和服务端代码。但是Twirp选择与Go标准库集成，这样可以更好的利用Go本身升级带来的优化。这同时也保证了Twirp本身的简洁性。同时，你也可以很方便的使用cURL等传统工具，借助json请求测试，而不需要手工处理二进制数据。同样的，借助Go标准库，未来Twirp可以更好的升级成HTTP/3而不是像gRPC一样等待上游更新。当然如果你更倾向于使用gRPC相关的实践，那么&lt;a class="link" href="https://buf.build/blog/connect-a-better-grpc" target="_blank" rel="noopener"
+>connect-go&lt;/a>可能是你的另外一个不错选择。&lt;/p>
+&lt;p>当然，如果说缺点，Twirp并不完美：小众的社区，缺少生态，缺少相关信息内容等等。不过这些仍旧是瑕不掩瑜。毕竟实现一个相关的功能其实并不那么复杂。&lt;/p>
+&lt;h2 id="如何使用twirp">如何使用Twirp
+&lt;/h2>&lt;p>Twirp虽然官网比较简单，甚至社区也不是很大的样子，但是基本上需求的数据基本都可以在官网上找到入口。但是这也有个问题，导致整个流程对新手并不友好，有比较高的上手门槛。接下来的内容主要是完善这部分的内容，方便新手用户使用。&lt;/p>
+&lt;h3 id="安装protobuf相关工具">安装Protobuf相关工具
+&lt;/h3>&lt;p>由于Twirp同样使用Protobuf，我们需要使用相关工具。首先是Protobuf，接下来是一些protoc-gen工具：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Bash" data-lang="Bash">&lt;span style="display:flex;">&lt;span>brew install protobuf &lt;span style="color:#75715e"># Mac Only&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>go install github.com/twitchtv/twirp/protoc-gen-twirp@latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="可选项buf">可选项：Buf
+&lt;/h4>&lt;p>Buf是一个Protobuf管理工具，帮助你实现&lt;a class="link" href="https://99designs.com.au/blog/engineering/schema-driven-development/" target="_blank" rel="noopener"
+>Schema Driven Development&lt;/a>实践。它提供了一个CLI管理工具（支持lint，生成和破坏性检查等功能）和类似注册中心机制的BSR(Buf Schema Registry)，你可以在这里管理你的Schema版本和引用其他公开服务的Schema。不使用Buf并不会带来功能缺失，并且Buf提供了&lt;a class="link" href="https://buf.build/pricing" target="_blank" rel="noopener"
+>付费SaaS服务&lt;/a>(测试期间免费)，可以根据你的情况选择是否使用。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Bash" data-lang="Bash">&lt;span style="display:flex;">&lt;span>brew install bufbuild/buf/buf &lt;span style="color:#75715e"># Mac Only&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="可选项taskfile">可选项：Taskfile
+&lt;/h4>&lt;p>&lt;a class="link" href="https://taskfile.dev/" target="_blank" rel="noopener"
+>Taskfile&lt;/a>是我常用来替代Makefile的工具。这并不是必须的工具，你同样可以使用手工执行命令行和Makefile命令进行。事实上，使用Makefile其实可以更好的在Jenkins之类的pipeline里执行，但是对Github Action等现代pipeline而言，区别并不大。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Bash" data-lang="Bash">&lt;span style="display:flex;">&lt;span>brew install go-task/tap/go-task &lt;span style="color:#75715e"># Mac Only&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="生成项目文件">生成项目文件
+&lt;/h3>&lt;p>这里我们使用一个简单的Greeter程序演示使用。假设我们已经存在了一个Go的空项目，那么我们接下来需要创建对应的目录和文件。按照&lt;a class="link" href="https://twitchtv.github.io/twirp/docs/best_practices.html#folderpackage-structure" target="_blank" rel="noopener"
+>官方的建议&lt;/a>，我们可以使用如下结构创建我们的项目，你可以在Github上查看&lt;a class="link" href="https://github.com/ipfans/twirp-demo" target="_blank" rel="noopener"
+>完整的代码&lt;/a>：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Bash" data-lang="Bash">&lt;span style="display:flex;">&lt;span>$ tree .
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── README.md
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── Taskfile.yaml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── buf.gen-ts.yaml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── buf.gen.yaml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── buf.yaml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── build
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── client
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ ├── package.json
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ ├── pnpm-lock.yaml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ └── src
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ └── protoc-gen-twirp-es.ts
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── cmd
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ └── greeter
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ ├── main.go
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ └── main_test.go
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── go.mod
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── go.sum
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── internal
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ └── greetersvc
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ └── service.go
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>└── rpc
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> └── greeter
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> └── v1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> └── service.proto
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="编写服务端">编写服务端
+&lt;/h2>&lt;p>我们先看一下greeter的服务定义：&lt;/p></description></item><item><title>Twirp基本概念：Hooks和Interceptors</title><link>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</link><pubDate>Wed, 25 Jan 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</guid><description>&lt;img src="https://www.4async.com/2023/01/twirp-hooks-and-interceptors/cover.png" alt="Featured image of post Twirp基本概念：Hooks和Interceptors" />&lt;p>Twirp做了足够多的抽象工作，使得我们可以在不同的层次上进行扩展。在最基础的使用层面上，你可以像&lt;code>net/http&lt;/code>一样去简单的使用。但是往往这样也不能满足我们实际项目中的需求在这篇文章中，我们将介绍Twirp的Hooks和Interceptors基本概念，以及如何使用这些Twirp的扩展机制。&lt;/p>
+&lt;h2 id="heading">
+&lt;/h2></description></item><item><title>去年的一点小工作(1)：从BFF谈起</title><link>https://www.4async.com/2023/01/something-happend-in-2022-1/</link><pubDate>Sat, 21 Jan 2023 17:55:39 +0000</pubDate><guid>https://www.4async.com/2023/01/something-happend-in-2022-1/</guid><description>&lt;img src="https://www.4async.com/2023/01/something-happend-in-2022-1/cover.jpg" alt="Featured image of post 去年的一点小工作(1)：从BFF谈起" />&lt;p>前年底，之前创业的公司关掉正式回归了打工生活。现在在一家SaaS公司做一些新业务开发和架构的工作。这个系列的文章也是想整理一下2022年的一些小成果，有一些内容和相关背景可能因为各种原因无法描述更细节的内容，也请各位见谅。&lt;/p>
+&lt;h1 id="后端和前端的配合我们遇到了什么问题">后端和前端的配合，我们遇到了什么问题？
+&lt;/h1></description></item><item><title>Byebye 2022, Hello 2023</title><link>https://www.4async.com/2023/01/byebye-2022-hello-2023/</link><pubDate>Sun, 01 Jan 2023 17:53:39 +0000</pubDate><guid>https://www.4async.com/2023/01/byebye-2022-hello-2023/</guid><description>&lt;img src="https://www.4async.com/2023/01/byebye-2022-hello-2023/2022-2023.jpg" alt="Featured image of post Byebye 2022, Hello 2023" /></description></item><item><title>给hugo添加mermaid支持</title><link>https://www.4async.com/2022/12/add-mermaid-support-for-hugo/</link><pubDate>Mon, 26 Dec 2022 17:48:00 +0000</pubDate><guid>https://www.4async.com/2022/12/add-mermaid-support-for-hugo/</guid><description>&lt;img src="https://www.4async.com/2022/12/add-mermaid-support-for-hugo/gohugo.png" alt="Featured image of post 给hugo添加mermaid支持" />&lt;p>发现2022年居然一篇博客都没写，一方面是疫情原因实在太糟心，另外一方面是环境使然，2022年一年都在适应新环境和拼命的推动项目前行。立个Flag，保证明年至少一个季度有一篇文章吧。&lt;/p>
+&lt;p>这篇文章是为了提示如何在hugo中添加mermaid支持，mermaid是一个流程图的工具，可以在markdown中直接使用，非常方便。其实在hugo官方文档中已经有了说明，但是我在使用的时候发现对新人不是特别友好，所以这里记录一下，顺便水一个。&lt;/p></description></item><item><title>一些实用工具列表</title><link>https://www.4async.com/2021/11/awesome-toolkit/</link><pubDate>Mon, 29 Nov 2021 17:48:00 +0000</pubDate><guid>https://www.4async.com/2021/11/awesome-toolkit/</guid><description>&lt;img src="https://www.4async.com/2021/11/awesome-toolkit/toolkit.png" alt="Featured image of post 一些实用工具列表" />&lt;p>一些在工作中经常使用的一些工具。如果有什么推荐的，也欢迎在评论中提供。这个列表后续会持续更新&lt;/p>
+&lt;h2 id="http工具">HTTP工具
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://curlie.io" target="_blank" rel="noopener"
+>&lt;strong>curlie&lt;/strong>&lt;/a> - httpie-like 工具，底层是curl&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/go-acme/lego" target="_blank" rel="noopener"
+>&lt;strong>lego&lt;/strong>&lt;/a> - Let&amp;rsquo;s Encrypt证书工具&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/FiloSottile/mkcert" target="_blank" rel="noopener"
+>&lt;strong>mkcert&lt;/strong>&lt;/a> - 方便导入本地证书&lt;/li>
+&lt;li>&lt;a class="link" href="https://paw.cloud" target="_blank" rel="noopener"
+>&lt;strong>paw.cloud&lt;/strong>&lt;/a> - 原生的macOS HTTP调试工具，现在每年都会免费送，有兴趣关注一下&lt;/li>
+&lt;/ul>
+&lt;h2 id="编译工具">编译工具
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://taskfile.dev" target="_blank" rel="noopener"
+>&lt;strong>go-task&lt;/strong>&lt;/a> - 我用来替代Makefile，并无什么特殊必要，主要是不想写Makefile&lt;/li>
+&lt;/ul>
+&lt;h2 id="代码质量">代码质量
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/golangci/golangci-lint" target="_blank" rel="noopener"
+>&lt;strong>golangci-lint&lt;/strong>&lt;/a> - 感觉无需介绍了，集成了很多实用工具，重复的就不列举了&lt;/li>
+&lt;li>&lt;a class="link" href="https://pre-commit.com" target="_blank" rel="noopener"
+>&lt;strong>pre-commit&lt;/strong>&lt;/a> - 提交前检查代码质量，比如代码风格，缩进，空格等等&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/boyter/dcd" target="_blank" rel="noopener"
+>&lt;strong>dcd&lt;/strong>&lt;/a> - 查找代码中的重复代码&lt;/li>
+&lt;/ul>
+&lt;h2 id="代码统计">代码统计
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/boyter/scc" target="_blank" rel="noopener"
+>&lt;strong>scc&lt;/strong>&lt;/a> - 高性能统计代码行数&lt;/li>
+&lt;/ul>
+&lt;h2 id="图表工具">图表工具
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/blushft/go-diagrams" target="_blank" rel="noopener"
+>&lt;strong>go-diagrams&lt;/strong>&lt;/a> - 使用Go语言描述系统架构图&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/k1LoW/ndiag" target="_blank" rel="noopener"
+>&lt;strong>ndiag&lt;/strong>&lt;/a> - 如果不想用Go描述，也可以选择用YAML描述系统架构&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/lucasepe/draft" target="_blank" rel="noopener"
+>&lt;strong>draft&lt;/strong>&lt;/a> - 另外一个用YAML描述的工具，风格不一样&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/mkimuram/k8sviz" target="_blank" rel="noopener"
+>&lt;strong>k8sviz&lt;/strong>&lt;/a> - 你也可以从现成的K8s环境中生成系统架构图&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/storj/archview" target="_blank" rel="noopener"
+>&lt;strong>archview&lt;/strong>&lt;/a> - 通过代码中注释生成应用内部分层结构&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bykof/go-plantuml" target="_blank" rel="noopener"
+>&lt;strong>go-plantuml&lt;/strong>&lt;/a> - 根据Go代码生成结构体的PlantUML图&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/jfeliu007/goplantuml" target="_blank" rel="noopener"
+>&lt;strong>goplantuml&lt;/strong>&lt;/a> - 另外一种生成PlantUML的工具&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/gmarik/go-erd" target="_blank" rel="noopener"
+>&lt;strong>go-erd&lt;/strong>&lt;/a> - 不想用PlantUML也可以换这种风格&lt;/li>
+&lt;li>&lt;a class="link" href="https://asciiflow.com" target="_blank" rel="noopener"
+>&lt;strong>asciiflow&lt;/strong>&lt;/a> - 可以画ASCII图，ASCII图好处是可以放在代码里，如果你愿意的话&lt;/li>
+&lt;li>&lt;a class="link" href="https://textart.io/sequence" target="_blank" rel="noopener"
+>&lt;strong>sequence&lt;/strong>&lt;/a> - 嫌弃asciiflow比较原始，做时序图的时候可以用这个&lt;/li>
+&lt;li>&lt;a class="link" href="https://mermaid-js.github.io/mermaid-live-editor/" target="_blank" rel="noopener"
+>&lt;strong>mermaid-js&lt;/strong>&lt;/a> - 方便集成在网页中，也可以导出成图片&lt;/li>
+&lt;li>&lt;a class="link" href="https://kroki.io/" target="_blank" rel="noopener"
+>&lt;strong>kroki&lt;/strong>&lt;/a> - 上面没提到的图类型的生成？看看这个&lt;/li>
+&lt;/ul>
+&lt;h2 id="iac">IaC
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://www.pulumi.com/" target="_blank" rel="noopener"
+>&lt;strong>pulumi&lt;/strong>&lt;/a> - Terraform业界比较常用，不过要学习HCL比较蛋疼，我个人比较喜欢pulumi，可以选择自己的习惯的语言，tf-cdk目前还比较初级。&lt;/li>
+&lt;/ul></description></item><item><title>Go 1.17 泛型尝鲜</title><link>https://www.4async.com/2021/08/golang-117-generics/</link><pubDate>Tue, 17 Aug 2021 17:48:00 +0000</pubDate><guid>https://www.4async.com/2021/08/golang-117-generics/</guid><description>&lt;img src="https://www.4async.com/2021/08/golang-117-generics/go.png" alt="Featured image of post Go 1.17 泛型尝鲜" />&lt;p>今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。&lt;/p>
+&lt;h2 id="泛型有什么作用">泛型有什么作用？
+&lt;/h2>&lt;p>在使用Go没有泛型之前我们怎么实现针对多类型的逻辑实现的呢？有很多方法，比如说使用&lt;code>interface{}&lt;/code>作为变量类型参数，在内部通过类型判断进入对应的处理逻辑；将类型转化为特定表现的鸭子类型，通过接口定义的方法实现逻辑整合；还有人专门编写了Go的&lt;a class="link" href="https://twitter.com/yogthos/status/883058510275149826" target="_blank" rel="noopener"
+>函数代码生成工具&lt;/a>，通过批量生成不同类型的相同实现函数代替手工实现等等。这些方法多多少少存在一些问题：使用了&lt;code>interface{}&lt;/code>作为参数意味着放弃了编译时检查，作为强类型语言的一个优势就被抹掉了。同样，无论使用代码生成还是手工书写，一旦出现问题，意味着这些方法都需要重复生成或者进行批量修改，工作量反而变得更多了。&lt;/p>
+&lt;p>在Go中引入泛型会给程序开发带来很多好处：通过泛型，可以针对多种类型编写一次代码，大大节省了编码时间。你可以充分应用编译器的编译检查，保证程序变量类型的可靠性。借助泛型，你可以减少代码的重复度，也不会出现一处出现问题需要修改多处地方的尴尬问题。这也让很多测试工作变得更简单，借助类型安全，你甚至可以少考虑很多的边缘情况。&lt;/p>
+&lt;p>Go语言官方有详细的泛型提案文档可以在&lt;a class="link" href="https://go.googlesource.com/proposal/&amp;#43;/refs/heads/master/design/15292-generics.md" target="_blank" rel="noopener"
+>这里&lt;/a>和&lt;a class="link" href="https://go.googlesource.com/proposal/&amp;#43;/refs/heads/master/design/15292/2013-12-type-params.md" target="_blank" rel="noopener"
+>这里&lt;/a>查看详情。&lt;/p>
+&lt;h2 id="如何使用泛型">如何使用泛型
+&lt;/h2>&lt;p>前面理论我们仅仅只做介绍，这次尝鲜还是以实践为主。让我们先从一个小例子开始。&lt;/p>
+&lt;h3 id="从简单的例子开始">从简单的例子开始
+&lt;/h3>&lt;p>让我们先从一个最简单的例子开始：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Addable&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span>, &lt;span style="color:#66d9ef">int8&lt;/span>, &lt;span style="color:#66d9ef">int16&lt;/span>, &lt;span style="color:#66d9ef">int32&lt;/span>, &lt;span style="color:#66d9ef">int64&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">uint&lt;/span>, &lt;span style="color:#66d9ef">uint8&lt;/span>, &lt;span style="color:#66d9ef">uint16&lt;/span>, &lt;span style="color:#66d9ef">uint32&lt;/span>, &lt;span style="color:#66d9ef">uint64&lt;/span>, &lt;span style="color:#66d9ef">uintptr&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">float32&lt;/span>, &lt;span style="color:#66d9ef">float64&lt;/span>, &lt;span style="color:#66d9ef">complex64&lt;/span>, &lt;span style="color:#66d9ef">complex128&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">add&lt;/span>[&lt;span style="color:#a6e22e">T&lt;/span> &lt;span style="color:#a6e22e">Addable&lt;/span>](&lt;span style="color:#a6e22e">a&lt;/span>, &lt;span style="color:#a6e22e">b&lt;/span> &lt;span style="color:#a6e22e">T&lt;/span>) &lt;span style="color:#a6e22e">T&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#a6e22e">a&lt;/span> &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#a6e22e">b&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">add&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span>,&lt;span style="color:#ae81ff">2&lt;/span>))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">add&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;2&amp;#34;&lt;/span>))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这个函数可以实现任何需要使用&lt;code>+&lt;/code>符号进行运算的类型，我们通过定义&lt;code>Addable&lt;/code>类型，枚举了所有可能可以使用&lt;code>add&lt;/code>方法的所有的类型。比如我们在&lt;code>main&lt;/code>函数中就使用了&lt;code>int&lt;/code>和&lt;code>string&lt;/code>两种不同类型。&lt;/p>
+&lt;p>但是如果这时我们使用简单的&lt;code>go run&lt;/code>命令运行，会发现提示语法错误：&lt;/p>
+&lt;pre tabindex="0">&lt;code>$ go version
+go version go1.17 darwin/arm64
+$ go run ~/main.go
+# command-line-arguments
+../main.go:8:2: syntax error: unexpected type, expecting method or interface name
+../main.go:15:6: missing function body
+../main.go:15:9: syntax error: unexpected [, expecting (
+&lt;/code>&lt;/pre>&lt;p>因为在Go 1.17中，泛型并未默认开启，你需要定义&lt;code>gcflags&lt;/code>方式启用泛型：&lt;/p></description></item><item><title>Go Web应用中常见的反模式</title><link>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</link><pubDate>Fri, 13 Aug 2021 14:09:00 +0000</pubDate><guid>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</guid><description>&lt;img src="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg" alt="Featured image of post Go Web应用中常见的反模式" />&lt;blockquote>
+&lt;p>作者：Miłosz Smółka &lt;br>
+译者：Kevin &lt;br>
+原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/&lt;/p>
+&lt;/blockquote>
+&lt;p>在我职业生涯的某个阶段，我对我所构建的软件不再感到兴奋。&lt;/p>
+&lt;p>我最喜欢的工作内容是底层的细节和复杂的算法。在转到面向用户的应用开发之后，这些内容基本消失了。编程似乎是利用现有的库和工具把数据从一处移至另一处。到目前为止，我所学到的关于软件的知识不再那么有用了。&lt;/p>
+&lt;p>让我们面对现实吧：大多数Web应用无法解决棘手的技术挑战。他们需要做到的是正确的对产品进行建模，并且比竞争对手更快的改进产品。&lt;/p>
+&lt;p>这起初看起来似乎是那么的无聊，但是你很快会意识到实现这个目标比听起来要难。这是一项完全不同的挑战。即使它们技术上实现并没有那么复杂，但时解决它们会对产品产生巨大影响并且让人获得满足。&lt;/p>
+&lt;p>&lt;strong>Web应用面临的最大挑战不是变成了一个无法维护的屎山，而是会减慢你的速度，让你的业务最终失败。&lt;/strong>&lt;/p>
+&lt;p>这是他们如何在Go中发生和我是如何避免他们的。&lt;/p>
+&lt;h2 id="松耦合是关键">松耦合是关键
+&lt;/h2>&lt;p>应用难以维护的一个重要原因是强耦合。&lt;/p>
+&lt;p>&lt;strong>在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用&lt;/strong>。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。&lt;/p>
+&lt;p>相比之下，&lt;strong>松耦合应用保持了清晰的边界&lt;/strong>。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？&lt;/p>
+&lt;p>微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了&lt;a class="link" href="https://threedots.tech/post/microservices-or-monolith-its-detail/" target="_blank" rel="noopener"
+>分布式单体&lt;/a>的陷阱，处理和之前相同的问题，而且还增加了网络开销。&lt;/p>
+&lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/microservices.png"
+loading="lazy"
+alt="从强耦合单体应用到分布式单体"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>❌ 反模式：分布式单体 &lt;br>
+在你了解边界之前，不要将你的应用切分成为微服务。&lt;/p>
+&lt;/blockquote>
+&lt;p>微服务并不会降低耦合，&lt;strong>因为拆分服务的次数并不重要。重要的是如何连接各个服务&lt;/strong>。&lt;/p>
+&lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/monolith.png"
+loading="lazy"
+alt="从模块化单体应用到松耦合微服务"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>✅ 策略：松耦合 &lt;br>
+以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="dry引入了耦合">DRY引入了耦合
+&lt;/h2>&lt;p>强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。&lt;/p>
+&lt;p>简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：&lt;/p>
+&lt;blockquote>
+&lt;p>每条知识在系统中都必须有一个单一的、明确的、权威的表述。&lt;/p>
+&lt;/blockquote>
+&lt;p>&amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。&lt;/p>
+&lt;p>&lt;strong>当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/coupling.png"
+loading="lazy"
+>&lt;/p>
+&lt;h2 id="在go中保持dry">在Go中保持DRY
+&lt;/h2>&lt;p>相比于其他现代语言，Go是清晰的，缺少很多特性，没有太多的语法糖来隐藏复杂性。&lt;/p>
+&lt;p>我们习惯了捷径，所以一开始很难接受Go的冗长。就像我们已经开发出一种去寻找一种更加聪明的编写代码的方式的本能。&lt;/p>
+&lt;p>最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。&lt;/p>
+&lt;p>最终，大家都接受了Go的工作方式。&lt;strong>它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。&lt;/strong>&lt;/p>
+&lt;h2 id="单一数据模型带来的应用耦合">单一数据模型带来的应用耦合
+&lt;/h2>&lt;p>&lt;strong>Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。&lt;/strong> 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。&lt;/p>
+&lt;p>这里有一个流行的方式保存单个&lt;code>User&lt;/code>模型的方法：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">User&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ID&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">FirstName&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">LastName&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">DisplayName&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;display_name&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Email&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Emails&lt;/span> []&lt;span style="color:#a6e22e">Email&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">PasswordHash&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">LastIP&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">CreatedAt&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Time&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">UpdatedAt&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Time&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Email&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ID&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34; gorm:&amp;#34;primaryKey&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Address&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;address&amp;#34; validate:&amp;#34;required,email&amp;#34; gorm:&amp;#34;size:256;uniqueIndex&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Primary&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;primary&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">UserID&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>完整代码：&lt;a class="link" href="https://github.com/ThreeDotsLabs/go-web-app-antipatterns/blob/ab94d47350756716a7fed42b7ae546c51c11406a/01-coupling/01-tightly-coupled/internal/user.go#L9" target="_blank" rel="noopener"
+>github.com/ThreeDotsLabs/go-web-app-antipatterns/01-coupling/01-tightly-coupled/internal/user.go&lt;/a>&lt;/p></description></item><item><title>什么是事件建模Event Modeling?</title><link>https://www.4async.com/2021/07/introducing-event-modeling/</link><pubDate>Tue, 06 Jul 2021 11:41:00 +0000</pubDate><guid>https://www.4async.com/2021/07/introducing-event-modeling/</guid><description>&lt;img src="https://www.4async.com/2021/07/introducing-event-modeling/event-modeling-tutorial.jpg" alt="Featured image of post 什么是事件建模Event Modeling?" />&lt;h2 id="基本概念">基本概念
+&lt;/h2>&lt;p>事件建模（Event Modeling）是一种描述系统的方法，展示信息如何随时间变化的例子。具体来说，这种方式省略了瞬息万变的细节，而着眼于在任何特定的时间点上的持久化存储和用户所见数据的变化。这些时间轴上的事件，构成了对系统的描述。&lt;/p>
+&lt;p>近年来，很多系统使用事件通过事件存储数据库或者使用特定方式使用常规数据库构建了状态和信息传播的模块。然而，大多数方法仍然依赖于通过SQL数据库、文档数据库或者其他技术实现严格意义上的当前时间点信息的视图。&lt;/p>
+&lt;p>对很多系统而言，特别是对于非小型系统而言，随着系统复杂性的增加，变更成本将会随着时间的推移难度指数级上升。与现有的设计和建模方式对比，事件建模可以在短时间内创建一个基础蓝图，将返工工作量降到最低。&lt;/p>
+&lt;h3 id="从过去谈起">从过去谈起
+&lt;/h3>&lt;p>讲故事自古以来就是人类能够将知识传递给后代的方法，它在很大程度上依赖于我们如何存储记忆-无论是逻辑的、视觉的、听觉的还是其他的。这一点很重要，因为这与信息系统的构建方式有相似之处。
+用具体的例子说明某物应该如何工作是一种常见的方式。这种方式可以在软件开发的成功实践中看到，如行为驱动开发。这种方式很有效，因为我们通过故事来沟通更有效。将它和讲故事联系在一起，是一种保持社会信息的方式。我们的大脑是为它而建的，而不是为流程图和其他格式而建的。
+而事件建模模型就是遵循这种讲故事模式而建立的产品建模方式。&lt;/p>
+&lt;h2 id="事件建模模式">事件建模模式
+&lt;/h2>&lt;p>&lt;img src="https://eventmodeling.org/posts/what-is-event-modeling/blueprint_large.jpg"
+loading="lazy"
+>&lt;/p>
+&lt;p>时间线是最好描述故事主线的方式，对我们的系统而言，时间线也是描述我们系统核心部分概念的重要组成部分。我们可以通过在一条时间线上，系统从开始到结束，在没有分支情况下应该做什么方式展示我们系统的一部分功能。这就是一个典型的事件模型的组成。我们可以用这种方式跟踪所有UI界面中字段值如何存储和如何展示的。比如在上面的示例图中，我们使用了3种不同模块的内容和传统的线框模型就展示了整个系统的模型。但是简单性是我们重要的一个目标，因此我们只依赖于4种模式构建这种模型图。&lt;/p>
+&lt;h3 id="保持简单性">保持简单性
+&lt;/h3>&lt;p>当我们想采用某些做法或流程来帮助彼此理解和沟通时，它与个人为熟练掌握这些方法而进行的学习量成反比。换句话说，如果我们可以更快的掌握一个名叫X的方法时，我们就可以更好的通过这种方式进行知识分享和互动；反之，无论这种方法多么好，昂贵的学习成本总会搞砸一切。&lt;/p>
+&lt;blockquote>
+&lt;p>当一本书是团队中的必读书目时，每个人都会说他们读过；但事实上只有一半的人会真正读过；这些真正读过的人中一半的人会声称他们理解了这本书；而这些声称理解的人中只有一半的人真正的理解了这本书；而这些真正理解了这本书的人只有一半的人能够使用它。&lt;/p>
+&lt;/blockquote>
+&lt;p>这就是为什么使用3个模块和基于2个想法的4种模式进行事件建模。因为这只需要几分钟就可以将所有的东西向所有人解释清楚。其他的学习则可以在实践中进行。即便理解出现了不足和错误，也可以很快在实践中得到纠正。&lt;/p>
+&lt;h3 id="事件">事件
+&lt;/h3>&lt;p>假设我们想为连锁酒店设计一个酒店网站，让我们的客户可以在线预订房间，并让我们安排清洁和任何其他酒店问题。 我们可以显示在该业务的年度时间线上存储了哪些事件。 我们可以假装我们已经有了这个系统，然后问自己随着时间的推移存储了哪些事件。&lt;/p>
+&lt;h3 id="线框图">线框图
+&lt;/h3>&lt;p>让我们看一下在图片的最上面的部分的第一个模块。为了让讲故事这个事情更加可视化，我们可以在顶部显示功能的线框图或者网页模拟图。这也可以被具象化为具体的泳道图，以方便不同的人（也可以是系统）与我们的系统进行互动。这里一些自动化的内容可以用齿轮表示，同时说明系统正在做什么。通过这种方式，我们可以非常容易的展示出系统需要实现的功能列表，执行流程和项目完成标记。这里的图是示例了一个酒店的预订、支付和通知系统的过程，我们可以重点关注一下所有相关高亮显示的内容。&lt;/p>
+&lt;p>&lt;img src="https://eventmodeling.org/posts/what-is-event-modeling/innovate_large.jpg"
+loading="lazy"
+>&lt;/p>
+&lt;p>借助这个模块，我们可以很方便的和设计师一起沟通设计系统，当然，这里需要注意在设计中，两个重要的内容需要添加到整个设计中：用户所拥有的权限和用户可以获取的信息。&lt;/p>
+&lt;h3 id="命令">命令
+&lt;/h3>&lt;p>大多数信息系统必须给用户一种影响系统的状态的能力，而这种能力就是命令。在我们的例子中，我们必须允许房间预订改变系统状态，这样我们就不会发生超额预订情况。当那个人在未来的预订日期到达时，他们就有一个为他们准备的房间。&lt;/p>
+&lt;p>改变系统状态的意图会被封装在一个命令中。相对于简单地将表单数据保存到数据库中的一个表中，这可以让我们以非技术性的方式来显示意图，同时允许任何实现 - 尽管我们可以看到某些方法更具优势。&lt;/p>
+&lt;p>&lt;img src="https://eventmodeling.org/posts/what-is-event-modeling/empower_large.jpg"
+loading="lazy"
+>&lt;/p>
+&lt;p>从UI和UX的角度来看，这就是一个&amp;quot;命令响应式用户界面&amp;quot;，对帮助制作可组合的UI大有帮助。使用这种模式，从技术和商业的角度来看，交易的界限就更清楚了。以酒店入住为例，酒店的客人要么登记成功，要么没有。&lt;/p>
+&lt;p>当命令成功的前提条件有细微的差别时，它们会在&amp;quot;Given-When-Then&amp;quot;风格的描述方式中进行阐述。这种方式也是行为测试模式惯用的描述方式，也是一种成功的讲述故事的方式。实际执行过程中，可能会有几个这样的故事来说明一个命令如何能成功执行和不能成功执行。&lt;/p>
+&lt;p>这里我们可以用一个例子来描述一下：&lt;/p>
+&lt;blockquote>
+&lt;p>Given：我们已经注册并添加了一个支付方式&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>When：我们试图预订一个房间&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>Then：一个房间被预订了&lt;/p>
+&lt;/blockquote>
+&lt;p>这种描述方式也通常被叫做“安排、行动、断言”，在UI/UX的世界中，也被称为“情景、统计、价值”。
+在图中我们也可以发现，所有的命令都是用蓝色进行标记的。&lt;/p>
+&lt;h3 id="视图或者叫读模型">视图（或者叫读模型）
+&lt;/h3>&lt;p>任何信息系统的一个重要能力是将系统中保存的状态告知用户。我们的酒店客人需要知道他们感兴趣的某些类型的房间在哪一天可以入住。这通常有很多种情况，需要支持信息系统的多个模型。&lt;/p>
+&lt;p>&lt;img src="https://eventmodeling.org/posts/what-is-event-modeling/inform_large.jpg"
+loading="lazy"
+>&lt;/p>
+&lt;p>随着这些新事件的存储，系统中的视图也会一直变化。在我们的酒店系统中，这个日历视图随着影响库存的新事件的发生而被更新。其他视图中清洁团队可以在客户离店事件存储后在其他视图中看到房间已经可以被清理了。&lt;/p>
+&lt;p>指定视图的行为方式与我们指定接受命令的方式非常相似，但有一处不同。视图是被动的，并且不能在事件被存储到系统中之后撤销事件。&lt;/p>
+&lt;p>举个例子：&lt;/p>
+&lt;blockquote>
+&lt;p>Given：酒店设置了12间海景房，海景房从4月4日到12日被预订&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>Then：日历上应该显示除4月4日到12日以外的所有海景房的日期&lt;/p>
+&lt;/blockquote>
+&lt;p>从上面图中我们也可以注意到，所有的读都是用绿色进行标记的。&lt;/p>
+&lt;h3 id="集成">集成
+&lt;/h3>&lt;p>我们刚刚介绍了描述大多数系统所需的 4 种模式中的前 2 种模式。 系统可以从其他系统获取信息并且将信息发送到其他系统。 强迫这 2 个模式成为前 2 个模式的扩展并共享相同的空间是很诱人的选择。 然而这会让交流变得更加困难，因为它们没有人类可见的方面，并且需要一些更高级别的模式。&lt;/p>
+&lt;h3 id="翻译">翻译
+&lt;/h3>&lt;p>当我们有一个为我们提供信息的外部系统时，将这些信息转换成我们自己系统中的更熟悉的形式会很有帮助。 在我们的酒店系统中，如果选择让我们的清洁人员反应更加灵敏，我们可以从客人的 GPS 坐标中获取事件。 我们不想使用经度和纬度对作为事件来指定我们系统中的先决条件。 我们宁愿选择对我们有意义的活动，例如“客人离开酒店”、“客人回到酒店房间”。&lt;/p>
+&lt;p>&lt;img src="https://eventmodeling.org/posts/what-is-event-modeling/understand_large.jpg"
+loading="lazy"
+>&lt;/p>
+&lt;p>通常，翻译很简单，可以表示为从外部事件中获取信息的视图。如果我们不将它们用作测试的任何“Given”部分，则它们存储在该视图模型中的值仅在我们的状态更改测试中的命令参数中表示。&lt;/p>
+&lt;h3 id="自动化">自动化
+&lt;/h3>&lt;p>我们的系统一般都需要与外部服务进行通信。当我们酒店的客人在退房时支付住宿费用时，我们的系统会调用付款处理程序。我们可以通过系统中某个处理程序的“待办事项列表”的概念来了解这是如何发生的。这个待办事项列表显示了我们需要完成的任务。例如，我们的处理程序会不时查看该列表（可能是几毫秒或几天）并向外部系统发送命令以处理付款。然后将来自外部系统的回复转换为我们存储回系统中的事件。通过这种方式，我们将系统中使用的构建块保留为对我们有意义的东西。&lt;/p></description></item><item><title>构建属于你自己的dapr绑定组件</title><link>https://www.4async.com/2021/05/building-your-own-dapr-binding/</link><pubDate>Sat, 15 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-binding/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/uJdVWNeXC6Z3Hq8.png" alt="Featured image of post 构建属于你自己的dapr绑定组件" />&lt;p>在&lt;a class="link" href="../2021/05/2021-05-08-building-your-own-dapr-service-discovery" >上一篇文章&lt;/a>中，吐槽了拖延症的危害，因此这次我来分享一下我最新推送到dapr的最新的一个新的绑定组件，通过这个来看一下如何实现自己的绑定组件。&lt;/p>
+&lt;p>文中提到的PR可以在 &lt;a class="link" href="https://github.com/dapr/components-contrib/pull/872" target="_blank" rel="noopener"
+>dapr/components-contrib#872&lt;/a> 查看对应的具体代码。&lt;/p>
+&lt;h2 id="什么是-dapr-的绑定组件">什么是 dapr 的绑定组件？
+&lt;/h2>&lt;p>在dapr中，绑定是用于使用外部系统功能（比如事件或者接口）的扩展组件。它的优势在于：&lt;/p>
+&lt;ul>
+&lt;li>免除连接到消息传递系统(如队列和消息总线)并进行轮询的复杂性；&lt;/li>
+&lt;li>聚焦于业务逻辑，而不是如何与系统交互的实现细节；&lt;/li>
+&lt;li>使代码不受 SDK 或库的跟踪；&lt;/li>
+&lt;li>处理重试和故障恢复；&lt;/li>
+&lt;li>在运行时在绑定之间切换；&lt;/li>
+&lt;li>构建具有特定于环境的绑定的可移植应用程序，不需要进行代码更改；&lt;/li>
+&lt;/ul>
+&lt;p>在官方文档中，也提到了一个具体的例子：以twilio发送短信为例，一般开发过程中应用程序需要依赖Twilio SDK才可以实现功能，但是借助绑定组件，你可以将SDK的绑定转移至dapr程序领域内，在本身应用程序中不再绑定对应的SDK，不用担心未来SDK过期或者变更带来的重复工作（仅需要更新dapr即可）。&lt;/p>
+&lt;p>根据订阅的进出方向，绑定组件也分为输入绑定和输出绑定。这些绑定均是通过yaml文件描述类型和元数据，通过HTTP/gRPC进行调用。&lt;/p>
+&lt;h2 id="如何实现自己的绑定组件">如何实现自己的绑定组件？
+&lt;/h2>&lt;p>官方例子中提供了一个基础的介绍，上一节中我们也提到了在程序中，根据进出方向可以把绑定组件分为输出绑定和输入绑定。你可以通过官方教程中的例子提供查看：&lt;/p>
+&lt;p>&lt;img src="https://raw.githubusercontent.com/dapr/quickstarts/master/bindings/img/Bindings_Standalone.png"
+loading="lazy"
+>&lt;/p>
+&lt;p>在这个例子用，你可以看到，根据方向吧dapr发布消息到Kafka作为输出组件，把Kafka读取消息到dapr作为输入组件。&lt;/p>
+&lt;p>绑定的声明yaml文件的规范则如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">dapr.io/v1alpha1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Component&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">&amp;lt;NAME&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">namespace&lt;/span>: &lt;span style="color:#ae81ff">&amp;lt;NAMESPACE&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">bindings.&amp;lt;TYPE&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">version&lt;/span>: &lt;span style="color:#ae81ff">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">&amp;lt;NAME&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">value&lt;/span>: &lt;span style="color:#ae81ff">&amp;lt;VALUE&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中&lt;code>metadata.name&lt;/code>则是绑定置名称，&lt;code>spec.metadata.name&lt;/code>和&lt;code>spec.metadata.value&lt;/code>则是配置的属性和对应值。这个值我们可以通过实现接口&lt;code>InputBinding&lt;/code>或者&lt;code>OutputBinding&lt;/code>实现输入绑定和输出绑定.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">InputBinding&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Init&lt;/span>(&lt;span style="color:#a6e22e">metadata&lt;/span> &lt;span style="color:#a6e22e">Metadata&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Read&lt;/span>(&lt;span style="color:#a6e22e">handler&lt;/span> &lt;span style="color:#66d9ef">func&lt;/span>(&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">ReadResponse&lt;/span>) ([]&lt;span style="color:#66d9ef">byte&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>)) &lt;span style="color:#66d9ef">error&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">OutputBinding&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Init&lt;/span>(&lt;span style="color:#a6e22e">metadata&lt;/span> &lt;span style="color:#a6e22e">Metadata&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Invoke&lt;/span>(&lt;span style="color:#a6e22e">req&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">InvokeRequest&lt;/span>) (&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">InvokeResponse&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Operations&lt;/span>() []&lt;span style="color:#a6e22e">OperationKind&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来需要实现一个生成对象的方法，比如说我们需要实现一个飞书推送Webhook的绑定组件，则可以：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">FeishuWebhook&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">logger&lt;/span> &lt;span style="color:#a6e22e">logger&lt;/span>.&lt;span style="color:#a6e22e">Logger&lt;/span> &lt;span style="color:#75715e">// 这个是dapr的日志接口，输出日志可以使用这个
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">settings&lt;/span> &lt;span style="color:#a6e22e">Settings&lt;/span> &lt;span style="color:#75715e">// 具体配置信息
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">httpClient&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">http&lt;/span>.&lt;span style="color:#a6e22e">Client&lt;/span> &lt;span style="color:#75715e">// 请求HTTP
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">NewFeishuWebhook&lt;/span>(&lt;span style="color:#a6e22e">l&lt;/span> &lt;span style="color:#a6e22e">logger&lt;/span>.&lt;span style="color:#a6e22e">Logger&lt;/span>) &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">FeishuWebhook&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// See guidance on proper HTTP client settings here:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">dialer&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">net&lt;/span>.&lt;span style="color:#a6e22e">Dialer&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">Timeout&lt;/span>: &lt;span style="color:#ae81ff">5&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Second&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">netTransport&lt;/span> = &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">http&lt;/span>.&lt;span style="color:#a6e22e">Transport&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">DialContext&lt;/span>: &lt;span style="color:#a6e22e">dialer&lt;/span>.&lt;span style="color:#a6e22e">DialContext&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">TLSHandshakeTimeout&lt;/span>: &lt;span style="color:#ae81ff">5&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Second&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">httpClient&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">http&lt;/span>.&lt;span style="color:#a6e22e">Client&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">Timeout&lt;/span>: &lt;span style="color:#a6e22e">defaultHTTPClientTimeout&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Transport&lt;/span>: &lt;span style="color:#a6e22e">netTransport&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">FeishuWebhook&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">logger&lt;/span>: &lt;span style="color:#a6e22e">l&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">httpClient&lt;/span>: &lt;span style="color:#a6e22e">httpClient&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在绑定组件生命周期中，init会在初始化是进行调用，传入我们之前在yaml文件中定义的配置文件，因此我们可以在这里实现具体的配置获取：&lt;/p></description></item><item><title>构建属于你自己的dapr服务发现</title><link>https://www.4async.com/2021/05/building-your-own-dapr-service-discovery/</link><pubDate>Sat, 08 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-service-discovery/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/uJdVWNeXC6Z3Hq8.png" alt="Featured image of post 构建属于你自己的dapr服务发现" />&lt;p>&lt;strong>写在最前: 这篇文章其实算是马后炮了，因为一直拖延症的问题，顺带过了一个五一假期，结果发现已经有社区贡献者提供了Consul的服务发现实现，于是本来写了一半的文章只能进行调整了。拖延症害人啊！几个草稿的文章看来要尽快赶出来了🤦‍♂️&lt;/strong>&lt;/p>
+&lt;p>在&lt;a class="link" href="../2021/03/2021-03-11-running-dapr-without-container/" >上一篇文章&lt;/a>中，我其实遗留了一个问题：如何定义dapr的服务发现呢？其实在后面阅读dapr的源码之后也前一篇文章的评论中提到了答案：目前dapr提供了内置两种服务发现模式：K8s模式和用于独立部署的mDNS模式。mDNS模式在某些网络环境下可能存在问题（比如跨机房），不过没有关系，dapr同时提供了可扩展能力，可以通过定义自主的服务发现能力扩展dapr的边界。&lt;/p>
+&lt;h2 id="从-nameresolution-到-resolver-接口">从 NameResolution 到 Resolver 接口
+&lt;/h2>&lt;p>在 &lt;a class="link" href="https://github.com/dapr/dapr/blob/9341e3faa67ede470febe987b3398775759cf38f/pkg/components/nameresolution/registry.go#L25" target="_blank" rel="noopener"
+>&lt;code>pkg/components/nameresolution/registry.go&lt;/code>&lt;/a> 文件中，dapr定义了一个 &lt;code>NameResolution&lt;/code> 结构体用于服务注册和发现：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// NameResolution is a name resolution component definition.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">NameResolution&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Name&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">FactoryMethod&lt;/span> &lt;span style="color:#66d9ef">func&lt;/span>() &lt;span style="color:#a6e22e">nr&lt;/span>.&lt;span style="color:#a6e22e">Resolver&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Registry handles registering and creating name resolution components.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">Registry&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Register&lt;/span>(&lt;span style="color:#a6e22e">components&lt;/span> &lt;span style="color:#f92672">...&lt;/span>&lt;span style="color:#a6e22e">NameResolution&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Create&lt;/span>(&lt;span style="color:#a6e22e">name&lt;/span>, &lt;span style="color:#a6e22e">version&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span>) (&lt;span style="color:#a6e22e">nr&lt;/span>.&lt;span style="color:#a6e22e">Resolver&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">nameResolutionRegistry&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">resolvers&lt;/span> &lt;span style="color:#66d9ef">map&lt;/span>[&lt;span style="color:#66d9ef">string&lt;/span>]&lt;span style="color:#66d9ef">func&lt;/span>() &lt;span style="color:#a6e22e">nr&lt;/span>.&lt;span style="color:#a6e22e">Resolver&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中真正的服务解析则是依靠 &lt;a class="link" href="https://github.com/dapr/components-contrib/blob/3ef025c604952ad78101ecb52afe1c7c92c7d455/nameresolution/nameresolution.go#L9" target="_blank" rel="noopener"
+>&lt;code>components-contrib&lt;/code>&lt;/a> 中实现了 &lt;code>Resolver&lt;/code> 接口的具体实现执行。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Resolver is the interface of name resolver.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Resolver&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Init initializes name resolver.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">Init&lt;/span>(&lt;span style="color:#a6e22e">metadata&lt;/span> &lt;span style="color:#a6e22e">Metadata&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// ResolveID resolves name to address.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">ResolveID&lt;/span>(&lt;span style="color:#a6e22e">req&lt;/span> &lt;span style="color:#a6e22e">ResolveRequest&lt;/span>) (&lt;span style="color:#66d9ef">string&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中 &lt;code>Init&lt;/code> 会在 Runtime 初始化时被调用，而 &lt;code>ResolveID&lt;/code> 则会在服务查询时调用。比如在 &lt;a class="link" href="https://github.com/dapr/dapr/blob/1cbf67f8a5da0bb5be4e3a123632c17ebb173f4e/pkg/messaging/direct_messaging.go#L219" target="_blank" rel="noopener"
+>&lt;code>pkg/messaging/direct_messaging.go&lt;/code>&lt;/a> 的方法 &lt;code>getRemoteApp&lt;/code> 中进行服务的解析：&lt;/p></description></item><item><title>在非容器(集群)环境下运行dapr</title><link>https://www.4async.com/2021/03/2021-03-11-running-dapr-without-container/</link><pubDate>Thu, 11 Mar 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/03/2021-03-11-running-dapr-without-container/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/uJdVWNeXC6Z3Hq8.png" alt="Featured image of post 在非容器(集群)环境下运行dapr" />&lt;p>前一段时间一直关注的&lt;code>dapr&lt;/code>正式发布了v1.0版本(实际上本文发布时还更新了v1.0.1)，代表&lt;code>dapr&lt;/code>在某些程度上进入稳定状态，可以尝试在实际中进行运用。作为我一直关注的项目，在第一时间中进行了尝试，并试图引入实际项目中，本文则是针对这些的一些先期测试内容.&lt;/p>
+&lt;h2 id="什么是dapr">什么是dapr？
+&lt;/h2>&lt;p>&lt;code>dapr&lt;/code>最早是由微软开源的(不愧是你)，一个可移植的、事件驱动的程序运行时，它使任何开发者都能轻松地构建运行在云和边缘的弹性、无状态/有状态的应用程序，并且可以灵活支持多种开发语言。换而言之，在我看来，&lt;code>dapr&lt;/code>可以作为一个&lt;code>serverless&lt;/code>落地方案看待和处理，对程序而言，只关注提供的store和消息队列接口，无需关心架构层面更多内容。&lt;/p>
+&lt;p>&lt;img src="https://vip2.loli.io/2022/03/26/yvG2QkBN6Mlb1WR.png"
+loading="lazy"
+alt="overview"
+>&lt;/p>
+&lt;p>不过在官方的示例教程中，使用的环境为容器环境部署和管理dapr。实际上，除了在容器环境或者容器集群环境下，&lt;code>dapr&lt;/code>可以配置为在本地机器上以自托管模式运行。&lt;/p>
+&lt;h2 id="本地安装">本地安装
+&lt;/h2>&lt;p>&lt;code>dapr&lt;/code>安装可以通过官方的&lt;code>dapr-cli&lt;/code>实现，&lt;code>dapr-cli&lt;/code>可以通过一键安装命令快速安装：&lt;/p>
+&lt;pre tabindex="0">&lt;code># wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
+Your system is linux_amd64
+Dapr CLI is detected:
+main: line 86: 43656 Segmentation fault $DAPR_CLI_FILE --version
+Reinstalling Dapr CLI - /usr/local/bin/dapr...
+Getting the latest Dapr CLI...
+Installing v1.0.0 Dapr CLI...
+Downloading https://github.com/dapr/cli/releases/download/v1.0.0/dapr_linux_amd64.tar.gz ...
+dapr installed into /usr/local/bin successfully.
+CLI version: 1.0.0
+Runtime version: n/a
+To get started with Dapr, please visit https://docs.dapr.io/getting-started/
+&lt;/code>&lt;/pre>&lt;p>可以通过输入&lt;code>dapr&lt;/code>命令确认&lt;code>dapr-cli&lt;/code>程序是否被正常安装成功。&lt;/p>
+&lt;p>接下来使用dapr-cli安装所有的runtime等应用。&lt;/p>
+&lt;pre tabindex="0">&lt;code># dapr init --slim
+⌛ Making the jump to hyperspace...
+↘ Downloading binaries and setting up components...
+Dapr runtime installed to /root/.dapr/bin, you may run the following to add it to your path if you want to run daprd directly:
+export PATH=$PATH:/root/.dapr/bin
+✅ Downloaded binaries and completed components set up.
+ℹ️ daprd binary has been installed to /root/.dapr/bin.
+ℹ️ placement binary has been installed to /root/.dapr/bin.
+✅ Success! Dapr is up and running. To get started, go here: https://aka.ms/dapr-getting-started
+# dapr --version
+CLI version: 1.0.0
+Runtime version: 1.0.1
+&lt;/code>&lt;/pre>&lt;p>在官方文档中，如果选择使用&lt;code>init&lt;/code>命令初始化，&lt;code>dapr-cli&lt;/code>将会自动尝试使用容器环境管理相关程序，只有添加&lt;code>--slim&lt;/code>参数才会选择本地化运行。更多用法可以参考&lt;code>dapr help init&lt;/code>帮助。默认程序相关内容会安装在&lt;code>$HOME/.dapr&lt;/code>目录下，这里因为我为了简便使用了&lt;code>root&lt;/code>用户，因此程序命令所在目录为&lt;code>/root/.dapr/bin&lt;/code>，共安装了如下命令：&lt;/p></description></item><item><title>NATS-Server(JetStream)和NATS Streaming Server对比</title><link>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</link><pubDate>Tue, 02 Mar 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/Cv92HUNpYyjDTVK.png" alt="Featured image of post NATS-Server(JetStream)和NATS Streaming Server对比" />&lt;p>在我吐槽了无数次之后，&lt;code>NATS JetStream&lt;/code>终于结束了beta阶段正式进入RC阶段。终于官方也在最近刚刚正式回复了我正式版本在处理几个问题之后就会正式发布。那么在这个比较重要的&lt;code>NATS-Server&lt;/code>特性发布之际聊一下NATS产品本身区别和新特性的使用，还有更多的潜在的区别。&lt;/p>
+&lt;h2 id="概念区分nats-server--nats-streaming-server--nats-jetstream">概念区分：NATS-Server / NATS Streaming Server / NATS JetStream
+&lt;/h2>&lt;h3 id="nats-server">NATS-Server
+&lt;/h3>&lt;p>&lt;code>NATS-Server&lt;/code>（或者叫&lt;code>nats&lt;/code>）是一个开源的、云原生的、高性能的消息传递系统，是NATS的最基础的产品。它的核心是一个发布/订阅（Pub/Sub）系统，客户端可以在不同集群中的服务间&lt;code>nats&lt;/code>进行通讯，而不需要关注具体的消息在哪个服务上。换而言之，客户端可以在任意一个集群的服务端上发布消息，同时在任意集群客户端上尝试读取消息。在官方与其他同类消息队列产品&lt;a class="link" href="https://docs.nats.io/compare-nats" target="_blank" rel="noopener"
+>功能对比&lt;/a>中，我们也可以管窥一下产品的功能列表。&lt;code>nats&lt;/code>支持多流多服务进行&lt;code>pub/sub&lt;/code>，负载均衡，保障消息最多/最少一次送达，多租户和用户认证等功能。虽然看上去优点很多，但是&lt;code>nats&lt;/code>不是一个应用很广的消息队列的重要原因是，它缺少了一些对消息队列而言很最重要的产品特性，比如持久化支持，比如消息确保一次送达。这意味着当你的消息发送出去之后，你的消息是在处理过程中可能丢失的，甚至是可能送达不到的。&lt;/p>
+&lt;h3 id="nats-streaming-server">NATS Streaming Server
+&lt;/h3>&lt;p>&lt;code>NATS Streaming Server&lt;/code>（或者叫&lt;code>stan&lt;/code>）是用于尝试解决上面提到的&lt;code>nats&lt;/code>的已存在问题的。&lt;code>stan&lt;/code>添加了持久化功能和消息送达策略支持。&lt;code>stan&lt;/code>中自带了&lt;code>nats&lt;/code>服务端，但是在使用过程中，&lt;code>nats&lt;/code>和&lt;code>stan&lt;/code>不能进行混用。在官方文档中，是这么描述&lt;code>stan&lt;/code>和&lt;code>nats&lt;/code>之间的关系的：&lt;/p>
+&lt;blockquote>
+&lt;p>NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;code>stan&lt;/code>的具体架构如下图：&lt;/p>
+&lt;p>&lt;img src="https://i.loli.net/2021/03/02/YsSxFitoJV7jwC9.jpg"
+loading="lazy"
+>&lt;/p>
+&lt;p>但是&lt;code>stan&lt;/code>虽然提供了持久化和消息传递策略支持，但是在架构设计上却出现了问题，导致在最开始设计时遗留了很多问题，比如当你确定&lt;code>stan&lt;/code>集群是固定的不能无限制水平扩容(&lt;a class="link" href="https://github.com/nats-io/nats-streaming-server/issues/999" target="_blank" rel="noopener"
+>#999&lt;/a>)，比如不支持多租户功能(&lt;a class="link" href="https://github.com/nats-io/nats-streaming-server/issues/1122" target="_blank" rel="noopener"
+>#1122&lt;/a>)，比如客户端无法主动拉取消息只能被推送等等&lt;/p>
+&lt;h3 id="nats-jetstream">NATS JetStream
+&lt;/h3>&lt;p>&lt;code>NATS JetStream&lt;/code>（或者叫&lt;code>JetStream&lt;/code>）是NATS基于&lt;code>Raft&lt;/code>算法实现的最新的架构设计尝试解决上述问题的新方案。在区别于原有的&lt;code>stan&lt;/code>功能上，提供了新的持久化功能和消息送达策略，同时支持水平扩容。同时，新的&lt;code>JetStream&lt;/code>也为大消息做了一些优化，不再将这特性功能作为&lt;code>nats&lt;/code>的客户端存在而是嵌入&lt;code>NATS Server&lt;/code>中作为其中的一个功能存在。也就是说，如果在对这几项技术进行选择时，&lt;code>JetStream&lt;/code>应该是最应该被选择的方案。更多详细情况具体可以查看官方的&lt;a class="link" href="https://github.com/nats-io/jetstream" target="_blank" rel="noopener"
+>指导文档&lt;/a>。&lt;/p>
+&lt;h2 id="nats-jetstream使用">NATS JetStream使用
+&lt;/h2>&lt;p>理论介绍过了，接下来说说实际使用的事情。现在&lt;code>JetStream&lt;/code>还是RC阶段，&lt;/p>
+&lt;h3 id="编译和启动客户端">编译和启动客户端
+&lt;/h3>&lt;p>下载&lt;a class="link" href="https://github.com/nats-io/nats-server/archive/master.zip" target="_blank" rel="noopener"
+>&lt;code>nats-server&lt;/code>源码&lt;/a>，解压之后执行：&lt;/p>
+&lt;pre tabindex="0">&lt;code>cd nats-server-master
+go build -o nats-server -ldflags=&amp;#34;-s -w -buildid=&amp;#34; .
+./nats-server -js
+&lt;/code>&lt;/pre>&lt;p>这样就可以启动一个支持&lt;code>JetStream&lt;/code>功能的服务端了。&lt;/p>
+&lt;pre tabindex="0">&lt;code>[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server
+[54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2
+[54738] 2021/03/02 18:27:02.605238 [INF] Git: [not set]
+[54738] 2021/03/02 18:27:02.605239 [INF] Name: NAFWRGQTR2CHMBIKNPE6R3ZTW2BWV2FWPAZREMHI24IYVM6FVHMVIYLQ
+[54738] 2021/03/02 18:27:02.605240 [INF] ID: NAFWRGQTR2CHMBIKNPE6R3ZTW2BWV2FWPAZREMHI24IYVM6FVHMVIYLQ
+[54738] 2021/03/02 18:27:02.605658 [INF] Starting JetStream
+[54738] 2021/03/02 18:27:02.606062 [WRN] _ ___ _____ ___ _____ ___ ___ _ __ __
+[54738] 2021/03/02 18:27:02.606076 [WRN] _ | | __|_ _/ __|_ _| _ \ __| /_\ | \/ |
+[54738] 2021/03/02 18:27:02.606077 [WRN] | || | _| | | \__ \ | | | / _| / _ \| |\/| |
+[54738] 2021/03/02 18:27:02.606078 [WRN] \__/|___| |_| |___/ |_| |_|_\___/_/ \_\_| |_|
+[54738] 2021/03/02 18:27:02.606079 [WRN]
+[54738] 2021/03/02 18:27:02.606080 [WRN] _ _
+[54738] 2021/03/02 18:27:02.606081 [WRN] | |__ ___| |_ __ _
+[54738] 2021/03/02 18:27:02.606082 [WRN] | &amp;#39;_ \/ -_) _/ _` |
+[54738] 2021/03/02 18:27:02.606083 [WRN] |_.__/\___|\__\__,_|
+[54738] 2021/03/02 18:27:02.606084 [WRN]
+[54738] 2021/03/02 18:27:02.606084 [WRN] JetStream is a Beta feature
+[54738] 2021/03/02 18:27:02.606085 [WRN] https://github.com/nats-io/jetstream
+[54738] 2021/03/02 18:27:02.606092 [INF]
+[54738] 2021/03/02 18:27:02.606093 [INF] ----------- JETSTREAM -----------
+[54738] 2021/03/02 18:27:02.606095 [INF] Max Memory: 12.00 GB
+[54738] 2021/03/02 18:27:02.606096 [INF] Max Storage: 35.79 GB
+[54738] 2021/03/02 18:27:02.606098 [INF] Store Directory: &amp;#34;/var/folders/5s/8rczg1gs4wb59y9s22nc3f_r0000gn/T/nats/jetstream&amp;#34;
+[54738] 2021/03/02 18:27:02.606099 [INF] ---------------------------------
+[54738] 2021/03/02 18:27:02.606399 [INF] Listening for client connections on 0.0.0.0:4222
+[54738] 2021/03/02 18:27:02.606512 [INF] Server is ready
+&lt;/code>&lt;/pre>&lt;h3 id="编写jetstream-demo">编写JetStream DEMO
+&lt;/h3>&lt;p>接下来我们看一下如何使用&lt;code>JetStream&lt;/code>进行消息发布/订阅功能：&lt;/p></description></item><item><title>上下文Context与结构体Struct</title><link>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</link><pubDate>Thu, 25 Feb 2021 10:30:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png" alt="Featured image of post 上下文Context与结构体Struct" />&lt;pre tabindex="0">&lt;code>原文地址：https://blog.golang.org/context-and-structs
+原文作者：Jean de Klerk, Matt T. Proud
+译者：Kevin
+&lt;/code>&lt;/pre>&lt;h2 id="介紹">介紹
+&lt;/h2>&lt;p>在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是&lt;a class="link" href="https://golang.org/pkg/context/" target="_blank" rel="noopener"
+>&lt;code>context.Context&lt;/code>&lt;/a>。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。&lt;/p>
+&lt;p>在&lt;a class="link" href="https://golang.org/pkg/context/" target="_blank" rel="noopener"
+>context的文档&lt;/a>中写道。&lt;/p>
+&lt;pre>&lt;code>上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。
+&lt;/code>&lt;/pre>
+&lt;p>本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。&lt;/p>
+&lt;h2 id="倾向于将上下文作为参数传递">倾向于将上下文作为参数传递
+&lt;/h2>&lt;p>为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Worker&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> { &lt;span style="color:#75715e">/* … */&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Work&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> { &lt;span style="color:#75715e">/* … */&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">New&lt;/span>() &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>{}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Fetch&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>) (&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 每次调用中ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Process&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>, &lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// A每次调用中ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在这个例子中，&lt;code>(*Worker).Fetch&lt;/code>和&lt;code>(*Worker).Process&lt;/code>方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的&lt;code>context.Context&lt;/code>将如何被使用：没有期望传递给一个方法的&lt;code>context.Context&lt;/code>将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。&lt;/p>
+&lt;h2 id="将上下文存储在结构中会导致混乱">将上下文存储在结构中会导致混乱
+&lt;/h2>&lt;p>让我们再次使用上下文存储在结构体中这种方式审视一下上面的&lt;code>Worker&lt;/code>例子。它的问题是，当你把上下文存储在一个结构中时，你会向调用者隐藏它的生命周期，甚至可能的是把两个不同的作用域以不可预料的方式互相干扰：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Worker&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">New&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>) &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>{&lt;span style="color:#a6e22e">ctx&lt;/span>: &lt;span style="color:#a6e22e">ctx&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Fetch&lt;/span>() (&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Process&lt;/span>(&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>(*Worker).Fetch&lt;/code>和&lt;code>(*Worker).Process&lt;/code>方法都使用存储在&lt;code>Worker&lt;/code>中的上下文。这防止了&lt;code>Fetch&lt;/code>和&lt;code>Process&lt;/code>的调用者（它们本身可能有不同的上下文）在每次调用的基础上指定截止日期、请求取消和附加元数据。例如：用户无法只为&lt;code>(*Worker).Fetch&lt;/code>提供截止日期，也无法只取消&lt;code>(*Worker).Process&lt;/code>的调用。调用者的生命期与共享上下文交织在一起，上下文的范围是创建&lt;code>Worker&lt;/code>的生命周期。&lt;/p></description></item></channel></rss>

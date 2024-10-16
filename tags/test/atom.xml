@@ -1,7 +1,50 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Test on ipfans's Blog</title><link>https://www.4async.com/tags/test/</link><description>Recent content in Test on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 26 Jan 2014 16:21:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/test/atom.xml" rel="self" type="application/rss+xml"/><item><title>关于写程序的一点想法：单元测试</title><link>https://www.4async.com/2014/01/2014-01-26-unit-test/</link><pubDate>Sun, 26 Jan 2014 16:21:00 +0000</pubDate><guid>https://www.4async.com/2014/01/2014-01-26-unit-test/</guid><description>之前一直没有太过于关注过单元测试，感觉自己程序代码写了足够的实现逻辑和处理流程就应该完全可以满足需求，但是事实上在实现具体功能时，还是存在一些这样那样的问题，甚至通常情况下都是在代码写完可以跑通运行时发现的问题，通常这个时候已经很晚了。大家可以翻下我在 Github 上开放出来的大部分代码应该都存在一些或多或少的小问题，这些问题虽不致命，但是却是也是很烦躁的事情。
-什么是单元测试 单元测试（unit testing），是指对软件中的最小可测试单元进行检查和验证。对于单元测试中单元的含义，一般来说，要根据实际情况去判定其具体含义，如 C 语言中单元指一个函数，Java 里单元指一个类，图形化的软件中可以指一个窗口或一个菜单等。总的来说，单元就是人为规定的最小的被测功能模块。单元测试是在软件开发过程中要进行的最低级别的测试活动，软件的独立单元将在与程序的其他部分相隔离的情况下进行测试。(via 百度百科)
-我对单元测试的理解，单元测试应该是保证程序功能模块的代码安全性和健壮性的保障性测试，主要是开发人员在对自己开发的代码进行测试。被测试模块可能包括多个功能点，在做测试时，设计测试用例要覆盖这些功能点，以保证这些功能点经过测试。很多文章在介绍单元测试常常会介绍一些 100% 的覆盖，考虑到一些异常情况情况的情况下，我个人觉得应该是覆盖异常的情况更多一点，分支覆盖一般常见参数传入测试功能是否正常，另外还是需要保证一些以前的 Bug 并不会出现的测试用例。
-几种常见语言的 Unit Test 先说即种的，一种是 Python 的，一种是 Golang，还有一种是 Objective-C 的。
-Python Python 提供了unittest 库，用于进行单元测试。这个详细说一下，剩下的两个都有现成的代码 :)。
-下面是一个对 random 模块的单元测试代码，测试了 shuffle, choice 和 sample 函数功能，测试函数以 test 开头，并且没有返回和传入参数。
-import random #被测试模块 import unittest class TestSequenceFunctions(unittest.TestCase): def setUp(self): ``` 测试初始化 ``` self.seq = range(10) pass def tearDown(self): ``` 测试清理 ``` pass def test_shuffle(self): # make sure the shuffled sequence does not lose any elements random.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Test on ipfans's Blog</title><link>https://www.4async.com/tags/test/</link><description>Recent content in Test on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 26 Jan 2014 16:21:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/test/atom.xml" rel="self" type="application/rss+xml"/><item><title>关于写程序的一点想法：单元测试</title><link>https://www.4async.com/2014/01/2014-01-26-unit-test/</link><pubDate>Sun, 26 Jan 2014 16:21:00 +0000</pubDate><guid>https://www.4async.com/2014/01/2014-01-26-unit-test/</guid><description>&lt;p>之前一直没有太过于关注过单元测试，感觉自己程序代码写了足够的实现逻辑和处理流程就应该完全可以满足需求，但是事实上在实现具体功能时，还是存在一些这样那样的问题，甚至通常情况下都是在代码写完可以跑通运行时发现的问题，通常这个时候已经很晚了。大家可以翻下我在 Github 上开放出来的大部分代码应该都存在一些或多或少的小问题，这些问题虽不致命，但是却是也是很烦躁的事情。&lt;/p>
+&lt;h2 id="什么是单元测试">什么是单元测试
+&lt;/h2>&lt;p>单元测试（unit testing），是指对软件中的最小可测试单元进行检查和验证。对于单元测试中单元的含义，一般来说，要根据实际情况去判定其具体含义，如 C 语言中单元指一个函数，Java 里单元指一个类，图形化的软件中可以指一个窗口或一个菜单等。总的来说，单元就是人为规定的最小的被测功能模块。单元测试是在软件开发过程中要进行的最低级别的测试活动，软件的独立单元将在与程序的其他部分相隔离的情况下进行测试。(via &lt;a class="link" href="http://baike.baidu.com/view/106237.htm" target="_blank" rel="noopener"
+>百度百科&lt;/a>)&lt;/p>
+&lt;p>我对单元测试的理解，单元测试应该是保证程序功能模块的代码安全性和健壮性的保障性测试，主要是开发人员在对自己开发的代码进行测试。被测试模块可能包括多个功能点，在做测试时，设计测试用例要覆盖这些功能点，以保证这些功能点经过测试。很多文章在介绍单元测试常常会介绍一些 100% 的覆盖，考虑到一些异常情况情况的情况下，我个人觉得应该是覆盖异常的情况更多一点，分支覆盖一般常见参数传入测试功能是否正常，另外还是需要保证一些以前的 Bug 并不会出现的测试用例。&lt;/p>
+&lt;h2 id="几种常见语言的-unit-test">几种常见语言的 Unit Test
+&lt;/h2>&lt;p>先说即种的，一种是 Python 的，一种是 Golang，还有一种是 Objective-C 的。&lt;/p>
+&lt;h3 id="python">Python
+&lt;/h3>&lt;p>Python 提供了&lt;a class="link" href="http://docs.python.org/2/library/unittest.html?highlight=unittest#unittest" target="_blank" rel="noopener"
+>unittest 库&lt;/a>，用于进行单元测试。这个详细说一下，剩下的两个都有现成的代码 :)。&lt;/p>
+&lt;p>下面是一个对 random 模块的单元测试代码，测试了 shuffle, choice 和 sample 函数功能，测试函数以 test 开头，并且没有返回和传入参数。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> random &lt;span style="color:#75715e">#被测试模块&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> unittest
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">TestSequenceFunctions&lt;/span>(unittest&lt;span style="color:#f92672">.&lt;/span>TestCase):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">setUp&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#960050;background-color:#1e0010">```&lt;/span> 测试初始化 &lt;span style="color:#960050;background-color:#1e0010">```&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>seq &lt;span style="color:#f92672">=&lt;/span> range(&lt;span style="color:#ae81ff">10&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">pass&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">tearDown&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#960050;background-color:#1e0010">```&lt;/span> 测试清理 &lt;span style="color:#960050;background-color:#1e0010">```&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">pass&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">test_shuffle&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># make sure the shuffled sequence does not lose any elements&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> random&lt;span style="color:#f92672">.&lt;/span>shuffle(self&lt;span style="color:#f92672">.&lt;/span>seq)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>seq&lt;span style="color:#f92672">.&lt;/span>sort()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>assertEqual(self&lt;span style="color:#f92672">.&lt;/span>seq, range(&lt;span style="color:#ae81ff">10&lt;/span>))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># should raise an exception for an immutable sequence&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>assertRaises(&lt;span style="color:#a6e22e">TypeError&lt;/span>, random&lt;span style="color:#f92672">.&lt;/span>shuffle, (&lt;span style="color:#ae81ff">1&lt;/span>,&lt;span style="color:#ae81ff">2&lt;/span>,&lt;span style="color:#ae81ff">3&lt;/span>))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">test_choice&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> element &lt;span style="color:#f92672">=&lt;/span> random&lt;span style="color:#f92672">.&lt;/span>choice(self&lt;span style="color:#f92672">.&lt;/span>seq)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>assertTrue(element &lt;span style="color:#f92672">in&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>seq)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">test_sample&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">with&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>assertRaises(&lt;span style="color:#a6e22e">ValueError&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> random&lt;span style="color:#f92672">.&lt;/span>sample(self&lt;span style="color:#f92672">.&lt;/span>seq, &lt;span style="color:#ae81ff">20&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> element &lt;span style="color:#f92672">in&lt;/span> random&lt;span style="color:#f92672">.&lt;/span>sample(self&lt;span style="color:#f92672">.&lt;/span>seq, &lt;span style="color:#ae81ff">5&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>assertTrue(element &lt;span style="color:#f92672">in&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>seq)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> unittest&lt;span style="color:#f92672">.&lt;/span>main()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="golang">Golang
+&lt;/h3>&lt;p>Go 语言提供了 &lt;a class="link" href="http://golang.org/pkg/testing/" target="_blank" rel="noopener"
+>testing 包&lt;/a> 和 &lt;a class="link" href="http://golang.org/pkg/testing/" target="_blank" rel="noopener"
+>go test 命令&lt;/a> 用于单元测试。&lt;/p></description></item></channel></rss>

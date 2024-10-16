@@ -1,13 +1,80 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Objective-C on ipfans's Blog</title><link>https://www.4async.com/tags/objective-c/</link><description>Recent content in Objective-C on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 03 Jan 2014 15:00:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/objective-c/atom.xml" rel="self" type="application/rss+xml"/><item><title>谈谈 block Part 2</title><link>https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</link><pubDate>Fri, 03 Jan 2014 15:00:00 +0000</pubDate><guid>https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</guid><description>前面看过的 NSConcreteGobalBlock 其实在实际应用里是并不是太多的情况，相对来说，接下来要提到的 NSConcreteStackBlock 则是会经常遇到的情况。
-从源码看 NSConcreteStackBlock 还是先从代码来看：
-#include &amp;lt;stdio.h&amp;gt; int main(){ int a = 1; int (^block)(void) = ^{printf(&amp;#34;%d\n&amp;#34;, a); return a; }; int b = block(); printf(&amp;#34;%d\n&amp;#34;, b); return 0; } 翻译成 C++ 代码则是：
-struct __block_impl { void *isa; int Flags; int Reserved; void *FuncPtr; }; struct __main_block_impl_0 { struct __block_impl impl; struct __main_block_desc_0* Desc; int a; __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int _a, int flags=0) : a(_a) { impl.</description></item><item><title>谈谈 block Part 1</title><link>https://www.4async.com/2014/01/2014-01-02-something-about-block-part-one/</link><pubDate>Thu, 02 Jan 2014 14:31:00 +0000</pubDate><guid>https://www.4async.com/2014/01/2014-01-02-something-about-block-part-one/</guid><description>Block 概述 Block 是 Apple 提供的一种闭包实现，比较方便实现一些函数嵌套实现的功能。Block 分为三种类型：
-NSConcreteGlobalBlock NSConcreteStackBlock NSConcreteMallocBlock 这三种类型分别对应了三种不同的 Block 类型，值得注意的是，在启用了 ARC 之后，NSConcreteStackBlock 会转换类型为 NSConcreteMallocBlock。
-换种比较容易的理解的说法：
-在非 ARC 下，LLVM 编译下没有访问局部变量的 Block 应该是 NSConcreteGlobalBlock 类型的，访问了局部变量的 Block 是 NSConcreteStackBlock 类型的。
-在 ARC 下，访问了局部变量的 Block 是 NSConcreteMallocBlock 类型的，未访问局部变量的 Block 是 NSConcreteGlobalBlock 类型的。
-具体的实现代码可以参考 llvm 的 BlockRuntime。
-对于研究 block 的具体代码翻译，则可以使用 clang 的 rewrite-objc 功能，将 OC 文件转换成 cpp 文件。比如：
-clang -rewrite-objc blocktest.c 这样就可以生成对应的 blocktest.cpp 文件。
-从源码看 NSConcreteGlobalBlock 首先先看一下 NSConcreteGlobalBlock 的代码，从简单的开始：
-#include &amp;lt;stdio.h&amp;gt; int main() {^{printf(&amp;#34;Hello World!</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Objective-C on ipfans's Blog</title><link>https://www.4async.com/tags/objective-c/</link><description>Recent content in Objective-C on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 03 Jan 2014 15:00:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/objective-c/atom.xml" rel="self" type="application/rss+xml"/><item><title>谈谈 block Part 2</title><link>https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</link><pubDate>Fri, 03 Jan 2014 15:00:00 +0000</pubDate><guid>https://www.4async.com/2014/01/2014-01-03-something-about-block-part-two/</guid><description>&lt;p>前面看过的 NSConcreteGobalBlock 其实在实际应用里是并不是太多的情况，相对来说，接下来要提到的 NSConcreteStackBlock 则是会经常遇到的情况。&lt;/p>
+&lt;h2 id="从源码看-nsconcretestackblock">从源码看 NSConcreteStackBlock
+&lt;/h2>&lt;p>还是先从代码来看：&lt;/p>
+&lt;pre tabindex="0">&lt;code>
+#include &amp;lt;stdio.h&amp;gt;
+int main(){
+int a = 1;
+int (^block)(void) = ^{printf(&amp;#34;%d\n&amp;#34;, a);
+return a;
+};
+int b = block();
+printf(&amp;#34;%d\n&amp;#34;, b);
+return 0;
+}
+&lt;/code>&lt;/pre>&lt;p>翻译成 C++ 代码则是：&lt;/p>
+&lt;pre tabindex="0">&lt;code>
+struct __block_impl {
+void *isa;
+int Flags;
+int Reserved;
+void *FuncPtr;
+};
+struct __main_block_impl_0 {
+struct __block_impl impl;
+struct __main_block_desc_0* Desc;
+int a;
+__main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int _a, int flags=0) : a(_a) {
+impl.isa = &amp;amp;_NSConcreteStackBlock;
+impl.Flags = flags;
+impl.FuncPtr = fp;
+Desc = desc;
+}
+};
+static int __main_block_func_0(struct __main_block_impl_0 *__cself) {int a = __cself-&amp;gt;a; // bound by copy
+printf(&amp;#34;%d\n&amp;#34;, a);
+return a;
+}
+static struct __main_block_desc_0 {
+size_t reserved;
+size_t Block_size;
+} __main_block_desc_0_DATA = {0, sizeof(struct __main_block_impl_0)};
+int main(){
+int a = 1;
+int (*block)(void) = (int (*)())&amp;amp;__main_block_impl_0((void *)__main_block_func_0, &amp;amp;__main_block_desc_0_DATA, a);
+int b = ((int (*)(__block_impl *))((__block_impl *)block)-&amp;gt;FuncPtr)((__block_impl *)block);
+printf(&amp;#34;%d\n&amp;#34;, b);
+return 0;
+}
+&lt;/code>&lt;/pre>&lt;p>代码具体和 NSConcreteGobalBlock 相比还是有一些变化，如，由于使用局部变量 a，在 block 中则是对 a 变量进行了拷贝，也就是说，在 block 中修改某一变量并不会影响 block 之外的相同变量。另外一个是关于返回值的定义，对函数的强制类型转化而来，关于这一块的东西，会在逆向分析时在进行对比。对于调用传入的指针 cself，则是在对 main_block_impl_0 结构的转化，注意在定义时，添加了 a 的传入参数，从而获取到参数内容。&lt;/p></description></item><item><title>谈谈 block Part 1</title><link>https://www.4async.com/2014/01/2014-01-02-something-about-block-part-one/</link><pubDate>Thu, 02 Jan 2014 14:31:00 +0000</pubDate><guid>https://www.4async.com/2014/01/2014-01-02-something-about-block-part-one/</guid><description>&lt;h2 id="block-概述">Block 概述
+&lt;/h2>&lt;p>Block 是 Apple 提供的一种闭包实现，比较方便实现一些函数嵌套实现的功能。Block 分为三种类型：&lt;/p>
+&lt;ul>
+&lt;li>NSConcreteGlobalBlock&lt;/li>
+&lt;li>NSConcreteStackBlock&lt;/li>
+&lt;li>NSConcreteMallocBlock&lt;/li>
+&lt;/ul>
+&lt;p>这三种类型分别对应了三种不同的 Block 类型，值得注意的是，在启用了 ARC 之后，NSConcreteStackBlock 会转换类型为 NSConcreteMallocBlock。&lt;/p>
+&lt;p>换种比较容易的理解的说法：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>在非 ARC 下，LLVM 编译下没有访问局部变量的 Block 应该是 NSConcreteGlobalBlock 类型的，访问了局部变量的 Block 是 NSConcreteStackBlock 类型的。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在 ARC 下，访问了局部变量的 Block 是 NSConcreteMallocBlock 类型的，未访问局部变量的 Block 是 NSConcreteGlobalBlock 类型的。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>具体的实现代码可以参考 llvm 的 &lt;a class="link" href="https://llvm.org/svn/llvm-project/compiler-rt/trunk/BlocksRuntime/" target="_blank" rel="noopener"
+>BlockRuntime&lt;/a>。&lt;/p>
+&lt;p>对于研究 block 的具体代码翻译，则可以使用 clang 的 rewrite-objc 功能，将 OC 文件转换成 cpp 文件。比如：&lt;/p>
+&lt;pre tabindex="0">&lt;code>clang -rewrite-objc blocktest.c
+&lt;/code>&lt;/pre>&lt;p>这样就可以生成对应的 blocktest.cpp 文件。&lt;/p>
+&lt;h2 id="从源码看-nsconcreteglobalblock">从源码看 NSConcreteGlobalBlock
+&lt;/h2>&lt;p>首先先看一下 NSConcreteGlobalBlock 的代码，从简单的开始：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-objective-c" data-lang="objective-c">&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#f92672">^&lt;/span>{printf(&lt;span style="color:#e6db74">&amp;#34;Hello World!&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);}();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>翻译之后的代码（精简仅包含所有必须代码）：&lt;/p></description></item></channel></rss>

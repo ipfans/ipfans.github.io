@@ -1,61 +1,222 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Translation on ipfans's Blog</title><link>https://www.4async.com/categories/translation/</link><description>Recent content in Translation on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 13 Aug 2021 14:09:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/categories/translation/atom.xml" rel="self" type="application/rss+xml"/><item><title>Go Web应用中常见的反模式</title><link>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</link><pubDate>Fri, 13 Aug 2021 14:09:00 +0000</pubDate><guid>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</guid><description>&lt;img src="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg" alt="Featured image of post Go Web应用中常见的反模式" />作者：Miłosz Smółka 译者：Kevin 原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/
-在我职业生涯的某个阶段，我对我所构建的软件不再感到兴奋。
-我最喜欢的工作内容是底层的细节和复杂的算法。在转到面向用户的应用开发之后，这些内容基本消失了。编程似乎是利用现有的库和工具把数据从一处移至另一处。到目前为止，我所学到的关于软件的知识不再那么有用了。
-让我们面对现实吧：大多数Web应用无法解决棘手的技术挑战。他们需要做到的是正确的对产品进行建模，并且比竞争对手更快的改进产品。
-这起初看起来似乎是那么的无聊，但是你很快会意识到实现这个目标比听起来要难。这是一项完全不同的挑战。即使它们技术上实现并没有那么复杂，但时解决它们会对产品产生巨大影响并且让人获得满足。
-Web应用面临的最大挑战不是变成了一个无法维护的屎山，而是会减慢你的速度，让你的业务最终失败。
-这是他们如何在Go中发生和我是如何避免他们的。
-松耦合是关键 应用难以维护的一个重要原因是强耦合。
-在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。
-相比之下，松耦合应用保持了清晰的边界。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？
-微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了分布式单体的陷阱，处理和之前相同的问题，而且还增加了网络开销。
-❌ 反模式：分布式单体 在你了解边界之前，不要将你的应用切分成为微服务。
-微服务并不会降低耦合，因为拆分服务的次数并不重要。重要的是如何连接各个服务。
-✅ 策略：松耦合 以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。
-DRY引入了耦合 强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。
-简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：
-每条知识在系统中都必须有一个单一的、明确的、权威的表述。
-&amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。
-当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。
-在Go中保持DRY 相比于其他现代语言，Go是清晰的，缺少很多特性，没有太多的语法糖来隐藏复杂性。
-我们习惯了捷径，所以一开始很难接受Go的冗长。就像我们已经开发出一种去寻找一种更加聪明的编写代码的方式的本能。
-最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然
-if err != nil { return err } 但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。
-最终，大家都接受了Go的工作方式。它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。
-单一数据模型带来的应用耦合 Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。
-这里有一个流行的方式保存单个User模型的方法：
-type User struct { ID int `json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;` FirstName string `json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;` LastName string `json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;` DisplayName string `json:&amp;#34;display_name&amp;#34;` Email string `json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;` Emails []Email `json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;` PasswordHash string `json:&amp;#34;-&amp;#34;` LastIP string `json:&amp;#34;-&amp;#34;` CreatedAt *time.</description></item><item><title>上下文Context与结构体Struct</title><link>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</link><pubDate>Thu, 25 Feb 2021 10:30:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png" alt="Featured image of post 上下文Context与结构体Struct" />原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
-在context的文档中写道。
-上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。 本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。
-倾向于将上下文作为参数传递 为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。
-type Worker struct { /* … */ } type Work struct { /* … */ } func New() *Worker { return &amp;amp;Worker{} } func (w *Worker) Fetch(ctx context.Context) (*Work, error) { _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 } func (w *Worker) Process(ctx context.Context, w *Work) error { _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker).Fetch和(*Worker).Process方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的context.Context将如何被使用：没有期望传递给一个方法的context.Context将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。
-将上下文存储在结构中会导致混乱 让我们再次使用上下文存储在结构体中这种方式审视一下上面的Worker例子。它的问题是，当你把上下文存储在一个结构中时，你会向调用者隐藏它的生命周期，甚至可能的是把两个不同的作用域以不可预料的方式互相干扰：</description></item><item><title>Go 1.16 中Module功能新变化</title><link>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</link><pubDate>Fri, 19 Feb 2021 10:16:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/cover.jpg" alt="Featured image of post Go 1.16 中Module功能新变化" />原文地址：https://blog.golang.org/go116-module-changes 原文作者：Jay Conrod 译者：Kevin 希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。发行说明中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。
-Module功能默认开启 go命令现在默认以module-aware模式构建包，即使没有go.mod文件存在。这是向在所有项目中使用Module功能迈出的一大步。
-通过设置GO111MODULE环境变量为off，仍然可以在GOPATH模式下构建包。你也可以将GO111MODULE设置为auto，只有当当前目录或任何父目录中存在go.mod文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用go env -w来永久地设置GO111MODULE和其他变量。
-go env -w GO111MODULE=auto 我们计划在 Go 1.17 中放弃对GOPATH模式的支持。换句话说，Go 1.17将忽略GO111MODULE。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交问题或体验报告。
-不会自动更改 go.mod 和 go.sum 在之前的版本中，当go命令发现go.mod或go.sum有问题时，比如缺少require指令或缺少sum，它会尝试自动修复问题。我们收到了很多反馈，认为这种行为是出乎大家意料的，尤其是对于像go list这样通常不会产生副作用的命令。自动修复并不总是可取的：如果一个导入的包没有被任何需要的Module提供，go命令会添加一个新的依赖关系，可能会触发普通依赖关系的升级。即使是拼写错误的导入路径也会导致（失败的）网络查找。
-在 Go 1.16 中，module-aware命令在发现go.mod或go.sum中的问题后会报告一个错误，而不是尝试自动修复问题。在大多数情况下，错误信息建议使用命令来修复问题。
-$ go build example.go:3:8: no required module provides package golang.org/x/net/html; to add it: go get golang.org/x/net/html $ go get golang.org/x/net/html $ go build 和之前一样，如果存在vendor目录，go命令可能会使用该目录（详见Vendoring）。像go get和go mod tidy这样的命令仍然会修改go.mod和go.sum，因为它们的主要目的是管理依赖关系。
-在特定版本上安装可执行文件 go install命令现在可以通过指定@version后缀来安装特定版本的可执行文件。
-go install golang.org/x/tools/gopls@v0.6.5 当使用这种语法时，go install命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)
-我们曾经推荐使用go get -u程序来安装可执行文件，但这种使用方式对go.</description></item><item><title>译：在Go中转向领域驱动设计</title><link>https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/</link><pubDate>Sun, 16 Feb 2020 21:52:00 +0000</pubDate><guid>https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/</guid><description>&lt;img src="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.jpg" alt="Featured image of post 译：在Go中转向领域驱动设计" />&lt;p>原文：&lt;a class="link" href="https://www.calhoun.io/moving-towards-domain-driven-design-in-go/" target="_blank" rel="noopener"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Translation on ipfans's Blog</title><link>https://www.4async.com/categories/translation/</link><description>Recent content in Translation on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 13 Aug 2021 14:09:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/categories/translation/atom.xml" rel="self" type="application/rss+xml"/><item><title>Go Web应用中常见的反模式</title><link>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</link><pubDate>Fri, 13 Aug 2021 14:09:00 +0000</pubDate><guid>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</guid><description>&lt;img src="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg" alt="Featured image of post Go Web应用中常见的反模式" />&lt;blockquote>
+&lt;p>作者：Miłosz Smółka &lt;br>
+译者：Kevin &lt;br>
+原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/&lt;/p>
+&lt;/blockquote>
+&lt;p>在我职业生涯的某个阶段，我对我所构建的软件不再感到兴奋。&lt;/p>
+&lt;p>我最喜欢的工作内容是底层的细节和复杂的算法。在转到面向用户的应用开发之后，这些内容基本消失了。编程似乎是利用现有的库和工具把数据从一处移至另一处。到目前为止，我所学到的关于软件的知识不再那么有用了。&lt;/p>
+&lt;p>让我们面对现实吧：大多数Web应用无法解决棘手的技术挑战。他们需要做到的是正确的对产品进行建模，并且比竞争对手更快的改进产品。&lt;/p>
+&lt;p>这起初看起来似乎是那么的无聊，但是你很快会意识到实现这个目标比听起来要难。这是一项完全不同的挑战。即使它们技术上实现并没有那么复杂，但时解决它们会对产品产生巨大影响并且让人获得满足。&lt;/p>
+&lt;p>&lt;strong>Web应用面临的最大挑战不是变成了一个无法维护的屎山，而是会减慢你的速度，让你的业务最终失败。&lt;/strong>&lt;/p>
+&lt;p>这是他们如何在Go中发生和我是如何避免他们的。&lt;/p>
+&lt;h2 id="松耦合是关键">松耦合是关键
+&lt;/h2>&lt;p>应用难以维护的一个重要原因是强耦合。&lt;/p>
+&lt;p>&lt;strong>在强耦合应用中，任何你尝试触动的东西都有可能产生意想不到的副作用&lt;/strong>。每次重构的尝试都会发现新的问题。最终，你决定字号从头重写整个项目。在一个快速增长的产品中，你是不可能冻结所有的开发任务去完成重写已经构建的应用的。而且你不能保证这次你把所有事都完成好。&lt;/p>
+&lt;p>相比之下，&lt;strong>松耦合应用保持了清晰的边界&lt;/strong>。他们允许更换一些损坏的部分不影响项目的其他部分。它们更容易构建和维护。但是，为什么他们如此罕见呢？&lt;/p>
+&lt;p>微服务许诺了松耦合时实践，但是我们现在已经过了他们的炒作年代，而难以维护的应用仍旧存在。有些时候这反而变得更糟糕了：我们落入了&lt;a class="link" href="https://threedots.tech/post/microservices-or-monolith-its-detail/" target="_blank" rel="noopener"
+>分布式单体&lt;/a>的陷阱，处理和之前相同的问题，而且还增加了网络开销。&lt;/p>
+&lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/microservices.png"
+loading="lazy"
+alt="从强耦合单体应用到分布式单体"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>❌ 反模式：分布式单体 &lt;br>
+在你了解边界之前，不要将你的应用切分成为微服务。&lt;/p>
+&lt;/blockquote>
+&lt;p>微服务并不会降低耦合，&lt;strong>因为拆分服务的次数并不重要。重要的是如何连接各个服务&lt;/strong>。&lt;/p>
+&lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/monolith.png"
+loading="lazy"
+alt="从模块化单体应用到松耦合微服务"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>✅ 策略：松耦合 &lt;br>
+以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="dry引入了耦合">DRY引入了耦合
+&lt;/h2>&lt;p>强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。&lt;/p>
+&lt;p>简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：&lt;/p>
+&lt;blockquote>
+&lt;p>每条知识在系统中都必须有一个单一的、明确的、权威的表述。&lt;/p>
+&lt;/blockquote>
+&lt;p>&amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。&lt;/p>
+&lt;p>&lt;strong>当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/coupling.png"
+loading="lazy"
+>&lt;/p>
+&lt;h2 id="在go中保持dry">在Go中保持DRY
+&lt;/h2>&lt;p>相比于其他现代语言，Go是清晰的，缺少很多特性，没有太多的语法糖来隐藏复杂性。&lt;/p>
+&lt;p>我们习惯了捷径，所以一开始很难接受Go的冗长。就像我们已经开发出一种去寻找一种更加聪明的编写代码的方式的本能。&lt;/p>
+&lt;p>最典型的例子就是错误处理。如果你有编写Go的经验，你会觉得下面的代码片段很自然&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>但是对新手而言，一遍又一遍的重复这三行就是似乎在破坏DRY原则。他们经常想办法来规避这种样板方法，但是却没有什么好的结果。&lt;/p>
+&lt;p>最终，大家都接受了Go的工作方式。&lt;strong>它让你重复你自己，不过这并不是DRY告诉你的你要避免重复。&lt;/strong>&lt;/p>
+&lt;h2 id="单一数据模型带来的应用耦合">单一数据模型带来的应用耦合
+&lt;/h2>&lt;p>&lt;strong>Go中有一个特性引入了强耦合，但会让你认为你自己在遵循DRY原则。这就是在一个结构体中使用多个标签。&lt;/strong> 这似乎是一个好主意，因为我们经常对不同的事物使用相似的模型。&lt;/p>
+&lt;p>这里有一个流行的方式保存单个&lt;code>User&lt;/code>模型的方法：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">User&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ID&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;id&amp;#34; gorm:&amp;#34;autoIncrement primaryKey&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">FirstName&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;first_name&amp;#34; validate:&amp;#34;required_without=LastName&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">LastName&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;last_name&amp;#34; validate:&amp;#34;required_without=FirstName&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">DisplayName&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;display_name&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Email&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;email,omitempty&amp;#34; gorm:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Emails&lt;/span> []&lt;span style="color:#a6e22e">Email&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;emails&amp;#34; validate:&amp;#34;required,dive&amp;#34; gorm:&amp;#34;constraint:OnDelete:CASCADE&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">PasswordHash&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">LastIP&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">CreatedAt&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Time&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">UpdatedAt&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Time&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Email&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ID&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34; gorm:&amp;#34;primaryKey&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Address&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;address&amp;#34; validate:&amp;#34;required,email&amp;#34; gorm:&amp;#34;size:256;uniqueIndex&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Primary&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;primary&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">UserID&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#e6db74">`json:&amp;#34;-&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>完整代码：&lt;a class="link" href="https://github.com/ThreeDotsLabs/go-web-app-antipatterns/blob/ab94d47350756716a7fed42b7ae546c51c11406a/01-coupling/01-tightly-coupled/internal/user.go#L9" target="_blank" rel="noopener"
+>github.com/ThreeDotsLabs/go-web-app-antipatterns/01-coupling/01-tightly-coupled/internal/user.go&lt;/a>&lt;/p></description></item><item><title>上下文Context与结构体Struct</title><link>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</link><pubDate>Thu, 25 Feb 2021 10:30:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png" alt="Featured image of post 上下文Context与结构体Struct" />&lt;pre tabindex="0">&lt;code>原文地址：https://blog.golang.org/context-and-structs
+原文作者：Jean de Klerk, Matt T. Proud
+译者：Kevin
+&lt;/code>&lt;/pre>&lt;h2 id="介紹">介紹
+&lt;/h2>&lt;p>在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是&lt;a class="link" href="https://golang.org/pkg/context/" target="_blank" rel="noopener"
+>&lt;code>context.Context&lt;/code>&lt;/a>。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。&lt;/p>
+&lt;p>在&lt;a class="link" href="https://golang.org/pkg/context/" target="_blank" rel="noopener"
+>context的文档&lt;/a>中写道。&lt;/p>
+&lt;pre>&lt;code>上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。
+&lt;/code>&lt;/pre>
+&lt;p>本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。&lt;/p>
+&lt;h2 id="倾向于将上下文作为参数传递">倾向于将上下文作为参数传递
+&lt;/h2>&lt;p>为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Worker&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> { &lt;span style="color:#75715e">/* … */&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Work&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> { &lt;span style="color:#75715e">/* … */&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">New&lt;/span>() &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>{}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Fetch&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>) (&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 每次调用中ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Process&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>, &lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// A每次调用中ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在这个例子中，&lt;code>(*Worker).Fetch&lt;/code>和&lt;code>(*Worker).Process&lt;/code>方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的&lt;code>context.Context&lt;/code>将如何被使用：没有期望传递给一个方法的&lt;code>context.Context&lt;/code>将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。&lt;/p>
+&lt;h2 id="将上下文存储在结构中会导致混乱">将上下文存储在结构中会导致混乱
+&lt;/h2>&lt;p>让我们再次使用上下文存储在结构体中这种方式审视一下上面的&lt;code>Worker&lt;/code>例子。它的问题是，当你把上下文存储在一个结构中时，你会向调用者隐藏它的生命周期，甚至可能的是把两个不同的作用域以不可预料的方式互相干扰：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Worker&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">New&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>) &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>{&lt;span style="color:#a6e22e">ctx&lt;/span>: &lt;span style="color:#a6e22e">ctx&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Fetch&lt;/span>() (&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Process&lt;/span>(&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>(*Worker).Fetch&lt;/code>和&lt;code>(*Worker).Process&lt;/code>方法都使用存储在&lt;code>Worker&lt;/code>中的上下文。这防止了&lt;code>Fetch&lt;/code>和&lt;code>Process&lt;/code>的调用者（它们本身可能有不同的上下文）在每次调用的基础上指定截止日期、请求取消和附加元数据。例如：用户无法只为&lt;code>(*Worker).Fetch&lt;/code>提供截止日期，也无法只取消&lt;code>(*Worker).Process&lt;/code>的调用。调用者的生命期与共享上下文交织在一起，上下文的范围是创建&lt;code>Worker&lt;/code>的生命周期。&lt;/p></description></item><item><title>Go 1.16 中Module功能新变化</title><link>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</link><pubDate>Fri, 19 Feb 2021 10:16:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/cover.jpg" alt="Featured image of post Go 1.16 中Module功能新变化" />&lt;pre tabindex="0">&lt;code>原文地址：https://blog.golang.org/go116-module-changes
+原文作者：Jay Conrod
+译者：Kevin
+&lt;/code>&lt;/pre>&lt;p>希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。&lt;a class="link" href="https://golang.org/doc/go1.16" target="_blank" rel="noopener"
+>发行说明&lt;/a>中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。&lt;/p>
+&lt;h2 id="module功能默认开启">Module功能默认开启
+&lt;/h2>&lt;p>go命令现在默认以module-aware模式构建包，即使没有&lt;code>go.mod&lt;/code>文件存在。这是向在所有项目中使用Module功能迈出的一大步。&lt;/p>
+&lt;p>通过设置&lt;code>GO111MODULE&lt;/code>环境变量为&lt;code>off&lt;/code>，仍然可以在&lt;code>GOPATH&lt;/code>模式下构建包。你也可以将&lt;code>GO111MODULE&lt;/code>设置为&lt;code>auto&lt;/code>，只有当当前目录或任何父目录中存在&lt;code>go.mod&lt;/code>文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用&lt;code>go env -w&lt;/code>来永久地设置&lt;code>GO111MODULE&lt;/code>和其他变量。&lt;/p>
+&lt;pre tabindex="0">&lt;code>go env -w GO111MODULE=auto
+&lt;/code>&lt;/pre>&lt;p>我们计划在 Go 1.17 中放弃对&lt;code>GOPATH&lt;/code>模式的支持。换句话说，Go 1.17将忽略&lt;code>GO111MODULE&lt;/code>。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交&lt;a class="link" href="https://github.com/golang/go/issues/new" target="_blank" rel="noopener"
+>问题&lt;/a>或&lt;a class="link" href="https://github.com/golang/go/wiki/ExperienceReports" target="_blank" rel="noopener"
+>体验报告&lt;/a>。&lt;/p>
+&lt;h2 id="不会自动更改-gomod-和-gosum">不会自动更改 go.mod 和 go.sum
+&lt;/h2>&lt;p>在之前的版本中，当&lt;code>go&lt;/code>命令发现&lt;code>go.mod&lt;/code>或&lt;code>go.sum&lt;/code>有问题时，比如缺少&lt;code>require&lt;/code>指令或缺少&lt;code>sum&lt;/code>，它会尝试自动修复问题。我们收到了很多反馈，认为这种行为是出乎大家意料的，尤其是对于像&lt;code>go list&lt;/code>这样通常不会产生副作用的命令。自动修复并不总是可取的：如果一个导入的包没有被任何需要的Module提供，&lt;code>go&lt;/code>命令会添加一个新的依赖关系，可能会触发普通依赖关系的升级。即使是拼写错误的导入路径也会导致（失败的）网络查找。&lt;/p>
+&lt;p>在 Go 1.16 中，module-aware命令在发现&lt;code>go.mod&lt;/code>或&lt;code>go.sum&lt;/code>中的问题后会报告一个错误，而不是尝试自动修复问题。在大多数情况下，错误信息建议使用命令来修复问题。&lt;/p>
+&lt;pre tabindex="0">&lt;code>$ go build
+example.go:3:8: no required module provides package golang.org/x/net/html; to add it:
+go get golang.org/x/net/html
+$ go get golang.org/x/net/html
+$ go build
+&lt;/code>&lt;/pre>&lt;p>和之前一样，如果存在&lt;code>vendor&lt;/code>目录，&lt;code>go&lt;/code>命令可能会使用该目录（详见&lt;a class="link" href="https://golang.org/ref/mod#vendoring" target="_blank" rel="noopener"
+>&lt;code>Vendoring&lt;/code>&lt;/a>）。像&lt;code>go get&lt;/code>和&lt;code>go mod tidy&lt;/code>这样的命令仍然会修改&lt;code>go.mod&lt;/code>和&lt;code>go.sum&lt;/code>，因为它们的主要目的是管理依赖关系。&lt;/p>
+&lt;h2 id="在特定版本上安装可执行文件">在特定版本上安装可执行文件
+&lt;/h2>&lt;p>&lt;code>go install&lt;/code>命令现在可以通过指定&lt;code>@version&lt;/code>后缀来安装特定版本的可执行文件。&lt;/p>
+&lt;pre tabindex="0">&lt;code>go install golang.org/x/tools/gopls@v0.6.5
+&lt;/code>&lt;/pre>&lt;p>当使用这种语法时，&lt;code>go install&lt;/code>命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)&lt;/p>
+&lt;p>我们曾经推荐使用&lt;code>go get -u&lt;/code>程序来安装可执行文件，但这种使用方式对&lt;code>go.mod&lt;/code>中添加或更改Module版本需求的意义造成了太多的混淆。而为了避免意外修改&lt;code>go.mod&lt;/code>，人们开始建议使用更复杂的命令，比如：&lt;/p></description></item><item><title>译：在Go中转向领域驱动设计</title><link>https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/</link><pubDate>Sun, 16 Feb 2020 21:52:00 +0000</pubDate><guid>https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/</guid><description>&lt;img src="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.jpg" alt="Featured image of post 译：在Go中转向领域驱动设计" />&lt;p>原文：&lt;a class="link" href="https://www.calhoun.io/moving-towards-domain-driven-design-in-go/" target="_blank" rel="noopener"
 >Moving Towards Domain Driven Design in Go&lt;/a>&lt;/p>
 &lt;p>本文的目的是帮助演示当应用程序随着时间不断推移不断演化时，我们如何利用领域驱动设计帮我们解决可能遇到的问题。为了实现这个目标，我们会通过一个琐碎的项目研究项目是如何随着时间一步步演化的。这不是一个完整的项目，示例代码并不能够直接编译，甚至有些导入以来没有全部列出。这只是一个简单的示例，也就是说，如果出现什么问题，你可以随时与我联系，我们将对问题进行调整或者你的问题及时解答（如果可以的话）。&lt;/p></description></item><item><title>从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock</title><link>https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/</link><pubDate>Fri, 10 Jan 2020 17:30:00 +0000</pubDate><guid>https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/</guid><description>&lt;p>对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。&lt;/p>
 &lt;p>在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲突，人员能力的残次不齐都有可能导致代码的腐化。在测试过程中，我们选择引入测试保障代码的质量&lt;/p>
-&lt;p>Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用&lt;code>Ginkgo&lt;/code>、&lt;code>testify&lt;/code>和&lt;code>GoMock&lt;/code>工具。&lt;/p></description></item><item><title>使用Go Modules</title><link>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</link><pubDate>Wed, 20 Mar 2019 14:22:00 +0000</pubDate><guid>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</guid><description>原文：Using Go Modules 作者：Tyler Bui-Palsulich、Eno Compton
-介绍 Go 1.11和1.12包含了初步的modules支持，Go的新版本管理系统用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。
-modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中。go.mod文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。
-在Go 1.11开始，go命令行会再当前目录或者上层目录中存在go.mod文件并且在 $GOPATH/src目录外时自动启用modules功能。（当目录位于$GOPATH/src中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在go.mod文件。具体请参考Go命令行文档）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。
-这篇博客会演示使用modules开发Go代码的一系列的常用操作：
-创建一个模块 添加依赖 升级依赖 添加一个依赖的新主版本 升级一个依赖到新主版本 移除无用依赖 创建一个新的模块 让我门从创建一个新模块开始。
-在$GOPATH/src外创建一个新的空文件夹，使用cd切换进入这个目录，然后创建一个名叫hello.go的新源码文件：
-package hello func Hello() string { return &amp;#34;Hello, world.&amp;#34; } 让我们同样创建一个名叫hello_test.go的测试文件：
-package hello import &amp;#34;testing&amp;#34; func TestHello(t *testing.T) { want := &amp;#34;Hello, world.&amp;#34; if got := Hello(); got != want { t.Errorf(&amp;#34;Hello() = %q, want %q&amp;#34;, got, want) } } 现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有go.mod文件。如果你文件创建在 /home/gopher/hello目录下，执行go test命令时，我们可以看到结果：
-$ go test PASS ok _/home/gopher/hello 0.</description></item><item><title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title><link>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</link><pubDate>Sun, 19 Feb 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</guid><description>这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。
-本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 Pronto Cycle Share 的数据分析挑战。
-你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 NumPy，Pandas，Matplotlib 和 Seaborn 与其他可用的数据源。
-这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 对应的 Notebook 文件，并通过 Jupyter 打开。
-下载 Pronto 的数据 我们可以从 Pronto 官网 下载对应的 数据文件。总下载大约 70MB，解压缩的文件大约 900MB。
-接下来我们需要导入一些 Python 包：
-In [2]:
-%matplotlib inline import matplotlib.pyplot as plt import pandas as pd import numpy as np import seaborn as sns; sns.set() 现在我们使用 Pandas 加载所有的行程记录：</description></item></channel></rss>
+&lt;p>Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用&lt;code>Ginkgo&lt;/code>、&lt;code>testify&lt;/code>和&lt;code>GoMock&lt;/code>工具。&lt;/p></description></item><item><title>使用Go Modules</title><link>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</link><pubDate>Wed, 20 Mar 2019 14:22:00 +0000</pubDate><guid>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</guid><description>&lt;p>原文：&lt;a class="link" href="https://blog.golang.org/using-go-modules" target="_blank" rel="noopener"
+>Using Go Modules&lt;/a>
+作者：Tyler Bui-Palsulich、Eno Compton&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;h2 id="介绍">介绍
+&lt;/h2>&lt;p>Go 1.11和1.12包含了初步的&lt;a class="link" href="https://golang.org/doc/go1.11#modules" target="_blank" rel="noopener"
+>modules支持&lt;/a>，Go的&lt;a class="link" href="https://blog.golang.org/versioning-proposal" target="_blank" rel="noopener"
+>新版本管理系统&lt;/a>用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。&lt;/p>
+&lt;p>modules是Go包的集合，保存在顶层目录一个名叫&lt;code>go.mod&lt;/code>的文件中。&lt;code>go.mod&lt;/code>文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。&lt;/p>
+&lt;p>在Go 1.11开始，go命令行会再当前目录或者上层目录中存在&lt;code>go.mod&lt;/code>文件并且在 &lt;code>$GOPATH/src&lt;/code>目录外时自动启用modules功能。（当目录位于&lt;code>$GOPATH/src&lt;/code>中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在&lt;code>go.mod&lt;/code>文件。具体请参考&lt;a class="link" href="https://golang.org/cmd/go/#hdr-Preliminary_module_support" target="_blank" rel="noopener"
+>Go命令行文档&lt;/a>）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。&lt;/p>
+&lt;p>这篇博客会演示使用modules开发Go代码的一系列的常用操作：&lt;/p>
+&lt;ul>
+&lt;li>创建一个模块&lt;/li>
+&lt;li>添加依赖&lt;/li>
+&lt;li>升级依赖&lt;/li>
+&lt;li>添加一个依赖的新主版本&lt;/li>
+&lt;li>升级一个依赖到新主版本&lt;/li>
+&lt;li>移除无用依赖&lt;/li>
+&lt;/ul>
+&lt;h2 id="创建一个新的模块">创建一个新的模块
+&lt;/h2>&lt;p>让我门从创建一个新模块开始。&lt;/p>
+&lt;p>在&lt;code>$GOPATH/src&lt;/code>外创建一个新的空文件夹，使用&lt;code>cd&lt;/code>切换进入这个目录，然后创建一个名叫&lt;code>hello.go&lt;/code>的新源码文件：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">hello&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">Hello&lt;/span>() &lt;span style="color:#66d9ef">string&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Hello, world.&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>让我们同样创建一个名叫&lt;code>hello_test.go&lt;/code>的测试文件：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">hello&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> &lt;span style="color:#e6db74">&amp;#34;testing&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">TestHello&lt;/span>(&lt;span style="color:#a6e22e">t&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">testing&lt;/span>.&lt;span style="color:#a6e22e">T&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">want&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Hello, world.&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">got&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Hello&lt;/span>(); &lt;span style="color:#a6e22e">got&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#a6e22e">want&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">t&lt;/span>.&lt;span style="color:#a6e22e">Errorf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Hello() = %q, want %q&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">got&lt;/span>, &lt;span style="color:#a6e22e">want&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有&lt;code>go.mod&lt;/code>文件。如果你文件创建在 &lt;code>/home/gopher/hello&lt;/code>目录下，执行&lt;code>go test&lt;/code>命令时，我们可以看到结果：&lt;/p>
+&lt;pre tabindex="0">&lt;code> $ go test
+PASS
+ok _/home/gopher/hello 0.020s
+$
+&lt;/code>&lt;/pre>&lt;p>最后一行表示了整个包测试的汇总信息。因为我们现在在 &lt;code>$GOPATH&lt;/code>外，并且不属于任何模块，因此 &lt;code>go&lt;/code>命令不知道当前目录的引用路径，因此采用当前文件夹名生成了一个伪路径。&lt;/p></description></item><item><title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title><link>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</link><pubDate>Sun, 19 Feb 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</guid><description>&lt;p>这是一篇非常不错的 &lt;a class="link" href="https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/" target="_blank" rel="noopener"
+>pandas 分析入门文章&lt;/a>，在此简单翻译摘录如下。&lt;/p>
+&lt;hr>
+&lt;p>本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 &lt;a class="link" href="http://www.prontocycleshare.com/datachallenge" target="_blank" rel="noopener"
+>Pronto Cycle Share 的数据分析挑战&lt;/a>。&lt;/p>
+&lt;p>你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 &lt;a class="link" href="http://www.numpy.org/" target="_blank" rel="noopener"
+>NumPy&lt;/a>，&lt;a class="link" href="http://pandas.pydata.org/" target="_blank" rel="noopener"
+>Pandas&lt;/a>，&lt;a class="link" href="http://matplotlib.org/" target="_blank" rel="noopener"
+>Matplotlib&lt;/a> 和 &lt;a class="link" href="http://seaborn.pydata.org/index.html" target="_blank" rel="noopener"
+>Seaborn&lt;/a> 与其他可用的数据源。&lt;/p>
+&lt;p>这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 &lt;a class="link" href="http://jakevdp.github.io/downloads/notebooks/ProntoData.ipynb" target="_blank" rel="noopener"
+>对应的 Notebook 文件&lt;/a>，并通过 Jupyter 打开。&lt;/p>
+&lt;h2 id="下载-pronto-的数据">下载 Pronto 的数据
+&lt;/h2>&lt;p>我们可以从 &lt;a class="link" href="http://www.prontocycleshare.com/datachallenge" target="_blank" rel="noopener"
+>Pronto 官网&lt;/a> 下载对应的 &lt;a class="link" href="https://s3.amazonaws.com/pronto-data/open_data_year_one.zip" target="_blank" rel="noopener"
+>数据文件&lt;/a>。总下载大约 70MB，解压缩的文件大约 900MB。&lt;/p>
+&lt;p>接下来我们需要导入一些 Python 包：&lt;/p>
+&lt;p>In [2]:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">%&lt;/span>matplotlib inline
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> matplotlib.pyplot &lt;span style="color:#66d9ef">as&lt;/span> plt
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> pandas &lt;span style="color:#66d9ef">as&lt;/span> pd
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> numpy &lt;span style="color:#66d9ef">as&lt;/span> np
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> seaborn &lt;span style="color:#66d9ef">as&lt;/span> sns; sns&lt;span style="color:#f92672">.&lt;/span>set()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在我们使用 Pandas 加载所有的行程记录：&lt;/p>
+&lt;p>In [3]:&lt;/p></description></item></channel></rss>

@@ -1,14 +1,74 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Git on ipfans's Blog</title><link>https://www.4async.com/tags/git/</link><description>Recent content in Git on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 29 Apr 2014 15:57:46 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/git/atom.xml" rel="self" type="application/rss+xml"/><item><title>更多关于 channel 的扯淡</title><link>https://www.4async.com/2014/04/2014-04-29-more-about-golang-channel/</link><pubDate>Tue, 29 Apr 2014 15:57:46 +0000</pubDate><guid>https://www.4async.com/2014/04/2014-04-29-more-about-golang-channel/</guid><description>channel 是一个比较神奇的东西，以前很少研究，不过最近的项目有这方面的需求就看了一下。下面主要从 channel 的功能谈起。
-channel 的读取和写入问题 channel 的读取写入取决于当前的 channel 的状态，大家应该都知道下面的情况是一定会产生死锁：
-ch := make(chan int) &amp;lt;-ch 但是针对于 close 掉的 channel，则是一定可以读取成功的：
-ch := make(chan int) close(ch) i:=&amp;lt;-ch //i=0 对于这种情况，golang 添加了一个结果类型判断 i, succ :=&amp;lt;-ch //i=0,succ=false，若结果为 false，说明该 channel 已经关闭了。但是 close 过的 channel 再写入，是会 panic 的。
-有时可能还有一些时间上的要求，比如说判断是否超时。这个时候可以结合上一篇文章中的 select 来解决这个问题：case &amp;lt;- time.After(time.Second*2): 这样就可以设置一个超时时间，解决这个问题。这个问题我们之前有探讨过，select 会判断 channel 的状态是否 ready。超时时，需要取得数据的 channel 应该是未完成的，这个时候就可以进入超时 block。
-但是对于在上一篇文章中的另外一种情况，还需要在解决问题时根据具体情况确定具体的解决方案。
-利用 channel 实现去异步化 比如一个比较经典的生产者消费者模型：
-package main import (&amp;#34;fmt&amp;#34; &amp;#34;time&amp;#34; ) // 生产者 func Producer(id int, item chan int) { for i:=0; i&amp;lt;10; i++ { item &amp;lt;- i fmt.</description></item><item><title>基于 Gogs 实现的私密 Git 服务</title><link>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</link><pubDate>Tue, 22 Apr 2014 20:09:46 +0000</pubDate><guid>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</guid><description>Github 是个好东西，最早接触 Git，就是因为 Github 接触的。上手简单，丰富的开源库，互动性等等功能都让 Github 充满魅力。
-当然了，一些私密的代码是不适合放在 Github 上的（比如工作代码），这个时候就不方便上传代码到 Github 了。当然了，如果 购买 Github 的 Micro Plan 就可以创建私密的 repo 了。
-不花钱有没有什么好方法？以前有一个 Github 功能大致相同的社区版 Gitlab，基于 Ruby 开发，可是配置实在是太过于复杂，也不适合一个人单独打包使用。不过后来遇到了 gogs，这个问题就解决了。其实刚开始知道 gogs 的时候，还不支持 SQLite3，最新的一个版本已经支持了，不过只有 x64 位版本，基于 golang 构建，因此也没有什么依赖需要安装，只需要简单的：下载、解压、打开、配置，然后你就可以使用 git 服务了。
-下载地址：https://github.com/gogits/gogs/wiki/Install-from-binary
-打开压缩包，以 Windows/SQLite3 为例演示安装步骤：
-解压压缩包，双击执行 start.bat 文件（Linux/Mac 下是 start.sh） 打开浏览器，浏览 http://127.0.0.1:3000 打开自动跳转至安装界面，内容一共只有下图这么多！很简单，我就不说啥了。如果你想多机同步，建议你将 SQLite 数据库和 repo 地址放在网盘内，比如我就放在 Dropbox 下了。 点击 Install Gogs，安装完成～ 比如我现在是自己在用，可能需要一些单独的配置：
-打开 gogs 的目录，custom/conf/app.ini 文件，使用 SublimeText 之类的编辑器打开，不要使用记事本，这是个教训&amp;hellip; 按照下面修改之后就只允许本机访问了（反正只有我自己用），注意 Mac 和 Linux 下开 80 需要 root： [server] PROTOCOL = http DOMAIN = localhost ROOT_URL = `http://localhost/` HTTP_ADDR = 127.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Git on ipfans's Blog</title><link>https://www.4async.com/tags/git/</link><description>Recent content in Git on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 29 Apr 2014 15:57:46 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/git/atom.xml" rel="self" type="application/rss+xml"/><item><title>更多关于 channel 的扯淡</title><link>https://www.4async.com/2014/04/2014-04-29-more-about-golang-channel/</link><pubDate>Tue, 29 Apr 2014 15:57:46 +0000</pubDate><guid>https://www.4async.com/2014/04/2014-04-29-more-about-golang-channel/</guid><description>&lt;p>channel 是一个比较神奇的东西，以前很少研究，不过最近的项目有这方面的需求就看了一下。下面主要从 channel 的功能谈起。&lt;/p>
+&lt;h2 id="channel-的读取和写入问题">channel 的读取和写入问题
+&lt;/h2>&lt;p>channel 的读取写入取决于当前的 channel 的状态，大家应该都知道下面的情况是一定会产生死锁：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">ch&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> make(&lt;span style="color:#66d9ef">chan&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;-&lt;/span>&lt;span style="color:#a6e22e">ch&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>但是针对于 close 掉的 channel，则是一定可以读取成功的：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">ch&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> make(&lt;span style="color:#66d9ef">chan&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>close(&lt;span style="color:#a6e22e">ch&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">i&lt;/span>&lt;span style="color:#f92672">:=&amp;lt;-&lt;/span>&lt;span style="color:#a6e22e">ch&lt;/span> &lt;span style="color:#75715e">//i=0
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>对于这种情况，golang 添加了一个结果类型判断 &lt;code>i, succ :=&amp;lt;-ch //i=0,succ=false&lt;/code>，若结果为 false，说明该 channel 已经关闭了。但是 close 过的 channel 再写入，是会 panic 的。&lt;/p>
+&lt;p>有时可能还有一些时间上的要求，比如说判断是否超时。这个时候可以结合上一篇文章中的 select 来解决这个问题：&lt;code>case &amp;lt;- time.After(time.Second*2):&lt;/code> 这样就可以设置一个超时时间，解决这个问题。这个问题我们之前有探讨过，select 会判断 channel 的状态是否 ready。超时时，需要取得数据的 channel 应该是未完成的，这个时候就可以进入超时 block。&lt;/p>
+&lt;p>但是对于在上一篇文章中的另外一种情况，还需要在解决问题时根据具体情况确定具体的解决方案。&lt;/p>
+&lt;h2 id="利用-channel-实现去异步化">利用 channel 实现去异步化
+&lt;/h2>&lt;p>比如一个比较经典的生产者消费者模型：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> (&lt;span style="color:#e6db74">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;time&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 生产者
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">Producer&lt;/span>(&lt;span style="color:#a6e22e">id&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span>, &lt;span style="color:#a6e22e">item&lt;/span> &lt;span style="color:#66d9ef">chan&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> &lt;span style="color:#a6e22e">i&lt;/span>&lt;span style="color:#f92672">:=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>; &lt;span style="color:#a6e22e">i&lt;/span>&amp;lt;&lt;span style="color:#ae81ff">10&lt;/span>; &lt;span style="color:#a6e22e">i&lt;/span>&lt;span style="color:#f92672">++&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">item&lt;/span> &lt;span style="color:#f92672">&amp;lt;-&lt;/span> &lt;span style="color:#a6e22e">i&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Producer %d produces data: %d\n&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">id&lt;/span>, &lt;span style="color:#a6e22e">i&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Sleep&lt;/span>(&lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#ae81ff">1e6&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 消费者
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">Consumer&lt;/span>(&lt;span style="color:#a6e22e">id&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span>, &lt;span style="color:#a6e22e">item&lt;/span> &lt;span style="color:#66d9ef">chan&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> &lt;span style="color:#a6e22e">i&lt;/span>&lt;span style="color:#f92672">:=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>; &lt;span style="color:#a6e22e">i&lt;/span>&amp;lt;&lt;span style="color:#ae81ff">20&lt;/span>; &lt;span style="color:#a6e22e">i&lt;/span>&lt;span style="color:#f92672">++&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">c_item&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;lt;-&lt;/span>&lt;span style="color:#a6e22e">item&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Consumer %d get data: %d\n&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">id&lt;/span>, &lt;span style="color:#a6e22e">c_item&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Sleep&lt;/span>(&lt;span style="color:#ae81ff">10&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#ae81ff">1e6&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {&lt;span style="color:#a6e22e">item&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> make(&lt;span style="color:#66d9ef">chan&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span>, &lt;span style="color:#ae81ff">6&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">go&lt;/span> &lt;span style="color:#a6e22e">Producer&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#a6e22e">item&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">go&lt;/span> &lt;span style="color:#a6e22e">Producer&lt;/span>(&lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#a6e22e">item&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">go&lt;/span> &lt;span style="color:#a6e22e">Consumer&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#a6e22e">item&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Sleep&lt;/span>(&lt;span style="color:#ae81ff">5&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Second&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在写法上，golang 通过 channel 实现了一个忽略异步等待的代码，channel 其实相当于一个队列，当队列中为空时，会阻塞在取队列的操作上，直到可以从中取到内容。而在代码中，生产者和消费者共用了一个 channel item，在生产后放入 item 中，消费者从中读取消费。&lt;/p></description></item><item><title>基于 Gogs 实现的私密 Git 服务</title><link>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</link><pubDate>Tue, 22 Apr 2014 20:09:46 +0000</pubDate><guid>https://www.4async.com/2014/04/2014-04-22-build-your-private-git-serivce/</guid><description>&lt;p>Github 是个好东西，最早接触 Git，就是因为 Github 接触的。上手简单，丰富的开源库，互动性等等功能都让 Github 充满魅力。&lt;/p>
+&lt;p>当然了，一些私密的代码是不适合放在 Github 上的（比如工作代码），这个时候就不方便上传代码到 Github 了。当然了，如果 &lt;a class="link" href="https://github.com/pricing" target="_blank" rel="noopener"
+>购买 Github 的 Micro Plan&lt;/a> 就可以创建私密的 repo 了。&lt;/p>
+&lt;p>不花钱有没有什么好方法？以前有一个 Github 功能大致相同的社区版 Gitlab，基于 Ruby 开发，可是配置实在是太过于复杂，也不适合一个人单独打包使用。不过后来遇到了 gogs，这个问题就解决了。其实刚开始知道 gogs 的时候，还不支持 SQLite3，最新的一个版本已经支持了，不过只有 x64 位版本，基于 golang 构建，因此也没有什么依赖需要安装，只需要简单的：下载、解压、打开、配置，然后你就可以使用 git 服务了。&lt;/p>
+&lt;p>下载地址：&lt;a class="link" href="https://github.com/gogits/gogs/wiki/Install-from-binary" target="_blank" rel="noopener"
+>https://github.com/gogits/gogs/wiki/Install-from-binary&lt;/a>&lt;/p>
+&lt;p>打开压缩包，以 Windows/SQLite3 为例演示安装步骤：&lt;/p>
+&lt;ol>
+&lt;li>解压压缩包，双击执行 start.bat 文件（Linux/Mac 下是 start.sh）&lt;/li>
+&lt;li>打开浏览器，浏览 &lt;a class="link" href="http://127.0.0.1:3000" target="_blank" rel="noopener"
+>http://127.0.0.1:3000&lt;/a>&lt;/li>
+&lt;li>打开自动跳转至安装界面，内容一共只有下图这么多！很简单，我就不说啥了。如果你想多机同步，建议你将 SQLite 数据库和 repo 地址放在网盘内，比如我就放在 Dropbox 下了。 &lt;br>
+&lt;img src="http://ww1.sinaimg.cn/mw690/69e37fdbgw1efomi9vvqyj20k90iimxf.jpg"
+loading="lazy"
+>&lt;/li>
+&lt;li>点击 Install Gogs，安装完成～&lt;/li>
+&lt;/ol>
+&lt;p>比如我现在是自己在用，可能需要一些单独的配置：&lt;/p>
+&lt;ol>
+&lt;li>打开 gogs 的目录，custom/conf/app.ini 文件，使用 SublimeText 之类的编辑器打开，不要使用记事本，这是个教训&amp;hellip;&lt;/li>
+&lt;li>按照下面修改之后就只允许本机访问了（反正只有我自己用），注意 Mac 和 Linux 下开 80 需要 root：&lt;/li>
+&lt;/ol>
+&lt;pre tabindex="0">&lt;code>[server]
+PROTOCOL = http
+DOMAIN = localhost
+ROOT_URL = `http://localhost/`
+HTTP_ADDR = 127.0.0.1
+HTTP_PORT = 80
+&lt;/code>&lt;/pre>&lt;p>重新执行 start.bat，看看自己的成果吧！配合 SourceTreee 之类的程序，效果更佳：）看下我的 gogs 吧。&lt;/p></description></item></channel></rss>

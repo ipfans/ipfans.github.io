@@ -1,93 +1,405 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Golang on ipfans's Blog</title><link>https://www.4async.com/tags/golang/</link><description>Recent content in Golang on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 17 Aug 2021 17:48:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/golang/atom.xml" rel="self" type="application/rss+xml"/><item><title>Go 1.17 泛型尝鲜</title><link>https://www.4async.com/2021/08/golang-117-generics/</link><pubDate>Tue, 17 Aug 2021 17:48:00 +0000</pubDate><guid>https://www.4async.com/2021/08/golang-117-generics/</guid><description>&lt;img src="https://www.4async.com/2021/08/golang-117-generics/go.png" alt="Featured image of post Go 1.17 泛型尝鲜" />今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。
-泛型有什么作用？ 在使用Go没有泛型之前我们怎么实现针对多类型的逻辑实现的呢？有很多方法，比如说使用interface{}作为变量类型参数，在内部通过类型判断进入对应的处理逻辑；将类型转化为特定表现的鸭子类型，通过接口定义的方法实现逻辑整合；还有人专门编写了Go的函数代码生成工具，通过批量生成不同类型的相同实现函数代替手工实现等等。这些方法多多少少存在一些问题：使用了interface{}作为参数意味着放弃了编译时检查，作为强类型语言的一个优势就被抹掉了。同样，无论使用代码生成还是手工书写，一旦出现问题，意味着这些方法都需要重复生成或者进行批量修改，工作量反而变得更多了。
-在Go中引入泛型会给程序开发带来很多好处：通过泛型，可以针对多种类型编写一次代码，大大节省了编码时间。你可以充分应用编译器的编译检查，保证程序变量类型的可靠性。借助泛型，你可以减少代码的重复度，也不会出现一处出现问题需要修改多处地方的尴尬问题。这也让很多测试工作变得更简单，借助类型安全，你甚至可以少考虑很多的边缘情况。
-Go语言官方有详细的泛型提案文档可以在这里和这里查看详情。
-如何使用泛型 前面理论我们仅仅只做介绍，这次尝鲜还是以实践为主。让我们先从一个小例子开始。
-从简单的例子开始 让我们先从一个最简单的例子开始：
-package main import ( &amp;#34;fmt&amp;#34; ) type Addable interface { type int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr, float32, float64, complex64, complex128, string } func add[T Addable](a, b T) T { return a + b } func main() { fmt.Println(add(1,2)) fmt.Println(add(&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;)) } 这个函数可以实现任何需要使用+符号进行运算的类型，我们通过定义Addable类型，枚举了所有可能可以使用add方法的所有的类型。比如我们在main函数中就使用了int和string两种不同类型。
-但是如果这时我们使用简单的go run命令运行，会发现提示语法错误：
-$ go version go version go1.17 darwin/arm64 $ go run ~/main.</description></item><item><title>上下文Context与结构体Struct</title><link>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</link><pubDate>Thu, 25 Feb 2021 10:30:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png" alt="Featured image of post 上下文Context与结构体Struct" />原文地址：https://blog.golang.org/context-and-structs 原文作者：Jean de Klerk, Matt T. Proud 译者：Kevin 介紹 在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是context.Context。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。
-在context的文档中写道。
-上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。 本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。
-倾向于将上下文作为参数传递 为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。
-type Worker struct { /* … */ } type Work struct { /* … */ } func New() *Worker { return &amp;amp;Worker{} } func (w *Worker) Fetch(ctx context.Context) (*Work, error) { _ = ctx // 每次调用中ctx用于取消操作，截止时间和元数据。 } func (w *Worker) Process(ctx context.Context, w *Work) error { _ = ctx // A每次调用中ctx用于取消操作，截止时间和元数据。 } 在这个例子中，(*Worker).Fetch和(*Worker).Process方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的context.Context将如何被使用：没有期望传递给一个方法的context.Context将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。
-将上下文存储在结构中会导致混乱 让我们再次使用上下文存储在结构体中这种方式审视一下上面的Worker例子。它的问题是，当你把上下文存储在一个结构中时，你会向调用者隐藏它的生命周期，甚至可能的是把两个不同的作用域以不可预料的方式互相干扰：</description></item><item><title>Go 1.16 中Module功能新变化</title><link>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</link><pubDate>Fri, 19 Feb 2021 10:16:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/cover.jpg" alt="Featured image of post Go 1.16 中Module功能新变化" />原文地址：https://blog.golang.org/go116-module-changes 原文作者：Jay Conrod 译者：Kevin 希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。发行说明中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。
-Module功能默认开启 go命令现在默认以module-aware模式构建包，即使没有go.mod文件存在。这是向在所有项目中使用Module功能迈出的一大步。
-通过设置GO111MODULE环境变量为off，仍然可以在GOPATH模式下构建包。你也可以将GO111MODULE设置为auto，只有当当前目录或任何父目录中存在go.mod文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用go env -w来永久地设置GO111MODULE和其他变量。
-go env -w GO111MODULE=auto 我们计划在 Go 1.17 中放弃对GOPATH模式的支持。换句话说，Go 1.17将忽略GO111MODULE。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交问题或体验报告。
-不会自动更改 go.mod 和 go.sum 在之前的版本中，当go命令发现go.mod或go.sum有问题时，比如缺少require指令或缺少sum，它会尝试自动修复问题。我们收到了很多反馈，认为这种行为是出乎大家意料的，尤其是对于像go list这样通常不会产生副作用的命令。自动修复并不总是可取的：如果一个导入的包没有被任何需要的Module提供，go命令会添加一个新的依赖关系，可能会触发普通依赖关系的升级。即使是拼写错误的导入路径也会导致（失败的）网络查找。
-在 Go 1.16 中，module-aware命令在发现go.mod或go.sum中的问题后会报告一个错误，而不是尝试自动修复问题。在大多数情况下，错误信息建议使用命令来修复问题。
-$ go build example.go:3:8: no required module provides package golang.org/x/net/html; to add it: go get golang.org/x/net/html $ go get golang.org/x/net/html $ go build 和之前一样，如果存在vendor目录，go命令可能会使用该目录（详见Vendoring）。像go get和go mod tidy这样的命令仍然会修改go.mod和go.sum，因为它们的主要目的是管理依赖关系。
-在特定版本上安装可执行文件 go install命令现在可以通过指定@version后缀来安装特定版本的可执行文件。
-go install golang.org/x/tools/gopls@v0.6.5 当使用这种语法时，go install命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)
-我们曾经推荐使用go get -u程序来安装可执行文件，但这种使用方式对go.</description></item><item><title>OpenTelemetry入门</title><link>https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/</link><pubDate>Tue, 31 Mar 2020 11:10:00 +0000</pubDate><guid>https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/</guid><description>&lt;img src="https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/cover.png" alt="Featured image of post OpenTelemetry入门" />&lt;p>今天早些时候，&lt;a class="link" href="https://opentelemetry.io/" target="_blank" rel="noopener"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Golang on ipfans's Blog</title><link>https://www.4async.com/tags/golang/</link><description>Recent content in Golang on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 17 Aug 2021 17:48:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/golang/atom.xml" rel="self" type="application/rss+xml"/><item><title>Go 1.17 泛型尝鲜</title><link>https://www.4async.com/2021/08/golang-117-generics/</link><pubDate>Tue, 17 Aug 2021 17:48:00 +0000</pubDate><guid>https://www.4async.com/2021/08/golang-117-generics/</guid><description>&lt;img src="https://www.4async.com/2021/08/golang-117-generics/go.png" alt="Featured image of post Go 1.17 泛型尝鲜" />&lt;p>今天，Go的1.17版本终于正式发布，除了带来各种优化和新功能外，1.17正式在程序中提供了尝鲜的泛型支持，这一功能也是为1.18版本泛型正式实装做铺垫。意味着在6个月后，我们就可以正式使用泛型开发了。那在Go 1.18正式实装之前，我们在1.17版本中先尝鲜一下泛型的支持吧。&lt;/p>
+&lt;h2 id="泛型有什么作用">泛型有什么作用？
+&lt;/h2>&lt;p>在使用Go没有泛型之前我们怎么实现针对多类型的逻辑实现的呢？有很多方法，比如说使用&lt;code>interface{}&lt;/code>作为变量类型参数，在内部通过类型判断进入对应的处理逻辑；将类型转化为特定表现的鸭子类型，通过接口定义的方法实现逻辑整合；还有人专门编写了Go的&lt;a class="link" href="https://twitter.com/yogthos/status/883058510275149826" target="_blank" rel="noopener"
+>函数代码生成工具&lt;/a>，通过批量生成不同类型的相同实现函数代替手工实现等等。这些方法多多少少存在一些问题：使用了&lt;code>interface{}&lt;/code>作为参数意味着放弃了编译时检查，作为强类型语言的一个优势就被抹掉了。同样，无论使用代码生成还是手工书写，一旦出现问题，意味着这些方法都需要重复生成或者进行批量修改，工作量反而变得更多了。&lt;/p>
+&lt;p>在Go中引入泛型会给程序开发带来很多好处：通过泛型，可以针对多种类型编写一次代码，大大节省了编码时间。你可以充分应用编译器的编译检查，保证程序变量类型的可靠性。借助泛型，你可以减少代码的重复度，也不会出现一处出现问题需要修改多处地方的尴尬问题。这也让很多测试工作变得更简单，借助类型安全，你甚至可以少考虑很多的边缘情况。&lt;/p>
+&lt;p>Go语言官方有详细的泛型提案文档可以在&lt;a class="link" href="https://go.googlesource.com/proposal/&amp;#43;/refs/heads/master/design/15292-generics.md" target="_blank" rel="noopener"
+>这里&lt;/a>和&lt;a class="link" href="https://go.googlesource.com/proposal/&amp;#43;/refs/heads/master/design/15292/2013-12-type-params.md" target="_blank" rel="noopener"
+>这里&lt;/a>查看详情。&lt;/p>
+&lt;h2 id="如何使用泛型">如何使用泛型
+&lt;/h2>&lt;p>前面理论我们仅仅只做介绍，这次尝鲜还是以实践为主。让我们先从一个小例子开始。&lt;/p>
+&lt;h3 id="从简单的例子开始">从简单的例子开始
+&lt;/h3>&lt;p>让我们先从一个最简单的例子开始：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Addable&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span>, &lt;span style="color:#66d9ef">int8&lt;/span>, &lt;span style="color:#66d9ef">int16&lt;/span>, &lt;span style="color:#66d9ef">int32&lt;/span>, &lt;span style="color:#66d9ef">int64&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">uint&lt;/span>, &lt;span style="color:#66d9ef">uint8&lt;/span>, &lt;span style="color:#66d9ef">uint16&lt;/span>, &lt;span style="color:#66d9ef">uint32&lt;/span>, &lt;span style="color:#66d9ef">uint64&lt;/span>, &lt;span style="color:#66d9ef">uintptr&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">float32&lt;/span>, &lt;span style="color:#66d9ef">float64&lt;/span>, &lt;span style="color:#66d9ef">complex64&lt;/span>, &lt;span style="color:#66d9ef">complex128&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">add&lt;/span>[&lt;span style="color:#a6e22e">T&lt;/span> &lt;span style="color:#a6e22e">Addable&lt;/span>](&lt;span style="color:#a6e22e">a&lt;/span>, &lt;span style="color:#a6e22e">b&lt;/span> &lt;span style="color:#a6e22e">T&lt;/span>) &lt;span style="color:#a6e22e">T&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#a6e22e">a&lt;/span> &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#a6e22e">b&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">add&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span>,&lt;span style="color:#ae81ff">2&lt;/span>))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">add&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;2&amp;#34;&lt;/span>))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这个函数可以实现任何需要使用&lt;code>+&lt;/code>符号进行运算的类型，我们通过定义&lt;code>Addable&lt;/code>类型，枚举了所有可能可以使用&lt;code>add&lt;/code>方法的所有的类型。比如我们在&lt;code>main&lt;/code>函数中就使用了&lt;code>int&lt;/code>和&lt;code>string&lt;/code>两种不同类型。&lt;/p>
+&lt;p>但是如果这时我们使用简单的&lt;code>go run&lt;/code>命令运行，会发现提示语法错误：&lt;/p>
+&lt;pre tabindex="0">&lt;code>$ go version
+go version go1.17 darwin/arm64
+$ go run ~/main.go
+# command-line-arguments
+../main.go:8:2: syntax error: unexpected type, expecting method or interface name
+../main.go:15:6: missing function body
+../main.go:15:9: syntax error: unexpected [, expecting (
+&lt;/code>&lt;/pre>&lt;p>因为在Go 1.17中，泛型并未默认开启，你需要定义&lt;code>gcflags&lt;/code>方式启用泛型：&lt;/p></description></item><item><title>上下文Context与结构体Struct</title><link>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</link><pubDate>Thu, 25 Feb 2021 10:30:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-25-context-and-structs/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-25-context-and-structs/cover.png" alt="Featured image of post 上下文Context与结构体Struct" />&lt;pre tabindex="0">&lt;code>原文地址：https://blog.golang.org/context-and-structs
+原文作者：Jean de Klerk, Matt T. Proud
+译者：Kevin
+&lt;/code>&lt;/pre>&lt;h2 id="介紹">介紹
+&lt;/h2>&lt;p>在许多Go API中，尤其是现代的API中，函数和方法的第一个参数通常是&lt;a class="link" href="https://golang.org/pkg/context/" target="_blank" rel="noopener"
+>&lt;code>context.Context&lt;/code>&lt;/a>。上下文（Context）提供了一种方法，用于跨API边界和进程之间传输截止时间、调用者取消和其他请求范围的值。当一个库与远程服务器（如数据库、API等）直接或间接交互时，经常会用到它。&lt;/p>
+&lt;p>在&lt;a class="link" href="https://golang.org/pkg/context/" target="_blank" rel="noopener"
+>context的文档&lt;/a>中写道。&lt;/p>
+&lt;pre>&lt;code>上下文不应该存储在结构类型里面，而是传递给每个需要它的函数。
+&lt;/code>&lt;/pre>
+&lt;p>本文对这一建议进行了扩展，用具体例子解析为什么传递上下文而不是将其存储在其他类型中很重要。它还强调了一种罕见的情况，即在结构类型中存储上下文可能是有意义的，以及如何安全地这样做。&lt;/p>
+&lt;h2 id="倾向于将上下文作为参数传递">倾向于将上下文作为参数传递
+&lt;/h2>&lt;p>为了深入理解不在结构中存储上下文的建议，我们来考虑一下首选的上下文作为参数的方法。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Worker&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> { &lt;span style="color:#75715e">/* … */&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Work&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> { &lt;span style="color:#75715e">/* … */&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">New&lt;/span>() &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>{}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Fetch&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>) (&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 每次调用中ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Process&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>, &lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// A每次调用中ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在这个例子中，&lt;code>(*Worker).Fetch&lt;/code>和&lt;code>(*Worker).Process&lt;/code>方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的&lt;code>context.Context&lt;/code>将如何被使用：没有期望传递给一个方法的&lt;code>context.Context&lt;/code>将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。&lt;/p>
+&lt;h2 id="将上下文存储在结构中会导致混乱">将上下文存储在结构中会导致混乱
+&lt;/h2>&lt;p>让我们再次使用上下文存储在结构体中这种方式审视一下上面的&lt;code>Worker&lt;/code>例子。它的问题是，当你把上下文存储在一个结构中时，你会向调用者隐藏它的生命周期，甚至可能的是把两个不同的作用域以不可预料的方式互相干扰：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Worker&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">New&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>) &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>{&lt;span style="color:#a6e22e">ctx&lt;/span>: &lt;span style="color:#a6e22e">ctx&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Fetch&lt;/span>() (&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Process&lt;/span>(&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>(*Worker).Fetch&lt;/code>和&lt;code>(*Worker).Process&lt;/code>方法都使用存储在&lt;code>Worker&lt;/code>中的上下文。这防止了&lt;code>Fetch&lt;/code>和&lt;code>Process&lt;/code>的调用者（它们本身可能有不同的上下文）在每次调用的基础上指定截止日期、请求取消和附加元数据。例如：用户无法只为&lt;code>(*Worker).Fetch&lt;/code>提供截止日期，也无法只取消&lt;code>(*Worker).Process&lt;/code>的调用。调用者的生命期与共享上下文交织在一起，上下文的范围是创建&lt;code>Worker&lt;/code>的生命周期。&lt;/p></description></item><item><title>Go 1.16 中Module功能新变化</title><link>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</link><pubDate>Fri, 19 Feb 2021 10:16:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/cover.jpg" alt="Featured image of post Go 1.16 中Module功能新变化" />&lt;pre tabindex="0">&lt;code>原文地址：https://blog.golang.org/go116-module-changes
+原文作者：Jay Conrod
+译者：Kevin
+&lt;/code>&lt;/pre>&lt;p>希望您喜欢Go 1.16! 这个版本有很多新功能，特别是对Module而言。&lt;a class="link" href="https://golang.org/doc/go1.16" target="_blank" rel="noopener"
+>发行说明&lt;/a>中简要介绍了这些变化，但让我们深入发掘一下其中的一些变化。&lt;/p>
+&lt;h2 id="module功能默认开启">Module功能默认开启
+&lt;/h2>&lt;p>go命令现在默认以module-aware模式构建包，即使没有&lt;code>go.mod&lt;/code>文件存在。这是向在所有项目中使用Module功能迈出的一大步。&lt;/p>
+&lt;p>通过设置&lt;code>GO111MODULE&lt;/code>环境变量为&lt;code>off&lt;/code>，仍然可以在&lt;code>GOPATH&lt;/code>模式下构建包。你也可以将&lt;code>GO111MODULE&lt;/code>设置为&lt;code>auto&lt;/code>，只有当当前目录或任何父目录中存在&lt;code>go.mod&lt;/code>文件时才启用module-aware模式。这在以前是默认的。请注意，您可以使用&lt;code>go env -w&lt;/code>来永久地设置&lt;code>GO111MODULE&lt;/code>和其他变量。&lt;/p>
+&lt;pre tabindex="0">&lt;code>go env -w GO111MODULE=auto
+&lt;/code>&lt;/pre>&lt;p>我们计划在 Go 1.17 中放弃对&lt;code>GOPATH&lt;/code>模式的支持。换句话说，Go 1.17将忽略&lt;code>GO111MODULE&lt;/code>。如果您的项目没有以module-aware模式构建，现在是时候迁移了。如果有问题妨碍您迁移，请考虑提交&lt;a class="link" href="https://github.com/golang/go/issues/new" target="_blank" rel="noopener"
+>问题&lt;/a>或&lt;a class="link" href="https://github.com/golang/go/wiki/ExperienceReports" target="_blank" rel="noopener"
+>体验报告&lt;/a>。&lt;/p>
+&lt;h2 id="不会自动更改-gomod-和-gosum">不会自动更改 go.mod 和 go.sum
+&lt;/h2>&lt;p>在之前的版本中，当&lt;code>go&lt;/code>命令发现&lt;code>go.mod&lt;/code>或&lt;code>go.sum&lt;/code>有问题时，比如缺少&lt;code>require&lt;/code>指令或缺少&lt;code>sum&lt;/code>，它会尝试自动修复问题。我们收到了很多反馈，认为这种行为是出乎大家意料的，尤其是对于像&lt;code>go list&lt;/code>这样通常不会产生副作用的命令。自动修复并不总是可取的：如果一个导入的包没有被任何需要的Module提供，&lt;code>go&lt;/code>命令会添加一个新的依赖关系，可能会触发普通依赖关系的升级。即使是拼写错误的导入路径也会导致（失败的）网络查找。&lt;/p>
+&lt;p>在 Go 1.16 中，module-aware命令在发现&lt;code>go.mod&lt;/code>或&lt;code>go.sum&lt;/code>中的问题后会报告一个错误，而不是尝试自动修复问题。在大多数情况下，错误信息建议使用命令来修复问题。&lt;/p>
+&lt;pre tabindex="0">&lt;code>$ go build
+example.go:3:8: no required module provides package golang.org/x/net/html; to add it:
+go get golang.org/x/net/html
+$ go get golang.org/x/net/html
+$ go build
+&lt;/code>&lt;/pre>&lt;p>和之前一样，如果存在&lt;code>vendor&lt;/code>目录，&lt;code>go&lt;/code>命令可能会使用该目录（详见&lt;a class="link" href="https://golang.org/ref/mod#vendoring" target="_blank" rel="noopener"
+>&lt;code>Vendoring&lt;/code>&lt;/a>）。像&lt;code>go get&lt;/code>和&lt;code>go mod tidy&lt;/code>这样的命令仍然会修改&lt;code>go.mod&lt;/code>和&lt;code>go.sum&lt;/code>，因为它们的主要目的是管理依赖关系。&lt;/p>
+&lt;h2 id="在特定版本上安装可执行文件">在特定版本上安装可执行文件
+&lt;/h2>&lt;p>&lt;code>go install&lt;/code>命令现在可以通过指定&lt;code>@version&lt;/code>后缀来安装特定版本的可执行文件。&lt;/p>
+&lt;pre tabindex="0">&lt;code>go install golang.org/x/tools/gopls@v0.6.5
+&lt;/code>&lt;/pre>&lt;p>当使用这种语法时，&lt;code>go install&lt;/code>命令会从该Module的制定版本安装，而忽略当前目录和父目录中的任何 go.mod 文件。(如果没有@version后缀，go install会像往常一样继续运行，使用当前Module的go.mod中列出的版本要求和替换来构建程序。)&lt;/p>
+&lt;p>我们曾经推荐使用&lt;code>go get -u&lt;/code>程序来安装可执行文件，但这种使用方式对&lt;code>go.mod&lt;/code>中添加或更改Module版本需求的意义造成了太多的混淆。而为了避免意外修改&lt;code>go.mod&lt;/code>，人们开始建议使用更复杂的命令，比如：&lt;/p></description></item><item><title>OpenTelemetry入门</title><link>https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/</link><pubDate>Tue, 31 Mar 2020 11:10:00 +0000</pubDate><guid>https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/</guid><description>&lt;img src="https://www.4async.com/2020/03/2020-03-31-intro-opentelemetry/cover.png" alt="Featured image of post OpenTelemetry入门" />&lt;p>今天早些时候，&lt;a class="link" href="https://opentelemetry.io/" target="_blank" rel="noopener"
 >OpenTelemetry&lt;/a>正式&lt;a class="link" href="https://medium.com/opentelemetry/opentelemetry-is-officially-in-beta-352fa859db10" target="_blank" rel="noopener"
 >进入Beta版本阶段&lt;/a>，这标志着OpenTelemetry的基本模型已经正式确定，可以开始将OpenTelemetry集成到应用程序和客户端库中，以捕获应用程序级指标和分布式跟踪。&lt;/p></description></item><item><title>译：在Go中转向领域驱动设计</title><link>https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/</link><pubDate>Sun, 16 Feb 2020 21:52:00 +0000</pubDate><guid>https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/</guid><description>&lt;img src="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover.jpg" alt="Featured image of post 译：在Go中转向领域驱动设计" />&lt;p>原文：&lt;a class="link" href="https://www.calhoun.io/moving-towards-domain-driven-design-in-go/" target="_blank" rel="noopener"
 >Moving Towards Domain Driven Design in Go&lt;/a>&lt;/p>
 &lt;p>本文的目的是帮助演示当应用程序随着时间不断推移不断演化时，我们如何利用领域驱动设计帮我们解决可能遇到的问题。为了实现这个目标，我们会通过一个琐碎的项目研究项目是如何随着时间一步步演化的。这不是一个完整的项目，示例代码并不能够直接编译，甚至有些导入以来没有全部列出。这只是一个简单的示例，也就是说，如果出现什么问题，你可以随时与我联系，我们将对问题进行调整或者你的问题及时解答（如果可以的话）。&lt;/p></description></item><item><title>从 Go 语言的依赖库讲起（2）监控、分布式追踪和日志</title><link>https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/</link><pubDate>Wed, 05 Feb 2020 18:30:00 +0000</pubDate><guid>https://www.4async.com/2020/02/2020-02-05-golang-debug-instrumental/</guid><description>&lt;p>我们通常会遇到线上甚至测试中代码出现问题，这些问题可能来自于我们开发过程中的引入的BUG，有些来自于我们的功能未得到理想结果的，甚至有一些问题来自于运行环境的。很多事情可能未必能够足够可控，尤其是上线之后才发现出现了问题。除了我们&lt;a class="link" href="" >前面一篇文章&lt;/a>中介绍了一些测试相关的内容，虽然可以解决一部分问题，但是这些并不能完全杜绝所有问题在线上一定不会出现任何问题。因此我们需要建立对发布/预发环境一套相对完善的监控、诊断机制，保证我们可以尽快进行故障的分析和溯源。&lt;/p></description></item><item><title>从 Go 语言的依赖库讲起（1）Ginkgo、testify和GoMock</title><link>https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/</link><pubDate>Fri, 10 Jan 2020 17:30:00 +0000</pubDate><guid>https://www.4async.com/2020/01/2020-01-10-golang-test-driven-toolkit/</guid><description>&lt;p>对开发而言，测试的重要性相信对每个开发者而言是老生常谈的事情。虽然我们很有可能在开发过程中由于各种原因会希望后续补全，然而事实上我更建议采用“Tests that fail then pass”原则去处理在实际开发过程中遇到的问题。&lt;/p>
 &lt;p>在我们开发过程的初期阶段，开发质量的保持更多依赖开发人员自身素质保持。但是对一个团队而言，未必能够一直保持人员的高素质开发。在这个过程中，人员的变动，新老编码习惯的冲突，人员能力的残次不齐都有可能导致代码的腐化。在测试过程中，我们选择引入测试保障代码的质量&lt;/p>
-&lt;p>Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用&lt;code>Ginkgo&lt;/code>、&lt;code>testify&lt;/code>和&lt;code>GoMock&lt;/code>工具。&lt;/p></description></item><item><title>从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序</title><link>https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/</link><pubDate>Sat, 23 Nov 2019 22:43:00 +0000</pubDate><guid>https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/</guid><description>缘起 今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。
-后来在Go的1.3版本发布后，我在支付宝的内部系统中第一次上线了一个基于Go语言的边缘服务，也是第一次将Go语言应用到了实际的生产环境中。后来在云柚科技创业过程中，正式将Go语言作为我们物联网环境的第一优选语言（也基本上是唯一语言），大规模的批量部署Go语言项目和代码。
-聊聊如何开发更方便维护的Go语言程序 对Go语言而言，开发似乎是简单的事情：Go本身的语法比较简单，关键词不多，可以快速上手。如果基本功能而言，能采用的花式解法不多，导致Go语言的上手比较简单，对我们创业期间的公司而言，享受到了很多这种方面带来的很多红利：我们工程师基本上都是其他语言/岗位转型过来的全(quan)栈(gan)工程师，他们也为我们业务的快速发展提供了原生的动力。
-然而，当我们把时间稍微放长一点，我们会发现当时我们仍旧遗留下了很多历史性的技术债，这些内容包含了我们当时对于代码质量的妥协，由其他语言习惯带过来的洋玩意但有点水土不服，一些过度的设计，一些库选择上和我们后续的最佳实践相违背等等问题。
-这里面，一些软性的东西其实我们可以通过一些非编码环节去解决：对开发过的代码要求提供单元测试和开发后的Code Review；在技术开发之前进行沟通，规避可能出现的过度设计问题等等。不过，我想了想，这些更多属于规范性的问题，各个公司自有自身的特色在，那么还有什么内容可以更适合初中级开发一块聊一聊的呢？
-那么毫无疑问就是对依赖库的选择。这部分的内容直接与我们在开发过程中会采用的实际最佳实践相关，无论是多人合作项目，还是单枪匹马的开源项目开发，各种依赖库无法避免：它们可以帮我们有效提升开发效率，帮我们落地最佳实践，让我们更快的更高效的完成工作。因此，我打算从这个系列中，一方面去聊聊我们未来会介绍的依赖库的使用；另外一方面，也想通过这个系列，聊聊如何是使用依赖库的过程中，将各种最佳实践一一落地。我们可能会介绍为什么选择这个依赖库，这个依赖库会带给我们的实践会是怎么样的。
-不过在这里仍旧提醒一句，这里提到的所有的功能和实践均为在实际项目中总结的内容，部分实践则可根据个人情况进行实际选择。所有的实践并非全部都是最优解，仍需根据实际项目情况进行对应的调整和抉择。
-最后，希望你们能够喜欢这个系列。：）</description></item><item><title>使用Go Modules</title><link>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</link><pubDate>Wed, 20 Mar 2019 14:22:00 +0000</pubDate><guid>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</guid><description>原文：Using Go Modules 作者：Tyler Bui-Palsulich、Eno Compton
-介绍 Go 1.11和1.12包含了初步的modules支持，Go的新版本管理系统用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。
-modules是Go包的集合，保存在顶层目录一个名叫go.mod的文件中。go.mod文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。
-在Go 1.11开始，go命令行会再当前目录或者上层目录中存在go.mod文件并且在 $GOPATH/src目录外时自动启用modules功能。（当目录位于$GOPATH/src中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在go.mod文件。具体请参考Go命令行文档）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。
-这篇博客会演示使用modules开发Go代码的一系列的常用操作：
-创建一个模块 添加依赖 升级依赖 添加一个依赖的新主版本 升级一个依赖到新主版本 移除无用依赖 创建一个新的模块 让我门从创建一个新模块开始。
-在$GOPATH/src外创建一个新的空文件夹，使用cd切换进入这个目录，然后创建一个名叫hello.go的新源码文件：
-package hello func Hello() string { return &amp;#34;Hello, world.&amp;#34; } 让我们同样创建一个名叫hello_test.go的测试文件：
-package hello import &amp;#34;testing&amp;#34; func TestHello(t *testing.T) { want := &amp;#34;Hello, world.&amp;#34; if got := Hello(); got != want { t.Errorf(&amp;#34;Hello() = %q, want %q&amp;#34;, got, want) } } 现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有go.mod文件。如果你文件创建在 /home/gopher/hello目录下，执行go test命令时，我们可以看到结果：
-$ go test PASS ok _/home/gopher/hello 0.</description></item><item><title>聊聊新的Go语言错误处理方案</title><link>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</link><pubDate>Fri, 25 Jan 2019 23:20:00 +0000</pubDate><guid>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</guid><description>&lt;img src="https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/cover.jpg" alt="Featured image of post 聊聊新的Go语言错误处理方案" />今天早些时候，golang/x/exp中默默的更新了一个名曰xerrors的包，这个包和同样处于golang/x/exp下的另一个名叫errors的包名字十分相似，就连介绍也都一致：
-Package errors implements functions to manipulate errors. This package implements the Go 2 draft designs for error inspection and printing 从目前的情况来看，基本上错误的处理形式基本已经定型，处理方式则是类似于之前的另一个github.com/pkg/errors包，但是具体细节不尽相同。
-如何处理error？ 在之前介绍文章中提到过github.com/pkg/errors包的设计思路，那么在Go团队的实现中，这种思路也得到了继承。先从一个小例子开始：
-package main import ( &amp;#34;fmt&amp;#34; &amp;#34;golang.org/x/exp/xerrors&amp;#34; ) func raiseError() error { return xerrors.New(&amp;#34;a new error&amp;#34;) } func main() { err := xerrors.Errorf(&amp;#34;raiseError: %w&amp;#34;, raiseError()) fmt.Println(err) } 输出结果：
-raiseError: a new error 看起来非常类似于之前github.com/pkg/errors的显示内容。而其中xerrors.Errorf则充当了之前errors.Wrap的功能。 其中值得一提的是%w，这个用于包装错误，后续验证错误中也会用到其中的值。
-同时，这个包中也包含了几个非常有用的辅助函数，分别是：验证错误类型方法Is、错误类型转换方法As、错误关系链解除方法Opaque和提取内层错误方法Unwrap。我们可以用一个简单的演示来说明这种关系：
-var ( ErrBase = xerrors.New(&amp;#34;a new error&amp;#34;) ) func main() { err := xerrors.</description></item><item><title>gini：一个让你更方便使用Gin框架的库</title><link>https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/</link><pubDate>Fri, 18 Jan 2019 23:20:00 +0000</pubDate><guid>https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/</guid><description>&lt;p>&lt;a class="link" href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener"
+&lt;p>Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用&lt;code>Ginkgo&lt;/code>、&lt;code>testify&lt;/code>和&lt;code>GoMock&lt;/code>工具。&lt;/p></description></item><item><title>从Go语言的依赖库讲起（0）：让我们聊聊如何开发更方便维护的Go语言程序</title><link>https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/</link><pubDate>Sat, 23 Nov 2019 22:43:00 +0000</pubDate><guid>https://www.4async.com/2019/11/2019-11-23-learning-go-from-3rd-library/</guid><description>&lt;h2 id="缘起">缘起
+&lt;/h2>&lt;p>今年是Go语言的10年生日，准确的说应该是Go开放于2009年，当时虽然公开了，但是其实真正的可用性并不是很好。甚至Windows的支持都没有。当时我的主要环境还是在Windows平台，因此没有太关注Go语言。在2012年Go语言正式发布1.0版本之后，我当时工作环境转移到了Linux/macOS/iOS相关的产品上，因此重新学习了一下Go语言。&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;p>后来在Go的1.3版本发布后，我在支付宝的内部系统中第一次上线了一个基于Go语言的边缘服务，也是第一次将Go语言应用到了实际的生产环境中。后来在云柚科技创业过程中，正式将Go语言作为我们物联网环境的第一优选语言（也基本上是唯一语言），大规模的批量部署Go语言项目和代码。&lt;/p>
+&lt;h2 id="聊聊如何开发更方便维护的go语言程序">聊聊如何开发更方便维护的Go语言程序
+&lt;/h2>&lt;p>对Go语言而言，开发似乎是简单的事情：Go本身的语法比较简单，关键词不多，可以快速上手。如果基本功能而言，能采用的花式解法不多，导致Go语言的上手比较简单，对我们创业期间的公司而言，享受到了很多这种方面带来的很多红利：我们工程师基本上都是其他语言/岗位转型过来的全(quan)栈(gan)工程师，他们也为我们业务的快速发展提供了原生的动力。&lt;/p>
+&lt;p>然而，当我们把时间稍微放长一点，我们会发现当时我们仍旧遗留下了很多历史性的技术债，这些内容包含了我们当时对于代码质量的妥协，由其他语言习惯带过来的洋玩意但有点水土不服，一些过度的设计，一些库选择上和我们后续的最佳实践相违背等等问题。&lt;/p>
+&lt;p>这里面，一些软性的东西其实我们可以通过一些非编码环节去解决：对开发过的代码要求提供单元测试和开发后的Code Review；在技术开发之前进行沟通，规避可能出现的过度设计问题等等。不过，我想了想，这些更多属于规范性的问题，各个公司自有自身的特色在，那么还有什么内容可以更适合初中级开发一块聊一聊的呢？&lt;/p>
+&lt;p>那么毫无疑问就是对依赖库的选择。这部分的内容直接与我们在开发过程中会采用的实际最佳实践相关，无论是多人合作项目，还是单枪匹马的开源项目开发，各种依赖库无法避免：它们可以帮我们有效提升开发效率，帮我们落地最佳实践，让我们更快的更高效的完成工作。因此，我打算从这个系列中，一方面去聊聊我们未来会介绍的依赖库的使用；另外一方面，也想通过这个系列，聊聊如何是使用依赖库的过程中，将各种最佳实践一一落地。我们可能会介绍为什么选择这个依赖库，这个依赖库会带给我们的实践会是怎么样的。&lt;/p>
+&lt;p>不过在这里仍旧提醒一句，这里提到的所有的功能和实践均为在实际项目中总结的内容，部分实践则可根据个人情况进行实际选择。所有的实践并非全部都是最优解，仍需根据实际项目情况进行对应的调整和抉择。&lt;/p>
+&lt;p>最后，希望你们能够喜欢这个系列。：）&lt;/p></description></item><item><title>使用Go Modules</title><link>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</link><pubDate>Wed, 20 Mar 2019 14:22:00 +0000</pubDate><guid>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</guid><description>&lt;p>原文：&lt;a class="link" href="https://blog.golang.org/using-go-modules" target="_blank" rel="noopener"
+>Using Go Modules&lt;/a>
+作者：Tyler Bui-Palsulich、Eno Compton&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;h2 id="介绍">介绍
+&lt;/h2>&lt;p>Go 1.11和1.12包含了初步的&lt;a class="link" href="https://golang.org/doc/go1.11#modules" target="_blank" rel="noopener"
+>modules支持&lt;/a>，Go的&lt;a class="link" href="https://blog.golang.org/versioning-proposal" target="_blank" rel="noopener"
+>新版本管理系统&lt;/a>用于依赖版本信息描述和更方便的管理。这篇博客是一个关于开始使用modules的基础操作指引教程。后续文章会介绍发布一个其他人可以使用的modules。&lt;/p>
+&lt;p>modules是Go包的集合，保存在顶层目录一个名叫&lt;code>go.mod&lt;/code>的文件中。&lt;code>go.mod&lt;/code>文件定义了模块的路径，这个会作为根目录引用路径；同时文件中也包含了能够正常构建的其他包依赖需求。每个依赖需求同样以模块路径方式标示，同时根据语义化版本方式进行标记。&lt;/p>
+&lt;p>在Go 1.11开始，go命令行会再当前目录或者上层目录中存在&lt;code>go.mod&lt;/code>文件并且在 &lt;code>$GOPATH/src&lt;/code>目录外时自动启用modules功能。（当目录位于&lt;code>$GOPATH/src&lt;/code>中时，出于兼容性考虑，go命令仍旧采用GOPATH模式，即便存在&lt;code>go.mod&lt;/code>文件。具体请参考&lt;a class="link" href="https://golang.org/cmd/go/#hdr-Preliminary_module_support" target="_blank" rel="noopener"
+>Go命令行文档&lt;/a>）。从Go 1.13版本开始，modules功能将会在所有开发过程中默认开启。&lt;/p>
+&lt;p>这篇博客会演示使用modules开发Go代码的一系列的常用操作：&lt;/p>
+&lt;ul>
+&lt;li>创建一个模块&lt;/li>
+&lt;li>添加依赖&lt;/li>
+&lt;li>升级依赖&lt;/li>
+&lt;li>添加一个依赖的新主版本&lt;/li>
+&lt;li>升级一个依赖到新主版本&lt;/li>
+&lt;li>移除无用依赖&lt;/li>
+&lt;/ul>
+&lt;h2 id="创建一个新的模块">创建一个新的模块
+&lt;/h2>&lt;p>让我门从创建一个新模块开始。&lt;/p>
+&lt;p>在&lt;code>$GOPATH/src&lt;/code>外创建一个新的空文件夹，使用&lt;code>cd&lt;/code>切换进入这个目录，然后创建一个名叫&lt;code>hello.go&lt;/code>的新源码文件：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">hello&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">Hello&lt;/span>() &lt;span style="color:#66d9ef">string&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Hello, world.&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>让我们同样创建一个名叫&lt;code>hello_test.go&lt;/code>的测试文件：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">hello&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> &lt;span style="color:#e6db74">&amp;#34;testing&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">TestHello&lt;/span>(&lt;span style="color:#a6e22e">t&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">testing&lt;/span>.&lt;span style="color:#a6e22e">T&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">want&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Hello, world.&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">got&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Hello&lt;/span>(); &lt;span style="color:#a6e22e">got&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#a6e22e">want&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">t&lt;/span>.&lt;span style="color:#a6e22e">Errorf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Hello() = %q, want %q&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">got&lt;/span>, &lt;span style="color:#a6e22e">want&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，这个目录包含了一个包，但是它并不是一个模块，因为还没有&lt;code>go.mod&lt;/code>文件。如果你文件创建在 &lt;code>/home/gopher/hello&lt;/code>目录下，执行&lt;code>go test&lt;/code>命令时，我们可以看到结果：&lt;/p>
+&lt;pre tabindex="0">&lt;code> $ go test
+PASS
+ok _/home/gopher/hello 0.020s
+$
+&lt;/code>&lt;/pre>&lt;p>最后一行表示了整个包测试的汇总信息。因为我们现在在 &lt;code>$GOPATH&lt;/code>外，并且不属于任何模块，因此 &lt;code>go&lt;/code>命令不知道当前目录的引用路径，因此采用当前文件夹名生成了一个伪路径。&lt;/p></description></item><item><title>聊聊新的Go语言错误处理方案</title><link>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</link><pubDate>Fri, 25 Jan 2019 23:20:00 +0000</pubDate><guid>https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/</guid><description>&lt;img src="https://www.4async.com/2019/01/2019-01-25-go-new-xerrors/cover.jpg" alt="Featured image of post 聊聊新的Go语言错误处理方案" />&lt;p>今天早些时候，&lt;code>golang/x/exp&lt;/code>中默默的更新了一个名曰&lt;code>xerrors&lt;/code>的包，这个包和同样处于&lt;code>golang/x/exp&lt;/code>下的另一个名叫&lt;code>errors&lt;/code>的包名字十分相似，就连介绍也都一致：&lt;/p>
+&lt;pre tabindex="0">&lt;code> Package errors implements functions to manipulate errors.
+This package implements the Go 2 draft designs for error inspection and printing
+&lt;/code>&lt;/pre>&lt;p>从目前的情况来看，基本上错误的处理形式基本已经定型，处理方式则是类似于之前的另一个&lt;code>github.com/pkg/errors&lt;/code>包，但是具体细节不尽相同。&lt;/p>
+&lt;h2 id="如何处理error">如何处理error？
+&lt;/h2>&lt;p>在之前&lt;a class="link" href="../../2017/02/more-effective-golang-error/" >介绍文章&lt;/a>中提到过&lt;code>github.com/pkg/errors&lt;/code>包的设计思路，那么在Go团队的实现中，这种思路也得到了继承。先从一个小例子开始：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;golang.org/x/exp/xerrors&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">raiseError&lt;/span>() &lt;span style="color:#66d9ef">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#a6e22e">xerrors&lt;/span>.&lt;span style="color:#a6e22e">New&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;a new error&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">xerrors&lt;/span>.&lt;span style="color:#a6e22e">Errorf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;raiseError: %w&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">raiseError&lt;/span>())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">err&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>输出结果：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>raiseError: a new error
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>看起来非常类似于之前&lt;code>github.com/pkg/errors&lt;/code>的显示内容。而其中&lt;code>xerrors.Errorf&lt;/code>则充当了之前&lt;code>errors.Wrap&lt;/code>的功能。 其中值得一提的是&lt;code>%w&lt;/code>，这个用于包装错误，后续验证错误中也会用到其中的值。&lt;/p>
+&lt;p>同时，这个包中也包含了几个非常有用的辅助函数，分别是：验证错误类型方法&lt;code>Is&lt;/code>、错误类型转换方法&lt;code>As&lt;/code>、错误关系链解除方法&lt;code>Opaque&lt;/code>和提取内层错误方法&lt;code>Unwrap&lt;/code>。我们可以用一个简单的演示来说明这种关系：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">var&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ErrBase&lt;/span> = &lt;span style="color:#a6e22e">xerrors&lt;/span>.&lt;span style="color:#a6e22e">New&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;a new error&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">xerrors&lt;/span>.&lt;span style="color:#a6e22e">Errorf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;raiseError: %w&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">ErrBase&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">ErrBase&lt;/span> &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#a6e22e">ErrBase&lt;/span>) &lt;span style="color:#75715e">// 地址相同
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#a6e22e">ErrBase&lt;/span>) &lt;span style="color:#75715e">// 基于ErrBase包装之后不同
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">xerrors&lt;/span>.&lt;span style="color:#a6e22e">Is&lt;/span>(&lt;span style="color:#a6e22e">err&lt;/span>, &lt;span style="color:#a6e22e">ErrBase&lt;/span>)) &lt;span style="color:#75715e">// 验证是否为基于ErrBase
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">xerrors&lt;/span>.&lt;span style="color:#a6e22e">Opaque&lt;/span>(&lt;span style="color:#a6e22e">err&lt;/span>) &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span>) &lt;span style="color:#75715e">// 解除关系链之后不为相同地址
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">xerrors&lt;/span>.&lt;span style="color:#a6e22e">Is&lt;/span>(&lt;span style="color:#a6e22e">xerrors&lt;/span>.&lt;span style="color:#a6e22e">Opaque&lt;/span>(&lt;span style="color:#a6e22e">err&lt;/span>), &lt;span style="color:#a6e22e">ErrBase&lt;/span>)) &lt;span style="color:#75715e">// 解除关系链之后无法确定关系
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">xerrors&lt;/span>.&lt;span style="color:#a6e22e">Unwrap&lt;/span>(&lt;span style="color:#a6e22e">err&lt;/span>) &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#a6e22e">ErrBase&lt;/span>) &lt;span style="color:#75715e">// 获取内层错误为原错误，地址相同
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>输出结果为：&lt;/p></description></item><item><title>gini：一个让你更方便使用Gin框架的库</title><link>https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/</link><pubDate>Fri, 18 Jan 2019 23:20:00 +0000</pubDate><guid>https://www.4async.com/2019/01/2019-01-18-gin-toolkit-gini/</guid><description>&lt;p>&lt;a class="link" href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener"
 >Gin框架&lt;/a>是一个Go语言框架中非常受欢迎的一款。今天我们开放了一个&lt;a class="link" href="https://github.com/ipfans/gini" target="_blank" rel="noopener"
 >gini&lt;/a>库，结合了我们实际开发中的使用，描述一下我们为什么开发这个库，在开发过程中的权衡。&lt;/p></description></item><item><title>Go 1.10中的一处不兼容问题</title><link>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</link><pubDate>Fri, 08 Jun 2018 12:20:00 +0000</pubDate><guid>https://www.4async.com/2018/06/2018-06-08-compatibility-in-golang-1-10/</guid><description>&lt;p>最近我们在把线上系统升级至Go 1.10版本时发现，在我们实现的某些接口中，出现了客户反馈调用失败提示参数缺失的情况。这种情况我们在测试过程中未能复线，后来经过了解，发现了故障原因为Go 1.10版本升级过程中更改了部分程序代码与验证逻辑导致的。&lt;/p></description></item><item><title>关于Golang过滤敏感信息的正确姿势</title><link>https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/</link><pubDate>Wed, 06 Jun 2018 16:07:00 +0000</pubDate><guid>https://www.4async.com/2018/06/2018-06-06-sensitive-info-filter-in-golang/</guid><description>&lt;p>今天正好看到一篇关于敏感信息过滤的&lt;a class="link" href="https://hackernoon.com/keep-passwords-and-secrets-out-of-your-logs-with-go-a2294a9546ce" target="_blank" rel="noopener"
 >文章&lt;/a>，这算做一个interface实际应用的一些举例和应用。&lt;/p>
-&lt;p>例子中介绍了一种比较常见的使用场景：使用JSON保存数据时的对诸如用户密码等信息进行保护时候应该做的事情。作者以使用JSON格式保存用户账户和密码为例，讲解了使用&lt;code>json.Unmarshaler&lt;/code>接口类型过滤敏感信息。&lt;/p></description></item><item><title>gRPC性能优化</title><link>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</link><pubDate>Fri, 20 Apr 2018 12:00:00 +0000</pubDate><guid>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</guid><description>背景介绍 我们在项目中逐渐切换使用了gRPC作为服务间调用的主要手段，逐步替换RESTful API在目前我们项目中的使用。在使用过程中，gRPC的效率是我们想对比较关心并且从目前来看相对难以优化的组件，所以本文就是探讨如何能够在不修改gRPC源码的前提下尽量提升gRPC的性能。
-grpc官方提供了性能benchmark可以供大家查看，具体的链接可以在 gRPC Performance Dashboard 中查看。
-性能测试 性能测试采用我们的线上标配，目前由于业务量原因，其实性能并不高，这里只是对比参考，建议你在后续处理过程中自行测试。其实最简单的处理方式就是创建多个gRPC client。
-单Client处理：
-➜ client ./client -n 100000 -c 1 2017/08/04 16:49:39 concurrency: 1 requests per client: 100000 2017/08/04 15:59:39 message size: 581 bytes 2017/08/04 16:00:04 took 24467 ms for 100000 requests 2017/08/04 16:00:04 sent requests : 100000 2017/08/04 16:00:04 received requests : 100000 2017/08/04 16:00:04 received requests_OK : 100000 2017/08/04 16:00:04 throughput (TPS) : 4087 2017/08/04 16:00:04 mean: 244283 ns, median: 241106 ns, max: 6107692 ns, min: 138633 ns, p99: 678374 ns 2017/08/04 16:00:04 mean: 0 ms, median: 0 ms, max: 6 ms, min: 0 ms, p99: 0 ms 修改Client数目为10：</description></item><item><title>gRPC 调用超时控制</title><link>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</link><pubDate>Thu, 06 Apr 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</guid><description>我们在进行服务间调用时广泛采用 gRPC 作为主要的调用协议，借助 gRPC 的模块化与语言无关的特性，可以在我们拓展多语言模块之间提供更好的支持。但是我们在使用 gRPC 之中也出现了一些问题，这些问题会做一些记录，希望可以与大家一起沟通与交流。
-某日，我们的客服反馈，我们的基础设施操作工具出现了长时间无响应的问题。该问题出现在我们对某些设备进行 OTA 升级时，操作长时间无返回，与之前预期的 10 秒内返回存在较大出入。经过我们的工程师分析，我们发现在 gRPC 处理过程中，我们的操作工具通过 gRPC 调用远程服务端接口时，接口长时间没有返回结果。
-我们首先怀疑是 gRPC 调用过程中出现了连接问题。gRPC 过程中可能由于多种原因导致连接断开或者服务器无法连接。在调用 gRPC 方法过程中，我们可以通过 FailFast(true) 方式进行快速失败。实际上，这个值默认情况下为 true。
-那么接下来我们就需要从调用从使用角度上寻找问题。我们使用过程中默许服务端在处理某些操作时进行较长时间操作（如长时间操作），但是从客户端角度而言，部分操作正常情况下我们是希望可以在有预定特定环境下达到某些时间仍旧未返回结果可以标记为结果失败。这样就需要通过 gRPC 的机制进行调控。由于目前我们的接口很多情况下调用接口实际为硬件接口，因此，我们采用通过控制 gRPC 客户端接口超时的方法控制。
-在 gRPC 中，提供了 MethodConfig 用于控制每个方法的超时时间，这样可以对不同的 RPC 方法设置超时。
-下面，我们用 官方的 gRPC 示例 演示如何进行调用超时控制。
-首先，我们在 examples/helloworld/greeter_server/main.go 中的 SayHello 中添加一个长时间操作模拟：time.Sleep(10*time.Second)。
-这时，如果我们需要客户端在 5 秒以内返回结果，应该如何操作呢？
-那么我们修改 examples/helloworld/greeter_client/main.go 中的 main，添加超时处理内容：
-func main() { // Set up method timeout configure. var wg sync.WaitGroup wg.Add(1) ch := make(chan grpc.</description></item><item><title>更优雅的 Golang 错误处理</title><link>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</link><pubDate>Wed, 08 Feb 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</guid><description>Golang 中的错误处理是一个被大家经常拿出来讨论的 话题(另外一个是 泛型)。其中泛型这个问题，rsc 在最近的计划中也提出 了纳入他今年的考虑计划中，同时，泛型的提案 在 2016 年也进行了一些更新，相信未来会有一些更好的方案提出。这个文章我们讨论一下如何在现行的 Golang 框架下提供更友好和优雅的错误处理。
-从现状谈起 Golang 中的错误处理原则，开发者曾经之前专门发布了几篇文章 (Error handling and Go 和 Defer, Panic, and Recover、Errors are values ) 介绍。分别介绍了 Golang 中处理一般预知到的错误与遇到崩溃时的错误处理机制。
-一般情况下，我们还是以官方博客中的错误处理例子为例：
-func main() {f, err := os.Open(&amp;#34;filename.ext&amp;#34;) if err != nil {log.Fatal(err) // 或者更简单的： // return err } ... } 当然对于简化代码行数，还有另外一种写法：
-func main() { ... if f, err = os.Open(&amp;#34;filename.ext&amp;#34;); err != nil{log.Fatal(err) } ... } 正常情况下，Golang 现有的哲学中，要求你尽量手工处理所有的错误返回，这稍微增加了开发人员的心智负担。关于这部分设计的讨论，请参考本文最开始提供的参考链接，此处不做太多探讨。
-本质上，Golang 中的错误类型 error 是一个接口类型：</description></item><item><title>Docker for Mac 尝鲜</title><link>https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</link><pubDate>Tue, 26 Apr 2016 18:00:00 +0000</pubDate><guid>https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</guid><description>之前作为 Docker beta 的第一批用户获得了 beta 的授权，但是因为邮件进了垃圾邮件，所以一直没有发现。今天给 Docker 发邮件申请 beta 测试才知道已经通过了，赶紧尝鲜起来。如果你没有权限，可以尝试到 Docker Beta 申请测试资格。
-测试版本可能存在风险，请自行判断。
-安装之前 Docker for Mac 需要一些前置要求，官方文档提供的数据如下：
-2010 年之后的 Intel Mac 机型，支持 MMU(Memory Management Unit) 虚拟化、EPT(Extended Page Table) 等特性 OSX 10.10.3 以上系统 至少 4GB 内存 VirtualBox 4.x 与 Docker for Mac 冲突，因此如果你安装这个系列的 Virtualbox 需要卸载。 如果之前装过 Docker Toolbox 的话，需要一些额外的操作去与 Docker Toolbox 兼容。（我选择了直接卸载现有的 Docker Toolbox。XD ）
-安装 Docker for Mac Docker for Mac 是一个 98.3M(Mac 显示为 103.1MB) 的 DMG 文件，下载下来之后双击文件，将鲸鱼拖拽到 Applications 文件夹中即可。</description></item><item><title>编写测试友好的 Golang 代码</title><link>https://www.4async.com/2016/04/2016-04-18-writing-testable-golang-code/</link><pubDate>Mon, 18 Apr 2016 18:40:00 +0000</pubDate><guid>https://www.4async.com/2016/04/2016-04-18-writing-testable-golang-code/</guid><description>目前我们有大量的应用采用了 Golang 程序进行构建，但是在执行研发流程里我们会发现一些来自于静态编译程序的不便：相对于我们之前使用的 Python 语言程序而言，我们无法在程序功能的单元测试里大量的使用 Mock 方式来进行高效测试。
-而这些东西往往可以在开发人员编写单元测试用例时有效的节省时间和一些额外的环境准备成本。因此，这也给我们的程序的单元覆盖率带来了很多麻烦的地方：一些依赖于额外验证和表现的情况或者小几率出现的情况需要复杂的模拟步骤，对开发进度和效率带来了一些额外的影响。如何编写一个测试友好的 Golang 程序成为一个无法绕开的问题。
-从动态语言到静态语言 动态语言有良好的运行时修改属性，在运行时的动态修改函数，可以进行有效的 Mock。比如在 Python（以 3 为例，内置了 unittest.mock 标准库）程序中:
-with patch.object(ProductionClass,&amp;#39;method&amp;#39;, return_value=None) as mock_method: thing = ProductionClass() thing.method(1, 2, 3) 自然而然的，我们想到了这样的用法：
-var imp = func() bool {return true} func TestFunc(t *testing.T) {defer func(org func() bool) {imp = org}(imp) img = func() bool {return false} // testing or something else... } 这样实现 Mock 是完全可以的，但是实际上会带来一些额外的问题，比如说在 MVC 框架中，我们正常采用的方式一般是这样的：
-import (&amp;#34;models&amp;#34; ... ) func A(ctx Context) error { .</description></item><item><title>Mgo 库的常见坑总结</title><link>https://www.4async.com/2016/01/2016-01-26-something-about-mgo-driver/</link><pubDate>Tue, 26 Jan 2016 21:30:00 +0000</pubDate><guid>https://www.4async.com/2016/01/2016-01-26-something-about-mgo-driver/</guid><description>mgo 库 是一个很好用的 MongoDB 驱动。对我们来说，主力数据库是 MongoDB，因此这个驱动对我们来说也是非常重要的。但是，mgo 库有些问题算是一些坑，这里我做了一些简单的整理。
-一些关于 bson.ObjectId 的问题 ObjectId 为空的判断 如果你看 bson.ObjectId 定义的话，它是一个 string 类型的数据。但是如果你直接定义一个结构，并且生成对象时，这个对象并不是这样的。
-我们首先定义一个结构体：
-type Home struct {ID bson.ObjectId `bson:&amp;#34;_id,omitempty&amp;#34;` Name string `bson:&amp;#34;name&amp;#34;` } 然后看看一个生成的内容
-h := Home{Name:&amp;#34;123&amp;#34;} fmt.Println(h.ID) 结果是 ObjectIdHex(&amp;quot;&amp;quot;)。换句话说，如果你是想判断一个结构体的 ObjectId 是否为空，使用 h.ID ==&amp;quot;&amp;quot; 是一定会结果为 false 的。如果你想判断是否为空，正确的方式应该为：
-h := Home{Name:&amp;#34;123&amp;#34;} fmt.Println(h.ID) fmt.Println(h.ID.Hex() == &amp;#34;&amp;#34;) 正确的生成 ObjectId 首先值得注意的是 NewObjectIdWithTime(t time.Time) 这个方法生成的 ObjectId 并不是唯一的，结果可能导致的是插入失败。最有效的方式是设定 ObjectId 对象支持 omitempty 属性，就像我上面生成的结构体一样，由数据库统一调配生成 ObjectId。如果真的确实需要，可以选择 NewObjctId()。
-时间问题 之前看到有人问，为什么保存的时间进入到数据库中慢了 8 个小时呢？原因是在保存进入 MongoDB 时，数据是按照 UTC 时间（不懂什么是 UTC？看这里）进行的保存，但是取出是按照当前时区来取出。那么问题来了，我的客户如果不都是国人，我怎么保存时间呢？目前我们采用了两种方式来确定数据库的保存时间。一种是 Unix 时间戳 ，这个是不受到时区的影响的，由前端格式化为对应的时区时间；另外一种则是需要在额外的对从 MongoDB 数据库中取出的数据进行额外的时区校准，简单来说可以这样：</description></item><item><title>使用 vendor 管理 Golang 项目依赖</title><link>https://www.4async.com/2016/01/2016-01-05-golang-vendor/</link><pubDate>Tue, 05 Jan 2016 23:13:00 +0000</pubDate><guid>https://www.4async.com/2016/01/2016-01-05-golang-vendor/</guid><description>我们在项目中除了 大量的使用 Python 外，也大量的使用了 Golang 构建高效基础运行服务。在使用 Golang 过程中，我们发现 Golang 程序缺少依赖库版本功能是一个非常令人头大的问题：某些依赖在某个 commit 之后发生了 API 变更之后，如果不修改代码很难兼容，然而开发者之间很有可能因为参与的时间不同，导致执行 go get 命令获取的版本不同，而导致在不同电脑上出现编译不通过问题。同时，在多个程序中，如果使用的 commit 版本不同，也可能会导致程序编译过程中出现不同的问题。
-在之前，我们解决这个问题有两个方案，一种是拆解 go get 命令的执行，首先创建对应依赖目录，利用 git 命令切换至指定的 commit，然后执行 go install 命令。另外一种比较省事的方法是使用 godep 工具，这里就不做过多介绍了，具体可以参考文档或者搜索中文教程。
-在 Golang1.5 之后，Go 提供了 GO15VENDOREXPERIMENT 环境变量，用于将 go build 时的应用路径搜索调整成为 当前项目目录 / vendor 目录方式。通过这种形式，我们可以实现类似于 godep 方式的项目依赖管理。不过起码在程序编译过程中，再也无需在其他端部署一个 godep 工具。
-在使用之前，需要安装一个辅助工具（如果 Golang 自改一个就好了）：go get -u -v github.com/kardianos/govendor。
-下面，我们用一个例子来说明。首先有一个名为 vendorproj 的项目。假如只有一个文件：
-package main import (&amp;#34;github.com/yeeuu/echoic&amp;#34;) func main() {e := echoic.New() e.SetDebug(true) e.Run(&amp;#34;127.0.0.1:4321&amp;#34;) } 执行一下命令就可以生成 vendor 文件夹：</description></item></channel></rss>
+&lt;p>例子中介绍了一种比较常见的使用场景：使用JSON保存数据时的对诸如用户密码等信息进行保护时候应该做的事情。作者以使用JSON格式保存用户账户和密码为例，讲解了使用&lt;code>json.Unmarshaler&lt;/code>接口类型过滤敏感信息。&lt;/p></description></item><item><title>gRPC性能优化</title><link>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</link><pubDate>Fri, 20 Apr 2018 12:00:00 +0000</pubDate><guid>https://www.4async.com/2018/04/2018-04-20-grpc-performance-optimizing/</guid><description>&lt;h2 id="背景介绍">背景介绍
+&lt;/h2>&lt;p>我们在项目中逐渐切换使用了gRPC作为服务间调用的主要手段，逐步替换RESTful API在目前我们项目中的使用。在使用过程中，gRPC的效率是我们想对比较关心并且从目前来看相对难以优化的组件，所以本文就是探讨如何能够在不修改gRPC源码的前提下尽量提升gRPC的性能。&lt;/p>
+&lt;p>grpc官方提供了性能benchmark可以供大家查看，具体的链接可以在 &lt;a class="link" href="http://performance-dot-grpc-testing.appspot.com/explore?dashboard=5636470266134528" target="_blank" rel="noopener"
+>gRPC Performance Dashboard&lt;/a> 中查看。&lt;/p>
+&lt;h2 id="性能测试">性能测试
+&lt;/h2>&lt;p>性能测试采用我们的线上标配，目前由于业务量原因，其实性能并不高，这里只是对比参考，建议你在后续处理过程中自行测试。其实最简单的处理方式就是创建多个gRPC client。&lt;/p>
+&lt;p>单Client处理：&lt;/p>
+&lt;pre tabindex="0">&lt;code>➜ client ./client -n 100000 -c 1
+2017/08/04 16:49:39 concurrency: 1
+requests per client: 100000
+2017/08/04 15:59:39 message size: 581 bytes
+2017/08/04 16:00:04 took 24467 ms for 100000 requests
+2017/08/04 16:00:04 sent requests : 100000
+2017/08/04 16:00:04 received requests : 100000
+2017/08/04 16:00:04 received requests_OK : 100000
+2017/08/04 16:00:04 throughput (TPS) : 4087
+2017/08/04 16:00:04 mean: 244283 ns, median: 241106 ns, max: 6107692 ns, min: 138633 ns, p99: 678374 ns
+2017/08/04 16:00:04 mean: 0 ms, median: 0 ms, max: 6 ms, min: 0 ms, p99: 0 ms
+&lt;/code>&lt;/pre>&lt;p>修改Client数目为10：&lt;/p></description></item><item><title>gRPC 调用超时控制</title><link>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</link><pubDate>Thu, 06 Apr 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/04/2017-05-19-grpc-call-timeout/</guid><description>&lt;p>我们在进行服务间调用时广泛采用 gRPC 作为主要的调用协议，借助 gRPC 的模块化与语言无关的特性，可以在我们拓展多语言模块之间提供更好的支持。但是我们在使用 gRPC 之中也出现了一些问题，这些问题会做一些记录，希望可以与大家一起沟通与交流。&lt;/p>
+&lt;p>某日，我们的客服反馈，我们的基础设施操作工具出现了长时间无响应的问题。该问题出现在我们对某些设备进行 OTA 升级时，操作长时间无返回，与之前预期的 10 秒内返回存在较大出入。经过我们的工程师分析，我们发现在 gRPC 处理过程中，我们的操作工具通过 gRPC 调用远程服务端接口时，接口长时间没有返回结果。&lt;/p>
+&lt;p>我们首先怀疑是 gRPC 调用过程中出现了连接问题。gRPC 过程中可能由于多种原因导致连接断开或者服务器无法连接。在调用 gRPC 方法过程中，我们可以通过 &lt;code>FailFast(true)&lt;/code> 方式进行快速失败。实际上，这个值默认情况下为 &lt;code>true&lt;/code>。&lt;/p>
+&lt;p>那么接下来我们就需要从调用从使用角度上寻找问题。我们使用过程中默许服务端在处理某些操作时进行较长时间操作（如长时间操作），但是从客户端角度而言，部分操作正常情况下我们是希望可以在有预定特定环境下达到某些时间仍旧未返回结果可以标记为结果失败。这样就需要通过 gRPC 的机制进行调控。由于目前我们的接口很多情况下调用接口实际为硬件接口，因此，我们采用通过控制 gRPC 客户端接口超时的方法控制。&lt;/p>
+&lt;p>在 gRPC 中，提供了 MethodConfig 用于控制每个方法的超时时间，这样可以对不同的 RPC 方法设置超时。&lt;/p>
+&lt;p>下面，我们用 &lt;a class="link" href="https://github.com/grpc/grpc-go/tree/master/examples/helloworld" target="_blank" rel="noopener"
+>官方的 gRPC 示例&lt;/a> 演示如何进行调用超时控制。&lt;/p>
+&lt;p>首先，我们在 &lt;code>examples/helloworld/greeter_server/main.go&lt;/code> 中的 &lt;code>SayHello&lt;/code> 中添加一个长时间操作模拟：&lt;code>time.Sleep(10*time.Second)&lt;/code>。&lt;/p>
+&lt;p>这时，如果我们需要客户端在 5 秒以内返回结果，应该如何操作呢？&lt;/p>
+&lt;p>那么我们修改 &lt;code>examples/helloworld/greeter_client/main.go&lt;/code> 中的 &lt;code>main&lt;/code>，添加超时处理内容：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Set up method timeout configure.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">wg&lt;/span> &lt;span style="color:#a6e22e">sync&lt;/span>.&lt;span style="color:#a6e22e">WaitGroup&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">wg&lt;/span>.&lt;span style="color:#a6e22e">Add&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ch&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> make(&lt;span style="color:#66d9ef">chan&lt;/span> &lt;span style="color:#a6e22e">grpc&lt;/span>.&lt;span style="color:#a6e22e">ServiceConfig&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">go&lt;/span> &lt;span style="color:#66d9ef">func&lt;/span>() {&lt;span style="color:#66d9ef">defer&lt;/span> &lt;span style="color:#a6e22e">wg&lt;/span>.&lt;span style="color:#a6e22e">Done&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">mc&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">grpc&lt;/span>.&lt;span style="color:#a6e22e">MethodConfig&lt;/span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">WaitForReady&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Timeout&lt;/span>: &lt;span style="color:#ae81ff">5&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Second&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">m&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> make(&lt;span style="color:#66d9ef">map&lt;/span>[&lt;span style="color:#66d9ef">string&lt;/span>]&lt;span style="color:#a6e22e">grpc&lt;/span>.&lt;span style="color:#a6e22e">MethodConfig&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 格式：/PackageName/ServiceName/MethodName
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">m&lt;/span>[&lt;span style="color:#e6db74">&amp;#34;/helloworld.Greeter/SayHello&amp;#34;&lt;/span>] = &lt;span style="color:#a6e22e">mc&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">sc&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">grpc&lt;/span>.&lt;span style="color:#a6e22e">ServiceConfig&lt;/span>{&lt;span style="color:#a6e22e">Methods&lt;/span>: &lt;span style="color:#a6e22e">m&lt;/span>,}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ch&lt;/span> &lt;span style="color:#f92672">&amp;lt;-&lt;/span> &lt;span style="color:#a6e22e">sc&lt;/span>}()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Set up a connection to the server.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">conn&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">grpc&lt;/span>.&lt;span style="color:#a6e22e">Dial&lt;/span>(&lt;span style="color:#a6e22e">address&lt;/span>, &lt;span style="color:#a6e22e">grpc&lt;/span>.&lt;span style="color:#a6e22e">WithInsecure&lt;/span>())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span> {&lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Fatalf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;did not connect: %v&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">defer&lt;/span> &lt;span style="color:#a6e22e">conn&lt;/span>.&lt;span style="color:#a6e22e">Close&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">c&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">pb&lt;/span>.&lt;span style="color:#a6e22e">NewGreeterClient&lt;/span>(&lt;span style="color:#a6e22e">conn&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Contact the server and print out its response.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">name&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">defaultName&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> len(&lt;span style="color:#a6e22e">os&lt;/span>.&lt;span style="color:#a6e22e">Args&lt;/span>) &amp;gt; &lt;span style="color:#ae81ff">1&lt;/span> {&lt;span style="color:#a6e22e">name&lt;/span> = &lt;span style="color:#a6e22e">os&lt;/span>.&lt;span style="color:#a6e22e">Args&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Starting...\n&amp;#34;&lt;/span>) &lt;span style="color:#75715e">// 明确执行时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">r&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">c&lt;/span>.&lt;span style="color:#a6e22e">SayHello&lt;/span>(&lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Background&lt;/span>(), &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">pb&lt;/span>.&lt;span style="color:#a6e22e">HelloRequest&lt;/span>{&lt;span style="color:#a6e22e">Name&lt;/span>: &lt;span style="color:#a6e22e">name&lt;/span>})
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span> {&lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Fatalf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;could not greet: %v&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Greeting: %s&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">r&lt;/span>.&lt;span style="color:#a6e22e">Message&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中根据 MethodConfig 对应 map 结构，可以找到对应方法，对指定方法设置超时时间。最后，执行结果如下：&lt;/p></description></item><item><title>更优雅的 Golang 错误处理</title><link>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</link><pubDate>Wed, 08 Feb 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/02/2017-02-08-more-effective-golang-error/</guid><description>&lt;p>Golang 中的错误处理是一个被大家经常拿出来讨论的 &lt;a class="link" href="http://www.infoq.com/cn/news/2012/11/go-error-handle" target="_blank" rel="noopener"
+>话题&lt;/a>(另外一个是 &lt;a class="link" href="http://www.weibo.com/1609119537/CdzJVejwg?type=comment" target="_blank" rel="noopener"
+>泛型&lt;/a>)。其中泛型这个问题，rsc 在最近的计划中也&lt;a class="link" href="https://mp.weixin.qq.com/s?__biz=MjM5OTcxMzE0MQ==&amp;amp;mid=2653369836&amp;amp;idx=1&amp;amp;sn=ddff3df7dbf52bb5bcc8b0ace78e0121&amp;amp;chksm=bce4d5f68b935ce0ece41ada8a49bbd33b638d184901ca8a61b5288daaf7c5a2d63af0cc3b34" target="_blank" rel="noopener"
+>提出&lt;/a> 了纳入他今年的考虑计划中，同时，&lt;a class="link" href="https://github.com/golang/proposal/blob/master/design/15292-generics.md" target="_blank" rel="noopener"
+>泛型的提案&lt;/a> 在 2016 年也进行了一些更新，相信未来会有一些更好的方案提出。这个文章我们讨论一下如何在现行的 Golang 框架下提供更友好和优雅的错误处理。&lt;/p>
+&lt;h2 id="从现状谈起">从现状谈起
+&lt;/h2>&lt;p>Golang 中的错误处理原则，开发者曾经之前专门发布了几篇文章 (&lt;a class="link" href="https://blog.golang.org/error-handling-and-go" target="_blank" rel="noopener"
+>Error handling and Go&lt;/a> 和 &lt;a class="link" href="https://blog.golang.org/defer-panic-and-recover" target="_blank" rel="noopener"
+>Defer, Panic, and Recover&lt;/a>、&lt;a class="link" href="https://blog.golang.org/errors-are-values" target="_blank" rel="noopener"
+>Errors are values&lt;/a> ) 介绍。分别介绍了 Golang 中处理一般预知到的错误与遇到崩溃时的错误处理机制。&lt;/p>
+&lt;p>一般情况下，我们还是以官方博客中的错误处理例子为例：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {&lt;span style="color:#a6e22e">f&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">os&lt;/span>.&lt;span style="color:#a6e22e">Open&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;filename.ext&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span> {&lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Fatal&lt;/span>(&lt;span style="color:#a6e22e">err&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 或者更简单的：
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// return err
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>当然对于简化代码行数，还有另外一种写法：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#a6e22e">f&lt;/span>, &lt;span style="color:#a6e22e">err&lt;/span> = &lt;span style="color:#a6e22e">os&lt;/span>.&lt;span style="color:#a6e22e">Open&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;filename.ext&amp;#34;&lt;/span>); &lt;span style="color:#a6e22e">err&lt;/span> &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#66d9ef">nil&lt;/span>{&lt;span style="color:#a6e22e">log&lt;/span>.&lt;span style="color:#a6e22e">Fatal&lt;/span>(&lt;span style="color:#a6e22e">err&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>正常情况下，Golang 现有的哲学中，要求你尽量手工处理所有的错误返回，这稍微增加了开发人员的心智负担。关于这部分设计的讨论，请参考本文最开始提供的参考链接，此处不做太多探讨。&lt;/p>
+&lt;p>本质上，Golang 中的错误类型 &lt;code>error&lt;/code> 是一个接口类型：&lt;/p>
+&lt;pre tabindex="0">&lt;code>type error interface {Error() string
+}
+&lt;/code>&lt;/pre>&lt;p>只要满足这一接口定义的所有数值都可以传入 &lt;code>error&lt;/code> 类型的位置。在 &lt;a class="link" href="http://go-proverbs.github.io/" target="_blank" rel="noopener"
+>Go Proverbs&lt;/a> 中也提到了关于错误的描述： &lt;code>Errors are values&lt;/code>。这一句如何理解呢？&lt;/p></description></item><item><title>Docker for Mac 尝鲜</title><link>https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</link><pubDate>Tue, 26 Apr 2016 18:00:00 +0000</pubDate><guid>https://www.4async.com/2016/04/2016-04-26-docker-for-mac-beta/</guid><description>&lt;p>之前作为 &lt;code>Docker beta&lt;/code> 的第一批用户获得了 beta 的授权，但是因为邮件进了垃圾邮件，所以一直没有发现。今天给 Docker 发邮件申请 beta 测试才知道已经通过了，赶紧尝鲜起来。如果你没有权限，可以尝试到 &lt;a class="link" href="https://beta.docker.com" target="_blank" rel="noopener"
+>Docker Beta&lt;/a> 申请测试资格。&lt;/p>
+&lt;p>&lt;strong>测试版本可能存在风险，请自行判断。&lt;/strong>&lt;/p>
+&lt;h2 id="安装之前">安装之前
+&lt;/h2>&lt;p>Docker for Mac 需要一些前置要求，官方文档提供的数据如下：&lt;/p>
+&lt;ul>
+&lt;li>2010 年之后的 Intel Mac 机型，支持 &lt;code>MMU(Memory Management Unit)&lt;/code> 虚拟化、&lt;code>EPT(Extended Page Table)&lt;/code> 等特性&lt;/li>
+&lt;li>&lt;code>OSX 10.10.3&lt;/code> 以上系统&lt;/li>
+&lt;li>至少 &lt;code>4GB&lt;/code> 内存&lt;/li>
+&lt;li>&lt;code>VirtualBox 4.x&lt;/code> 与 &lt;code>Docker for Mac&lt;/code> 冲突，因此如果你安装这个系列的 &lt;code>Virtualbox&lt;/code> 需要卸载。&lt;/li>
+&lt;/ul>
+&lt;p>如果之前装过 &lt;code>Docker Toolbox&lt;/code> 的话，需要一些额外的操作去与 &lt;code>Docker Toolbox&lt;/code> 兼容。（我选择了直接卸载现有的 &lt;code>Docker Toolbox&lt;/code>。XD ）&lt;/p>
+&lt;h2 id="安装-docker-for-mac">安装 Docker for Mac
+&lt;/h2>&lt;p>&lt;code>Docker for Mac&lt;/code> 是一个 98.3M(Mac 显示为 103.1MB) 的 DMG 文件，下载下来之后双击文件，将鲸鱼拖拽到 &lt;code>Applications&lt;/code> 文件夹中即可。&lt;/p></description></item><item><title>编写测试友好的 Golang 代码</title><link>https://www.4async.com/2016/04/2016-04-18-writing-testable-golang-code/</link><pubDate>Mon, 18 Apr 2016 18:40:00 +0000</pubDate><guid>https://www.4async.com/2016/04/2016-04-18-writing-testable-golang-code/</guid><description>&lt;p>目前我们有大量的应用采用了 Golang 程序进行构建，但是在执行研发流程里我们会发现一些来自于静态编译程序的不便：相对于我们之前使用的 Python 语言程序而言，我们无法在程序功能的单元测试里大量的使用 Mock 方式来进行高效测试。&lt;/p>
+&lt;p>而这些东西往往可以在开发人员编写单元测试用例时有效的节省时间和一些额外的环境准备成本。因此，这也给我们的程序的单元覆盖率带来了很多麻烦的地方：一些依赖于额外验证和表现的情况或者小几率出现的情况需要复杂的模拟步骤，对开发进度和效率带来了一些额外的影响。如何编写一个测试友好的 Golang 程序成为一个无法绕开的问题。&lt;/p>
+&lt;h2 id="从动态语言到静态语言">从动态语言到静态语言
+&lt;/h2>&lt;p>动态语言有良好的运行时修改属性，在运行时的动态修改函数，可以进行有效的 Mock。比如在 &lt;code>Python&lt;/code>（以 3 为例，内置了 unittest.mock 标准库）程序中:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> patch&lt;span style="color:#f92672">.&lt;/span>object(ProductionClass,&lt;span style="color:#e6db74">&amp;#39;method&amp;#39;&lt;/span>, return_value&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>) &lt;span style="color:#66d9ef">as&lt;/span> mock_method:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> thing &lt;span style="color:#f92672">=&lt;/span> ProductionClass()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> thing&lt;span style="color:#f92672">.&lt;/span>method(&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>自然而然的，我们想到了这样的用法：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">imp&lt;/span> = &lt;span style="color:#66d9ef">func&lt;/span>() &lt;span style="color:#66d9ef">bool&lt;/span> {&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">TestFunc&lt;/span>(&lt;span style="color:#a6e22e">t&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">testing&lt;/span>.&lt;span style="color:#a6e22e">T&lt;/span>) {&lt;span style="color:#66d9ef">defer&lt;/span> &lt;span style="color:#66d9ef">func&lt;/span>(&lt;span style="color:#a6e22e">org&lt;/span> &lt;span style="color:#66d9ef">func&lt;/span>() &lt;span style="color:#66d9ef">bool&lt;/span>) {&lt;span style="color:#a6e22e">imp&lt;/span> = &lt;span style="color:#a6e22e">org&lt;/span>}(&lt;span style="color:#a6e22e">imp&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">img&lt;/span> = &lt;span style="color:#66d9ef">func&lt;/span>() &lt;span style="color:#66d9ef">bool&lt;/span> {&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">false&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// testing or something else...
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样实现 Mock 是完全可以的，但是实际上会带来一些额外的问题，比如说在 MVC 框架中，我们正常采用的方式一般是这样的：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> (&lt;span style="color:#e6db74">&amp;#34;models&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">A&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">Context&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">data&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">models&lt;/span>.&lt;span style="color:#a6e22e">Data&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这种方式则是无法在运行中进行动态 Mock 的，除非将其转换为参数方式进行调用。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">TestFunc&lt;/span>(&lt;span style="color:#a6e22e">t&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">testing&lt;/span>.&lt;span style="color:#a6e22e">T&lt;/span>) {&lt;span style="color:#a6e22e">Convey&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;test&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">t&lt;/span>, &lt;span style="color:#66d9ef">func&lt;/span>() {&lt;span style="color:#66d9ef">defer&lt;/span> &lt;span style="color:#66d9ef">func&lt;/span>(&lt;span style="color:#a6e22e">org&lt;/span> &lt;span style="color:#66d9ef">func&lt;/span>() &lt;span style="color:#66d9ef">string&lt;/span>) {&lt;span style="color:#a6e22e">models&lt;/span>.&lt;span style="color:#a6e22e">Data&lt;/span> = &lt;span style="color:#a6e22e">org&lt;/span> &lt;span style="color:#75715e">// Error: cannot assign to models.Data}(models.Data)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">models&lt;/span>.&lt;span style="color:#a6e22e">Data&lt;/span> = &lt;span style="color:#66d9ef">func&lt;/span>() &lt;span style="color:#66d9ef">string&lt;/span> {&lt;span style="color:#66d9ef">return&lt;/span>&lt;span style="color:#e6db74">&amp;#34;mocked!&amp;#34;&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> })
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>转成&lt;/p></description></item><item><title>Mgo 库的常见坑总结</title><link>https://www.4async.com/2016/01/2016-01-26-something-about-mgo-driver/</link><pubDate>Tue, 26 Jan 2016 21:30:00 +0000</pubDate><guid>https://www.4async.com/2016/01/2016-01-26-something-about-mgo-driver/</guid><description>&lt;p>&lt;a class="link" href="https://gopkg.in/mgo.v2" target="_blank" rel="noopener"
+>mgo 库&lt;/a> 是一个很好用的 &lt;code>MongoDB&lt;/code> 驱动。对我们来说，主力数据库是 &lt;code>MongoDB&lt;/code>，因此这个驱动对我们来说也是非常重要的。但是，mgo 库有些问题算是一些坑，这里我做了一些简单的整理。&lt;/p>
+&lt;h2 id="一些关于-bsonobjectid-的问题">一些关于 bson.ObjectId 的问题
+&lt;/h2>&lt;h3 id="objectid-为空的判断">ObjectId 为空的判断
+&lt;/h3>&lt;p>如果你看 &lt;code>bson.ObjectId&lt;/code> 定义的话，它是一个 &lt;code>string&lt;/code> 类型的数据。但是如果你直接定义一个结构，并且生成对象时，这个对象并不是这样的。&lt;/p>
+&lt;p>我们首先定义一个结构体：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Home&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {&lt;span style="color:#a6e22e">ID&lt;/span> &lt;span style="color:#a6e22e">bson&lt;/span>.&lt;span style="color:#a6e22e">ObjectId&lt;/span> &lt;span style="color:#e6db74">`bson:&amp;#34;_id,omitempty&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Name&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`bson:&amp;#34;name&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后看看一个生成的内容&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">h&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Home&lt;/span>{&lt;span style="color:#a6e22e">Name&lt;/span>:&lt;span style="color:#e6db74">&amp;#34;123&amp;#34;&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">h&lt;/span>.&lt;span style="color:#a6e22e">ID&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>结果是 &lt;code>ObjectIdHex(&amp;quot;&amp;quot;)&lt;/code>。换句话说，如果你是想判断一个结构体的 &lt;code>ObjectId&lt;/code> 是否为空，使用 &lt;code>h.ID ==&amp;quot;&amp;quot;&lt;/code> 是一定会结果为 &lt;code>false&lt;/code> 的。如果你想判断是否为空，正确的方式应该为：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">h&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Home&lt;/span>{&lt;span style="color:#a6e22e">Name&lt;/span>:&lt;span style="color:#e6db74">&amp;#34;123&amp;#34;&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">h&lt;/span>.&lt;span style="color:#a6e22e">ID&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">h&lt;/span>.&lt;span style="color:#a6e22e">ID&lt;/span>.&lt;span style="color:#a6e22e">Hex&lt;/span>() &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="正确的生成-objectid">正确的生成 ObjectId
+&lt;/h3>&lt;p>首先值得注意的是 &lt;code>NewObjectIdWithTime(t time.Time)&lt;/code> 这个方法生成的 &lt;code>ObjectId&lt;/code> 并不是唯一的，结果可能导致的是插入失败。最有效的方式是设定 &lt;code>ObjectId&lt;/code> 对象支持 &lt;code>omitempty&lt;/code> 属性，就像我上面生成的结构体一样，由数据库统一调配生成 ObjectId。如果真的确实需要，可以选择 &lt;code>NewObjctId()&lt;/code>。&lt;/p>
+&lt;h2 id="时间问题">时间问题
+&lt;/h2>&lt;p>之前看到有人问，为什么保存的时间进入到数据库中慢了 8 个小时呢？原因是在保存进入 &lt;code>MongoDB&lt;/code> 时，数据是按照 &lt;code>UTC&lt;/code> 时间（不懂什么是 UTC？&lt;a class="link" href="https://zh.wikipedia.org/zh/%E5%8D%8F%E8%B0%83%E4%B8%96%E7%95%8C%E6%97%B6" target="_blank" rel="noopener"
+>看这里&lt;/a>）进行的保存，但是取出是按照当前时区来取出。那么问题来了，我的客户如果不都是国人，我怎么保存时间呢？目前我们采用了两种方式来确定数据库的保存时间。一种是 &lt;code>Unix 时间戳 &lt;/code>，这个是不受到时区的影响的，由前端格式化为对应的时区时间；另外一种则是需要在额外的对从 &lt;code>MongoDB&lt;/code> 数据库中取出的数据进行额外的时区校准，简单来说可以这样：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Home&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {&lt;span style="color:#a6e22e">ID&lt;/span> &lt;span style="color:#a6e22e">bson&lt;/span>.&lt;span style="color:#a6e22e">ObjectId&lt;/span> &lt;span style="color:#e6db74">`bson:&amp;#34;_id,omitempty&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Name&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> &lt;span style="color:#e6db74">`bson:&amp;#34;name&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">InsertTime&lt;/span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Time&lt;/span> &lt;span style="color:#e6db74">`bson:&amp;#34;insert_time&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {&lt;span style="color:#a6e22e">sess&lt;/span>, &lt;span style="color:#a6e22e">_&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">mgo&lt;/span>.&lt;span style="color:#a6e22e">Dial&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;127.0.0.1&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">c&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">sess&lt;/span>.&lt;span style="color:#a6e22e">DB&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;test&amp;#34;&lt;/span>).&lt;span style="color:#a6e22e">C&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;home&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">h&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Home&lt;/span>{&lt;span style="color:#a6e22e">Name&lt;/span>:&lt;span style="color:#e6db74">&amp;#34;123&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">InsertTime&lt;/span>: &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Now&lt;/span>()}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">c&lt;/span>.&lt;span style="color:#a6e22e">Upsert&lt;/span>(&lt;span style="color:#a6e22e">bson&lt;/span>.&lt;span style="color:#a6e22e">M&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;name&amp;#34;&lt;/span>:&lt;span style="color:#e6db74">&amp;#34;123&amp;#34;&lt;/span>}, &lt;span style="color:#a6e22e">h&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">c&lt;/span>.&lt;span style="color:#a6e22e">Find&lt;/span>(&lt;span style="color:#a6e22e">bson&lt;/span>.&lt;span style="color:#a6e22e">M&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;name&amp;#34;&lt;/span>:&lt;span style="color:#e6db74">&amp;#34;123&amp;#34;&lt;/span>}).&lt;span style="color:#a6e22e">One&lt;/span>(&lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">h&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">h&lt;/span>.&lt;span style="color:#a6e22e">InsertTime&lt;/span>.&lt;span style="color:#a6e22e">Format&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;2006-01-02 15:04:05&amp;#34;&lt;/span>))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">tz&lt;/span>, &lt;span style="color:#a6e22e">_&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">LoadLocation&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;America/New_York&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">h&lt;/span>.&lt;span style="color:#a6e22e">InsertTime&lt;/span>.&lt;span style="color:#a6e22e">In&lt;/span>(&lt;span style="color:#a6e22e">tz&lt;/span>).&lt;span style="color:#a6e22e">Format&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;2006-01-02 15:04:05&amp;#34;&lt;/span>))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="更高效的使用-session">更高效的使用 Session
+&lt;/h2>&lt;p>在 &lt;code>MongoDB&lt;/code> 中合理使用 &lt;code>Session&lt;/code> 可以更高效的操作数据库，做法是在之前进行一次 &lt;code>Copy&lt;/code> 操作：&lt;/p></description></item><item><title>使用 vendor 管理 Golang 项目依赖</title><link>https://www.4async.com/2016/01/2016-01-05-golang-vendor/</link><pubDate>Tue, 05 Jan 2016 23:13:00 +0000</pubDate><guid>https://www.4async.com/2016/01/2016-01-05-golang-vendor/</guid><description>&lt;p>我们在项目中除了 &lt;a class="link" href="http://ipfans.github.io/2015/12/using-vagrant-development-env/" target="_blank" rel="noopener"
+>大量的使用 Python&lt;/a> 外，也大量的使用了 Golang 构建高效基础运行服务。在使用 Golang 过程中，我们发现 Golang 程序缺少依赖库版本功能是一个非常令人头大的问题：某些依赖在某个 commit 之后发生了 API 变更之后，如果不修改代码很难兼容，然而开发者之间很有可能因为参与的时间不同，导致执行 &lt;code>go get&lt;/code> 命令获取的版本不同，而导致在不同电脑上出现编译不通过问题。同时，在多个程序中，如果使用的 commit 版本不同，也可能会导致程序编译过程中出现不同的问题。&lt;/p>
+&lt;p>在之前，我们解决这个问题有两个方案，一种是拆解 &lt;code>go get&lt;/code> 命令的执行，首先创建对应依赖目录，利用 git 命令切换至指定的 commit，然后执行 &lt;code>go install&lt;/code> 命令。另外一种比较省事的方法是使用 &lt;a class="link" href="https://github.com/tools/godep" target="_blank" rel="noopener"
+>godep&lt;/a> 工具，这里就不做过多介绍了，具体可以参考文档或者搜索中文教程。&lt;/p>
+&lt;p>在 Golang1.5 之后，Go 提供了 &lt;code>GO15VENDOREXPERIMENT&lt;/code> 环境变量，用于将 go build 时的应用路径搜索调整成为 &lt;code> 当前项目目录 / vendor&lt;/code> 目录方式。通过这种形式，我们可以实现类似于 &lt;code>godep&lt;/code> 方式的项目依赖管理。不过起码在程序编译过程中，再也无需在其他端部署一个 &lt;code>godep&lt;/code> 工具。&lt;/p>
+&lt;p>在使用之前，需要安装一个辅助工具（如果 Golang 自改一个就好了）：&lt;code>go get -u -v github.com/kardianos/govendor&lt;/code>。&lt;/p>
+&lt;p>下面，我们用一个例子来说明。首先有一个名为 &lt;code>vendorproj&lt;/code> 的项目。假如只有一个文件：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> (&lt;span style="color:#e6db74">&amp;#34;github.com/yeeuu/echoic&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {&lt;span style="color:#a6e22e">e&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">echoic&lt;/span>.&lt;span style="color:#a6e22e">New&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">e&lt;/span>.&lt;span style="color:#a6e22e">SetDebug&lt;/span>(&lt;span style="color:#66d9ef">true&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">e&lt;/span>.&lt;span style="color:#a6e22e">Run&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;127.0.0.1:4321&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>执行一下命令就可以生成 vendor 文件夹：&lt;/p></description></item></channel></rss>

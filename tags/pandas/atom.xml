@@ -1,8 +1,25 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pandas on ipfans's Blog</title><link>https://www.4async.com/tags/pandas/</link><description>Recent content in Pandas on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 19 Feb 2017 18:00:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/pandas/atom.xml" rel="self" type="application/rss+xml"/><item><title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title><link>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</link><pubDate>Sun, 19 Feb 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</guid><description>这是一篇非常不错的 pandas 分析入门文章，在此简单翻译摘录如下。
-本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 Pronto Cycle Share 的数据分析挑战。
-你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 NumPy，Pandas，Matplotlib 和 Seaborn 与其他可用的数据源。
-这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 对应的 Notebook 文件，并通过 Jupyter 打开。
-下载 Pronto 的数据 我们可以从 Pronto 官网 下载对应的 数据文件。总下载大约 70MB，解压缩的文件大约 900MB。
-接下来我们需要导入一些 Python 包：
-In [2]:
-%matplotlib inline import matplotlib.pyplot as plt import pandas as pd import numpy as np import seaborn as sns; sns.set() 现在我们使用 Pandas 加载所有的行程记录：</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pandas on ipfans's Blog</title><link>https://www.4async.com/tags/pandas/</link><description>Recent content in Pandas on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 19 Feb 2017 18:00:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/pandas/atom.xml" rel="self" type="application/rss+xml"/><item><title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title><link>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</link><pubDate>Sun, 19 Feb 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</guid><description>&lt;p>这是一篇非常不错的 &lt;a class="link" href="https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/" target="_blank" rel="noopener"
+>pandas 分析入门文章&lt;/a>，在此简单翻译摘录如下。&lt;/p>
+&lt;hr>
+&lt;p>本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 &lt;a class="link" href="http://www.prontocycleshare.com/datachallenge" target="_blank" rel="noopener"
+>Pronto Cycle Share 的数据分析挑战&lt;/a>。&lt;/p>
+&lt;p>你可以用很多工具分析这些数据，但我的选择工具是 Python。 在这篇文章中，我想展示如何开始分析这些数据，并使用 PyData 技术栈，即 &lt;a class="link" href="http://www.numpy.org/" target="_blank" rel="noopener"
+>NumPy&lt;/a>，&lt;a class="link" href="http://pandas.pydata.org/" target="_blank" rel="noopener"
+>Pandas&lt;/a>，&lt;a class="link" href="http://matplotlib.org/" target="_blank" rel="noopener"
+>Matplotlib&lt;/a> 和 &lt;a class="link" href="http://seaborn.pydata.org/index.html" target="_blank" rel="noopener"
+>Seaborn&lt;/a> 与其他可用的数据源。&lt;/p>
+&lt;p>这篇文章以 Jupyter Notebook 形式组织，它是一种开放的文档格式。结合了文本、代码、数据和图形，并且通过 Web 浏览器查看。本文中的内容可以下载 &lt;a class="link" href="http://jakevdp.github.io/downloads/notebooks/ProntoData.ipynb" target="_blank" rel="noopener"
+>对应的 Notebook 文件&lt;/a>，并通过 Jupyter 打开。&lt;/p>
+&lt;h2 id="下载-pronto-的数据">下载 Pronto 的数据
+&lt;/h2>&lt;p>我们可以从 &lt;a class="link" href="http://www.prontocycleshare.com/datachallenge" target="_blank" rel="noopener"
+>Pronto 官网&lt;/a> 下载对应的 &lt;a class="link" href="https://s3.amazonaws.com/pronto-data/open_data_year_one.zip" target="_blank" rel="noopener"
+>数据文件&lt;/a>。总下载大约 70MB，解压缩的文件大约 900MB。&lt;/p>
+&lt;p>接下来我们需要导入一些 Python 包：&lt;/p>
+&lt;p>In [2]:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">%&lt;/span>matplotlib inline
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> matplotlib.pyplot &lt;span style="color:#66d9ef">as&lt;/span> plt
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> pandas &lt;span style="color:#66d9ef">as&lt;/span> pd
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> numpy &lt;span style="color:#66d9ef">as&lt;/span> np
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> seaborn &lt;span style="color:#66d9ef">as&lt;/span> sns; sns&lt;span style="color:#f92672">.&lt;/span>set()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在我们使用 Pandas 加载所有的行程记录：&lt;/p>
+&lt;p>In [3]:&lt;/p></description></item></channel></rss>
