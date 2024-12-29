@@ -1,4 +1,20 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 14 Nov 2024 11:28:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>使用 Go 开发 AI Agent的选择：Genkit for Go</title><link>https://www.4async.com/2024/11/building-ai-agent-with-genkit-for-go/</link><pubDate>Thu, 14 Nov 2024 11:28:00 +0000</pubDate><guid>https://www.4async.com/2024/11/building-ai-agent-with-genkit-for-go/</guid><description>&lt;img src="https://www.4async.com/2024/11/building-ai-agent-with-genkit-for-go/cover.png" alt="Featured image of post 使用 Go 开发 AI Agent的选择：Genkit for Go" />&lt;h2 id="什么是-genkit">什么是 Genkit
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 29 Dec 2024 22:30:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>AI 产品的破局之道：以人为本</title><link>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</link><pubDate>Sun, 29 Dec 2024 22:30:00 +0000</pubDate><guid>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</guid><description>&lt;img src="https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/cover.webp" alt="Featured image of post AI 产品的破局之道：以人为本" />&lt;p>伴随着 OpenAI、Anthropic 等等公司的努力，大型语言模型（LLM）的性能不断提升，AI 产品的应用场景也越来越广泛。从口袋里的智能助手到驰骋未来的自动驾驶，从辅助医疗诊断的慧眼到洞察市场风云的智脑，AI 正以前所未有的速度改变着世界。但是在这个过程中，我们会注意到一些问题，我们会陷入“技术至上”的误区，过分强调技术的先进性，而忽略了用户的需求和体验。这就导致了很多 AI 产品虽然技术先进，但却无法真正满足用户的需求，最终无法实现商业价值。究其原因，许多 AI 系统在与人类交互时，常常陷入**“鸡同鸭讲”的窘境**——对上下文的理解捉襟见肘，难以领会人类语言中的微妙含义；更令人担忧的是“幻觉”问题，AI 煞有介事地编造着“一本正经的胡说八道”，让用户无所适从；而在用户体验方面，许多 AI 产品更是差强人意，机械式的交互和冰冷的界面让人难以产生亲近感。有些时候我们有些失望：&lt;a class="link" href="https://zh.wikipedia.org/zh-hans/%E5%B8%95%E7%B4%AF%E6%89%98%E6%B3%95%E5%88%99" target="_blank" rel="noopener"
+>帕累托法则&lt;/a>（或者叫做 28 原则），一直在发挥着神秘的力量。&lt;/p>
+&lt;p>抛开模型开发公司本身而言，面向客户的 AI 产品的设计和开发是一个复杂的过程，需要综合考虑技术、商业和用户体验等多个方面。在这个过程中，如何保证产品的质量和用户体验成为了关键问题。传统的产品设计方法往往是由设计师和工程师等专业人员完成，而用户往往只是产品的使用者。然而，随着 LLM 的发展，新的交互形式不停的出现，比如之前的聊天产品和语音助手交互产品普遍反馈交互感太差并不实用。新的实时多模态模型的出现，让这些可以更好的理解用户的需求，更好的满足用户的需求。&lt;/p>
+&lt;p>但，无论如何，要充分释放 AI 的潜力，必须将用户需求和体验置于核心地位。这不仅仅是一句口号，更是一种深刻的变革，要求我们将用户的需求、期望和体验置于 AI 产品设计的最核心。这意味着，我们需要像人类学家一样去观察和理解用户的真实诉求，像心理学家一样去揣摩用户的情感和认知模式，并将这些洞察深深地烙印在产品的基因之中。只有这样，才能打造出真正被用户拥抱、信任并从中受益的 AI 产品。&lt;/p>
+&lt;p>本文就是我在最近两年开发 AI 产品的一些体悟，希望能够给 AI 产品的设计和开发带来一些启发。虽然我是一个工程师视角，但是斗胆今天就来聊一聊 AI 产品的设计和体验问题。&lt;/p>
+&lt;h1 id="理解当前-ai-的阶段能力与局限">理解当前 AI 的阶段：能力与局限
+&lt;/h1>&lt;p>毋庸置疑，现在 AI 在“力大砖飞”的背景之下，已经在许多领域展现出了强大的能力。从自然语言处理到计算机视觉，从智能推荐到智能对话，AI 的应用场景越来越广泛，技术也越来越成熟。在过去的两年中，我们见证了每隔几个月到半年，LLM 就进行了一种大范围的能力提升变革。然而，AI 的能力和局限性也给产品设计带来了许多挑战。这些局限性并非是无法克服的，有些也仅仅局限于当前的技术水平，但是我们必须清楚地认识到这些局限性，才能更好地设计和开发 AI 产品。&lt;/p>
+&lt;p>这些问题你可能在很多地方看到过，让我再赘述一遍：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>上下文问题&lt;/strong>：大模型在处理长文本或复杂对话时，受限于上下文“记忆”能力，可能导致理解偏差和信息遗漏。例如，在长篇文档总结或多轮对话中难以保持信息连贯。扩展上下文窗口当然是一种解决方案，但即便是大上下文窗口的 Gemini，也会出现注意力不集中的问题，最终影响到模型的性能和结果。&lt;/li>
+&lt;li>&lt;strong>幻觉问题&lt;/strong>：AI 可能在缺乏事实依据的情况下生成看似合理但虚假的信息，严重影响用户信任，尤其在需要高准确性的场景中。在绝大多数的 B 端场景和部分 C 端场景中，我们都需要确保回答的准确性。之前也有&lt;a class="link" href="https://news.qq.com/rain/a/20240223A012Z100" target="_blank" rel="noopener"
+>加拿大航空的案例&lt;/a>，导致公司的信誉受损。&lt;/li>
+&lt;li>&lt;strong>缺乏常识与情感理解&lt;/strong>： AI 在处理需要常识判断和情感理解的场景中表现不足，导致交互生硬，甚至产生误解。&lt;/li>
+&lt;/ol>
+&lt;p>这些问题并非无法解决，但是我们必须清楚地认识到这些问题，才能更好地设计和开发 AI 产品。在 AI 产品设计中，我们需要充分考虑这些问题，从而更好地满足用户的需求和体验。而在这个过程中，我认为针对人机回环(Human in the loop, HITL)的设计思想是非常重要的。通过完善这个设计思想，我们可以更好地解决上述问题，提高 AI 产品的质量和用户体验。&lt;/p>
+&lt;h1 id="以人为本产品的设计灵魂">以人为本：产品的设计灵魂
+&lt;/h1>&lt;p>以人为本，是产品设计的灵魂所在，对于 AI 产品而言更是如此。对这种方式而言，一般会以下面的方式为循环来进行：&lt;/p></description></item><item><title>使用 Go 开发 AI Agent的选择：Genkit for Go</title><link>https://www.4async.com/2024/11/building-ai-agent-with-genkit-for-go/</link><pubDate>Thu, 14 Nov 2024 11:28:00 +0000</pubDate><guid>https://www.4async.com/2024/11/building-ai-agent-with-genkit-for-go/</guid><description>&lt;img src="https://www.4async.com/2024/11/building-ai-agent-with-genkit-for-go/cover.png" alt="Featured image of post 使用 Go 开发 AI Agent的选择：Genkit for Go" />&lt;h2 id="什么是-genkit">什么是 Genkit
 &lt;/h2>&lt;p>&lt;a class="link" href="https://github.com/firebase/genkit" target="_blank" rel="noopener"
 >Genkit&lt;/a> 是一个 Google Firebase 团队开发的 AI Agent 开发框架，用于构建现代、高效的 AI 应用。它目前包含一个 &lt;a class="link" href="https://firebase.google.com/docs/genkit?hl=zh-cn" target="_blank" rel="noopener"
 >Node.js 的实现&lt;/a> 和一个 &lt;a class="link" href="https://firebase.google.com/docs/genkit-go/get-started-go" target="_blank" rel="noopener"
@@ -628,60 +644,4 @@ export PATH=$PATH:/root/.dapr/bin
 # dapr --version
 CLI version: 1.0.0
 Runtime version: 1.0.1
-&lt;/code>&lt;/pre>&lt;p>在官方文档中，如果选择使用&lt;code>init&lt;/code>命令初始化，&lt;code>dapr-cli&lt;/code>将会自动尝试使用容器环境管理相关程序，只有添加&lt;code>--slim&lt;/code>参数才会选择本地化运行。更多用法可以参考&lt;code>dapr help init&lt;/code>帮助。默认程序相关内容会安装在&lt;code>$HOME/.dapr&lt;/code>目录下，这里因为我为了简便使用了&lt;code>root&lt;/code>用户，因此程序命令所在目录为&lt;code>/root/.dapr/bin&lt;/code>，共安装了如下命令：&lt;/p></description></item><item><title>NATS-Server(JetStream)和NATS Streaming Server对比</title><link>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</link><pubDate>Tue, 02 Mar 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/03/2021-03-02-nats-server-usage/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/Cv92HUNpYyjDTVK.png" alt="Featured image of post NATS-Server(JetStream)和NATS Streaming Server对比" />&lt;p>在我吐槽了无数次之后，&lt;code>NATS JetStream&lt;/code>终于结束了beta阶段正式进入RC阶段。终于官方也在最近刚刚正式回复了我正式版本在处理几个问题之后就会正式发布。那么在这个比较重要的&lt;code>NATS-Server&lt;/code>特性发布之际聊一下NATS产品本身区别和新特性的使用，还有更多的潜在的区别。&lt;/p>
-&lt;h2 id="概念区分nats-server--nats-streaming-server--nats-jetstream">概念区分：NATS-Server / NATS Streaming Server / NATS JetStream
-&lt;/h2>&lt;h3 id="nats-server">NATS-Server
-&lt;/h3>&lt;p>&lt;code>NATS-Server&lt;/code>（或者叫&lt;code>nats&lt;/code>）是一个开源的、云原生的、高性能的消息传递系统，是NATS的最基础的产品。它的核心是一个发布/订阅（Pub/Sub）系统，客户端可以在不同集群中的服务间&lt;code>nats&lt;/code>进行通讯，而不需要关注具体的消息在哪个服务上。换而言之，客户端可以在任意一个集群的服务端上发布消息，同时在任意集群客户端上尝试读取消息。在官方与其他同类消息队列产品&lt;a class="link" href="https://docs.nats.io/compare-nats" target="_blank" rel="noopener"
->功能对比&lt;/a>中，我们也可以管窥一下产品的功能列表。&lt;code>nats&lt;/code>支持多流多服务进行&lt;code>pub/sub&lt;/code>，负载均衡，保障消息最多/最少一次送达，多租户和用户认证等功能。虽然看上去优点很多，但是&lt;code>nats&lt;/code>不是一个应用很广的消息队列的重要原因是，它缺少了一些对消息队列而言很最重要的产品特性，比如持久化支持，比如消息确保一次送达。这意味着当你的消息发送出去之后，你的消息是在处理过程中可能丢失的，甚至是可能送达不到的。&lt;/p>
-&lt;h3 id="nats-streaming-server">NATS Streaming Server
-&lt;/h3>&lt;p>&lt;code>NATS Streaming Server&lt;/code>（或者叫&lt;code>stan&lt;/code>）是用于尝试解决上面提到的&lt;code>nats&lt;/code>的已存在问题的。&lt;code>stan&lt;/code>添加了持久化功能和消息送达策略支持。&lt;code>stan&lt;/code>中自带了&lt;code>nats&lt;/code>服务端，但是在使用过程中，&lt;code>nats&lt;/code>和&lt;code>stan&lt;/code>不能进行混用。在官方文档中，是这么描述&lt;code>stan&lt;/code>和&lt;code>nats&lt;/code>之间的关系的：&lt;/p>
-&lt;blockquote>
-&lt;p>NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。&lt;/p>
-&lt;/blockquote>
-&lt;p>&lt;code>stan&lt;/code>的具体架构如下图：&lt;/p>
-&lt;p>&lt;img src="https://i.loli.net/2021/03/02/YsSxFitoJV7jwC9.jpg"
-loading="lazy"
->&lt;/p>
-&lt;p>但是&lt;code>stan&lt;/code>虽然提供了持久化和消息传递策略支持，但是在架构设计上却出现了问题，导致在最开始设计时遗留了很多问题，比如当你确定&lt;code>stan&lt;/code>集群是固定的不能无限制水平扩容(&lt;a class="link" href="https://github.com/nats-io/nats-streaming-server/issues/999" target="_blank" rel="noopener"
->#999&lt;/a>)，比如不支持多租户功能(&lt;a class="link" href="https://github.com/nats-io/nats-streaming-server/issues/1122" target="_blank" rel="noopener"
->#1122&lt;/a>)，比如客户端无法主动拉取消息只能被推送等等&lt;/p>
-&lt;h3 id="nats-jetstream">NATS JetStream
-&lt;/h3>&lt;p>&lt;code>NATS JetStream&lt;/code>（或者叫&lt;code>JetStream&lt;/code>）是NATS基于&lt;code>Raft&lt;/code>算法实现的最新的架构设计尝试解决上述问题的新方案。在区别于原有的&lt;code>stan&lt;/code>功能上，提供了新的持久化功能和消息送达策略，同时支持水平扩容。同时，新的&lt;code>JetStream&lt;/code>也为大消息做了一些优化，不再将这特性功能作为&lt;code>nats&lt;/code>的客户端存在而是嵌入&lt;code>NATS Server&lt;/code>中作为其中的一个功能存在。也就是说，如果在对这几项技术进行选择时，&lt;code>JetStream&lt;/code>应该是最应该被选择的方案。更多详细情况具体可以查看官方的&lt;a class="link" href="https://github.com/nats-io/jetstream" target="_blank" rel="noopener"
->指导文档&lt;/a>。&lt;/p>
-&lt;h2 id="nats-jetstream使用">NATS JetStream使用
-&lt;/h2>&lt;p>理论介绍过了，接下来说说实际使用的事情。现在&lt;code>JetStream&lt;/code>还是RC阶段，&lt;/p>
-&lt;h3 id="编译和启动客户端">编译和启动客户端
-&lt;/h3>&lt;p>下载&lt;a class="link" href="https://github.com/nats-io/nats-server/archive/master.zip" target="_blank" rel="noopener"
->&lt;code>nats-server&lt;/code>源码&lt;/a>，解压之后执行：&lt;/p>
-&lt;pre tabindex="0">&lt;code>cd nats-server-master
-go build -o nats-server -ldflags=&amp;#34;-s -w -buildid=&amp;#34; .
-./nats-server -js
-&lt;/code>&lt;/pre>&lt;p>这样就可以启动一个支持&lt;code>JetStream&lt;/code>功能的服务端了。&lt;/p>
-&lt;pre tabindex="0">&lt;code>[54738] 2021/03/02 18:27:02.605197 [INF] Starting nats-server
-[54738] 2021/03/02 18:27:02.605236 [INF] Version: 2.2.0-RC.2
-[54738] 2021/03/02 18:27:02.605238 [INF] Git: [not set]
-[54738] 2021/03/02 18:27:02.605239 [INF] Name: NAFWRGQTR2CHMBIKNPE6R3ZTW2BWV2FWPAZREMHI24IYVM6FVHMVIYLQ
-[54738] 2021/03/02 18:27:02.605240 [INF] ID: NAFWRGQTR2CHMBIKNPE6R3ZTW2BWV2FWPAZREMHI24IYVM6FVHMVIYLQ
-[54738] 2021/03/02 18:27:02.605658 [INF] Starting JetStream
-[54738] 2021/03/02 18:27:02.606062 [WRN] _ ___ _____ ___ _____ ___ ___ _ __ __
-[54738] 2021/03/02 18:27:02.606076 [WRN] _ | | __|_ _/ __|_ _| _ \ __| /_\ | \/ |
-[54738] 2021/03/02 18:27:02.606077 [WRN] | || | _| | | \__ \ | | | / _| / _ \| |\/| |
-[54738] 2021/03/02 18:27:02.606078 [WRN] \__/|___| |_| |___/ |_| |_|_\___/_/ \_\_| |_|
-[54738] 2021/03/02 18:27:02.606079 [WRN]
-[54738] 2021/03/02 18:27:02.606080 [WRN] _ _
-[54738] 2021/03/02 18:27:02.606081 [WRN] | |__ ___| |_ __ _
-[54738] 2021/03/02 18:27:02.606082 [WRN] | &amp;#39;_ \/ -_) _/ _` |
-[54738] 2021/03/02 18:27:02.606083 [WRN] |_.__/\___|\__\__,_|
-[54738] 2021/03/02 18:27:02.606084 [WRN]
-[54738] 2021/03/02 18:27:02.606084 [WRN] JetStream is a Beta feature
-[54738] 2021/03/02 18:27:02.606085 [WRN] https://github.com/nats-io/jetstream
-[54738] 2021/03/02 18:27:02.606092 [INF]
-[54738] 2021/03/02 18:27:02.606093 [INF] ----------- JETSTREAM -----------
-[54738] 2021/03/02 18:27:02.606095 [INF] Max Memory: 12.00 GB
-[54738] 2021/03/02 18:27:02.606096 [INF] Max Storage: 35.79 GB
-[54738] 2021/03/02 18:27:02.606098 [INF] Store Directory: &amp;#34;/var/folders/5s/8rczg1gs4wb59y9s22nc3f_r0000gn/T/nats/jetstream&amp;#34;
-[54738] 2021/03/02 18:27:02.606099 [INF] ---------------------------------
-[54738] 2021/03/02 18:27:02.606399 [INF] Listening for client connections on 0.0.0.0:4222
-[54738] 2021/03/02 18:27:02.606512 [INF] Server is ready
-&lt;/code>&lt;/pre>&lt;h3 id="编写jetstream-demo">编写JetStream DEMO
-&lt;/h3>&lt;p>接下来我们看一下如何使用&lt;code>JetStream&lt;/code>进行消息发布/订阅功能：&lt;/p></description></item></channel></rss>
+&lt;/code>&lt;/pre>&lt;p>在官方文档中，如果选择使用&lt;code>init&lt;/code>命令初始化，&lt;code>dapr-cli&lt;/code>将会自动尝试使用容器环境管理相关程序，只有添加&lt;code>--slim&lt;/code>参数才会选择本地化运行。更多用法可以参考&lt;code>dapr help init&lt;/code>帮助。默认程序相关内容会安装在&lt;code>$HOME/.dapr&lt;/code>目录下，这里因为我为了简便使用了&lt;code>root&lt;/code>用户，因此程序命令所在目录为&lt;code>/root/.dapr/bin&lt;/code>，共安装了如下命令：&lt;/p></description></item></channel></rss>
