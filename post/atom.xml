@@ -1,4 +1,70 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 29 Dec 2024 22:30:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>AI 产品的破局之道：以人为本</title><link>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</link><pubDate>Sun, 29 Dec 2024 22:30:00 +0000</pubDate><guid>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</guid><description>&lt;img src="https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/cover.webp" alt="Featured image of post AI 产品的破局之道：以人为本" />&lt;p>伴随着 OpenAI、Anthropic 等等公司的努力，大型语言模型（LLM）的性能不断提升，AI 产品的应用场景也越来越广泛。从口袋里的智能助手到驰骋未来的自动驾驶，从辅助医疗诊断的慧眼到洞察市场风云的智脑，AI 正以前所未有的速度改变着世界。但是在这个过程中，我们会注意到一些问题，我们会陷入“技术至上”的误区，过分强调技术的先进性，而忽略了用户的需求和体验。这就导致了很多 AI 产品虽然技术先进，但却无法真正满足用户的需求，最终无法实现商业价值。究其原因，许多 AI 系统在与人类交互时，常常陷入**“鸡同鸭讲”的窘境**——对上下文的理解捉襟见肘，难以领会人类语言中的微妙含义；更令人担忧的是“幻觉”问题，AI 煞有介事地编造着“一本正经的胡说八道”，让用户无所适从；而在用户体验方面，许多 AI 产品更是差强人意，机械式的交互和冰冷的界面让人难以产生亲近感。有些时候我们有些失望：&lt;a class="link" href="https://zh.wikipedia.org/zh-hans/%E5%B8%95%E7%B4%AF%E6%89%98%E6%B3%95%E5%88%99" target="_blank" rel="noopener"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on ipfans's Blog</title><link>https://www.4async.com/post/</link><description>Recent content in Posts on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 31 May 2025 20:30:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/post/atom.xml" rel="self" type="application/rss+xml"/><item><title>程序员的提示工程手册</title><link>https://www.4async.com/2025/05/prompt-engineering-playbook-for-programmers/</link><pubDate>Sat, 31 May 2025 20:30:00 +0000</pubDate><guid>https://www.4async.com/2025/05/prompt-engineering-playbook-for-programmers/</guid><description>&lt;img src="https://www.4async.com/2025/05/prompt-engineering-playbook-for-programmers/cover.webp" alt="Featured image of post 程序员的提示工程手册" />&lt;blockquote>
+&lt;p>原文来自于 Addy Osmani，他是 Google Chrome 的工程主管，在 Google 工作多年。&lt;/p>&lt;/blockquote>
+&lt;p>开发人员越来越依赖 AI 编程助手来加速我们的日常工作流程。这些工具可以自动完成函数、建议修复错误，甚至生成整个模块或 MVP。然而，正如我们许多人所了解的那样，AI 输出的质量很大程度上取决于你提供的提示的质量。换句话说，提示工程已经成为一项必备技能。一个措辞不当的请求可能会产生不相关或笼统的答案，而一个精心设计的提示可以产生周到、准确甚至富有创造性的代码解决方案。本文将实际探讨如何系统地构建适用于常见开发任务的提示。&lt;/p>
+&lt;p>AI 结对程序员很强大但并非神奇——除了你告诉他们的或包含在上下文中的信息外，对你特定的项目或意图没有先验知识。你提供的信息越多，输出就越好。我们将提炼出开发者反响热烈的提示模式、可重复的框架和难忘的示例。你将看到好与坏提示的并排比较以及实际的 AI 响应，并附有评论以了解为什么一个成功而另一个失败。以下是入门小贴士：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>技巧&lt;/th>
+&lt;th>提示模板&lt;/th>
+&lt;th>目的&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1. 角色提示&lt;/td>
+&lt;td>“你是一名资深的{语言名}开发者。请审查这个函数以实现{目标}。”&lt;/td>
+&lt;td>模拟专家级的代码审查、调试或重构&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2. 明确上下文设定&lt;/td>
+&lt;td>“问题如下：{问题说明}。下面是代码。它本应做到{预期行为}，但实际上做了 {实际行为}。为什么？”&lt;/td>
+&lt;td>明确框定问题，避免泛泛而谈的回答&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3. 输入/输出示例&lt;/td>
+&lt;td>“这个函数在输入{输入内容}时应返回{预期输出}。你能编写或修复这段代码吗？”&lt;/td>
+&lt;td>通过示例引导 AI 理解意图&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4. 迭代分步&lt;/td>
+&lt;td>“首先生成这个组件的骨架。接下来我们添加状态。然后处理 API 调用。”&lt;/td>
+&lt;td>将大任务拆解为步骤，避免模糊或过载的提示&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5. 模拟调试&lt;/td>
+&lt;td>“逐行走查这个函数。变量值是什么？哪里可能出错？”&lt;/td>
+&lt;td>引导 AI 模拟运行时行为，发现隐藏的 bug&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6. 功能蓝图&lt;/td>
+&lt;td>“我正在构建{功能特性}。需求如下：{具体说明}。技术栈为：{技术栈说明}。请搭建初始组件并解释你的选择。”&lt;/td>
+&lt;td>启动 AI 主导的功能规划与脚手架搭建&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7. 重构指导&lt;/td>
+&lt;td>“请重构这段代码以提升{目标}，比如（如：可读性、性能、符合语言习惯的风格）。请使用注释解释变更。”&lt;/td>
+&lt;td>让 AI 的重构符合你的目标，而不是随意更动&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8. 请求替代方案&lt;/td>
+&lt;td>“你能用函数式风格重写这段代码吗？递归版本会是什么样？”&lt;/td>
+&lt;td>探索多种实现方式，扩展工具箱&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9. 橡皮鸭调试&lt;/td>
+&lt;td>“我觉得这个函数的作用是：{你的解释}。我遗漏了什么吗？有没有 bug？”&lt;/td>
+&lt;td>让 AI 质疑你的理解并发现潜在问题&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10. 约束锚定&lt;/td>
+&lt;td>“请避免（例如：递归），并遵守（例如：ES6 语法、无外部库）。优化方向为（例如：内存）。这是函数代码：”&lt;/td>
+&lt;td>防止 AI 过度发挥或引入不兼容的模式&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="高效代码提示基础">高效代码提示基础
+&lt;/h2>&lt;p>向 AI 编码工具提示与与一个非常有原则、有时会知识渊博的合作者交流有点像。为了获得有用的结果，您需要清楚地设置场景，并指导 AI 您想要什么以及如何实现。&lt;/p></description></item><item><title>AI 产品的破局之道：以人为本</title><link>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</link><pubDate>Sun, 29 Dec 2024 22:30:00 +0000</pubDate><guid>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</guid><description>&lt;img src="https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/cover.webp" alt="Featured image of post AI 产品的破局之道：以人为本" />&lt;p>伴随着 OpenAI、Anthropic 等等公司的努力，大型语言模型（LLM）的性能不断提升，AI 产品的应用场景也越来越广泛。从口袋里的智能助手到驰骋未来的自动驾驶，从辅助医疗诊断的慧眼到洞察市场风云的智脑，AI 正以前所未有的速度改变着世界。但是在这个过程中，我们会注意到一些问题，我们会陷入“技术至上”的误区，过分强调技术的先进性，而忽略了用户的需求和体验。这就导致了很多 AI 产品虽然技术先进，但却无法真正满足用户的需求，最终无法实现商业价值。究其原因，许多 AI 系统在与人类交互时，常常陷入**“鸡同鸭讲”的窘境**——对上下文的理解捉襟见肘，难以领会人类语言中的微妙含义；更令人担忧的是“幻觉”问题，AI 煞有介事地编造着“一本正经的胡说八道”，让用户无所适从；而在用户体验方面，许多 AI 产品更是差强人意，机械式的交互和冰冷的界面让人难以产生亲近感。有些时候我们有些失望：&lt;a class="link" href="https://zh.wikipedia.org/zh-hans/%E5%B8%95%E7%B4%AF%E6%89%98%E6%B3%95%E5%88%99" target="_blank" rel="noopener"
 >帕累托法则&lt;/a>（或者叫做 28 原则），一直在发挥着神秘的力量。&lt;/p>
 &lt;p>抛开模型开发公司本身而言，面向客户的 AI 产品的设计和开发是一个复杂的过程，需要综合考虑技术、商业和用户体验等多个方面。在这个过程中，如何保证产品的质量和用户体验成为了关键问题。传统的产品设计方法往往是由设计师和工程师等专业人员完成，而用户往往只是产品的使用者。然而，随着 LLM 的发展，新的交互形式不停的出现，比如之前的聊天产品和语音助手交互产品普遍反馈交互感太差并不实用。新的实时多模态模型的出现，让这些可以更好的理解用户的需求，更好的满足用户的需求。&lt;/p>
 &lt;p>但，无论如何，要充分释放 AI 的潜力，必须将用户需求和体验置于核心地位。这不仅仅是一句口号，更是一种深刻的变革，要求我们将用户的需求、期望和体验置于 AI 产品设计的最核心。这意味着，我们需要像人类学家一样去观察和理解用户的真实诉求，像心理学家一样去揣摩用户的情感和认知模式，并将这些洞察深深地烙印在产品的基因之中。只有这样，才能打造出真正被用户拥抱、信任并从中受益的 AI 产品。&lt;/p>
@@ -75,8 +141,7 @@ target="_blank" rel="noopener"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pdm add langchain chromadb beautifulsoup4
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source .venv/bin/activate
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。&lt;/p>
-&lt;/blockquote>
+&lt;p>请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。&lt;/p>&lt;/blockquote>
 &lt;h2 id="功能实现">功能实现
 &lt;/h2>&lt;h3 id="实现生成模拟文档">实现生成模拟文档
 &lt;/h3>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> langchain.chains.hyde.base &lt;span style="color:#f92672">import&lt;/span> HypotheticalDocumentEmbedder
@@ -119,7 +184,7 @@ target="_blank" rel="noopener"
 &lt;p>&lt;img src="../2024/04/learn-hyde-from-scratch-1/vanilla-rag.webp"
 width="1527"
 height="654"
-srcset="../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu5351873011583491433.webp 480w, ../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu17629515767707187602.webp 1024w"
+srcset="../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu_585e302af977823d.webp 480w, ../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu_eae049ef4f12aef4.webp 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="233"
@@ -169,8 +234,7 @@ alt="image"
 >Mistral&lt;/a> 7B 模型。我们可以使用下面的命令快速安装对应模型：&lt;/p></description></item><item><title>使用子解释器运行Python并行应用</title><link>https://www.4async.com/2023/11/python-312-sub-interpreters/</link><pubDate>Thu, 23 Nov 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/11/python-312-sub-interpreters/</guid><description>&lt;img src="https://www.4async.com/2023/11/python-312-sub-interpreters/cover.webp" alt="Featured image of post 使用子解释器运行Python并行应用" />&lt;blockquote>
 &lt;p>译者注：最近 Python 3.12 引入了子解释器概念，非常火热，更好的消息是已经&lt;a class="link" href="https://twitter.com/anthonypjshaw/status/1723916190202945761" target="_blank" rel="noopener"
 >在FastAPI应用成功&lt;/a>了，虽然是很简单的那种。因此顺腾摸瓜，找到了作者的&lt;a class="link" href="https://tonybaloney.github.io/posts/sub-interpreter-web-workers.html" target="_blank" rel="noopener"
->博客&lt;/a>，翻译分享给大家。&lt;/p>
-&lt;/blockquote>
+>博客&lt;/a>，翻译分享给大家。&lt;/p>&lt;/blockquote>
 &lt;p>Python 3.12 引入了一个新的 API 用于“子解释器”（sub interpreters），这是 Python 的一种不同的并行执行模型，提供了真正并行处理和多进程处理之间的良好折中，且具有更快的启动时间。在这篇文章中，我将解释什么是子解释器，为什么它对 Python 中的并行代码执行很重要，以及它与其他方法的比较。&lt;/p>
 &lt;h2 id="什么是子解释器">什么是子解释器？
 &lt;/h2>&lt;p>Python 的系统架构大致由三部分组成：&lt;/p>
@@ -182,7 +246,7 @@ alt="image"
 &lt;p>&lt;img src="../2023/11/python-312-sub-interpreters/interpreter-states-1.png"
 width="2111"
 height="1898"
-srcset="../2023/11/python-312-sub-interpreters/interpreter-states-1_hu15682165194778488945.png 480w, ../2023/11/python-312-sub-interpreters/interpreter-states-1_hu15867741242815948022.png 1024w"
+srcset="../2023/11/python-312-sub-interpreters/interpreter-states-1_hu_e139c5bca93ea465.png 480w, ../2023/11/python-312-sub-interpreters/interpreter-states-1_hu_a52b647e9e8156e1.png 1024w"
 loading="lazy"
 alt="interpreter states"
 class="gallery-image"
@@ -248,7 +312,7 @@ data-flex-basis="266px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> └── service.proto
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="编写服务端">编写服务端
 &lt;/h2>&lt;p>我们先看一下greeter的服务定义：&lt;/p></description></item><item><title>Twirp基本概念：Hooks和Interceptors</title><link>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</link><pubDate>Wed, 25 Jan 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</guid><description>&lt;img src="https://www.4async.com/2023/01/twirp-hooks-and-interceptors/cover.png" alt="Featured image of post Twirp基本概念：Hooks和Interceptors" />&lt;p>Twirp做了足够多的抽象工作，使得我们可以在不同的层次上进行扩展。在最基础的使用层面上，你可以像&lt;code>net/http&lt;/code>一样去简单的使用。但是往往这样也不能满足我们实际项目中的需求在这篇文章中，我们将介绍Twirp的Hooks和Interceptors基本概念，以及如何使用这些Twirp的扩展机制。&lt;/p>
-&lt;h2 id="heading">
+&lt;h2 id="">
 &lt;/h2></description></item><item><title>去年的一点小工作(1)：从BFF谈起</title><link>https://www.4async.com/2023/01/something-happend-in-2022-1/</link><pubDate>Sat, 21 Jan 2023 17:55:39 +0000</pubDate><guid>https://www.4async.com/2023/01/something-happend-in-2022-1/</guid><description>&lt;img src="https://www.4async.com/2023/01/something-happend-in-2022-1/cover.jpg" alt="Featured image of post 去年的一点小工作(1)：从BFF谈起" />&lt;p>前年底，之前创业的公司关掉正式回归了打工生活。现在在一家SaaS公司做一些新业务开发和架构的工作。这个系列的文章也是想整理一下2022年的一些小成果，有一些内容和相关背景可能因为各种原因无法描述更细节的内容，也请各位见谅。&lt;/p>
 &lt;h1 id="后端和前端的配合我们遇到了什么问题">后端和前端的配合，我们遇到了什么问题？
 &lt;/h1></description></item><item><title>Byebye 2022, Hello 2023</title><link>https://www.4async.com/2023/01/byebye-2022-hello-2023/</link><pubDate>Sun, 01 Jan 2023 17:53:39 +0000</pubDate><guid>https://www.4async.com/2023/01/byebye-2022-hello-2023/</guid><description>&lt;img src="https://www.4async.com/2023/01/byebye-2022-hello-2023/2022-2023.jpg" alt="Featured image of post Byebye 2022, Hello 2023" /></description></item><item><title>给hugo添加mermaid支持</title><link>https://www.4async.com/2022/12/add-mermaid-support-for-hugo/</link><pubDate>Mon, 26 Dec 2022 17:48:00 +0000</pubDate><guid>https://www.4async.com/2022/12/add-mermaid-support-for-hugo/</guid><description>&lt;img src="https://www.4async.com/2022/12/add-mermaid-support-for-hugo/gohugo.png" alt="Featured image of post 给hugo添加mermaid支持" />&lt;p>发现2022年居然一篇博客都没写，一方面是疫情原因实在太糟心，另外一方面是环境使然，2022年一年都在适应新环境和拼命的推动项目前行。立个Flag，保证明年至少一个季度有一篇文章吧。&lt;/p>
@@ -359,8 +423,7 @@ $ go run ~/main.go
 &lt;/code>&lt;/pre>&lt;p>因为在Go 1.17中，泛型并未默认开启，你需要定义&lt;code>gcflags&lt;/code>方式启用泛型：&lt;/p></description></item><item><title>Go Web应用中常见的反模式</title><link>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</link><pubDate>Fri, 13 Aug 2021 14:09:00 +0000</pubDate><guid>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</guid><description>&lt;img src="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg" alt="Featured image of post Go Web应用中常见的反模式" />&lt;blockquote>
 &lt;p>作者：Miłosz Smółka &lt;br>
 译者：Kevin &lt;br>
-原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/&lt;/p>
-&lt;/blockquote>
+原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/&lt;/p>&lt;/blockquote>
 &lt;p>在我职业生涯的某个阶段，我对我所构建的软件不再感到兴奋。&lt;/p>
 &lt;p>我最喜欢的工作内容是底层的细节和复杂的算法。在转到面向用户的应用开发之后，这些内容基本消失了。编程似乎是利用现有的库和工具把数据从一处移至另一处。到目前为止，我所学到的关于软件的知识不再那么有用了。&lt;/p>
 &lt;p>让我们面对现实吧：大多数Web应用无法解决棘手的技术挑战。他们需要做到的是正确的对产品进行建模，并且比竞争对手更快的改进产品。&lt;/p>
@@ -379,8 +442,7 @@ alt="从强耦合单体应用到分布式单体"
 >&lt;/p>
 &lt;blockquote>
 &lt;p>❌ 反模式：分布式单体 &lt;br>
-在你了解边界之前，不要将你的应用切分成为微服务。&lt;/p>
-&lt;/blockquote>
+在你了解边界之前，不要将你的应用切分成为微服务。&lt;/p>&lt;/blockquote>
 &lt;p>微服务并不会降低耦合，&lt;strong>因为拆分服务的次数并不重要。重要的是如何连接各个服务&lt;/strong>。&lt;/p>
 &lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/monolith.png"
 loading="lazy"
@@ -388,14 +450,12 @@ alt="从模块化单体应用到松耦合微服务"
 >&lt;/p>
 &lt;blockquote>
 &lt;p>✅ 策略：松耦合 &lt;br>
-以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。&lt;/p>
-&lt;/blockquote>
+以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。&lt;/p>&lt;/blockquote>
 &lt;h2 id="dry引入了耦合">DRY引入了耦合
 &lt;/h2>&lt;p>强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。&lt;/p>
 &lt;p>简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：&lt;/p>
 &lt;blockquote>
-&lt;p>每条知识在系统中都必须有一个单一的、明确的、权威的表述。&lt;/p>
-&lt;/blockquote>
+&lt;p>每条知识在系统中都必须有一个单一的、明确的、权威的表述。&lt;/p>&lt;/blockquote>
 &lt;p>&amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。&lt;/p>
 &lt;p>&lt;strong>当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。&lt;/strong>&lt;/p>
 &lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/coupling.png"
@@ -449,8 +509,7 @@ loading="lazy"
 &lt;h3 id="保持简单性">保持简单性
 &lt;/h3>&lt;p>当我们想采用某些做法或流程来帮助彼此理解和沟通时，它与个人为熟练掌握这些方法而进行的学习量成反比。换句话说，如果我们可以更快的掌握一个名叫X的方法时，我们就可以更好的通过这种方式进行知识分享和互动；反之，无论这种方法多么好，昂贵的学习成本总会搞砸一切。&lt;/p>
 &lt;blockquote>
-&lt;p>当一本书是团队中的必读书目时，每个人都会说他们读过；但事实上只有一半的人会真正读过；这些真正读过的人中一半的人会声称他们理解了这本书；而这些声称理解的人中只有一半的人真正的理解了这本书；而这些真正理解了这本书的人只有一半的人能够使用它。&lt;/p>
-&lt;/blockquote>
+&lt;p>当一本书是团队中的必读书目时，每个人都会说他们读过；但事实上只有一半的人会真正读过；这些真正读过的人中一半的人会声称他们理解了这本书；而这些声称理解的人中只有一半的人真正的理解了这本书；而这些真正理解了这本书的人只有一半的人能够使用它。&lt;/p>&lt;/blockquote>
 &lt;p>这就是为什么使用3个模块和基于2个想法的4种模式进行事件建模。因为这只需要几分钟就可以将所有的东西向所有人解释清楚。其他的学习则可以在实践中进行。即便理解出现了不足和错误，也可以很快在实践中得到纠正。&lt;/p>
 &lt;h3 id="事件">事件
 &lt;/h3>&lt;p>假设我们想为连锁酒店设计一个酒店网站，让我们的客户可以在线预订房间，并让我们安排清洁和任何其他酒店问题。 我们可以显示在该业务的年度时间线上存储了哪些事件。 我们可以假装我们已经有了这个系统，然后问自己随着时间的推移存储了哪些事件。&lt;/p>
@@ -470,14 +529,11 @@ loading="lazy"
 &lt;p>当命令成功的前提条件有细微的差别时，它们会在&amp;quot;Given-When-Then&amp;quot;风格的描述方式中进行阐述。这种方式也是行为测试模式惯用的描述方式，也是一种成功的讲述故事的方式。实际执行过程中，可能会有几个这样的故事来说明一个命令如何能成功执行和不能成功执行。&lt;/p>
 &lt;p>这里我们可以用一个例子来描述一下：&lt;/p>
 &lt;blockquote>
-&lt;p>Given：我们已经注册并添加了一个支付方式&lt;/p>
-&lt;/blockquote>
+&lt;p>Given：我们已经注册并添加了一个支付方式&lt;/p>&lt;/blockquote>
 &lt;blockquote>
-&lt;p>When：我们试图预订一个房间&lt;/p>
-&lt;/blockquote>
+&lt;p>When：我们试图预订一个房间&lt;/p>&lt;/blockquote>
 &lt;blockquote>
-&lt;p>Then：一个房间被预订了&lt;/p>
-&lt;/blockquote>
+&lt;p>Then：一个房间被预订了&lt;/p>&lt;/blockquote>
 &lt;p>这种描述方式也通常被叫做“安排、行动、断言”，在UI/UX的世界中，也被称为“情景、统计、价值”。
 在图中我们也可以发现，所有的命令都是用蓝色进行标记的。&lt;/p>
 &lt;h3 id="视图或者叫读模型">视图（或者叫读模型）
@@ -489,22 +545,14 @@ loading="lazy"
 &lt;p>指定视图的行为方式与我们指定接受命令的方式非常相似，但有一处不同。视图是被动的，并且不能在事件被存储到系统中之后撤销事件。&lt;/p>
 &lt;p>举个例子：&lt;/p>
 &lt;blockquote>
-&lt;p>Given：酒店设置了12间海景房，海景房从4月4日到12日被预订&lt;/p>
-&lt;/blockquote>
+&lt;p>Given：酒店设置了12间海景房，海景房从4月4日到12日被预订&lt;/p>&lt;/blockquote>
 &lt;blockquote>
-&lt;p>Then：日历上应该显示除4月4日到12日以外的所有海景房的日期&lt;/p>
-&lt;/blockquote>
+&lt;p>Then：日历上应该显示除4月4日到12日以外的所有海景房的日期&lt;/p>&lt;/blockquote>
 &lt;p>从上面图中我们也可以注意到，所有的读都是用绿色进行标记的。&lt;/p>
 &lt;h3 id="集成">集成
 &lt;/h3>&lt;p>我们刚刚介绍了描述大多数系统所需的 4 种模式中的前 2 种模式。 系统可以从其他系统获取信息并且将信息发送到其他系统。 强迫这 2 个模式成为前 2 个模式的扩展并共享相同的空间是很诱人的选择。 然而这会让交流变得更加困难，因为它们没有人类可见的方面，并且需要一些更高级别的模式。&lt;/p>
 &lt;h3 id="翻译">翻译
-&lt;/h3>&lt;p>当我们有一个为我们提供信息的外部系统时，将这些信息转换成我们自己系统中的更熟悉的形式会很有帮助。 在我们的酒店系统中，如果选择让我们的清洁人员反应更加灵敏，我们可以从客人的 GPS 坐标中获取事件。 我们不想使用经度和纬度对作为事件来指定我们系统中的先决条件。 我们宁愿选择对我们有意义的活动，例如“客人离开酒店”、“客人回到酒店房间”。&lt;/p>
-&lt;p>&lt;img src="https://eventmodeling.org/posts/what-is-event-modeling/understand_large.jpg"
-loading="lazy"
->&lt;/p>
-&lt;p>通常，翻译很简单，可以表示为从外部事件中获取信息的视图。如果我们不将它们用作测试的任何“Given”部分，则它们存储在该视图模型中的值仅在我们的状态更改测试中的命令参数中表示。&lt;/p>
-&lt;h3 id="自动化">自动化
-&lt;/h3>&lt;p>我们的系统一般都需要与外部服务进行通信。当我们酒店的客人在退房时支付住宿费用时，我们的系统会调用付款处理程序。我们可以通过系统中某个处理程序的“待办事项列表”的概念来了解这是如何发生的。这个待办事项列表显示了我们需要完成的任务。例如，我们的处理程序会不时查看该列表（可能是几毫秒或几天）并向外部系统发送命令以处理付款。然后将来自外部系统的回复转换为我们存储回系统中的事件。通过这种方式，我们将系统中使用的构建块保留为对我们有意义的东西。&lt;/p></description></item><item><title>构建属于你自己的dapr绑定组件</title><link>https://www.4async.com/2021/05/building-your-own-dapr-binding/</link><pubDate>Sat, 15 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-binding/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/uJdVWNeXC6Z3Hq8.png" alt="Featured image of post 构建属于你自己的dapr绑定组件" />&lt;p>在&lt;a class="link" href="../2021/05/2021-05-08-building-your-own-dapr-service-discovery" >上一篇文章&lt;/a>中，吐槽了拖延症的危害，因此这次我来分享一下我最新推送到dapr的最新的一个新的绑定组件，通过这个来看一下如何实现自己的绑定组件。&lt;/p>
+&lt;/h3>&lt;p>当我们有一个为我们提供信息的外部系统时，将这些信息转换成我们自己系统中的更熟悉的形式会很有帮助。 在我们的酒店系统中，如果选择让我们的清洁人员反应更加灵敏，我们可以从客人的 GPS 坐标中获取事件。 我们不想使用经度和纬度对作为事件来指定我们系统中的先决条件。 我们宁愿选择对我们有意义的活动，例如“客人离开酒店”、“客人回到酒店房间”。&lt;/p></description></item><item><title>构建属于你自己的dapr绑定组件</title><link>https://www.4async.com/2021/05/building-your-own-dapr-binding/</link><pubDate>Sat, 15 May 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/05/building-your-own-dapr-binding/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/uJdVWNeXC6Z3Hq8.png" alt="Featured image of post 构建属于你自己的dapr绑定组件" />&lt;p>在&lt;a class="link" href="../2021/05/2021-05-08-building-your-own-dapr-service-discovery" >上一篇文章&lt;/a>中，吐槽了拖延症的危害，因此这次我来分享一下我最新推送到dapr的最新的一个新的绑定组件，通过这个来看一下如何实现自己的绑定组件。&lt;/p>
 &lt;p>文中提到的PR可以在 &lt;a class="link" href="https://github.com/dapr/components-contrib/pull/872" target="_blank" rel="noopener"
 >dapr/components-contrib#872&lt;/a> 查看对应的具体代码。&lt;/p>
 &lt;h2 id="什么是-dapr-的绑定组件">什么是 dapr 的绑定组件？
@@ -550,29 +598,29 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>接下来需要实现一个生成对象的方法，比如说我们需要实现一个飞书推送Webhook的绑定组件，则可以：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">FeishuWebhook&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">logger&lt;/span> &lt;span style="color:#a6e22e">logger&lt;/span>.&lt;span style="color:#a6e22e">Logger&lt;/span> &lt;span style="color:#75715e">// 这个是dapr的日志接口，输出日志可以使用这个
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">settings&lt;/span> &lt;span style="color:#a6e22e">Settings&lt;/span> &lt;span style="color:#75715e">// 具体配置信息
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">httpClient&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">http&lt;/span>.&lt;span style="color:#a6e22e">Client&lt;/span> &lt;span style="color:#75715e">// 请求HTTP
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">logger&lt;/span> &lt;span style="color:#a6e22e">logger&lt;/span>.&lt;span style="color:#a6e22e">Logger&lt;/span> &lt;span style="color:#75715e">// 这个是dapr的日志接口，输出日志可以使用这个&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">settings&lt;/span> &lt;span style="color:#a6e22e">Settings&lt;/span> &lt;span style="color:#75715e">// 具体配置信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">httpClient&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">http&lt;/span>.&lt;span style="color:#a6e22e">Client&lt;/span> &lt;span style="color:#75715e">// 请求HTTP&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">NewFeishuWebhook&lt;/span>(&lt;span style="color:#a6e22e">l&lt;/span> &lt;span style="color:#a6e22e">logger&lt;/span>.&lt;span style="color:#a6e22e">Logger&lt;/span>) &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">FeishuWebhook&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// See guidance on proper HTTP client settings here:
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">dialer&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">net&lt;/span>.&lt;span style="color:#a6e22e">Dialer&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">Timeout&lt;/span>: &lt;span style="color:#ae81ff">5&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Second&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// See guidance on proper HTTP client settings here:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">dialer&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">net&lt;/span>.&lt;span style="color:#a6e22e">Dialer&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Timeout&lt;/span>: &lt;span style="color:#ae81ff">5&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Second&lt;/span>,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">netTransport&lt;/span> = &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">http&lt;/span>.&lt;span style="color:#a6e22e">Transport&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">DialContext&lt;/span>: &lt;span style="color:#a6e22e">dialer&lt;/span>.&lt;span style="color:#a6e22e">DialContext&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">var&lt;/span> &lt;span style="color:#a6e22e">netTransport&lt;/span> = &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">http&lt;/span>.&lt;span style="color:#a6e22e">Transport&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">DialContext&lt;/span>: &lt;span style="color:#a6e22e">dialer&lt;/span>.&lt;span style="color:#a6e22e">DialContext&lt;/span>,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">TLSHandshakeTimeout&lt;/span>: &lt;span style="color:#ae81ff">5&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#a6e22e">time&lt;/span>.&lt;span style="color:#a6e22e">Second&lt;/span>,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">httpClient&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">http&lt;/span>.&lt;span style="color:#a6e22e">Client&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">Timeout&lt;/span>: &lt;span style="color:#a6e22e">defaultHTTPClientTimeout&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">httpClient&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">http&lt;/span>.&lt;span style="color:#a6e22e">Client&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Timeout&lt;/span>: &lt;span style="color:#a6e22e">defaultHTTPClientTimeout&lt;/span>,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Transport&lt;/span>: &lt;span style="color:#a6e22e">netTransport&lt;/span>,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">FeishuWebhook&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">logger&lt;/span>: &lt;span style="color:#a6e22e">l&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">FeishuWebhook&lt;/span>{ &lt;span style="color:#75715e">//nolint:exhaustivestruct&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">logger&lt;/span>: &lt;span style="color:#a6e22e">l&lt;/span>,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">httpClient&lt;/span>: &lt;span style="color:#a6e22e">httpClient&lt;/span>,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
@@ -582,14 +630,14 @@ loading="lazy"
 &lt;/h2>&lt;p>在 &lt;a class="link" href="https://github.com/dapr/dapr/blob/9341e3faa67ede470febe987b3398775759cf38f/pkg/components/nameresolution/registry.go#L25" target="_blank" rel="noopener"
 >&lt;code>pkg/components/nameresolution/registry.go&lt;/code>&lt;/a> 文件中，dapr定义了一个 &lt;code>NameResolution&lt;/code> 结构体用于服务注册和发现：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> (
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// NameResolution is a name resolution component definition.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">NameResolution&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// NameResolution is a name resolution component definition.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">NameResolution&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Name&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">FactoryMethod&lt;/span> &lt;span style="color:#66d9ef">func&lt;/span>() &lt;span style="color:#a6e22e">nr&lt;/span>.&lt;span style="color:#a6e22e">Resolver&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Registry handles registering and creating name resolution components.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">Registry&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Registry handles registering and creating name resolution components.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Registry&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Register&lt;/span>(&lt;span style="color:#a6e22e">components&lt;/span> &lt;span style="color:#f92672">...&lt;/span>&lt;span style="color:#a6e22e">NameResolution&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Create&lt;/span>(&lt;span style="color:#a6e22e">name&lt;/span>, &lt;span style="color:#a6e22e">version&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span>) (&lt;span style="color:#a6e22e">nr&lt;/span>.&lt;span style="color:#a6e22e">Resolver&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
@@ -600,48 +648,12 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中真正的服务解析则是依靠 &lt;a class="link" href="https://github.com/dapr/components-contrib/blob/3ef025c604952ad78101ecb52afe1c7c92c7d455/nameresolution/nameresolution.go#L9" target="_blank" rel="noopener"
 >&lt;code>components-contrib&lt;/code>&lt;/a> 中实现了 &lt;code>Resolver&lt;/code> 接口的具体实现执行。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Resolver is the interface of name resolver.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Resolver&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Init initializes name resolver.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">Init&lt;/span>(&lt;span style="color:#a6e22e">metadata&lt;/span> &lt;span style="color:#a6e22e">Metadata&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// ResolveID resolves name to address.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">ResolveID&lt;/span>(&lt;span style="color:#a6e22e">req&lt;/span> &lt;span style="color:#a6e22e">ResolveRequest&lt;/span>) (&lt;span style="color:#66d9ef">string&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>)
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Resolver is the interface of name resolver.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Resolver&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Init initializes name resolver.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Init&lt;/span>(&lt;span style="color:#a6e22e">metadata&lt;/span> &lt;span style="color:#a6e22e">Metadata&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// ResolveID resolves name to address.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ResolveID&lt;/span>(&lt;span style="color:#a6e22e">req&lt;/span> &lt;span style="color:#a6e22e">ResolveRequest&lt;/span>) (&lt;span style="color:#66d9ef">string&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中 &lt;code>Init&lt;/code> 会在 Runtime 初始化时被调用，而 &lt;code>ResolveID&lt;/code> 则会在服务查询时调用。比如在 &lt;a class="link" href="https://github.com/dapr/dapr/blob/1cbf67f8a5da0bb5be4e3a123632c17ebb173f4e/pkg/messaging/direct_messaging.go#L219" target="_blank" rel="noopener"
->&lt;code>pkg/messaging/direct_messaging.go&lt;/code>&lt;/a> 的方法 &lt;code>getRemoteApp&lt;/code> 中进行服务的解析：&lt;/p></description></item><item><title>在非容器(集群)环境下运行dapr</title><link>https://www.4async.com/2021/03/2021-03-11-running-dapr-without-container/</link><pubDate>Thu, 11 Mar 2021 18:38:00 +0000</pubDate><guid>https://www.4async.com/2021/03/2021-03-11-running-dapr-without-container/</guid><description>&lt;img src="https://vip1.loli.io/2022/03/26/uJdVWNeXC6Z3Hq8.png" alt="Featured image of post 在非容器(集群)环境下运行dapr" />&lt;p>前一段时间一直关注的&lt;code>dapr&lt;/code>正式发布了v1.0版本(实际上本文发布时还更新了v1.0.1)，代表&lt;code>dapr&lt;/code>在某些程度上进入稳定状态，可以尝试在实际中进行运用。作为我一直关注的项目，在第一时间中进行了尝试，并试图引入实际项目中，本文则是针对这些的一些先期测试内容.&lt;/p>
-&lt;h2 id="什么是dapr">什么是dapr？
-&lt;/h2>&lt;p>&lt;code>dapr&lt;/code>最早是由微软开源的(不愧是你)，一个可移植的、事件驱动的程序运行时，它使任何开发者都能轻松地构建运行在云和边缘的弹性、无状态/有状态的应用程序，并且可以灵活支持多种开发语言。换而言之，在我看来，&lt;code>dapr&lt;/code>可以作为一个&lt;code>serverless&lt;/code>落地方案看待和处理，对程序而言，只关注提供的store和消息队列接口，无需关心架构层面更多内容。&lt;/p>
-&lt;p>&lt;img src="https://vip2.loli.io/2022/03/26/yvG2QkBN6Mlb1WR.png"
-loading="lazy"
-alt="overview"
->&lt;/p>
-&lt;p>不过在官方的示例教程中，使用的环境为容器环境部署和管理dapr。实际上，除了在容器环境或者容器集群环境下，&lt;code>dapr&lt;/code>可以配置为在本地机器上以自托管模式运行。&lt;/p>
-&lt;h2 id="本地安装">本地安装
-&lt;/h2>&lt;p>&lt;code>dapr&lt;/code>安装可以通过官方的&lt;code>dapr-cli&lt;/code>实现，&lt;code>dapr-cli&lt;/code>可以通过一键安装命令快速安装：&lt;/p>
-&lt;pre tabindex="0">&lt;code># wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
-Your system is linux_amd64
-Dapr CLI is detected:
-main: line 86: 43656 Segmentation fault $DAPR_CLI_FILE --version
-Reinstalling Dapr CLI - /usr/local/bin/dapr...
-Getting the latest Dapr CLI...
-Installing v1.0.0 Dapr CLI...
-Downloading https://github.com/dapr/cli/releases/download/v1.0.0/dapr_linux_amd64.tar.gz ...
-dapr installed into /usr/local/bin successfully.
-CLI version: 1.0.0
-Runtime version: n/a
-To get started with Dapr, please visit https://docs.dapr.io/getting-started/
-&lt;/code>&lt;/pre>&lt;p>可以通过输入&lt;code>dapr&lt;/code>命令确认&lt;code>dapr-cli&lt;/code>程序是否被正常安装成功。&lt;/p>
-&lt;p>接下来使用dapr-cli安装所有的runtime等应用。&lt;/p>
-&lt;pre tabindex="0">&lt;code># dapr init --slim
-⌛ Making the jump to hyperspace...
-↘ Downloading binaries and setting up components...
-Dapr runtime installed to /root/.dapr/bin, you may run the following to add it to your path if you want to run daprd directly:
-export PATH=$PATH:/root/.dapr/bin
-✅ Downloaded binaries and completed components set up.
-ℹ️ daprd binary has been installed to /root/.dapr/bin.
-ℹ️ placement binary has been installed to /root/.dapr/bin.
-✅ Success! Dapr is up and running. To get started, go here: https://aka.ms/dapr-getting-started
-# dapr --version
-CLI version: 1.0.0
-Runtime version: 1.0.1
-&lt;/code>&lt;/pre>&lt;p>在官方文档中，如果选择使用&lt;code>init&lt;/code>命令初始化，&lt;code>dapr-cli&lt;/code>将会自动尝试使用容器环境管理相关程序，只有添加&lt;code>--slim&lt;/code>参数才会选择本地化运行。更多用法可以参考&lt;code>dapr help init&lt;/code>帮助。默认程序相关内容会安装在&lt;code>$HOME/.dapr&lt;/code>目录下，这里因为我为了简便使用了&lt;code>root&lt;/code>用户，因此程序命令所在目录为&lt;code>/root/.dapr/bin&lt;/code>，共安装了如下命令：&lt;/p></description></item></channel></rss>
+>&lt;code>pkg/messaging/direct_messaging.go&lt;/code>&lt;/a> 的方法 &lt;code>getRemoteApp&lt;/code> 中进行服务的解析：&lt;/p></description></item></channel></rss>

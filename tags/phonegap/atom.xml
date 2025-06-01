@@ -6,8 +6,7 @@
 &lt;p>cordova create hello com.example.hello HelloWorld &lt;br>
 cd hello &lt;br>
 cordova platform add android &lt;br>
-cordova platform add ios&lt;/p>
-&lt;/blockquote>
+cordova platform add ios&lt;/p>&lt;/blockquote>
 &lt;h2 id="ios-集成">iOS 集成
 &lt;/h2>&lt;p>ios 集成方式比较简单，首先，找到项目目录的 platform/ios 中的项目，打开。&lt;/p>
 &lt;p>请在你的工程目录结构中，右键选择 &lt;code>Add&lt;/code>-&amp;gt;&lt;code>Existing Files…&lt;/code>，选择 SDK 压缩包中的 &lt;code>libMobClickLibrary.a&lt;/code> 和 &lt;code>MobClick.h&lt;/code>。或者将这两个文件拖入 XCode 工程目录结构中，在弹出的界面中勾选 &lt;code>Copy items into destination group's folder(if needed)&lt;/code>, 并确保 &lt;code>Add To Targets&lt;/code> 勾选相应的 target。&lt;/p>

@@ -1,4 +1,70 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LLM on ipfans's Blog</title><link>https://www.4async.com/tags/llm/</link><description>Recent content in LLM on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 29 Dec 2024 22:30:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/llm/atom.xml" rel="self" type="application/rss+xml"/><item><title>AI 产品的破局之道：以人为本</title><link>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</link><pubDate>Sun, 29 Dec 2024 22:30:00 +0000</pubDate><guid>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</guid><description>&lt;img src="https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/cover.webp" alt="Featured image of post AI 产品的破局之道：以人为本" />&lt;p>伴随着 OpenAI、Anthropic 等等公司的努力，大型语言模型（LLM）的性能不断提升，AI 产品的应用场景也越来越广泛。从口袋里的智能助手到驰骋未来的自动驾驶，从辅助医疗诊断的慧眼到洞察市场风云的智脑，AI 正以前所未有的速度改变着世界。但是在这个过程中，我们会注意到一些问题，我们会陷入“技术至上”的误区，过分强调技术的先进性，而忽略了用户的需求和体验。这就导致了很多 AI 产品虽然技术先进，但却无法真正满足用户的需求，最终无法实现商业价值。究其原因，许多 AI 系统在与人类交互时，常常陷入**“鸡同鸭讲”的窘境**——对上下文的理解捉襟见肘，难以领会人类语言中的微妙含义；更令人担忧的是“幻觉”问题，AI 煞有介事地编造着“一本正经的胡说八道”，让用户无所适从；而在用户体验方面，许多 AI 产品更是差强人意，机械式的交互和冰冷的界面让人难以产生亲近感。有些时候我们有些失望：&lt;a class="link" href="https://zh.wikipedia.org/zh-hans/%E5%B8%95%E7%B4%AF%E6%89%98%E6%B3%95%E5%88%99" target="_blank" rel="noopener"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LLM on ipfans's Blog</title><link>https://www.4async.com/tags/llm/</link><description>Recent content in LLM on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 31 May 2025 20:30:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/llm/atom.xml" rel="self" type="application/rss+xml"/><item><title>程序员的提示工程手册</title><link>https://www.4async.com/2025/05/prompt-engineering-playbook-for-programmers/</link><pubDate>Sat, 31 May 2025 20:30:00 +0000</pubDate><guid>https://www.4async.com/2025/05/prompt-engineering-playbook-for-programmers/</guid><description>&lt;img src="https://www.4async.com/2025/05/prompt-engineering-playbook-for-programmers/cover.webp" alt="Featured image of post 程序员的提示工程手册" />&lt;blockquote>
+&lt;p>原文来自于 Addy Osmani，他是 Google Chrome 的工程主管，在 Google 工作多年。&lt;/p>&lt;/blockquote>
+&lt;p>开发人员越来越依赖 AI 编程助手来加速我们的日常工作流程。这些工具可以自动完成函数、建议修复错误，甚至生成整个模块或 MVP。然而，正如我们许多人所了解的那样，AI 输出的质量很大程度上取决于你提供的提示的质量。换句话说，提示工程已经成为一项必备技能。一个措辞不当的请求可能会产生不相关或笼统的答案，而一个精心设计的提示可以产生周到、准确甚至富有创造性的代码解决方案。本文将实际探讨如何系统地构建适用于常见开发任务的提示。&lt;/p>
+&lt;p>AI 结对程序员很强大但并非神奇——除了你告诉他们的或包含在上下文中的信息外，对你特定的项目或意图没有先验知识。你提供的信息越多，输出就越好。我们将提炼出开发者反响热烈的提示模式、可重复的框架和难忘的示例。你将看到好与坏提示的并排比较以及实际的 AI 响应，并附有评论以了解为什么一个成功而另一个失败。以下是入门小贴士：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>技巧&lt;/th>
+&lt;th>提示模板&lt;/th>
+&lt;th>目的&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1. 角色提示&lt;/td>
+&lt;td>“你是一名资深的{语言名}开发者。请审查这个函数以实现{目标}。”&lt;/td>
+&lt;td>模拟专家级的代码审查、调试或重构&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2. 明确上下文设定&lt;/td>
+&lt;td>“问题如下：{问题说明}。下面是代码。它本应做到{预期行为}，但实际上做了 {实际行为}。为什么？”&lt;/td>
+&lt;td>明确框定问题，避免泛泛而谈的回答&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3. 输入/输出示例&lt;/td>
+&lt;td>“这个函数在输入{输入内容}时应返回{预期输出}。你能编写或修复这段代码吗？”&lt;/td>
+&lt;td>通过示例引导 AI 理解意图&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4. 迭代分步&lt;/td>
+&lt;td>“首先生成这个组件的骨架。接下来我们添加状态。然后处理 API 调用。”&lt;/td>
+&lt;td>将大任务拆解为步骤，避免模糊或过载的提示&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5. 模拟调试&lt;/td>
+&lt;td>“逐行走查这个函数。变量值是什么？哪里可能出错？”&lt;/td>
+&lt;td>引导 AI 模拟运行时行为，发现隐藏的 bug&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6. 功能蓝图&lt;/td>
+&lt;td>“我正在构建{功能特性}。需求如下：{具体说明}。技术栈为：{技术栈说明}。请搭建初始组件并解释你的选择。”&lt;/td>
+&lt;td>启动 AI 主导的功能规划与脚手架搭建&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7. 重构指导&lt;/td>
+&lt;td>“请重构这段代码以提升{目标}，比如（如：可读性、性能、符合语言习惯的风格）。请使用注释解释变更。”&lt;/td>
+&lt;td>让 AI 的重构符合你的目标，而不是随意更动&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8. 请求替代方案&lt;/td>
+&lt;td>“你能用函数式风格重写这段代码吗？递归版本会是什么样？”&lt;/td>
+&lt;td>探索多种实现方式，扩展工具箱&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9. 橡皮鸭调试&lt;/td>
+&lt;td>“我觉得这个函数的作用是：{你的解释}。我遗漏了什么吗？有没有 bug？”&lt;/td>
+&lt;td>让 AI 质疑你的理解并发现潜在问题&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10. 约束锚定&lt;/td>
+&lt;td>“请避免（例如：递归），并遵守（例如：ES6 语法、无外部库）。优化方向为（例如：内存）。这是函数代码：”&lt;/td>
+&lt;td>防止 AI 过度发挥或引入不兼容的模式&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="高效代码提示基础">高效代码提示基础
+&lt;/h2>&lt;p>向 AI 编码工具提示与与一个非常有原则、有时会知识渊博的合作者交流有点像。为了获得有用的结果，您需要清楚地设置场景，并指导 AI 您想要什么以及如何实现。&lt;/p></description></item><item><title>AI 产品的破局之道：以人为本</title><link>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</link><pubDate>Sun, 29 Dec 2024 22:30:00 +0000</pubDate><guid>https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/</guid><description>&lt;img src="https://www.4async.com/2024/12/human-centered-product-design-with-human-in-the-loop/cover.webp" alt="Featured image of post AI 产品的破局之道：以人为本" />&lt;p>伴随着 OpenAI、Anthropic 等等公司的努力，大型语言模型（LLM）的性能不断提升，AI 产品的应用场景也越来越广泛。从口袋里的智能助手到驰骋未来的自动驾驶，从辅助医疗诊断的慧眼到洞察市场风云的智脑，AI 正以前所未有的速度改变着世界。但是在这个过程中，我们会注意到一些问题，我们会陷入“技术至上”的误区，过分强调技术的先进性，而忽略了用户的需求和体验。这就导致了很多 AI 产品虽然技术先进，但却无法真正满足用户的需求，最终无法实现商业价值。究其原因，许多 AI 系统在与人类交互时，常常陷入**“鸡同鸭讲”的窘境**——对上下文的理解捉襟见肘，难以领会人类语言中的微妙含义；更令人担忧的是“幻觉”问题，AI 煞有介事地编造着“一本正经的胡说八道”，让用户无所适从；而在用户体验方面，许多 AI 产品更是差强人意，机械式的交互和冰冷的界面让人难以产生亲近感。有些时候我们有些失望：&lt;a class="link" href="https://zh.wikipedia.org/zh-hans/%E5%B8%95%E7%B4%AF%E6%89%98%E6%B3%95%E5%88%99" target="_blank" rel="noopener"
 >帕累托法则&lt;/a>（或者叫做 28 原则），一直在发挥着神秘的力量。&lt;/p>
 &lt;p>抛开模型开发公司本身而言，面向客户的 AI 产品的设计和开发是一个复杂的过程，需要综合考虑技术、商业和用户体验等多个方面。在这个过程中，如何保证产品的质量和用户体验成为了关键问题。传统的产品设计方法往往是由设计师和工程师等专业人员完成，而用户往往只是产品的使用者。然而，随着 LLM 的发展，新的交互形式不停的出现，比如之前的聊天产品和语音助手交互产品普遍反馈交互感太差并不实用。新的实时多模态模型的出现，让这些可以更好的理解用户的需求，更好的满足用户的需求。&lt;/p>
 &lt;p>但，无论如何，要充分释放 AI 的潜力，必须将用户需求和体验置于核心地位。这不仅仅是一句口号，更是一种深刻的变革，要求我们将用户的需求、期望和体验置于 AI 产品设计的最核心。这意味着，我们需要像人类学家一样去观察和理解用户的真实诉求，像心理学家一样去揣摩用户的情感和认知模式，并将这些洞察深深地烙印在产品的基因之中。只有这样，才能打造出真正被用户拥抱、信任并从中受益的 AI 产品。&lt;/p>
@@ -75,8 +141,7 @@ target="_blank" rel="noopener"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pdm add langchain chromadb beautifulsoup4
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source .venv/bin/activate
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。&lt;/p>
-&lt;/blockquote>
+&lt;p>请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。&lt;/p>&lt;/blockquote>
 &lt;h2 id="功能实现">功能实现
 &lt;/h2>&lt;h3 id="实现生成模拟文档">实现生成模拟文档
 &lt;/h3>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> langchain.chains.hyde.base &lt;span style="color:#f92672">import&lt;/span> HypotheticalDocumentEmbedder
@@ -119,7 +184,7 @@ target="_blank" rel="noopener"
 &lt;p>&lt;img src="../../2024/04/learn-hyde-from-scratch-1/vanilla-rag.webp"
 width="1527"
 height="654"
-srcset="../../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu5351873011583491433.webp 480w, ../../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu17629515767707187602.webp 1024w"
+srcset="../../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu_585e302af977823d.webp 480w, ../../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu_eae049ef4f12aef4.webp 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="233"

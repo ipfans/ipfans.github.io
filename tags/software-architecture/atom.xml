@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Software Architecture on ipfans's Blog</title><link>https://www.4async.com/tags/software-architecture/</link><description>Recent content in Software Architecture on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 23 Nov 2023 09:39:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/tags/software-architecture/atom.xml" rel="self" type="application/rss+xml"/><item><title>使用子解释器运行Python并行应用</title><link>https://www.4async.com/2023/11/python-312-sub-interpreters/</link><pubDate>Thu, 23 Nov 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/11/python-312-sub-interpreters/</guid><description>&lt;img src="https://www.4async.com/2023/11/python-312-sub-interpreters/cover.webp" alt="Featured image of post 使用子解释器运行Python并行应用" />&lt;blockquote>
 &lt;p>译者注：最近 Python 3.12 引入了子解释器概念，非常火热，更好的消息是已经&lt;a class="link" href="https://twitter.com/anthonypjshaw/status/1723916190202945761" target="_blank" rel="noopener"
 >在FastAPI应用成功&lt;/a>了，虽然是很简单的那种。因此顺腾摸瓜，找到了作者的&lt;a class="link" href="https://tonybaloney.github.io/posts/sub-interpreter-web-workers.html" target="_blank" rel="noopener"
->博客&lt;/a>，翻译分享给大家。&lt;/p>
-&lt;/blockquote>
+>博客&lt;/a>，翻译分享给大家。&lt;/p>&lt;/blockquote>
 &lt;p>Python 3.12 引入了一个新的 API 用于“子解释器”（sub interpreters），这是 Python 的一种不同的并行执行模型，提供了真正并行处理和多进程处理之间的良好折中，且具有更快的启动时间。在这篇文章中，我将解释什么是子解释器，为什么它对 Python 中的并行代码执行很重要，以及它与其他方法的比较。&lt;/p>
 &lt;h2 id="什么是子解释器">什么是子解释器？
 &lt;/h2>&lt;p>Python 的系统架构大致由三部分组成：&lt;/p>
@@ -14,7 +13,7 @@
 &lt;p>&lt;img src="../../2023/11/python-312-sub-interpreters/interpreter-states-1.png"
 width="2111"
 height="1898"
-srcset="../../2023/11/python-312-sub-interpreters/interpreter-states-1_hu15682165194778488945.png 480w, ../../2023/11/python-312-sub-interpreters/interpreter-states-1_hu15867741242815948022.png 1024w"
+srcset="../../2023/11/python-312-sub-interpreters/interpreter-states-1_hu_e139c5bca93ea465.png 480w, ../../2023/11/python-312-sub-interpreters/interpreter-states-1_hu_a52b647e9e8156e1.png 1024w"
 loading="lazy"
 alt="interpreter states"
 class="gallery-image"
@@ -80,7 +79,7 @@ data-flex-basis="266px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> └── service.proto
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="编写服务端">编写服务端
 &lt;/h2>&lt;p>我们先看一下greeter的服务定义：&lt;/p></description></item><item><title>Twirp基本概念：Hooks和Interceptors</title><link>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</link><pubDate>Wed, 25 Jan 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</guid><description>&lt;img src="https://www.4async.com/2023/01/twirp-hooks-and-interceptors/cover.png" alt="Featured image of post Twirp基本概念：Hooks和Interceptors" />&lt;p>Twirp做了足够多的抽象工作，使得我们可以在不同的层次上进行扩展。在最基础的使用层面上，你可以像&lt;code>net/http&lt;/code>一样去简单的使用。但是往往这样也不能满足我们实际项目中的需求在这篇文章中，我们将介绍Twirp的Hooks和Interceptors基本概念，以及如何使用这些Twirp的扩展机制。&lt;/p>
-&lt;h2 id="heading">
+&lt;h2 id="">
 &lt;/h2></description></item><item><title>去年的一点小工作(1)：从BFF谈起</title><link>https://www.4async.com/2023/01/something-happend-in-2022-1/</link><pubDate>Sat, 21 Jan 2023 17:55:39 +0000</pubDate><guid>https://www.4async.com/2023/01/something-happend-in-2022-1/</guid><description>&lt;img src="https://www.4async.com/2023/01/something-happend-in-2022-1/cover.jpg" alt="Featured image of post 去年的一点小工作(1)：从BFF谈起" />&lt;p>前年底，之前创业的公司关掉正式回归了打工生活。现在在一家SaaS公司做一些新业务开发和架构的工作。这个系列的文章也是想整理一下2022年的一些小成果，有一些内容和相关背景可能因为各种原因无法描述更细节的内容，也请各位见谅。&lt;/p>
 &lt;h1 id="后端和前端的配合我们遇到了什么问题">后端和前端的配合，我们遇到了什么问题？
 &lt;/h1></description></item></channel></rss>

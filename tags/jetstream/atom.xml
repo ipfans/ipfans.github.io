@@ -6,8 +6,7 @@
 &lt;h3 id="nats-streaming-server">NATS Streaming Server
 &lt;/h3>&lt;p>&lt;code>NATS Streaming Server&lt;/code>（或者叫&lt;code>stan&lt;/code>）是用于尝试解决上面提到的&lt;code>nats&lt;/code>的已存在问题的。&lt;code>stan&lt;/code>添加了持久化功能和消息送达策略支持。&lt;code>stan&lt;/code>中自带了&lt;code>nats&lt;/code>服务端，但是在使用过程中，&lt;code>nats&lt;/code>和&lt;code>stan&lt;/code>不能进行混用。在官方文档中，是这么描述&lt;code>stan&lt;/code>和&lt;code>nats&lt;/code>之间的关系的：&lt;/p>
 &lt;blockquote>
-&lt;p>NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。&lt;/p>
-&lt;/blockquote>
+&lt;p>NATS客户端和NATS Streaming Server客户端之间不能相互交换数据。也就是说，如果一个NATS Streaming Server客户端在foo上发布消息，在同一主题上订阅的NATS客户端将不会收到消息。NATS Streaming Server消息是由protobuf组成的NATS消息。NATS Streaming Server要向生产者发送ACK，并接收消费者的ACK。如果与NATS客户端自由交换消息，就会引起问题。&lt;/p>&lt;/blockquote>
 &lt;p>&lt;code>stan&lt;/code>的具体架构如下图：&lt;/p>
 &lt;p>&lt;img src="https://i.loli.net/2021/03/02/YsSxFitoJV7jwC9.jpg"
 loading="lazy"

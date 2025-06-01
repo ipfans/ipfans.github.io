@@ -52,5 +52,5 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> └── service.proto
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="编写服务端">编写服务端
 &lt;/h2>&lt;p>我们先看一下greeter的服务定义：&lt;/p></description></item><item><title>Twirp基本概念：Hooks和Interceptors</title><link>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</link><pubDate>Wed, 25 Jan 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/01/twirp-hooks-and-interceptors/</guid><description>&lt;img src="https://www.4async.com/2023/01/twirp-hooks-and-interceptors/cover.png" alt="Featured image of post Twirp基本概念：Hooks和Interceptors" />&lt;p>Twirp做了足够多的抽象工作，使得我们可以在不同的层次上进行扩展。在最基础的使用层面上，你可以像&lt;code>net/http&lt;/code>一样去简单的使用。但是往往这样也不能满足我们实际项目中的需求在这篇文章中，我们将介绍Twirp的Hooks和Interceptors基本概念，以及如何使用这些Twirp的扩展机制。&lt;/p>
-&lt;h2 id="heading">
+&lt;h2 id="">
 &lt;/h2></description></item></channel></rss>

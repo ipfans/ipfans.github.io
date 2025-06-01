@@ -27,7 +27,6 @@ $ go build
 &lt;p>我们曾经推荐使用&lt;code>go get -u&lt;/code>程序来安装可执行文件，但这种使用方式对&lt;code>go.mod&lt;/code>中添加或更改Module版本需求的意义造成了太多的混淆。而为了避免意外修改&lt;code>go.mod&lt;/code>，人们开始建议使用更复杂的命令，比如：&lt;/p></description></item><item><title>使用Go Modules</title><link>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</link><pubDate>Wed, 20 Mar 2019 14:22:00 +0000</pubDate><guid>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</guid><description>&lt;p>原文：&lt;a class="link" href="https://blog.golang.org/using-go-modules" target="_blank" rel="noopener"
 >Using Go Modules&lt;/a>
 作者：Tyler Bui-Palsulich、Eno Compton&lt;/p>
-&lt;!-- raw HTML omitted -->
 &lt;h2 id="介绍">介绍
 &lt;/h2>&lt;p>Go 1.11和1.12包含了初步的&lt;a class="link" href="https://golang.org/doc/go1.11#modules" target="_blank" rel="noopener"
 >modules支持&lt;/a>，Go的&lt;a class="link" href="https://blog.golang.org/versioning-proposal" target="_blank" rel="noopener"
@@ -68,4 +67,5 @@ $ go build
 PASS
 ok _/home/gopher/hello 0.020s
 $
-&lt;/code>&lt;/pre>&lt;p>最后一行表示了整个包测试的汇总信息。因为我们现在在 &lt;code>$GOPATH&lt;/code>外，并且不属于任何模块，因此 &lt;code>go&lt;/code>命令不知道当前目录的引用路径，因此采用当前文件夹名生成了一个伪路径。&lt;/p></description></item></channel></rss>
+&lt;/code>&lt;/pre>&lt;p>最后一行表示了整个包测试的汇总信息。因为我们现在在 &lt;code>$GOPATH&lt;/code>外，并且不属于任何模块，因此 &lt;code>go&lt;/code>命令不知道当前目录的引用路径，因此采用当前文件夹名生成了一个伪路径。&lt;/p>
+&lt;p>现在让我们使用&lt;code>go mod init&lt;/code>命令将当前目录设置成为模块的根目录，然后重新试试&lt;code>go test&lt;/code>命令：&lt;/p></description></item></channel></rss>

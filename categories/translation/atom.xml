@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Translation on ipfans's Blog</title><link>https://www.4async.com/categories/translation/</link><description>Recent content in Translation on ipfans's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 13 Aug 2021 14:09:00 +0000</lastBuildDate><atom:link href="https://www.4async.com/categories/translation/atom.xml" rel="self" type="application/rss+xml"/><item><title>Go Web应用中常见的反模式</title><link>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</link><pubDate>Fri, 13 Aug 2021 14:09:00 +0000</pubDate><guid>https://www.4async.com/2021/08/common-anti-patterns-in-go-web-applications/</guid><description>&lt;img src="https://www.4async.com/2020/02/2020-02-16-moving-towards-domain-driven-design-in-go/cover_huea63e6370dcf0c375755d886a5d0b9c6_97708_1600x0_resize_q75_box.jpg" alt="Featured image of post Go Web应用中常见的反模式" />&lt;blockquote>
 &lt;p>作者：Miłosz Smółka &lt;br>
 译者：Kevin &lt;br>
-原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/&lt;/p>
-&lt;/blockquote>
+原文地址：https://threedots.tech/post/common-anti-patterns-in-go-web-applications/&lt;/p>&lt;/blockquote>
 &lt;p>在我职业生涯的某个阶段，我对我所构建的软件不再感到兴奋。&lt;/p>
 &lt;p>我最喜欢的工作内容是底层的细节和复杂的算法。在转到面向用户的应用开发之后，这些内容基本消失了。编程似乎是利用现有的库和工具把数据从一处移至另一处。到目前为止，我所学到的关于软件的知识不再那么有用了。&lt;/p>
 &lt;p>让我们面对现实吧：大多数Web应用无法解决棘手的技术挑战。他们需要做到的是正确的对产品进行建模，并且比竞争对手更快的改进产品。&lt;/p>
@@ -21,8 +20,7 @@ alt="从强耦合单体应用到分布式单体"
 >&lt;/p>
 &lt;blockquote>
 &lt;p>❌ 反模式：分布式单体 &lt;br>
-在你了解边界之前，不要将你的应用切分成为微服务。&lt;/p>
-&lt;/blockquote>
+在你了解边界之前，不要将你的应用切分成为微服务。&lt;/p>&lt;/blockquote>
 &lt;p>微服务并不会降低耦合，&lt;strong>因为拆分服务的次数并不重要。重要的是如何连接各个服务&lt;/strong>。&lt;/p>
 &lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/monolith.png"
 loading="lazy"
@@ -30,14 +28,12 @@ alt="从模块化单体应用到松耦合微服务"
 >&lt;/p>
 &lt;blockquote>
 &lt;p>✅ 策略：松耦合 &lt;br>
-以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。&lt;/p>
-&lt;/blockquote>
+以实现松耦合的模块为目标。如何部署它们（作为模块化单体应用或微服务）是一个实现细节。&lt;/p>&lt;/blockquote>
 &lt;h2 id="dry引入了耦合">DRY引入了耦合
 &lt;/h2>&lt;p>强耦合十分常见，因为我们很早就学到了不要重复自己(Don&amp;rsquo;t Repeat Yourself, DRY)原则。&lt;/p>
 &lt;p>简短的规则很容易被大家记住，但是简短的三个单词很难概括所有的细节。《程序员修炼之道: 从小工到专家》这本书提供了一个更长的版本：&lt;/p>
 &lt;blockquote>
-&lt;p>每条知识在系统中都必须有一个单一的、明确的、权威的表述。&lt;/p>
-&lt;/blockquote>
+&lt;p>每条知识在系统中都必须有一个单一的、明确的、权威的表述。&lt;/p>&lt;/blockquote>
 &lt;p>&amp;ldquo;每一条知识&amp;quot;这个说法相当极端。大多数编程困境的答案是看情况而定，DRY也不例外。&lt;/p>
 &lt;p>&lt;strong>当你让两个事物使用相同抽象的时候，你就引入了耦合。如果你严格遵循DRY原则，你就需要在这个抽象之前增加抽象。&lt;/strong>&lt;/p>
 &lt;p>&lt;img src="https://threedots.tech/post/common-anti-patterns-in-go-web-applications/coupling.png"
@@ -97,12 +93,12 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Fetch&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>) (&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 每次调用中ctx用于取消操作，截止时间和元数据。
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 每次调用中ctx用于取消操作，截止时间和元数据。&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Process&lt;/span>(&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#a6e22e">context&lt;/span>.&lt;span style="color:#a6e22e">Context&lt;/span>, &lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// A每次调用中ctx用于取消操作，截止时间和元数据。
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// A每次调用中ctx用于取消操作，截止时间和元数据。&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在这个例子中，&lt;code>(*Worker).Fetch&lt;/code>和&lt;code>(*Worker).Process&lt;/code>方法都直接接受上下文。通过这种通过参数传递的设计，用户可以设置每次调用的截止时间、取消和元数据。而且，很清楚传递给每个方法的&lt;code>context.Context&lt;/code>将如何被使用：没有期望传递给一个方法的&lt;code>context.Context&lt;/code>将被任何其他方法使用。这是因为上下文的范围被限定在了小范围的必须操作内，这大大增加了这个包中上下文的实用性和清晰度。&lt;/p>
 &lt;h2 id="将上下文存储在结构中会导致混乱">将上下文存储在结构中会导致混乱
 &lt;/h2>&lt;p>让我们再次使用上下文存储在结构体中这种方式审视一下上面的&lt;code>Worker&lt;/code>例子。它的问题是，当你把上下文存储在一个结构中时，你会向调用者隐藏它的生命周期，甚至可能的是把两个不同的作用域以不可预料的方式互相干扰：&lt;/p>
@@ -115,12 +111,12 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Fetch&lt;/span>() (&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>, &lt;span style="color:#66d9ef">error&lt;/span>) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> (&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Worker&lt;/span>) &lt;span style="color:#a6e22e">Process&lt;/span>(&lt;span style="color:#a6e22e">w&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Work&lt;/span>) &lt;span style="color:#66d9ef">error&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">_&lt;/span> = &lt;span style="color:#a6e22e">w&lt;/span>.&lt;span style="color:#a6e22e">ctx&lt;/span> &lt;span style="color:#75715e">// 共享的w.ctx用于取消操作，截止时间和元数据。&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>(*Worker).Fetch&lt;/code>和&lt;code>(*Worker).Process&lt;/code>方法都使用存储在&lt;code>Worker&lt;/code>中的上下文。这防止了&lt;code>Fetch&lt;/code>和&lt;code>Process&lt;/code>的调用者（它们本身可能有不同的上下文）在每次调用的基础上指定截止日期、请求取消和附加元数据。例如：用户无法只为&lt;code>(*Worker).Fetch&lt;/code>提供截止日期，也无法只取消&lt;code>(*Worker).Process&lt;/code>的调用。调用者的生命期与共享上下文交织在一起，上下文的范围是创建&lt;code>Worker&lt;/code>的生命周期。&lt;/p></description></item><item><title>Go 1.16 中Module功能新变化</title><link>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</link><pubDate>Fri, 19 Feb 2021 10:16:00 +0000</pubDate><guid>https://www.4async.com/2021/02/2021-02-19-go116-module-changes/</guid><description>&lt;img src="https://www.4async.com/2021/02/2021-02-19-go116-module-changes/cover.jpg" alt="Featured image of post Go 1.16 中Module功能新变化" />&lt;pre tabindex="0">&lt;code>原文地址：https://blog.golang.org/go116-module-changes
 原文作者：Jay Conrod
 译者：Kevin
@@ -154,7 +150,6 @@ $ go build
 &lt;p>Go本身提供了基础的测试功能，但是这个功能在实际使用过程中仍有使用起来功能较弱的问题。比如我们在使用过程中，需要使用额外的库让测试代码更佳高效。在实际实践过程中，我推荐使用&lt;code>Ginkgo&lt;/code>、&lt;code>testify&lt;/code>和&lt;code>GoMock&lt;/code>工具。&lt;/p></description></item><item><title>使用Go Modules</title><link>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</link><pubDate>Wed, 20 Mar 2019 14:22:00 +0000</pubDate><guid>https://www.4async.com/2019/03/2019-03-20-using-go-modules/</guid><description>&lt;p>原文：&lt;a class="link" href="https://blog.golang.org/using-go-modules" target="_blank" rel="noopener"
 >Using Go Modules&lt;/a>
 作者：Tyler Bui-Palsulich、Eno Compton&lt;/p>
-&lt;!-- raw HTML omitted -->
 &lt;h2 id="介绍">介绍
 &lt;/h2>&lt;p>Go 1.11和1.12包含了初步的&lt;a class="link" href="https://golang.org/doc/go1.11#modules" target="_blank" rel="noopener"
 >modules支持&lt;/a>，Go的&lt;a class="link" href="https://blog.golang.org/versioning-proposal" target="_blank" rel="noopener"
@@ -195,7 +190,8 @@ $ go build
 PASS
 ok _/home/gopher/hello 0.020s
 $
-&lt;/code>&lt;/pre>&lt;p>最后一行表示了整个包测试的汇总信息。因为我们现在在 &lt;code>$GOPATH&lt;/code>外，并且不属于任何模块，因此 &lt;code>go&lt;/code>命令不知道当前目录的引用路径，因此采用当前文件夹名生成了一个伪路径。&lt;/p></description></item><item><title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title><link>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</link><pubDate>Sun, 19 Feb 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</guid><description>&lt;p>这是一篇非常不错的 &lt;a class="link" href="https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/" target="_blank" rel="noopener"
+&lt;/code>&lt;/pre>&lt;p>最后一行表示了整个包测试的汇总信息。因为我们现在在 &lt;code>$GOPATH&lt;/code>外，并且不属于任何模块，因此 &lt;code>go&lt;/code>命令不知道当前目录的引用路径，因此采用当前文件夹名生成了一个伪路径。&lt;/p>
+&lt;p>现在让我们使用&lt;code>go mod init&lt;/code>命令将当前目录设置成为模块的根目录，然后重新试试&lt;code>go test&lt;/code>命令：&lt;/p></description></item><item><title>使用 Python 和 Pandas 分析 Pronto CycleShare 数据</title><link>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</link><pubDate>Sun, 19 Feb 2017 18:00:00 +0000</pubDate><guid>https://www.4async.com/2017/02/2017-02-19-analyzing-pronto-cycleshare-data-with-python-and-pandas/</guid><description>&lt;p>这是一篇非常不错的 &lt;a class="link" href="https://jakevdp.github.io/blog/2015/10/17/analyzing-pronto-cycleshare-data-with-python-and-pandas/" target="_blank" rel="noopener"
 >pandas 分析入门文章&lt;/a>，在此简单翻译摘录如下。&lt;/p>
 &lt;hr>
 &lt;p>本周，西雅图的自行车共享系统 Pronto CycleShare 一周岁了。 为了庆祝这一点，Pronto 提供了从第一年的数据缓存，并宣布了 &lt;a class="link" href="http://www.prontocycleshare.com/datachallenge" target="_blank" rel="noopener"

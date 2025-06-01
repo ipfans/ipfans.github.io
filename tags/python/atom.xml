@@ -20,8 +20,7 @@ target="_blank" rel="noopener"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pdm add langchain chromadb beautifulsoup4
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source .venv/bin/activate
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。&lt;/p>
-&lt;/blockquote>
+&lt;p>请注意，在本文编写时，使用的 LangChain 的版本为 0.1.14，如果你的版本较低或者过高，可能存在部分 API 出入，请根据具体情况调整引用的模块和对应的 API。&lt;/p>&lt;/blockquote>
 &lt;h2 id="功能实现">功能实现
 &lt;/h2>&lt;h3 id="实现生成模拟文档">实现生成模拟文档
 &lt;/h3>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> langchain.chains.hyde.base &lt;span style="color:#f92672">import&lt;/span> HypotheticalDocumentEmbedder
@@ -64,7 +63,7 @@ target="_blank" rel="noopener"
 &lt;p>&lt;img src="../../2024/04/learn-hyde-from-scratch-1/vanilla-rag.webp"
 width="1527"
 height="654"
-srcset="../../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu5351873011583491433.webp 480w, ../../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu17629515767707187602.webp 1024w"
+srcset="../../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu_585e302af977823d.webp 480w, ../../2024/04/learn-hyde-from-scratch-1/vanilla-rag_hu_eae049ef4f12aef4.webp 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="233"
@@ -114,8 +113,7 @@ alt="image"
 >Mistral&lt;/a> 7B 模型。我们可以使用下面的命令快速安装对应模型：&lt;/p></description></item><item><title>使用子解释器运行Python并行应用</title><link>https://www.4async.com/2023/11/python-312-sub-interpreters/</link><pubDate>Thu, 23 Nov 2023 09:39:00 +0000</pubDate><guid>https://www.4async.com/2023/11/python-312-sub-interpreters/</guid><description>&lt;img src="https://www.4async.com/2023/11/python-312-sub-interpreters/cover.webp" alt="Featured image of post 使用子解释器运行Python并行应用" />&lt;blockquote>
 &lt;p>译者注：最近 Python 3.12 引入了子解释器概念，非常火热，更好的消息是已经&lt;a class="link" href="https://twitter.com/anthonypjshaw/status/1723916190202945761" target="_blank" rel="noopener"
 >在FastAPI应用成功&lt;/a>了，虽然是很简单的那种。因此顺腾摸瓜，找到了作者的&lt;a class="link" href="https://tonybaloney.github.io/posts/sub-interpreter-web-workers.html" target="_blank" rel="noopener"
->博客&lt;/a>，翻译分享给大家。&lt;/p>
-&lt;/blockquote>
+>博客&lt;/a>，翻译分享给大家。&lt;/p>&lt;/blockquote>
 &lt;p>Python 3.12 引入了一个新的 API 用于“子解释器”（sub interpreters），这是 Python 的一种不同的并行执行模型，提供了真正并行处理和多进程处理之间的良好折中，且具有更快的启动时间。在这篇文章中，我将解释什么是子解释器，为什么它对 Python 中的并行代码执行很重要，以及它与其他方法的比较。&lt;/p>
 &lt;h2 id="什么是子解释器">什么是子解释器？
 &lt;/h2>&lt;p>Python 的系统架构大致由三部分组成：&lt;/p>
@@ -127,7 +125,7 @@ alt="image"
 &lt;p>&lt;img src="../../2023/11/python-312-sub-interpreters/interpreter-states-1.png"
 width="2111"
 height="1898"
-srcset="../../2023/11/python-312-sub-interpreters/interpreter-states-1_hu15682165194778488945.png 480w, ../../2023/11/python-312-sub-interpreters/interpreter-states-1_hu15867741242815948022.png 1024w"
+srcset="../../2023/11/python-312-sub-interpreters/interpreter-states-1_hu_e139c5bca93ea465.png 480w, ../../2023/11/python-312-sub-interpreters/interpreter-states-1_hu_a52b647e9e8156e1.png 1024w"
 loading="lazy"
 alt="interpreter states"
 class="gallery-image"
@@ -366,7 +364,7 @@ alt="CPU 性能演示"
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RedisPool&lt;/span>:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;Redis connections pool.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self, address, db&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>, password&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>, encoding&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">__init__&lt;/span>(self, address, db&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>, password&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>, encoding&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">*&lt;/span>, minsize, maxsize, commands_factory, loop&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> loop &lt;span style="color:#f92672">is&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> loop &lt;span style="color:#f92672">=&lt;/span> asyncio&lt;span style="color:#f92672">.&lt;/span>get_event_loop()
